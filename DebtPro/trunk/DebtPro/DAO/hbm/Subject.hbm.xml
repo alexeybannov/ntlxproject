@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="CI.Debt.Domain" assembly="Debt">
+  <class name="Subject">
+    <id name="Id">
+      <generator class="increment" />
+    </id>
+    <property name="Name"/>
+    <property name="Code"/>
+    <property name="BudgetName"/>
+  </class>
+</hibernate-mapping>
