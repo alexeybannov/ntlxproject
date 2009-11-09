@@ -63,6 +63,7 @@ namespace CI.Debt.Forms {
 			waitForm = new WaitForm();
 
 			var subjects = new List<Subject>(DebtDAO.GetSubjects());
+			subjects.Sort((x, y) => { return string.Compare(x.Name, y.Name); });
 			var budget = DebtDAO.GetSettings().FilterBudget;
 			if (!string.IsNullOrEmpty(budget)) {
 				subjects = subjects.FindAll(s => { return string.Compare(budget, s.BudgetName, true) == 0; });

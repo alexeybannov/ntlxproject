@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="CI.Debt.Domain" assembly="Debt">
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="CI.Debt.Domain"
+                   assembly="Debt"
+                   default-lazy="false">
+  
   <class name="Classifier">
     <id name="Id">
       <generator class="increment" />
@@ -35,4 +39,5 @@
     <property name="GrpCode12"/>
     <property name="GrpName12"/>
   </class>
+  
 </hibernate-mapping>

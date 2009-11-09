@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\DebtSettings.cs" />
+    <Compile Include="Domain\Exceptions.cs" />
     <Compile Include="Forms\DebtCopyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,6 +169,7 @@
     <None Include="App.config" />
     <Compile Include="Forms\ClassifierColumn.cs">
     </Compile>
+    <Compile Include="Reports\ClassifierFormatProvider.cs" />
     <Compile Include="Reports\Report1.cs" />
     <Compile Include="Reports\Report1Row.cs" />
     <Compile Include="Reports\ReportForm.cs">
@@ -225,7 +227,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\d_importdebt.srd" />
-    <None Include="Properties\DataSources\CI.Debt.Domain.DebtRow.datasource" />
     <None Include="Resources\progress_ajax.gif" />
   </ItemGroup>
   <ItemGroup>

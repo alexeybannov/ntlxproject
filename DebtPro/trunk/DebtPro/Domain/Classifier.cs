@@ -1,18 +1,17 @@
 ﻿using System;
-using System.ComponentModel;
-using CI.Debt.DAO;
+using System.Text;
 
 namespace CI.Debt.Domain {
 
 	/// <summary>
 	/// Код бюджетной классификации расходов.
 	/// </summary>
-	class Classifier : IComparable<Classifier> {
+	class Classifier : IComparable<Classifier>, IComparable, IEquatable<Classifier>, IFormattable {
 
 		/// <summary>
 		/// Маска бюджетного классификатора расходов.
 		/// </summary>
-		public static readonly string Mask = @"000\.00 00\.000 00 00\.000\.000\.000\:000";
+		public static readonly string Mask = "000.00 00.000 00 00.000.000.000:000";
 
 		/// <summary>
 		/// Длина кода классификатора.
@@ -21,7 +20,7 @@ namespace CI.Debt.Domain {
 
 		private string code;
 
-		private static readonly MaskedTextProvider MaskedTextProvider;
+		private string maskedCode;
 
 		/// <summary>
 		/// Идентификатор классификатора.
@@ -51,24 +50,8 @@ namespace CI.Debt.Domain {
 		/// Код классификатора по маске.
 		/// </summary>
 		public virtual string MaskedCode {
-			get {
-				lock (MaskedTextProvider) {
-					MaskedTextProvider.Set(Code != null ? Code : string.Empty);
-					return MaskedTextProvider.ToDisplayString();
-				}
-			}
-			set {
-				lock (MaskedTextProvider) {
-					MaskedTextProvider.Set(value != null ? value : string.Empty);
-					try {
-						MaskedTextProvider.IncludeLiterals = false;
-						Code = MaskedTextProvider.ToString();
-					}
-					finally {
-						MaskedTextProvider.IncludeLiterals = true;
-					}
-				}
-			}
+			get { return maskedCode; }
+			set { SetCode(value); }
 		}
 
 		/// <summary>
@@ -296,17 +279,11 @@ namespace CI.Debt.Domain {
 		}
 
 		/// <summary>
-		/// Конструктор типа.
-		/// </summary>
-		static Classifier() {
-			MaskedTextProvider = new MaskedTextProvider(Mask);
-		}
-
-		/// <summary>
 		/// Создает экземпляр объекта Classifier.
 		/// </summary>
 		public Classifier() {
 			ClsfType = 1;
+			Code = new string('0', CodeLenght);
 		}
 
 		/// <summary>
@@ -329,34 +306,43 @@ namespace CI.Debt.Domain {
 			return Id.GetHashCode();
 		}
 
-		/// <inheritdoc/>
-		public override string ToString() {
-			return string.Format("{0}", MaskedCode);
-		}
-
 		private void SetCode(string code) {
 			if (string.IsNullOrEmpty(code)) throw new ClassifierFormatException("Код классификатора не может быть пустым.");
-			if (code.Length != CodeLenght) throw new ClassifierFormatException(string.Format("Код классификатора должен быть длиной в {0} символов.", CodeLenght));
-			lock (MaskedTextProvider) {
-				MaskedTextProvider.Set(code);
-				if (!MaskedTextProvider.MaskFull) throw new ClassifierFormatException("Код классификатора не удовлетворяет маске классификатора.");
-			}
 
-			this.code = code;
-			BudgetCode = this.code.Substring(0, 17);
-			EconomicalItemCode = this.code.Substring(20, 3);
-			GrpCode01 = this.code.Substring(0, 3);
-			GrpCode02 = this.code.Substring(3, 2);
-			GrpCode03 = this.code.Substring(5, 2);
-			GrpCode04 = this.code.Substring(7, 3);
-			GrpCode05 = this.code.Substring(10, 2);
-			GrpCode06 = this.code.Substring(12, 2);
-			GrpCode07 = this.code.Substring(14, 3);
-			GrpCode08 = this.code.Substring(17, 3);
-			GrpCode09 = this.code.Substring(20, 1);
-			GrpCode10 = this.code.Substring(21, 1);
-			GrpCode11 = this.code.Substring(22, 1);
-			GrpCode12 = this.code.Substring(23, 3);
+			var newCode = new StringBuilder(CodeLenght);
+			foreach (var c in code) {
+				if (char.IsDigit(c)) newCode.Append(c);
+			}
+			if (newCode.Length != CodeLenght) throw new ClassifierFormatException(string.Format("Код классификатора не удовлетворяет маске классификатора. Код: {0}, маска: {1}", code, Mask));
+			this.code = newCode.ToString();
+
+			newCode = new StringBuilder(Mask.Length);
+			int index = 0;
+			foreach (var c in Mask) {
+				if (char.IsDigit(c)) {
+					newCode.Append(Code[index]);
+					index++;
+				}
+				else {
+					newCode.Append(c);
+				}
+			}
+			maskedCode = newCode.ToString();
+
+			BudgetCode = Code.Substring(0, 17);
+			EconomicalItemCode = Code.Substring(20, 3);
+			GrpCode01 = Code.Substring(0, 3);
+			GrpCode02 = Code.Substring(3, 2);
+			GrpCode03 = Code.Substring(5, 2);
+			GrpCode04 = Code.Substring(7, 3);
+			GrpCode05 = Code.Substring(10, 2);
+			GrpCode06 = Code.Substring(12, 2);
+			GrpCode07 = Code.Substring(14, 3);
+			GrpCode08 = Code.Substring(17, 3);
+			GrpCode09 = Code.Substring(20, 1);
+			GrpCode10 = Code.Substring(21, 1);
+			GrpCode11 = Code.Substring(22, 1);
+			GrpCode12 = Code.Substring(23, 3);
 		}
 
 		#region IComparable<Classifier> Members
@@ -368,39 +354,47 @@ namespace CI.Debt.Domain {
 		/// <returns>0, если коды классификаторов равны, -1, если код текущего классификатора 
 		/// меньше сравниваемого и 1, если код текущего классификатора больше сравниваемого.</returns>
 		public int CompareTo(Classifier other) {
+			if (other == null) return 1;
 			return string.Compare(Code, other.Code);
 		}
 
 		#endregion
-	}
 
-	/// <summary>
-	/// Тип определяет исключение неверного кода классификатора.
-	/// </summary>
-	class ClassifierFormatException : FormatException {
+		#region IComparable Members
 
-		/// <inheritdoc/>
-		public ClassifierFormatException() : base() { }
+		public virtual int CompareTo(object obj) {
+			if (obj == null) return 1;
+			if (!(obj is Classifier)) throw new ArgumentException("Тип объекта должен быть Classifier.");
+			return string.Compare(Code, ((Classifier)obj).Code);
+		}
 
-		/// <inheritdoc/>
-		public ClassifierFormatException(string message) : base(message) { }
+		#endregion
 
-		/// <inheritdoc/>
-		public ClassifierFormatException(string message, Exception innerException) : base(message, innerException) { }
-	}
+		#region IEquatable<Classifier> Members
 
-	/// <summary>
-	/// Тип определяет исключение возникающее при поиске несуществующего классификатора.
-	/// </summary>
-	class ClassifierNotFoundException : Exception {
+		public virtual bool Equals(Classifier other) {
+			return other != null && Id == other.Id;
+		}
 
-		/// <inheritdoc/>
-		public ClassifierNotFoundException() : base() { }
+		#endregion
+
+		#region IFormattable Members
 
 		/// <inheritdoc/>
-		public ClassifierNotFoundException(string message) : base(message) { }
+		public override string ToString() {
+			return ToString("M");
+		}
 
-		/// <inheritdoc/>
-		public ClassifierNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+		public virtual string ToString(string format) {
+			return ToString(format, null);
+		}
+
+		public virtual string ToString(string format, IFormatProvider formatProvider) {
+			if (string.IsNullOrEmpty(format)) return Code;
+			if (format.ToUpperInvariant() == "M") return MaskedCode;
+			throw new ClassifierFormatException(string.Format("Неизвестный формат классификатора '{0}'", format));
+		}
+
+		#endregion
 	}
 }

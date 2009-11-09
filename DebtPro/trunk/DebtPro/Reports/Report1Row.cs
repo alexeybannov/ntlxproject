@@ -9,7 +9,8 @@ namespace CI.Debt.Reports {
 		#region Classifier
 
 		public virtual string GrpCode01 {
-			get { return row.Classifier.GrpCode01; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName01 {
@@ -17,7 +18,8 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode02 {
-			get { return row.Classifier.GrpCode02; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName02 {
@@ -25,7 +27,8 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode03 {
-			get { return row.Classifier.GrpCode03; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName03 {
@@ -33,15 +36,24 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode04 {
-			get { return row.Classifier.GrpCode04; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName04 {
-			get { return row.Classifier.GrpName04; }
+			get {
+				return
+					row.Classifier.GrpCode06 != "00" ?
+						row.Classifier.GrpName06 :
+						row.Classifier.GrpCode05 != "00" ?
+							row.Classifier.GrpName05 :
+							row.Classifier.GrpName04;
+			}
 		}
 
 		public virtual string GrpCode05 {
-			get { return row.Classifier.GrpCode05; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName05 {
@@ -49,7 +61,8 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode06 {
-			get { return row.Classifier.GrpCode06; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName06 {
@@ -57,7 +70,8 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode07 {
-			get { return row.Classifier.GrpCode07; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName07 {
@@ -65,7 +79,8 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode08 {
-			get { return row.Classifier.GrpCode08; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName08 {
@@ -73,7 +88,8 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode09 {
-			get { return row.Classifier.GrpCode09; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName09 {
@@ -81,27 +97,12 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpCode10 {
-			get { return row.Classifier.GrpCode10; }
+			get;
+			private set;
 		}
 
 		public virtual string GrpName10 {
 			get { return row.Classifier.GrpName10; }
-		}
-
-		public virtual string GrpCode11 {
-			get { return row.Classifier.GrpCode11; }
-		}
-
-		public virtual string GrpName11 {
-			get { return row.Classifier.GrpName11; }
-		}
-
-		public virtual string GrpCode12 {
-			get { return row.Classifier.GrpCode12; }
-		}
-
-		public virtual string GrpName12 {
-			get { return row.Classifier.GrpName12; }
 		}
 
 		#endregion
@@ -131,10 +132,28 @@ namespace CI.Debt.Reports {
 		/// </summary>
 		public Report1Row(DebtRow row) {
 			this.row = row;
-		}
-
-		public override string ToString() {
-			return string.Format("[{0}] {1} ({2}) {3}", row.Classifier.MaskedCode, Amount, Amount2, SubjectName);
+			var clsf = row.Classifier;
+			GrpCode01 = string.Format("{0}.00 00.000 00 00.000.000.000:000", clsf.GrpCode01);
+			GrpCode02 = string.Format("{0}.{1} 00.000 00 00.000.000.000:000", clsf.GrpCode01, clsf.GrpCode02);
+			GrpCode03 = string.Format("{0}.{1} {2}.000 00 00.000.000.000:000", clsf.GrpCode01, clsf.GrpCode02, clsf.GrpCode03);
+			GrpCode04 = string.Format("{0}.{1} {2}.{3} {4} {5}.000.000.000:000", clsf.GrpCode01, clsf.GrpCode02, clsf.GrpCode03,
+				clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06);
+			GrpCode05 = string.Format("{0}.{1} {2}.{3} {4} {5}.{6}.000.000:000", clsf.GrpCode01, clsf.GrpCode02, clsf.GrpCode03,
+				clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06,
+				clsf.GrpCode07);
+			GrpCode06 = string.Format("{0}.{1} {2}.{3} {4} {5}.{6}.{7}.000:000", clsf.GrpCode01, clsf.GrpCode02, clsf.GrpCode03,
+				clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06,
+				clsf.GrpCode07, clsf.GrpCode08);
+			GrpCode07 = string.Format("{0}.{1} {2}.{3} {4} {5}.{6}.{7}.{8}00:000", clsf.GrpCode01, clsf.GrpCode02, clsf.GrpCode03,
+				clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06,
+				clsf.GrpCode07, clsf.GrpCode08, clsf.GrpCode09);
+			GrpCode08 = string.Format("{0}.{1} {2}.{3} {4} {5}.{6}.{7}.{8}{9}0:000", clsf.GrpCode01, clsf.GrpCode02, clsf.GrpCode03,
+				clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06,
+				clsf.GrpCode07, clsf.GrpCode08, clsf.GrpCode09, clsf.GrpCode10);
+			GrpCode09 = string.Format("{0}.{1} {2}.{3} {4} {5}.{6}.{7}.{8}{9}{10}:000", clsf.GrpCode01, clsf.GrpCode02, clsf.GrpCode03,
+				clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06,
+				clsf.GrpCode07, clsf.GrpCode08, clsf.GrpCode09, clsf.GrpCode10, clsf.GrpCode11);
+			GrpCode10 = clsf.MaskedCode;
 		}
 	}
 }

@@ -11,9 +11,8 @@ namespace CI.Debt.DAO {
 
 	/// <summary>
 	/// Статический тип слоя доступа и манипулирования данными.
-	/// Основа слоя -- ORM NHibernate, подробнее http://wwww.nhibernate.org.
-	/// В качестве базы данных используется встраиваемая база данных SQLite,
-	/// подробнее http://www.sqlite.org.
+	/// Основа слоя -- ORM NHibernate (http://wwww.nhibernate.org).
+	/// В качестве базы данных используется встраиваемая база данных SQLite (http://www.sqlite.org).
 	/// </summary>
 	static class DebtDAO {
 
@@ -25,7 +24,7 @@ namespace CI.Debt.DAO {
 				if (emptyClassifer == null) {
 					lock (typeof(DebtDAO)) {
 						if (emptyClassifer == null) {
-							emptyClassifer = CreateEmptyClassifier();
+							emptyClassifer = GetOrCreateEmptyClassifier();
 						}
 					}
 				}
@@ -182,8 +181,7 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="clsf">Новый классификатор.</param>
 		public static void SaveClassifier(Classifier clsf) {
-			var tx = Session.BeginTransaction();
-			try {
+			using (var tx = Session.BeginTransaction()) {
 				if (clsf.Id == default(long)) {
 					Session.Save(clsf);
 				}
@@ -192,10 +190,6 @@ namespace CI.Debt.DAO {
 				}
 				tx.Commit();
 			}
-			catch {
-				tx.Rollback();
-				throw;
-			}
 		}
 
 		/// <summary>
@@ -203,20 +197,15 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <returns>Настройки</returns>
 		public static DebtSettings GetSettings() {
-			var settings = Session.Get<DebtSettings>(1);
-			if (settings == null) {
-				settings = new DebtSettings();
-				var tx = Session.BeginTransaction();
-				try {
+			using (var tx = Session.BeginTransaction()) {
+				var settings = Session.Get<DebtSettings>(1);
+				if (settings == null) {
+					settings = new DebtSettings();
 					Session.Save(settings);
-					tx.Commit();
 				}
-				catch {
-					tx.Rollback();
-					throw;
-				}
+				tx.Commit();
+				return settings;
 			}
-			return settings;
 		}
 
 		/// <summary>
@@ -226,14 +215,9 @@ namespace CI.Debt.DAO {
 		public static void SaveSettings(DebtSettings settings) {
 			if (settings == null) throw new ArgumentNullException("settings");
 
-			var tx = Session.BeginTransaction();
-			try {
+			using (var tx = Session.BeginTransaction()) {
 				Session.Update(settings);
 				tx.Commit();
-			}
-			catch {
-				tx.Rollback();
-				throw;
 			}
 		}
 
@@ -241,24 +225,19 @@ namespace CI.Debt.DAO {
 		/// Создание классификатора по умолчанию.
 		/// </summary>
 		/// <returns>Классификатор по умолчанию</returns>
-		private static Classifier CreateEmptyClassifier() {
-			var clsf = Session.Get<Classifier>((long)1);
-			if (clsf == null) {
-				clsf = new Classifier() {
-					Code = new string('0', Classifier.CodeLenght),
-					GrpName12 = "<Пустой классификатор>"
-				};
-				var tx = Session.BeginTransaction();
-				try {
+		private static Classifier GetOrCreateEmptyClassifier() {
+			using (var tx = Session.BeginTransaction()) {
+				var clsf = Session.Get<Classifier>((long)1);
+				if (clsf == null) {
+					clsf = new Classifier() {
+						Code = new string('0', Classifier.CodeLenght),
+						GrpName12 = "<Пустой классификатор>"
+					};
 					Session.Save(clsf, (long)1);
-					tx.Commit();
 				}
-				catch {
-					tx.Rollback();
-					throw;
-				}
+				tx.Commit();
+				return clsf;
 			}
-			return clsf;
 		}
 
 		/// <summary>
@@ -298,14 +277,9 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="row">Строка задолженности</param>
 		public static void RemoveDebtRow(DebtRow row) {
-			var tx = Session.BeginTransaction();
-			try {
+			using (var tx = Session.BeginTransaction()) {
 				Session.Delete(row);
 				tx.Commit();
-			}
-			catch {
-				tx.Rollback();
-				throw;
 			}
 		}
 
@@ -314,14 +288,9 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="row">Строка задолженности</param>
 		public static void SaveOrUpdateDebtRow(DebtRow row) {
-			var tx = Session.BeginTransaction();
-			try {
+			using (var tx = Session.BeginTransaction()) {
 				Session.SaveOrUpdate(row);
 				tx.Commit();
-			}
-			catch {
-				tx.Rollback();
-				throw;
 			}
 		}
 
@@ -339,8 +308,7 @@ namespace CI.Debt.DAO {
 			DebtType toDebtType, int toMonth, int toYear) {
 
 			var fromRows = GetDebtRows(fromDebtType, fromMonth, fromYear);
-			var tx = Session.BeginTransaction();
-			try {
+			using (var tx = Session.BeginTransaction()) {
 				foreach (var fromRow in fromRows) {
 					var row = (DebtRow)fromRow.Clone();
 					row.DebtType = toDebtType;
@@ -349,12 +317,7 @@ namespace CI.Debt.DAO {
 
 					Session.Save(row);
 				}
-
 				tx.Commit();
-			}
-			catch {
-				tx.Rollback();
-				throw;
 			}
 		}
 

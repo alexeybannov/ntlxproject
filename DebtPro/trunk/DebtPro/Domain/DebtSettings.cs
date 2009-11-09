@@ -2,6 +2,7 @@
 namespace CI.Debt.Domain {
 
 	class DebtSettings {
+
 		internal virtual int Id {
 			get;
 			set;

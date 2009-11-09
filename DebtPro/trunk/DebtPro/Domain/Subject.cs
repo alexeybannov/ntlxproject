@@ -69,7 +69,7 @@ namespace CI.Debt.Domain {
 				"[{0}] {1}{2}",
 				Code,
 				Name,
-				(!string.IsNullOrEmpty(BudgetName) ? string.Format("({0} бюджет)", BudgetName) : string.Empty)
+				(!string.IsNullOrEmpty(BudgetName) ? string.Format(" ({0} бюджет)", BudgetName) : string.Empty)
 			);
 		}
 	}
