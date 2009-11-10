@@ -7,13 +7,14 @@ using CI.Debt.Domain;
 using CI.Debt.DAO;
 using CI.Debt.Impl;
 
+// Подробнее о DataGridView см. http://www.rsdn.ru/article/dotnet/datagridfaq.xml?print
+// http://www.rsdn.ru/article/dotnet/DataGridView20.xml?print
+// http://www.rsdn.ru/article/dotnet/DataGridView20part2.xml?print
+
 namespace CI.Debt.Forms {
 
 	/// <summary>
 	/// Тип определет контрол редактирования в столбце классфикатора.
-	/// Подробнее о DataGridView см. http://www.rsdn.ru/article/dotnet/datagridfaq.xml?print
-	/// http://www.rsdn.ru/article/dotnet/DataGridView20.xml?print
-	/// http://www.rsdn.ru/article/dotnet/DataGridView20part2.xml?print
 	/// </summary>
 	public partial class ClassifierEditingControl : UserControl, IDataGridViewEditingControl {
 
@@ -94,9 +95,8 @@ namespace CI.Debt.Forms {
 		}
 
 		private void buttonSelect_Click(object sender, EventArgs e) {
-			Classifier clsf = EditingControlDataGridView.CurrentCell.Value as Classifier;
-			if (clsf == null) clsf = DebtDAO.EmptyClassifier;
-			classifiersPresenter.SelectedClassifier = clsf;
+			var clsf = EditingControlDataGridView.CurrentCell.Value as Classifier;
+			classifiersPresenter.SelectedClassifier = clsf ?? Classifier.Empty;
 			classifiersPresenter.ShowClassifiers();
 		}
 
@@ -110,8 +110,8 @@ namespace CI.Debt.Forms {
 
 		/// <inheritdoc/>
 		public object EditingControlFormattedValue {
-			get { return this.Text; }
-			set { Text = value.ToString(); }
+			get { return Text; }
+			set { Text = value != null ? value.ToString() : string.Empty; }
 		}
 
 		/// <inheritdoc/>
@@ -121,7 +121,7 @@ namespace CI.Debt.Forms {
 
 		/// <inheritdoc/>
 		public void ApplyCellStyleToEditingControl(DataGridViewCellStyle dataGridViewCellStyle) {
-			this.Font = dataGridViewCellStyle.Font;
+			Font = dataGridViewCellStyle.Font;
 		}
 
 		/// <inheritdoc/>
@@ -152,7 +152,7 @@ namespace CI.Debt.Forms {
 			maskedTextBox.SelectionStart = 0;
 			if (EditingControlDataGridView != null) {
 				var clsf = EditingControlDataGridView.CurrentCell.Value as Classifier;
-				if (!DebtDAO.EmptyClassifier.Equals(clsf)) maskedTextBox.SelectionStart = maskedTextBox.TextLength - 7;
+				if (!Classifier.Empty.Equals(clsf)) maskedTextBox.SelectionStart = maskedTextBox.TextLength - 7;
 			}
 		}
 
@@ -185,7 +185,7 @@ namespace CI.Debt.Forms {
 			if (!DebtDAO.GetSettings().IsAutoPasteClassifier) return;
 			//автоподстановка классификатора
 			int position = (int)caretField.GetValue(maskedTextBox) + 1;
-			string code = DebtUtil.RemoveMaskSymbols(maskedTextBox.Text.Substring(0, position));
+			string code = DebtUtil.RemoveMaskSymbols(Text.Substring(0, position));
 			if (string.IsNullOrEmpty(code) || code.Length == Classifier.CodeLenght) return;
 
 			var clsf = DebtDAO.FindNearestClassifier(code);
@@ -193,11 +193,10 @@ namespace CI.Debt.Forms {
 			if (clsf != null) newCode = clsf.MaskedCode;
 			else newCode = code + new string('0', Classifier.CodeLenght).Substring(0, Classifier.CodeLenght);
 			position -= 1;
-			maskedTextBox.Text = newCode;
+			Text = newCode;
 			if (0 <= position && position < maskedTextBox.MaskedTextProvider.Length) caretField.SetValue(maskedTextBox, position);
 		}
 
-		/// <inheritdoc/>
 		public override string Text {
 			get { return maskedTextBox.Text; }
 			set { maskedTextBox.Text = value; }

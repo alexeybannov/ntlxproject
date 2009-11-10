@@ -9,6 +9,18 @@ namespace CI.Debt.Domain {
 	class Classifier : IComparable<Classifier>, IComparable, IEquatable<Classifier>, IFormattable {
 
 		/// <summary>
+		/// Пустой классификатор по умолчанию 000.00 00.000 00 00.000.000.000:000 с идентификатором 1.
+		/// </summary>
+		public static Classifier Empty;
+
+		static Classifier() {
+			Empty = new Classifier() {
+				Code = new string('0', Classifier.CodeLenght),
+				GrpName12 = "<Пустой классификатор>"
+			};
+		}
+
+		/// <summary>
 		/// Маска бюджетного классификатора расходов.
 		/// </summary>
 		public static readonly string Mask = "000.00 00.000 00 00.000.000.000:000";

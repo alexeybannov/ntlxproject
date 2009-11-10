@@ -8,8 +8,8 @@
     <id name="Id">
       <generator class="increment" />
     </id>
-    <many-to-one name="Classifier" cascade="save-update" not-found="ignore"/>
-    <many-to-one name="Subject"/>
+    <many-to-one name="Classifier" cascade="save-update" not-found="ignore" lazy="proxy" fetch="select" outer-join="false"/>
+    <many-to-one name="Subject" lazy="proxy" fetch="select" outer-join="false"/>
     <property name="Amount"/>
     <property name="Amount2"/>
     <property name="DebtType"/>

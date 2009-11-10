@@ -16,73 +16,50 @@ namespace CI.Debt.DAO {
 	/// </summary>
 	static class DebtDAO {
 
-		/// <summary>
-		/// Пустой классификатор по умолчанию 000.00 00.000 00 00.000.000.000:000 с идентификатором 1.
-		/// </summary>
-		public static Classifier EmptyClassifier {
-			get {
-				if (emptyClassifer == null) {
-					lock (typeof(DebtDAO)) {
-						if (emptyClassifer == null) {
-							emptyClassifer = GetOrCreateEmptyClassifier();
-						}
-					}
-				}
-				return emptyClassifer;
-			}
-		}
+		private static Configuration configuration;
 
-		private static Classifier emptyClassifer;
+		private static ISession session;
+
+		private static ISessionFactory factory;
+
+		private static List<Subject> subjects;
+
+		private static List<string> budgets;
+
+		private static IDictionary<long, Classifier> classifiers;
+
 
 		/// <summary>
-		/// Текущая конфигурация NHibernate.
+		/// Инициализация слоя доступа к данным.
 		/// </summary>
-		public static Configuration Cfg {
-			get;
-			private set;
-		}
+		public static void Initialize() {
+			configuration = new Configuration();
+			configuration.Configure();
 
-		/// <summary>
-		/// Сессия NHibatenate.
-		/// </summary>
-		public static ISession Session {
-			get;
-			private set;
+			factory = configuration.BuildSessionFactory();
+			session = factory.OpenSession();
+			session.FlushMode = FlushMode.Commit;
+
+			PatchDatabase();
+
+			LoadCache();
 		}
 
 		/// <summary>
-		/// Фабрика сессий NHibernate.
+		/// Получить текущую сессию NHibernate.
 		/// </summary>
-		public static ISessionFactory Factory {
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// Создает тип DebtDAO.
-		/// </summary>
-		static DebtDAO() {
-			Cfg = new Configuration();
-			Cfg.Configure();
-
-			Factory = Cfg.BuildSessionFactory();
-			Session = Factory.OpenSession();
-			Session.FlushMode = FlushMode.Commit;
-
-			try {
-				using (var alterCommand = Session.Connection.CreateCommand()) {
-					alterCommand.CommandText = "alter table DebtSettings add column FilterBudget TEXT";
-					alterCommand.ExecuteNonQuery();
-				}
-			}
-			catch { }
+		/// <returns>Текущая сессия NHibernate.</returns>
+		public static ISession GetSession() {
+			CheckInitialization();
+			return session;
 		}
 
 		/// <summary>
 		/// Создает структуру базы данных в подключенной базе данных.
 		/// </summary>
 		public static void ReCreateSchema() {
-			var schema = new SchemaExport(Cfg);
+			CheckInitialization();
+			var schema = new SchemaExport(configuration);
 			schema.Create(true, true);
 		}
 
@@ -90,10 +67,9 @@ namespace CI.Debt.DAO {
 		/// Получить полный список субъектов (упорядочен по имени субъекта).
 		/// </summary>
 		/// <returns>Список субъектов</returns>
-		public static IList<Subject> GetSubjects() {
-			return Session.CreateCriteria(typeof(Subject)).
-				AddOrder(new Order("Name", true)).
-				List<Subject>();
+		public static List<Subject> GetSubjects() {
+			CheckInitialization();
+			return new List<Subject>(subjects);
 		}
 
 		/// <summary>
@@ -102,6 +78,7 @@ namespace CI.Debt.DAO {
 		/// <param name="id">Идентификатор</param>
 		/// <returns>Субъект</returns>
 		public static Subject GetSubject(long id) {
+			CheckInitialization();
 			return GetObjectById<Subject>(id);
 		}
 
@@ -111,29 +88,30 @@ namespace CI.Debt.DAO {
 		/// <param name="code">Код субъекта.</param>
 		/// <returns></returns>
 		public static Subject GetSubjectByCode(string code) {
-			return Session.CreateCriteria(typeof(Subject)).
-				Add(Expression.Eq("Code", code != null ? code.Trim() : string.Empty)).
-				SetMaxResults(1).
-				UniqueResult<Subject>();
+			CheckInitialization();
+			if (string.IsNullOrEmpty(code)) return null;
+
+			foreach (var s in subjects) {
+				if (s.Code == code) return s;
+			}
+			return null;
 		}
 
 		public static string[] GetBudgets() {
-			return new List<string>(
-				Session.CreateCriteria(typeof(Subject)).
-					SetProjection(Projections.GroupProperty("BudgetName")).
-					AddOrder(Order.Asc("BudgetName")).
-					List<string>()
-				).ToArray();
+			CheckInitialization();
+			return budgets.ToArray();
 		}
 
 		/// <summary>
 		/// Получить полный список классификаторов (упорядочен по коду).
 		/// </summary>
 		/// <returns>Список классификаторов</returns>
-		public static IList<Classifier> GetClassifiers() {
-			return Session.CreateCriteria(typeof(Classifier)).
-				AddOrder(new Order("Code", true)).
-				List<Classifier>();
+		public static List<Classifier> GetClassifiers() {
+			CheckInitialization();
+
+			var list = new List<Classifier>(classifiers.Values);
+			list.Sort((x, y) => string.Compare(x.Code, y.Code));
+			return list;
 		}
 
 		/// <summary>
@@ -143,6 +121,7 @@ namespace CI.Debt.DAO {
 		/// <param name="id">Идентификатор</param>
 		/// <returns>Классификатор</returns>
 		public static Classifier GetClassifier(long id) {
+			CheckInitialization();
 			return GetObjectById<Classifier>(id);
 		}
 
@@ -153,13 +132,13 @@ namespace CI.Debt.DAO {
 		/// <param name="code">Код по маске и просто код</param>
 		/// <returns>Классификатор</returns>
 		public static Classifier FindClassifier(string code) {
-			var clsf = Session.CreateCriteria(typeof(Classifier)).
-				Add(Expression.Eq("Code", DebtUtil.RemoveMaskSymbols(code))).
-				SetMaxResults(1).
-				UniqueResult<Classifier>();
+			CheckInitialization();
 
-			if (clsf != null) return clsf;
-			throw new ClassifierNotFoundException(string.Format("Классификатор с кодом {0} не обнаружен в справочнике.", code));
+			var clearCode = DebtUtil.RemoveMaskSymbols(code);
+			foreach (var c in classifiers.Values) {
+				if (c.Code == clearCode) return c;
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -169,11 +148,13 @@ namespace CI.Debt.DAO {
 		/// <param name="code">Часть кода по маске или просто часть кода</param>
 		/// <returns>Классификатор</returns>
 		public static Classifier FindNearestClassifier(string code) {
-			return Session.CreateCriteria(typeof(Classifier)).
-				Add(Expression.Like("Code", DebtUtil.RemoveMaskSymbols(code), MatchMode.Start)).
-				AddOrder(new Order("Code", true)).
-				SetMaxResults(1).
-				UniqueResult<Classifier>();
+			CheckInitialization();
+
+			var clearCode = DebtUtil.RemoveMaskSymbols(code);
+			foreach (var c in classifiers.Values) {
+				if (c.Code.StartsWith(clearCode)) return c;
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -181,14 +162,16 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="clsf">Новый классификатор.</param>
 		public static void SaveClassifier(Classifier clsf) {
-			using (var tx = Session.BeginTransaction()) {
+			CheckInitialization();
+			using (var tx = session.BeginTransaction()) {
 				if (clsf.Id == default(long)) {
-					Session.Save(clsf);
+					session.Save(clsf);
 				}
 				else {
-					Session.Save(clsf, clsf.Id);
+					session.Save(clsf, clsf.Id);
 				}
 				tx.Commit();
+				classifiers[clsf.Id] = clsf;
 			}
 		}
 
@@ -197,11 +180,11 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <returns>Настройки</returns>
 		public static DebtSettings GetSettings() {
-			using (var tx = Session.BeginTransaction()) {
-				var settings = Session.Get<DebtSettings>(1);
+			using (var tx = session.BeginTransaction()) {
+				var settings = session.Get<DebtSettings>(1);
 				if (settings == null) {
 					settings = new DebtSettings();
-					Session.Save(settings);
+					session.Save(settings);
 				}
 				tx.Commit();
 				return settings;
@@ -215,28 +198,9 @@ namespace CI.Debt.DAO {
 		public static void SaveSettings(DebtSettings settings) {
 			if (settings == null) throw new ArgumentNullException("settings");
 
-			using (var tx = Session.BeginTransaction()) {
-				Session.Update(settings);
+			using (var tx = session.BeginTransaction()) {
+				session.Update(settings);
 				tx.Commit();
-			}
-		}
-
-		/// <summary>
-		/// Создание классификатора по умолчанию.
-		/// </summary>
-		/// <returns>Классификатор по умолчанию</returns>
-		private static Classifier GetOrCreateEmptyClassifier() {
-			using (var tx = Session.BeginTransaction()) {
-				var clsf = Session.Get<Classifier>((long)1);
-				if (clsf == null) {
-					clsf = new Classifier() {
-						Code = new string('0', Classifier.CodeLenght),
-						GrpName12 = "<Пустой классификатор>"
-					};
-					Session.Save(clsf, (long)1);
-				}
-				tx.Commit();
-				return clsf;
 			}
 		}
 
@@ -248,7 +212,7 @@ namespace CI.Debt.DAO {
 		/// <param name="year">Год</param>
 		/// <returns>Список строк задолженностей</returns>
 		public static IList<DebtRow> GetDebtRows(DebtType type, int month, int year) {
-			return Session.CreateCriteria(typeof(DebtRow)).
+			return session.CreateCriteria(typeof(DebtRow)).
 				Add(Expression.Eq("DebtType", type)).
 				Add(Expression.Eq("Month", month)).
 				Add(Expression.Eq("Year", year)).
@@ -264,7 +228,7 @@ namespace CI.Debt.DAO {
 		/// <param name="budget">Бюджет</param>
 		/// <returns>Список строк задолженностей</returns>
 		public static IList<DebtRow> GetDebtRows(DebtType type, int month, int year, string budgetName) {
-			return Session.CreateQuery("from DebtRow r where DebtType = ? and Month = ? and Year = ? and r.Subject.BudgetName = ?").
+			return session.CreateQuery("from DebtRow r where DebtType = ? and Month = ? and Year = ? and r.Subject.BudgetName = ?").
 				SetInt32(0, (Int32)type).
 				SetInt32(1, month).
 				SetInt32(2, year).
@@ -277,8 +241,8 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="row">Строка задолженности</param>
 		public static void RemoveDebtRow(DebtRow row) {
-			using (var tx = Session.BeginTransaction()) {
-				Session.Delete(row);
+			using (var tx = session.BeginTransaction()) {
+				session.Delete(row);
 				tx.Commit();
 			}
 		}
@@ -288,8 +252,8 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="row">Строка задолженности</param>
 		public static void SaveOrUpdateDebtRow(DebtRow row) {
-			using (var tx = Session.BeginTransaction()) {
-				Session.SaveOrUpdate(row);
+			using (var tx = session.BeginTransaction()) {
+				session.SaveOrUpdate(row);
 				tx.Commit();
 			}
 		}
@@ -308,21 +272,51 @@ namespace CI.Debt.DAO {
 			DebtType toDebtType, int toMonth, int toYear) {
 
 			var fromRows = GetDebtRows(fromDebtType, fromMonth, fromYear);
-			using (var tx = Session.BeginTransaction()) {
+			using (var tx = session.BeginTransaction()) {
 				foreach (var fromRow in fromRows) {
 					var row = (DebtRow)fromRow.Clone();
 					row.DebtType = toDebtType;
 					row.Month = toMonth;
 					row.Year = toYear;
 
-					Session.Save(row);
+					session.Save(row);
 				}
 				tx.Commit();
 			}
 		}
 
+		private static void PatchDatabase() {
+			try {
+				using (var alterCommand = session.Connection.CreateCommand()) {
+					alterCommand.CommandText = "alter table DebtSettings add column FilterBudget TEXT";
+					alterCommand.ExecuteNonQuery();
+				}
+			}
+			catch { }
+		}
+
+		private static void CheckInitialization() {
+			if (session == null) throw new InvalidOperationException("Объект не инициалицирован. Необходим вызов метода Initialize()");
+		}
+
+		private static void LoadCache() {
+			subjects = new List<Subject>(session.CreateCriteria(typeof(Subject)).List<Subject>());
+			subjects.Sort((x, y) => string.Compare(x.Name, y.Name));
+
+			budgets = new List<string>();
+			foreach (var s in subjects) {
+				if (!budgets.Contains(s.BudgetName)) budgets.Add(s.BudgetName);
+			}
+			budgets.Sort();
+
+			classifiers = new Dictionary<long, Classifier>(3000);
+			foreach (var c in session.CreateCriteria(typeof(Classifier)).List<Classifier>()) {
+				classifiers[c.Id] = c;
+			}
+		}
+
 		private static T GetObjectById<T>(long id) {
-			return Session.Get<T>(id);
+			return session.Get<T>(id);
 		}
 	}
 }

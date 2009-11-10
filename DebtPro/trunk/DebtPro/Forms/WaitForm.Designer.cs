@@ -43,8 +43,9 @@
 			this.ProgressLabel.AutoSize = true;
 			this.ProgressLabel.Location = new System.Drawing.Point(81, 26);
 			this.ProgressLabel.Name = "ProgressLabel";
-			this.ProgressLabel.Size = new System.Drawing.Size(0, 13);
+			this.ProgressLabel.Size = new System.Drawing.Size(268, 13);
 			this.ProgressLabel.TabIndex = 0;
+			this.ProgressLabel.Text = "Инициализация данных и загрузка справочников...";
 			// 
 			// WaitForm
 			// 
@@ -58,7 +59,6 @@
 			this.Name = "WaitForm";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Загрузка справочников";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WaitForm_FormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);

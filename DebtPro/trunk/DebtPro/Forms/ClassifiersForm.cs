@@ -192,8 +192,10 @@ namespace CI.Debt.Forms {
 			else {
 				if (selectedClassifier != null && cacheNodes.ContainsKey(selectedClassifier.Id)) {
 					TreeNode node = (TreeNode)cacheNodes[selectedClassifier.Id];
+					treeView.BeginUpdate();
 					node.EnsureVisible();
 					treeView.SelectedNode = node;
+					treeView.EndUpdate();
 				}
 			}
 		}

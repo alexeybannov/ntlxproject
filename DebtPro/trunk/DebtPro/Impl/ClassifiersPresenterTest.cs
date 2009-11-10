@@ -15,7 +15,7 @@ namespace CI.Debt.Impl {
 		#region IClassifiersPresenter Members
 
 		public void ShowClassifiers() {
-			SelectedClassifier = DebtDAO.EmptyClassifier;
+			SelectedClassifier = Classifier.Empty;
 			OnClassifierSelected(this, EventArgs.Empty);
 		}
 

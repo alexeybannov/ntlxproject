@@ -11,67 +11,72 @@ using CI.Debt.Xml;
 
 namespace CI.Debt.Forms {
 
-	partial class MainForm : Form, IDebtRowView {
-
-		#region IDebtRowView interface
-
-		public DebtType DebtType {
-			get { return debtDocProperties.DebtType; }
-			set { debtDocProperties.DebtType = value; }
-		}
-
-		public int Month {
-			get { return debtDocProperties.Month; }
-			set { debtDocProperties.Month = value; }
-		}
-
-		public int Year {
-			get { return debtDocProperties.Year; }
-			set { debtDocProperties.Year = value; }
-		}
-
-		public void ShowDebtRows(IList<DebtRow> rows) {
-			this.rows = new List<DebtRow>(rows);
-			rowsDataGrid.Rows.Clear();
-			rowsDataGrid.RowCount = this.rows.Count + 1;
-		}
-
-		private void debtDocProperties_DebtPropertiesChanged(object sender, EventArgs e) {
-			if (DebtRowViewPropertiesChanged != null) {
-				DebtRowViewPropertiesChanged(this, e);
-			}
-		}
-
-		public event EventHandler DebtRowViewPropertiesChanged;
-
-		#endregion
+	partial class MainForm : Form {
 
 		private ISubjectsPresenter subjectsPresenter;
 
 		private IClassifiersPresenter classifiersPresenter;
 
-		private IDebtRowPresenter debtRowPresenter;
-
 		private WaitForm waitForm;
+
+		private bool initialized = false;
+
+		private List<Subject> subjects;
+
+		private bool subjectsFiltered = false;
 
 		public MainForm() {
 			InitializeComponent();
 
 			subjectsPresenter = new SubjectsPresenter(new SubjectsForm());
 			classifiersPresenter = new ClassifiersPresenter(new ClassifiersForm(ClassifiersFormMode.Browse));
-			debtRowPresenter = new DebtRowPresenter(this);
 			waitForm = new WaitForm();
+		}
 
-			var subjects = new List<Subject>(DebtDAO.GetSubjects());
-			subjects.Sort((x, y) => { return string.Compare(x.Name, y.Name); });
+		private void MainForm_Shown(object sender, EventArgs e) {
+			initWorker.RunWorkerAsync();
+			waitForm.ShowDialog();
+		}
+
+		private void initBooksWorker_DoWork(object sender, DoWorkEventArgs e) {
+			try {
+				DebtDAO.Initialize();
+			}
+			catch { }
+		}
+
+		private void initBooksWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+			waitForm.CanClose = true;
+			waitForm.Close();
+			waitForm.Dispose();
+			waitForm = null;
+
+			subjects = DebtDAO.GetSubjects();
 			var budget = DebtDAO.GetSettings().FilterBudget;
 			if (!string.IsNullOrEmpty(budget)) {
 				subjects = subjects.FindAll(s => { return string.Compare(budget, s.BudgetName, true) == 0; });
+				subjectsFiltered = true;
 			}
 			SubjectColumn.DataSource = subjects;
 			SubjectColumn.DisplayMember = "FullName";
 			SubjectColumn.ValueMember = "Self";
+
+			initialized = true;
+			ShowDebtRows();
 		}
+
+		private void ShowDebtRows() {
+			rows = new List<DebtRow>(
+				DebtDAO.GetDebtRows(debtDocProperties.DebtType, debtDocProperties.Month, debtDocProperties.Year)
+			);
+			rowsDataGrid.Rows.Clear();
+			rowsDataGrid.RowCount = this.rows.Count + 1;
+		}
+
+		private void debtDocProperties_DebtPropertiesChanged(object sender, EventArgs e) {
+			ShowDebtRows();
+		}
+
 
 		private void subjectsToolStripMenuItem_Click(object sender, EventArgs e) {
 			subjectsPresenter.ShowSubjects();
@@ -82,17 +87,11 @@ namespace CI.Debt.Forms {
 		}
 
 		private void report1ToolStripMenuItem_Click(object sender, EventArgs e) {
-			(new Report1()).ShowReport(DebtType, Month, Year);
+			(new Report1()).ShowReport(debtDocProperties.DebtType, debtDocProperties.Month, debtDocProperties.Year);
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
 			Close();
-		}
-
-		private void MainForm_Shown(object sender, EventArgs e) {
-			debtRowPresenter.ShowDebtRows();
-			initBooksWorker.RunWorkerAsync();
-			waitForm.ShowDialog();
 		}
 
 		#region Virtual mode of DataGridView implementing
@@ -109,16 +108,16 @@ namespace CI.Debt.Forms {
 			if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
 			var row = e.RowIndex < rows.Count ? rows[e.RowIndex] : newRow;
-			if (row != null) {
-				if (rowsDataGrid.Columns[e.ColumnIndex] == AmountColumn) e.Value = row.Amount;
-				if (rowsDataGrid.Columns[e.ColumnIndex] == Amount2Column) e.Value = row.Amount2;
-				if (rowsDataGrid.Columns[e.ColumnIndex] == SubjectColumn) {
-					e.Value = row.Subject;
-					if (row.Subject != null && !((IList<Subject>)SubjectColumn.DataSource).Contains(row.Subject)) {
-						((IList<Subject>)SubjectColumn.DataSource).Add(row.Subject);
-					}
+			if (row == null) return;
+
+			if (e.ColumnIndex == 0) e.Value = row.Classifier;
+			if (e.ColumnIndex == 1) e.Value = row.Amount;
+			if (e.ColumnIndex == 2) e.Value = row.Amount2;
+			if (e.ColumnIndex == 3) {
+				e.Value = row.Subject;
+				if (subjectsFiltered && row.Subject != null && !subjects.Contains(row.Subject)) {
+					subjects.Add(row.Subject);
 				}
-				if (rowsDataGrid.Columns[e.ColumnIndex] == ClassifierColumn) e.Value = row.Classifier;
 			}
 		}
 
@@ -133,10 +132,10 @@ namespace CI.Debt.Forms {
 				row = newRow;
 				rows.Add(row);
 			}
-			if (rowsDataGrid.Columns[e.ColumnIndex] == AmountColumn) row.Amount = ParseStringToAmount(e.Value as string);
-			if (rowsDataGrid.Columns[e.ColumnIndex] == Amount2Column) row.Amount2 = ParseStringToAmount(e.Value as string);
-			if (rowsDataGrid.Columns[e.ColumnIndex] == SubjectColumn) row.Subject = e.Value as Subject;
-			if (rowsDataGrid.Columns[e.ColumnIndex] == ClassifierColumn) row.Classifier = e.Value as Classifier;
+			if (e.ColumnIndex == 0) row.Classifier = e.Value as Classifier;
+			if (e.ColumnIndex == 1) row.Amount = ParseStringToAmount(e.Value as string);
+			if (e.ColumnIndex == 2) row.Amount2 = ParseStringToAmount(e.Value as string);
+			if (e.ColumnIndex == 3) row.Subject = e.Value as Subject;
 			DebtDAO.SaveOrUpdateDebtRow(row);
 		}
 
@@ -148,24 +147,30 @@ namespace CI.Debt.Forms {
 		}
 
 		private DebtRow CreateDebtRow() {
+			if (!initialized) return null;
+
 			var defaultSubject = DebtDAO.GetSettings().DefaultSubject;
 			if (defaultSubject == null) {
 				for (int i = rows.Count - 1; 0 <= i; i--) {
-					var row = rows[i];
-					if (row.Subject != null) defaultSubject = row.Subject;
+					if (rows[i].Subject != null) {
+						defaultSubject = rows[i].Subject;
+						break;
+					}
 				}
 			}
 
-			var defaultClassifier = DebtDAO.EmptyClassifier;
+			var defaultClassifier = Classifier.Empty;
 			for (int i = rows.Count - 1; 0 <= i; i--) {
-				var row = rows[i];
-				if (row.Classifier != null) defaultClassifier = row.Classifier;
+				if (rows[i].Classifier != null) {
+					defaultClassifier = rows[i].Classifier;
+					break;
+				}
 			}
 
 			return new DebtRow() {
-				DebtType = this.DebtType,
-				Month = this.Month,
-				Year = this.Year,
+				DebtType = debtDocProperties.DebtType,
+				Month = debtDocProperties.Month,
+				Year = debtDocProperties.Year,
 				Subject = defaultSubject,
 				Classifier = defaultClassifier,
 			};
@@ -186,32 +191,15 @@ namespace CI.Debt.Forms {
 			(new AboutBox()).ShowDialog();
 		}
 
-		private void initBooksWorker_DoWork(object sender, DoWorkEventArgs e) {
-			try {
-				initBooksWorker.ReportProgress(0, "Загрузка справочника кодов бюджетной классификации...");
-				DebtDAO.GetClassifiers();
-				initBooksWorker.ReportProgress(1, "Загрузка справочника субъектов бюджетного процесса...");
-				DebtDAO.GetSubjects();
-			}
-			catch { }
-		}
-
-		private void initBooksWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-			waitForm.CanClose = true;
-			waitForm.Close();
-		}
-
-		private void initBooksWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-			string text = e.UserState as string;
-			if (text != null) waitForm.ProgressLabel.Text = text;
-		}
-
 		private void buttonExport_Click(object sender, EventArgs e) {
 			if (exportFolderBrowser.ShowDialog() != DialogResult.OK) return;
 
 			try {
-				string fileName = Path.Combine(exportFolderBrowser.SelectedPath, string.Format("{0}_{1}_{2}.xml", DebtType.ToString(), DebtUtil.GetMonthName(Month), Year));
-				XmlDebtRowsSerializer.Serialize(DebtDAO.GetDebtRows(DebtType, Month, Year), fileName);
+				string fileName = Path.Combine(
+					exportFolderBrowser.SelectedPath,
+					string.Format("{0}_{1}_{2}.xml", debtDocProperties.DebtType.ToString(), DebtUtil.GetMonthName(debtDocProperties.Month), debtDocProperties.Year)
+				);
+				XmlDebtRowsSerializer.Serialize(DebtDAO.GetDebtRows(debtDocProperties.DebtType, debtDocProperties.Month, debtDocProperties.Year), fileName);
 				MessageBox.Show(string.Format("Экспорт успешно завершен.\r\nФайл экспорта: {0}", fileName), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			catch (Exception ex) {

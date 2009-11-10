@@ -23,7 +23,7 @@ namespace CI.Debt.DAO {
 		/// Создает экземпляр типа DbImporter.
 		/// </summary>
 		public DbImporter() {
-			this.session = DebtDAO.Session;
+			this.session = DebtDAO.GetSession();
 			this.accessConnectionString = CgfManager.ConnectionStrings["txtFiles"];
 		}
 

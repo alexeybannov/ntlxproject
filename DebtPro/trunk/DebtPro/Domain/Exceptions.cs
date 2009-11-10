@@ -16,19 +16,4 @@ namespace CI.Debt.Domain {
 		/// <inheritdoc/>
 		public ClassifierFormatException(string message, Exception innerException) : base(message, innerException) { }
 	}
-
-	/// <summary>
-	/// Тип определяет исключение возникающее при поиске несуществующего классификатора.
-	/// </summary>
-	class ClassifierNotFoundException : Exception {
-
-		/// <inheritdoc/>
-		public ClassifierNotFoundException() : base() { }
-
-		/// <inheritdoc/>
-		public ClassifierNotFoundException(string message) : base(message) { }
-
-		/// <inheritdoc/>
-		public ClassifierNotFoundException(string message, Exception innerException) : base(message, innerException) { }
-	}
 }

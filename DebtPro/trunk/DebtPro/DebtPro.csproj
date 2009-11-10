@@ -70,6 +70,9 @@
   <ItemGroup>
     <Compile Include="Domain\DebtSettings.cs" />
     <Compile Include="Domain\Exceptions.cs" />
+    <Compile Include="Forms\DataGridViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\DebtCopyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,9 +115,6 @@
     </Compile>
     <Compile Include="Forms\SubjectsBindingList.cs" />
     <Compile Include="Impl\ClassifiersPresenter.cs" />
-    <Compile Include="Impl\DebtRowPresenter.cs" />
-    <Compile Include="Domain\IDebtRowPresenter.cs" />
-    <Compile Include="Domain\IDebtRowView.cs" />
     <Compile Include="Impl\SubjectsPresenter.cs" />
     <Compile Include="Domain\ISubjectsPresenter.cs" />
     <Compile Include="Domain\ISubjectsView.cs" />

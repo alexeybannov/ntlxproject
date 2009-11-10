@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 
 namespace CI.Debt.Forms {
+
 	public partial class WaitForm : Form {
 
 		public bool CanClose {

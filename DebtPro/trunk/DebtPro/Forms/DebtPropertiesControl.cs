@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using CI.Debt.Domain;
+using System.ComponentModel;
 
 namespace CI.Debt.Forms {
 
@@ -19,6 +20,7 @@ namespace CI.Debt.Forms {
 		/// <summary>
 		/// Тип строки задолженности.
 		/// </summary>
+		[Browsable(false)]
 		public DebtType DebtType {
 			get { return debtType; }
 			set {
@@ -32,6 +34,7 @@ namespace CI.Debt.Forms {
 		/// <summary>
 		/// Месяц строки задолженности.
 		/// </summary>
+		[Browsable(false)]
 		public int Month {
 			get { return month; }
 			set {
@@ -45,6 +48,7 @@ namespace CI.Debt.Forms {
 		/// <summary>
 		/// Год строки задолженности.
 		/// </summary>
+		[Browsable(false)]
 		public int Year {
 			get { return year; }
 			set {
@@ -73,7 +77,7 @@ namespace CI.Debt.Forms {
 		/// <summary>
 		/// Событие возникает при изменении свойства строки задолженности.
 		/// </summary>
-		public event DebtPropertiesChangedEventHandler DebtPropertiesChanged;
+		public event EventHandler DebtPropertiesChanged;
 
 		public void SetDebtProperties(DebtType type, int month, int year) {
 			debtType = type;
@@ -115,9 +119,4 @@ namespace CI.Debt.Forms {
 			}
 		}
 	}
-
-	/// <summary>
-	/// Handler события изменения свойства строки задолженности.
-	/// </summary>
-	delegate void DebtPropertiesChangedEventHandler(object sender, EventArgs e);
 }
