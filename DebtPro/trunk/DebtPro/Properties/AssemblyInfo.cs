@@ -12,11 +12,9 @@ using System.Resources;
 	"IDE Visual Studio 2008 Express Edition http://www.microsoft.com \r\n" +
 	"ORM NHibernate http://www.nhibernate.org \r\n" +
 	"Database SQLite http://www.sqlite.org")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Консул-Инком")]
 [assembly: AssemblyProduct("DebtPro")]
 [assembly: AssemblyCopyright("© Консул-Инком 2007-2009")]
-[assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
