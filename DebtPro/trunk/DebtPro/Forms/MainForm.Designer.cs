@@ -50,6 +50,7 @@ namespace CI.Debt.Forms
 			this.exportFolderBrowser = new System.Windows.Forms.FolderBrowserDialog();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.buttonExport = new System.Windows.Forms.Button();
+			this.debtDocProperties = new CI.Debt.Forms.DebtPropertiesControl();
 			this.initWorker = new System.ComponentModel.BackgroundWorker();
 			this.openFileDialogImport = new System.Windows.Forms.OpenFileDialog();
 			this.rowsDataGrid = new CI.Debt.Forms.DataGridViewEx();
@@ -57,7 +58,7 @@ namespace CI.Debt.Forms
 			this.AmountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Amount2Column = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.SubjectColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-			this.debtDocProperties = new CI.Debt.Forms.DebtPropertiesControl();
+			this.changeHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenuStrip.SuspendLayout();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.rowsDataGrid)).BeginInit();
@@ -171,7 +172,8 @@ namespace CI.Debt.Forms
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
+            this.aboutToolStripMenuItem,
+            this.changeHistoryToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
 			this.helpToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
 			this.helpToolStripMenuItem.Text = "&Помощь";
@@ -179,7 +181,7 @@ namespace CI.Debt.Forms
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.aboutToolStripMenuItem.Text = "&О программе";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
@@ -208,6 +210,17 @@ namespace CI.Debt.Forms
 			this.buttonExport.Text = "&Экспорт";
 			this.buttonExport.UseVisualStyleBackColor = true;
 			this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
+			// 
+			// debtDocProperties
+			// 
+			this.debtDocProperties.DebtType = CI.Debt.Domain.DebtType.Кредиторская;
+			this.debtDocProperties.Location = new System.Drawing.Point(3, 3);
+			this.debtDocProperties.Month = 1;
+			this.debtDocProperties.Name = "debtDocProperties";
+			this.debtDocProperties.Size = new System.Drawing.Size(480, 27);
+			this.debtDocProperties.TabIndex = 1;
+			this.debtDocProperties.Year = 2009;
+			this.debtDocProperties.DebtPropertiesChanged += new System.EventHandler(this.debtDocProperties_DebtPropertiesChanged);
 			// 
 			// initWorker
 			// 
@@ -280,16 +293,12 @@ namespace CI.Debt.Forms
 			this.SubjectColumn.Name = "SubjectColumn";
 			this.SubjectColumn.Width = 600;
 			// 
-			// debtDocProperties
+			// changeHistoryToolStripMenuItem
 			// 
-			this.debtDocProperties.DebtType = CI.Debt.Domain.DebtType.Кредиторская;
-			this.debtDocProperties.Location = new System.Drawing.Point(3, 3);
-			this.debtDocProperties.Month = 1;
-			this.debtDocProperties.Name = "debtDocProperties";
-			this.debtDocProperties.Size = new System.Drawing.Size(480, 27);
-			this.debtDocProperties.TabIndex = 1;
-			this.debtDocProperties.Year = 2009;
-			this.debtDocProperties.DebtPropertiesChanged += new System.EventHandler(this.debtDocProperties_DebtPropertiesChanged);
+			this.changeHistoryToolStripMenuItem.Name = "changeHistoryToolStripMenuItem";
+			this.changeHistoryToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.changeHistoryToolStripMenuItem.Text = "&История изменений";
+			this.changeHistoryToolStripMenuItem.Click += new System.EventHandler(this.changeHistoryToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -344,6 +353,7 @@ namespace CI.Debt.Forms
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemImport;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemExport;
 		private System.Windows.Forms.OpenFileDialog openFileDialogImport;
+		private System.Windows.Forms.ToolStripMenuItem changeHistoryToolStripMenuItem;
     }
 }
 

@@ -8,6 +8,8 @@ using CI.Debt.Domain;
 using CI.Debt.Utils;
 using CI.Debt.Reports;
 using CI.Debt.Xml;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace CI.Debt.Forms {
 
@@ -263,6 +265,27 @@ namespace CI.Debt.Forms {
 			catch (Exception ex) {
 				MessageBox.Show(string.Format("Ошибка при импорте задолженности, импорт не выполнен.\r\nТекст ошибки: {0}", ex), Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		private void changeHistoryToolStripMenuItem_Click(object sender, EventArgs e) {
+			try {
+				byte[] historyBuffer = null;
+				using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CI.Debt.ChangeHistory.txt")) {
+					var memStream = new MemoryStream();
+					var buffer = new byte[1024];
+					int readBytes = 0;
+					while ((readBytes = stream.Read(buffer, 0, buffer.Length)) != 0) {
+						memStream.Write(buffer, 0, readBytes);
+					}
+					historyBuffer = memStream.GetBuffer();
+				}
+				var historyFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "History.txt");
+				if (!File.Exists(historyFile) || new FileInfo(historyFile).Length != historyBuffer.Length) {
+					File.WriteAllBytes(historyFile, historyBuffer);
+				}
+				Process.Start("notepad.exe", historyFile);
+			}
+			catch { }
 		}
 	}
 }
