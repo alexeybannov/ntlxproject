@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using CI.Debt.Domain;
-using CI.Debt.Utils;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Expression;
