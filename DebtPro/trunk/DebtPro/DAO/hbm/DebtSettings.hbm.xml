@@ -8,7 +8,7 @@
     <id name="Id">
       <generator class="assigned" />
     </id>
-    <many-to-one name="DefaultSubject" not-found="ignore"/>
+    <many-to-one name="DefaultSubject" not-found="ignore" lazy="proxy" fetch="select" outer-join="false"/>
     <property name="IsAutoPasteClassifier"/>
     <property name="FilterBudget"/>
   </class>
