@@ -5,17 +5,13 @@ using System.IO;
 using System.Windows.Forms;
 using CI.Debt.DAO;
 using CI.Debt.Domain;
-using CI.Debt.Impl;
+using CI.Debt.Utils;
 using CI.Debt.Reports;
 using CI.Debt.Xml;
 
 namespace CI.Debt.Forms {
 
 	partial class MainForm : Form {
-
-		private ISubjectsPresenter subjectsPresenter;
-
-		private IClassifiersPresenter classifiersPresenter;
 
 		private WaitForm waitForm;
 
@@ -27,9 +23,6 @@ namespace CI.Debt.Forms {
 
 		public MainForm() {
 			InitializeComponent();
-
-			subjectsPresenter = new SubjectsPresenter(new SubjectsForm());
-			classifiersPresenter = new ClassifiersPresenter(new ClassifiersForm(ClassifiersFormMode.Browse));
 			waitForm = new WaitForm();
 		}
 
@@ -79,11 +72,11 @@ namespace CI.Debt.Forms {
 
 
 		private void subjectsToolStripMenuItem_Click(object sender, EventArgs e) {
-			subjectsPresenter.ShowSubjects();
+			new SubjectsForm().ShowDialog(this);
 		}
 
 		private void classifiersToolStripMenuItem_Click(object sender, EventArgs e) {
-			classifiersPresenter.ShowClassifiers();
+			new ClassifiersForm().ShowDialog(this);
 		}
 
 		private void report1ToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -233,54 +226,42 @@ namespace CI.Debt.Forms {
 			if (openFileDialogImport.ShowDialog() != DialogResult.OK) return;
 
 			try {
-				ImportClassifiers(openFileDialogImport.FileName);
-
 				var rows = new List<DebtRow>(XmlDebtRowsSerializer.Deserialize(openFileDialogImport.FileName));
-				if (0 < rows.Count) {
-					var existsRows = new List<DebtRow>(DebtDAO.GetDebtRows(rows[0].DebtType, rows[0].Month, rows[0].Year));
-					if (0 < existsRows.Count) {
-						var answer = MessageBox.Show("Уже существуют строки задолженности такого же типа, месяца и года, как и в файле импорта.\r\nПродолжить импорт?\r\nДа - продолжить импорт, Отмена - прервать импорт.", Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-						if (answer == DialogResult.Cancel) return;
-					}
-					foreach (var row in rows) {
-						if (existsRows.Exists(r => { return r.Classifier.Equals(row.Classifier) && r.Subject.Equals(row.Subject); })) {
-							var answer = MessageBox.Show("Уже существуют строки задолженности с такими же классификатором и субъектом, как и в файле импорта.\r\nПродолжить импорт и перезаписать существующие строки?\r\nДа - продолжить импорт, Отмена - прервать импорт.", Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-							if (answer == DialogResult.Cancel) return;
-							break;
-						}
-					}
-					foreach (var row in rows) {
-						var existsRow = existsRows.Find(r => { return r.Classifier.Equals(row.Classifier) && r.Subject.Equals(row.Subject); });
-						if (existsRow != null) {
-							existsRow.Amount = row.Amount;
-							existsRow.Amount2 = row.Amount2;
-							DebtDAO.SaveOrUpdateDebtRow(existsRow);
-						}
-						else {
-							DebtDAO.SaveOrUpdateDebtRow(row);
-						}
-					}
+				if (rows.Count == 0) return;
 
-					debtDocProperties.SetDebtProperties(rows[0].DebtType, rows[0].Month, rows[0].Year);
+				var existsRows = new List<DebtRow>(DebtDAO.GetDebtRows(rows[0].DebtType, rows[0].Month, rows[0].Year));
+				if (0 < existsRows.Count) {
+					var answer = MessageBox.Show("Уже существуют строки задолженности такого же типа, месяца и года, как и в файле импорта.\r\nПродолжить импорт?\r\nДа - продолжить импорт, Отмена - прервать импорт.", Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+					if (answer == DialogResult.Cancel) return;
 				}
+				foreach (var row in rows) {
+					if (existsRows.Exists(r => { return r.Classifier.Equals(row.Classifier) && r.Subject.Equals(row.Subject); })) {
+						var answer = MessageBox.Show("Уже существуют строки задолженности с такими же классификатором и субъектом, как и в файле импорта.\r\nПродолжить импорт и перезаписать существующие строки?\r\nДа - продолжить импорт, Отмена - прервать импорт.", Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+						if (answer == DialogResult.Cancel) return;
+						break;
+					}
+				}
+
+				var rowsToSave = new List<DebtRow>();
+				foreach (var row in rows) {
+					var existsRow = existsRows.Find(r => { return r.Classifier.Equals(row.Classifier) && r.Subject.Equals(row.Subject); });
+					if (existsRow != null) {
+						existsRow.Amount = row.Amount;
+						existsRow.Amount2 = row.Amount2;
+						rowsToSave.Add(existsRow);
+					}
+					else {
+						rowsToSave.Add(row);
+					}
+				}
+				DebtDAO.SaveOrUpdateDebtRows(rowsToSave);
+
+				debtDocProperties.SetDebtProperties(rows[0].DebtType, rows[0].Month, rows[0].Year);
 
 				MessageBox.Show(string.Format("Импорт успешно завершен.\r\nФайл импорта: {0}", openFileDialogImport.FileName), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 			catch (Exception ex) {
 				MessageBox.Show(string.Format("Ошибка при импорте задолженности, импорт не выполнен.\r\nТекст ошибки: {0}", ex), Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-
-		private void ImportClassifiers(string fileName) {
-			var xmlClassifiers = XmlDebtRowsSerializer.DeserializeClassifiers(openFileDialogImport.FileName);
-			foreach (var xmlClsf in xmlClassifiers) {
-				var clsf = DebtDAO.GetClassifier(xmlClsf.ClassifierId);
-				if (clsf == null) {
-					clsf = new Classifier(xmlClsf.ClassifierId) {
-						Code = xmlClsf.ClassifierCode
-					};
-					DebtDAO.SaveClassifier(clsf);
-				}
 			}
 		}
 	}

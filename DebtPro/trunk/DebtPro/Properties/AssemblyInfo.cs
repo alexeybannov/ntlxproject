@@ -1,22 +1,22 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Resources;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Кредиторско-дебиторская задолженность")]
 [assembly: AssemblyDescription("Ввод кредиторской и дебиторской задолженности учреждений для Департамента финансов.\r\n\r\n" +
-	"Программа разработана с использованием только открытого и бесплатного кода и програмного обеспечения:\r\n" +
+	"Программа разработана с использованием исключительно открытого кода и програмного обеспечения:\r\n" +
 	"IDE Visual Studio 2008 Express Edition http://www.microsoft.com \r\n" +
 	"ORM NHibernate http://www.nhibernate.org \r\n" +
 	"Database SQLite http://www.sqlite.org")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Консул-Инком")]
 [assembly: AssemblyProduct("DebtPro")]
-[assembly: AssemblyCopyright("© Консул-Инком 2007-2008")]
+[assembly: AssemblyCopyright("© Консул-Инком 2007-2009")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -34,4 +34,5 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 [assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.1.0")]
+[assembly: AssemblyFileVersion("2.0.2.0")]
+[assembly: NeutralResourcesLanguageAttribute("ru-RU")]

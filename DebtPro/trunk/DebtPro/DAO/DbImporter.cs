@@ -75,8 +75,6 @@ namespace CI.Debt.DAO {
 							while (reader.Read()) {
 								Classifier classifier = new Classifier() {
 									Code = reader.GetString(1),
-									Name = (!reader.IsDBNull(2) ? reader.GetString(2) : null),
-									FullName = (!reader.IsDBNull(3) ? reader.GetString(3) : null),
 									GrpName01 = (!reader.IsDBNull(4) ? reader.GetString(4) : null),
 									GrpName02 = (!reader.IsDBNull(5) ? reader.GetString(5) : null),
 									GrpName03 = (!reader.IsDBNull(6) ? reader.GetString(6) : null),

@@ -8,35 +8,18 @@
     <id name="Id">
       <generator class="increment" />
     </id>
-    <property name="ClsfType"/>
     <property name="Code" index="index_Classifier_Code"/>
-    <property name="Name"/>
-    <property name="FullName"/>
-    <property name="BudgetCode"/>
-    <property name="EconomicalItemCode"/>
-    <property name="GrpCode01"/>
     <property name="GrpName01"/>
-    <property name="GrpCode02"/>
     <property name="GrpName02"/>
-    <property name="GrpCode03"/>
     <property name="GrpName03"/>
-    <property name="GrpCode04"/>
     <property name="GrpName04"/>
-    <property name="GrpCode05"/>
     <property name="GrpName05"/>
-    <property name="GrpCode06"/>
     <property name="GrpName06"/>
-    <property name="GrpCode07"/>
     <property name="GrpName07"/>
-    <property name="GrpCode08"/>
     <property name="GrpName08"/>
-    <property name="GrpCode09"/>
     <property name="GrpName09"/>
-    <property name="GrpCode10"/>
     <property name="GrpName10"/>
-    <property name="GrpCode11"/>
     <property name="GrpName11"/>
-    <property name="GrpCode12"/>
     <property name="GrpName12"/>
   </class>
   

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using CI.Debt.DAO;
 using CI.Debt.Domain;
 
 namespace CI.Debt.Xml {

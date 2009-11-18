@@ -57,7 +57,7 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpName05 {
-			get { return row.Classifier.GrpName05; }
+			get { return row.Classifier.GrpName07; }
 		}
 
 		public virtual string GrpCode06 {
@@ -66,7 +66,7 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpName06 {
-			get { return row.Classifier.GrpName06; }
+			get { return row.Classifier.GrpName08; }
 		}
 
 		public virtual string GrpCode07 {
@@ -75,7 +75,7 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpName07 {
-			get { return row.Classifier.GrpName07; }
+			get { return row.Classifier.GrpName09; }
 		}
 
 		public virtual string GrpCode08 {
@@ -84,7 +84,7 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpName08 {
-			get { return row.Classifier.GrpName08; }
+			get { return row.Classifier.GrpName10; }
 		}
 
 		public virtual string GrpCode09 {
@@ -93,7 +93,7 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpName09 {
-			get { return row.Classifier.GrpName09; }
+			get { return row.Classifier.GrpName11; }
 		}
 
 		public virtual string GrpCode10 {
@@ -102,7 +102,17 @@ namespace CI.Debt.Reports {
 		}
 
 		public virtual string GrpName10 {
-			get { return row.Classifier.GrpName10; }
+			get { return row.Classifier.GrpName12; }
+		}
+
+		public bool HideGrp06 {
+			get;
+			private set;
+		}
+
+		public bool HideGrp09 {
+			get;
+			private set;
 		}
 
 		#endregion
@@ -154,6 +164,9 @@ namespace CI.Debt.Reports {
 				clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06,
 				clsf.GrpCode07, clsf.GrpCode08, clsf.GrpCode09, clsf.GrpCode10, clsf.GrpCode11);
 			GrpCode10 = clsf.MaskedCode;
+
+			HideGrp06 = clsf.GrpCode08 == "000";
+			HideGrp09 = clsf.GrpCode11 == "0";
 		}
 	}
 }

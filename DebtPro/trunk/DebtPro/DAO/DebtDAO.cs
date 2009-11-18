@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CI.Debt.Domain;
-using CI.Debt.Impl;
+using CI.Debt.Utils;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Expression;
@@ -37,7 +37,7 @@ namespace CI.Debt.DAO {
 			configuration.Configure();
 
 			factory = configuration.BuildSessionFactory();
-			session = factory.OpenSession();
+			session = factory.OpenSession(new DebtInterceptor());
 			session.FlushMode = FlushMode.Commit;
 
 			PatchDatabase();
@@ -133,8 +133,9 @@ namespace CI.Debt.DAO {
 		/// <returns>Классификатор</returns>
 		public static Classifier FindClassifier(string code) {
 			CheckInitialization();
+			if (string.IsNullOrEmpty(code)) return null;
 
-			var clearCode = DebtUtil.RemoveMaskSymbols(code);
+			var clearCode = Classifier.RemoveMaskSymbols(code);
 			foreach (var c in classifiers.Values) {
 				if (c.Code == clearCode) return c;
 			}
@@ -148,9 +149,10 @@ namespace CI.Debt.DAO {
 		/// <param name="code">Часть кода по маске или просто часть кода</param>
 		/// <returns>Классификатор</returns>
 		public static Classifier FindNearestClassifier(string code) {
-			CheckInitialization();
+			CheckInitialization();			
+			if (string.IsNullOrEmpty(code)) return null;
 
-			var clearCode = DebtUtil.RemoveMaskSymbols(code);
+			var clearCode = Classifier.RemoveMaskSymbols(code);
 			foreach (var c in classifiers.Values) {
 				if (c.Code.StartsWith(clearCode)) return c;
 			}
@@ -180,6 +182,7 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <returns>Настройки</returns>
 		public static DebtSettings GetSettings() {
+			CheckInitialization();
 			using (var tx = session.BeginTransaction()) {
 				var settings = session.Get<DebtSettings>(1);
 				if (settings == null) {
@@ -196,6 +199,7 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="settings"></param>
 		public static void SaveSettings(DebtSettings settings) {
+			CheckInitialization();
 			if (settings == null) throw new ArgumentNullException("settings");
 
 			using (var tx = session.BeginTransaction()) {
@@ -212,6 +216,7 @@ namespace CI.Debt.DAO {
 		/// <param name="year">Год</param>
 		/// <returns>Список строк задолженностей</returns>
 		public static IList<DebtRow> GetDebtRows(DebtType type, int month, int year) {
+			CheckInitialization();
 			return session.CreateCriteria(typeof(DebtRow)).
 				Add(Expression.Eq("DebtType", type)).
 				Add(Expression.Eq("Month", month)).
@@ -228,6 +233,7 @@ namespace CI.Debt.DAO {
 		/// <param name="budget">Бюджет</param>
 		/// <returns>Список строк задолженностей</returns>
 		public static IList<DebtRow> GetDebtRows(DebtType type, int month, int year, string budgetName) {
+			CheckInitialization();
 			return session.CreateQuery("from DebtRow r where DebtType = ? and Month = ? and Year = ? and r.Subject.BudgetName = ?").
 				SetInt32(0, (Int32)type).
 				SetInt32(1, month).
@@ -241,6 +247,7 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="row">Строка задолженности</param>
 		public static void RemoveDebtRow(DebtRow row) {
+			CheckInitialization();
 			using (var tx = session.BeginTransaction()) {
 				session.Delete(row);
 				tx.Commit();
@@ -252,9 +259,27 @@ namespace CI.Debt.DAO {
 		/// </summary>
 		/// <param name="row">Строка задолженности</param>
 		public static void SaveOrUpdateDebtRow(DebtRow row) {
+			CheckInitialization();
 			using (var tx = session.BeginTransaction()) {
 				session.SaveOrUpdate(row);
 				tx.Commit();
+			}
+		}
+
+		/// <summary>
+		/// Сохранить существующие или вставить новие строки задолженности.
+		/// </summary>
+		/// <param name="row">Строка задолженности</param>
+		public static void SaveOrUpdateDebtRows(IEnumerable<DebtRow> rows) {
+			CheckInitialization();
+			using (var tx = session.BeginTransaction()) {
+				foreach (var r in rows) {
+					session.SaveOrUpdate(r);
+				}
+				tx.Commit();
+				foreach (var r in rows) {
+					classifiers[r.Classifier.Id] = r.Classifier;
+				}
 			}
 		}
 
@@ -271,6 +296,7 @@ namespace CI.Debt.DAO {
 			DebtType fromDebtType, int fromMonth, int fromYear,
 			DebtType toDebtType, int toMonth, int toYear) {
 
+			CheckInitialization();
 			var fromRows = GetDebtRows(fromDebtType, fromMonth, fromYear);
 			using (var tx = session.BeginTransaction()) {
 				foreach (var fromRow in fromRows) {
@@ -312,6 +338,10 @@ namespace CI.Debt.DAO {
 			classifiers = new Dictionary<long, Classifier>(3000);
 			foreach (var c in session.CreateCriteria(typeof(Classifier)).List<Classifier>()) {
 				classifiers[c.Id] = c;
+			}
+			if (!classifiers.ContainsKey(Classifier.Empty.Id)) {
+				SaveClassifier(Classifier.Empty);
+				classifiers[Classifier.Empty.Id] = Classifier.Empty;
 			}
 		}
 

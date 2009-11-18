@@ -123,6 +123,14 @@
           <DataField>SubjectName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="HideGrp06">
+          <DataField>HideGrp06</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="HideGrp09">
+          <DataField>HideGrp09</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
       </Fields>
       <Query>
         <DataSourceName>Report1Row</DataSourceName>
@@ -584,6 +592,12 @@
                 <GroupExpression>=Fields!GrpCode04.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode04.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
             <Header>
               <TableRows>
                 <TableRow>
@@ -687,6 +701,12 @@
                 <GroupExpression>=Fields!GrpCode05.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode05.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
             <Header>
               <TableRows>
                 <TableRow>
@@ -789,11 +809,17 @@
                 <GroupExpression>=Fields!GrpCode06.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode06.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
             <Header>
               <TableRows>
                 <TableRow>
                   <Visibility>
-                    <Hidden>=Iif(Fields!GrpCode08.Value = "000", true, false)</Hidden>
+                    <Hidden>=Fields!HideGrp06.Value</Hidden>
                   </Visibility>
                   <TableCells>
                     <TableCell>
@@ -896,6 +922,12 @@
                 <GroupExpression>=Fields!GrpCode07.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode07.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
             <Header>
               <TableRows>
                 <TableRow>
@@ -999,6 +1031,12 @@
                 <GroupExpression>=Fields!GrpCode08.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode08.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
             <Header>
               <TableRows>
                 <TableRow>
@@ -1103,9 +1141,18 @@
                 <GroupExpression>=Fields!GrpCode09.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode09.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
             <Header>
               <TableRows>
                 <TableRow>
+                  <Visibility>
+                    <Hidden>=Fields!HideGrp09.Value</Hidden>
+                  </Visibility>
                   <TableCells>
                     <TableCell>
                       <ReportItems>
@@ -1200,123 +1247,137 @@
               </TableRows>
             </Header>
           </TableGroup>
+          <TableGroup>
+            <Grouping Name="table1_Group11">
+              <GroupExpressions>
+                <GroupExpression>=Fields!GrpCode10.Value</GroupExpression>
+              </GroupExpressions>
+            </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode10.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
+            <Header>
+              <TableRows>
+                <TableRow>
+                  <TableCells>
+                    <TableCell>
+                      <ReportItems>
+                        <Textbox Name="textbox56">
+                          <Style>
+                            <BorderColor>
+                              <Bottom>Black</Bottom>
+                            </BorderColor>
+                            <BorderStyle>
+                              <Bottom>Solid</Bottom>
+                            </BorderStyle>
+                            <BorderWidth>
+                              <Bottom>1pt</Bottom>
+                            </BorderWidth>
+                            <FontFamily>Tahoma</FontFamily>
+                            <FontSize>8pt</FontSize>
+                            <TextDecoration>Underline</TextDecoration>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                          <ZIndex>7</ZIndex>
+                          <CanGrow>true</CanGrow>
+                          <Value>=First(Fields!GrpName10.Value)</Value>
+                        </Textbox>
+                      </ReportItems>
+                    </TableCell>
+                    <TableCell>
+                      <ReportItems>
+                        <Textbox Name="textbox57">
+                          <Style>
+                            <BorderColor>
+                              <Bottom>Black</Bottom>
+                            </BorderColor>
+                            <BorderStyle>
+                              <Bottom>Solid</Bottom>
+                            </BorderStyle>
+                            <BorderWidth>
+                              <Bottom>1pt</Bottom>
+                            </BorderWidth>
+                            <FontFamily>Tahoma</FontFamily>
+                            <FontSize>9pt</FontSize>
+                            <TextAlign>Center</TextAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                          <ZIndex>6</ZIndex>
+                          <CanGrow>true</CanGrow>
+                          <Value>=Fields!GrpCode10.Value</Value>
+                        </Textbox>
+                      </ReportItems>
+                    </TableCell>
+                    <TableCell>
+                      <ReportItems>
+                        <Textbox Name="textbox58">
+                          <Style>
+                            <BorderColor>
+                              <Bottom>Black</Bottom>
+                            </BorderColor>
+                            <BorderStyle>
+                              <Bottom>Solid</Bottom>
+                            </BorderStyle>
+                            <BorderWidth>
+                              <Bottom>1pt</Bottom>
+                            </BorderWidth>
+                            <FontFamily>Tahoma</FontFamily>
+                            <FontSize>9pt</FontSize>
+                            <Format>### ### ### ### ##0.00</Format>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                          <ZIndex>5</ZIndex>
+                          <CanGrow>true</CanGrow>
+                          <Value>=SUM(Fields!Amount.Value)</Value>
+                        </Textbox>
+                      </ReportItems>
+                    </TableCell>
+                    <TableCell>
+                      <ReportItems>
+                        <Textbox Name="textbox59">
+                          <Style>
+                            <BorderColor>
+                              <Bottom>Black</Bottom>
+                            </BorderColor>
+                            <BorderStyle>
+                              <Bottom>Solid</Bottom>
+                            </BorderStyle>
+                            <BorderWidth>
+                              <Bottom>1pt</Bottom>
+                            </BorderWidth>
+                            <FontFamily>Tahoma</FontFamily>
+                            <FontSize>9pt</FontSize>
+                            <Format>### ### ### ### ##0.00</Format>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                          <ZIndex>4</ZIndex>
+                          <CanGrow>true</CanGrow>
+                          <Value>=SUM(Fields!Amount2.Value)</Value>
+                        </Textbox>
+                      </ReportItems>
+                    </TableCell>
+                  </TableCells>
+                  <Height>0.63492cm</Height>
+                </TableRow>
+              </TableRows>
+            </Header>
+          </TableGroup>
         </TableGroups>
-        <Details>
-          <TableRows>
-            <TableRow>
-              <TableCells>
-                <TableCell>
-                  <ReportItems>
-                    <Textbox Name="textbox48">
-                      <Style>
-                        <BorderColor>
-                          <Bottom>Black</Bottom>
-                        </BorderColor>
-                        <BorderStyle>
-                          <Bottom>Solid</Bottom>
-                        </BorderStyle>
-                        <BorderWidth>
-                          <Bottom>1pt</Bottom>
-                        </BorderWidth>
-                        <FontFamily>Tahoma</FontFamily>
-                        <FontSize>8pt</FontSize>
-                        <TextDecoration>Underline</TextDecoration>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                      <ZIndex>3</ZIndex>
-                      <CanGrow>true</CanGrow>
-                      <Value>=First(Fields!GrpName10.Value)</Value>
-                    </Textbox>
-                  </ReportItems>
-                </TableCell>
-                <TableCell>
-                  <ReportItems>
-                    <Textbox Name="textbox49">
-                      <Style>
-                        <BorderColor>
-                          <Bottom>Black</Bottom>
-                        </BorderColor>
-                        <BorderStyle>
-                          <Bottom>Solid</Bottom>
-                        </BorderStyle>
-                        <BorderWidth>
-                          <Bottom>1pt</Bottom>
-                        </BorderWidth>
-                        <FontFamily>Tahoma</FontFamily>
-                        <FontSize>9pt</FontSize>
-                        <TextAlign>Center</TextAlign>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                      <ZIndex>2</ZIndex>
-                      <CanGrow>true</CanGrow>
-                      <Value>=Fields!GrpCode10.Value</Value>
-                    </Textbox>
-                  </ReportItems>
-                </TableCell>
-                <TableCell>
-                  <ReportItems>
-                    <Textbox Name="textbox54">
-                      <Style>
-                        <BorderColor>
-                          <Bottom>Black</Bottom>
-                        </BorderColor>
-                        <BorderStyle>
-                          <Bottom>Solid</Bottom>
-                        </BorderStyle>
-                        <BorderWidth>
-                          <Bottom>1pt</Bottom>
-                        </BorderWidth>
-                        <FontFamily>Tahoma</FontFamily>
-                        <FontSize>9pt</FontSize>
-                        <Format>### ### ### ### ##0.00</Format>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                      <ZIndex>1</ZIndex>
-                      <CanGrow>true</CanGrow>
-                      <Value>=Fields!Amount.Value</Value>
-                    </Textbox>
-                  </ReportItems>
-                </TableCell>
-                <TableCell>
-                  <ReportItems>
-                    <Textbox Name="textbox55">
-                      <Style>
-                        <BorderColor>
-                          <Bottom>Black</Bottom>
-                        </BorderColor>
-                        <BorderStyle>
-                          <Bottom>Solid</Bottom>
-                        </BorderStyle>
-                        <BorderWidth>
-                          <Bottom>1pt</Bottom>
-                        </BorderWidth>
-                        <FontFamily>Tahoma</FontFamily>
-                        <FontSize>9pt</FontSize>
-                        <Format>### ### ### ### ##0.00</Format>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                      <CanGrow>true</CanGrow>
-                      <Value>=Fields!Amount2.Value</Value>
-                    </Textbox>
-                  </ReportItems>
-                </TableCell>
-              </TableCells>
-              <Height>0.63492cm</Height>
-            </TableRow>
-          </TableRows>
-        </Details>
         <Style>
           <FontSize>8pt</FontSize>
         </Style>
@@ -1454,7 +1515,7 @@
                         <PaddingTop>2pt</PaddingTop>
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
-                      <ZIndex>7</ZIndex>
+                      <ZIndex>3</ZIndex>
                       <CanGrow>true</CanGrow>
                       <Value>Итого</Value>
                     </Textbox>
@@ -1479,7 +1540,7 @@
                         <PaddingTop>2pt</PaddingTop>
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
-                      <ZIndex>6</ZIndex>
+                      <ZIndex>2</ZIndex>
                       <CanGrow>true</CanGrow>
                       <Value />
                     </Textbox>
@@ -1506,7 +1567,7 @@
                         <PaddingTop>2pt</PaddingTop>
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
-                      <ZIndex>5</ZIndex>
+                      <ZIndex>1</ZIndex>
                       <CanGrow>true</CanGrow>
                       <Value>=SUM(Fields!Amount.Value)</Value>
                     </Textbox>
@@ -1534,7 +1595,6 @@
                         <PaddingTop>2pt</PaddingTop>
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
-                      <ZIndex>4</ZIndex>
                       <CanGrow>true</CanGrow>
                       <Value>=SUM(Fields!Amount2.Value)</Value>
                     </Textbox>
@@ -1547,7 +1607,7 @@
         </Footer>
       </Table>
     </ReportItems>
-    <Height>11.0976cm</Height>
+    <Height>11.83411cm</Height>
   </Body>
   <Language>en-US</Language>
   <PageFooter>

@@ -6,7 +6,7 @@ namespace CI.Debt.Domain {
 	/// <summary>
 	/// Код бюджетной классификации расходов.
 	/// </summary>
-	class Classifier : IComparable<Classifier>, IComparable, IEquatable<Classifier>, IFormattable {
+	class Classifier : IComparable<Classifier>, IComparable, IEquatable<Classifier>, IFormattable, IUnsavedable {
 
 		/// <summary>
 		/// Пустой классификатор по умолчанию 000.00 00.000 00 00.000.000.000:000 с идентификатором 1.
@@ -14,9 +14,10 @@ namespace CI.Debt.Domain {
 		public static Classifier Empty;
 
 		static Classifier() {
-			Empty = new Classifier() {
+			Empty = new Classifier(1) {
 				Code = new string('0', Classifier.CodeLenght),
-				GrpName12 = "<Пустой классификатор>"
+				GrpName12 = "<Пустой классификатор>",
+				IsUnsaved = false
 			};
 		}
 
@@ -34,20 +35,18 @@ namespace CI.Debt.Domain {
 
 		private string maskedCode;
 
+
+		public virtual bool IsUnsaved {
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// Идентификатор классификатора.
 		/// </summary>
 		public virtual long Id {
 			get;
 			set;
-		}
-
-		/// <summary>
-		/// Тип классификатора.
-		/// </summary>
-		public virtual int ClsfType {
-			get;
-			private set;
 		}
 
 		/// <summary>
@@ -64,38 +63,6 @@ namespace CI.Debt.Domain {
 		public virtual string MaskedCode {
 			get { return maskedCode; }
 			set { SetCode(value); }
-		}
-
-		/// <summary>
-		/// Наименование классификатора.
-		/// </summary>
-		public virtual string Name {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Полное наименование классификатора.
-		/// </summary>
-		public virtual string FullName {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Код бюджетной классификации.
-		/// </summary>
-		public virtual string BudgetCode {
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// Экономическая статья.
-		/// </summary>
-		public virtual string EconomicalItemCode {
-			get;
-			private set;
 		}
 
 		/// <summary>
@@ -294,8 +261,8 @@ namespace CI.Debt.Domain {
 		/// Создает экземпляр объекта Classifier.
 		/// </summary>
 		public Classifier() {
-			ClsfType = 1;
 			Code = new string('0', CodeLenght);
+			IsUnsaved = true;
 		}
 
 		/// <summary>
@@ -321,28 +288,23 @@ namespace CI.Debt.Domain {
 		private void SetCode(string code) {
 			if (string.IsNullOrEmpty(code)) throw new ClassifierFormatException("Код классификатора не может быть пустым.");
 
-			var newCode = new StringBuilder(CodeLenght);
-			foreach (var c in code) {
-				if (char.IsDigit(c)) newCode.Append(c);
-			}
+			var newCode = RemoveMaskSymbols(code);
 			if (newCode.Length != CodeLenght) throw new ClassifierFormatException(string.Format("Код классификатора не удовлетворяет маске классификатора. Код: {0}, маска: {1}", code, Mask));
-			this.code = newCode.ToString();
+			this.code = newCode;
 
-			newCode = new StringBuilder(Mask.Length);
+			var newMaskedCode = new StringBuilder(Mask.Length);
 			int index = 0;
 			foreach (var c in Mask) {
 				if (char.IsDigit(c)) {
-					newCode.Append(Code[index]);
+					newMaskedCode.Append(Code[index]);
 					index++;
 				}
 				else {
-					newCode.Append(c);
+					newMaskedCode.Append(c);
 				}
 			}
-			maskedCode = newCode.ToString();
+			maskedCode = newMaskedCode.ToString();
 
-			BudgetCode = Code.Substring(0, 17);
-			EconomicalItemCode = Code.Substring(20, 3);
 			GrpCode01 = Code.Substring(0, 3);
 			GrpCode02 = Code.Substring(3, 2);
 			GrpCode03 = Code.Substring(5, 2);
@@ -408,5 +370,14 @@ namespace CI.Debt.Domain {
 		}
 
 		#endregion
+
+
+		public static string RemoveMaskSymbols(string code) {
+			var codeWithoutMaskSymbols = new StringBuilder(CodeLenght);
+			foreach (char c in code) {
+				if (char.IsDigit(c)) codeWithoutMaskSymbols.Append(c);
+			}
+			return codeWithoutMaskSymbols.ToString();
+		}
 	}
 }

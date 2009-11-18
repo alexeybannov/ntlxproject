@@ -79,14 +79,6 @@
           <DataField>GrpCode10</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="GrpCode11">
-          <DataField>GrpCode11</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="GrpCode12">
-          <DataField>GrpCode12</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="GrpName01">
           <DataField>GrpName01</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -127,13 +119,13 @@
           <DataField>GrpName10</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="GrpName11">
-          <DataField>GrpName11</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="HideGrp06">
+          <DataField>HideGrp06</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
         </Field>
-        <Field Name="GrpName12">
-          <DataField>GrpName12</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="HideGrp09">
+          <DataField>HideGrp09</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
         </Field>
         <Field Name="SubjectName">
           <DataField>SubjectName</DataField>
@@ -233,7 +225,7 @@
                           </Style>
                           <ZIndex>43</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=Fields!GrpName01.Value</Value>
+                          <Value>=First(Fields!GrpName01.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -254,10 +246,7 @@
                           </Style>
                           <ZIndex>42</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value +
-                            ".0000.0000000.000.000.000:000"
-                          </Value>
+                          <Value>=Fields!GrpCode01.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -343,7 +332,7 @@
                           </Style>
                           <ZIndex>39</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=Fields!GrpName02.Value</Value>
+                          <Value>=First(Fields!GrpName02.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -365,11 +354,7 @@
                           </Style>
                           <ZIndex>38</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            "00.0000000.000.000.000:000"
-                          </Value>
+                          <Value>=Fields!GrpCode02.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -454,7 +439,7 @@
                           </Style>
                           <ZIndex>35</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=Fields!GrpName03.Value</Value>
+                          <Value>=First(Fields!GrpName03.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -475,12 +460,7 @@
                           </Style>
                           <ZIndex>34</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            Fields!GrpCode03.Value +
-                            ".0000000.000.000.000:000"
-                          </Value>
+                          <Value>=Fields!GrpCode03.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -535,7 +515,7 @@
           <TableGroup>
             <Grouping Name="table1_GrpCode04">
               <GroupExpressions>
-                <GroupExpression>=Fields!GrpCode04.Value+Fields!GrpCode05.Value+Fields!GrpCode06.Value</GroupExpression>
+                <GroupExpression>=Fields!GrpCode04.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
             <Header>
@@ -560,11 +540,7 @@
                           </Style>
                           <ZIndex>31</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =IIf(Fields!GrpCode06.Value &lt;&gt; "00",
-                            Fields!GrpName06.Value,
-                            IIf(Fields!GrpCode05.Value &lt;&gt; "00", Fields!GrpName05.Value, Fields!GrpName04.Value))
-                          </Value>
+                          <Value>=First(Fields!GrpName04.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -586,13 +562,7 @@
                           </Style>
                           <ZIndex>30</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            Fields!GrpCode03.Value + "." +
-                            Fields!GrpCode04.Value + Fields!GrpCode05.Value + Fields!GrpCode06.Value +
-                            ".000.000.000:000"
-                          </Value>
+                          <Value>=Fields!GrpCode04.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -648,7 +618,7 @@
           <TableGroup>
             <Grouping Name="table1_Group5">
               <GroupExpressions>
-                <GroupExpression>=Fields!GrpCode07.Value</GroupExpression>
+                <GroupExpression>=Fields!GrpCode05.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
             <Header>
@@ -672,7 +642,7 @@
                           </Style>
                           <ZIndex>27</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=Fields!GrpName07.Value</Value>
+                          <Value>=First(Fields!GrpName05.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -694,14 +664,7 @@
                           </Style>
                           <ZIndex>26</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            Fields!GrpCode03.Value + "." +
-                            Fields!GrpCode04.Value + Fields!GrpCode05.Value + Fields!GrpCode06.Value + "." +
-                            Fields!GrpCode07.Value +
-                            ".000.000:000"
-                          </Value>
+                          <Value>=Fields!GrpCode05.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -757,14 +720,14 @@
           <TableGroup>
             <Grouping Name="table1_Group6">
               <GroupExpressions>
-                <GroupExpression>=Fields!GrpCode08.Value</GroupExpression>
+                <GroupExpression>=Fields!GrpCode06.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
             <Header>
               <TableRows>
                 <TableRow>
                   <Visibility>
-                    <Hidden>=Iif(Fields!GrpCode08.Value = "000", true, false)</Hidden>
+                    <Hidden>=Fields!HideGrp06.Value</Hidden>
                   </Visibility>
                   <TableCells>
                     <TableCell>
@@ -786,7 +749,7 @@
                           </Style>
                           <ZIndex>23</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=Fields!GrpName08.Value</Value>
+                          <Value>=First(Fields!GrpName06.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -808,15 +771,7 @@
                           </Style>
                           <ZIndex>22</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            Fields!GrpCode03.Value + "." +
-                            Fields!GrpCode04.Value + Fields!GrpCode05.Value + Fields!GrpCode06.Value + "." +
-                            Fields!GrpCode07.Value + "." +
-                            Fields!GrpCode08.Value +
-                            ".000:000"
-                          </Value>
+                          <Value>=Fields!GrpCode06.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -872,7 +827,7 @@
           <TableGroup>
             <Grouping Name="table1_Group7">
               <GroupExpressions>
-                <GroupExpression>=Fields!GrpCode09.Value</GroupExpression>
+                <GroupExpression>=Fields!GrpCode07.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
             <Header>
@@ -897,7 +852,7 @@
                           </Style>
                           <ZIndex>19</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=First(Fields!GrpName09.Value)</Value>
+                          <Value>=First(Fields!GrpName07.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -919,16 +874,7 @@
                           </Style>
                           <ZIndex>18</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            Fields!GrpCode03.Value + "." +
-                            Fields!GrpCode04.Value + Fields!GrpCode05.Value + Fields!GrpCode06.Value + "." +
-                            Fields!GrpCode07.Value + "." +
-                            Fields!GrpCode08.Value + "." +
-                            Fields!GrpCode09.Value +
-                            "00:000"
-                          </Value>
+                          <Value>=Fields!GrpCode07.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -984,7 +930,7 @@
           <TableGroup>
             <Grouping Name="table1_Group8">
               <GroupExpressions>
-                <GroupExpression>=Fields!GrpCode10.Value</GroupExpression>
+                <GroupExpression>=Fields!GrpCode08.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
             <Header>
@@ -1010,7 +956,7 @@
                           </Style>
                           <ZIndex>15</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=First(Fields!GrpName10.Value)</Value>
+                          <Value>=First(Fields!GrpName08.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -1032,17 +978,7 @@
                           </Style>
                           <ZIndex>14</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            Fields!GrpCode03.Value + "." +
-                            Fields!GrpCode04.Value + Fields!GrpCode05.Value + Fields!GrpCode06.Value + "." +
-                            Fields!GrpCode07.Value + "." +
-                            Fields!GrpCode08.Value + "." +
-                            Fields!GrpCode09.Value +
-                            Fields!GrpCode10.Value +
-                            "0:000"
-                          </Value>
+                          <Value>=Fields!GrpCode08.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -1098,12 +1034,15 @@
           <TableGroup>
             <Grouping Name="table1_Group9">
               <GroupExpressions>
-                <GroupExpression>=Fields!GrpCode11.Value</GroupExpression>
+                <GroupExpression>=Fields!GrpCode09.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
             <Header>
               <TableRows>
                 <TableRow>
+                  <Visibility>
+                    <Hidden>=Fields!HideGrp09.Value</Hidden>
+                  </Visibility>
                   <TableCells>
                     <TableCell>
                       <ReportItems>
@@ -1123,7 +1062,7 @@
                           </Style>
                           <ZIndex>11</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=First(Fields!GrpName11.Value)</Value>
+                          <Value>=First(Fields!GrpName09.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -1145,18 +1084,7 @@
                           </Style>
                           <ZIndex>10</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>
-                            =Fields!GrpCode01.Value + "." +
-                            Fields!GrpCode02.Value +
-                            Fields!GrpCode03.Value + "." +
-                            Fields!GrpCode04.Value + Fields!GrpCode05.Value + Fields!GrpCode06.Value + "." +
-                            Fields!GrpCode07.Value + "." +
-                            Fields!GrpCode08.Value + "." +
-                            Fields!GrpCode09.Value +
-                            Fields!GrpCode10.Value +
-                            Fields!GrpCode11.Value +
-                            ":000"
-                          </Value>
+                          <Value>=Fields!GrpCode09.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
@@ -1212,16 +1140,22 @@
           <TableGroup>
             <Grouping Name="table1_Group10">
               <GroupExpressions>
-                <GroupExpression>=Fields!GrpCode12.Value</GroupExpression>
+                <GroupExpression>=Fields!GrpCode10.Value</GroupExpression>
               </GroupExpressions>
             </Grouping>
+            <Sorting>
+              <SortBy>
+                <SortExpression>=Fields!GrpCode10.Value</SortExpression>
+                <Direction>Ascending</Direction>
+              </SortBy>
+            </Sorting>
             <Header>
               <TableRows>
                 <TableRow>
                   <TableCells>
                     <TableCell>
                       <ReportItems>
-                        <Textbox Name="textbox48">
+                        <Textbox Name="textbox54">
                           <Style>
                             <BorderColor>
                               <Bottom>Black</Bottom>
@@ -1242,13 +1176,13 @@
                           </Style>
                           <ZIndex>7</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=First(Fields!GrpName12.Value)</Value>
+                          <Value>=First(Fields!GrpName10.Value)</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
                     <TableCell>
                       <ReportItems>
-                        <Textbox Name="textbox49">
+                        <Textbox Name="textbox55">
                           <Style>
                             <BorderColor>
                               <Bottom>Black</Bottom>
@@ -1269,22 +1203,13 @@
                           </Style>
                           <ZIndex>6</ZIndex>
                           <CanGrow>true</CanGrow>
-                          <Value>=Fields!GrpCode01.Value + "." +
-                        Fields!GrpCode02.Value +
-                        Fields!GrpCode03.Value + "." +
-                        Fields!GrpCode04.Value + Fields!GrpCode05.Value + Fields!GrpCode06.Value + "." +
-                        Fields!GrpCode07.Value + "." +
-                        Fields!GrpCode08.Value + "." +
-                        Fields!GrpCode09.Value +
-                        Fields!GrpCode10.Value +
-                        Fields!GrpCode11.Value + ":" +
-                        Fields!GrpCode12.Value</Value>
+                          <Value>=Fields!GrpCode10.Value</Value>
                         </Textbox>
                       </ReportItems>
                     </TableCell>
                     <TableCell>
                       <ReportItems>
-                        <Textbox Name="textbox50">
+                        <Textbox Name="textbox56">
                           <Style>
                             <BorderColor>
                               <Bottom>Black</Bottom>
@@ -1311,7 +1236,7 @@
                     </TableCell>
                     <TableCell>
                       <ReportItems>
-                        <Textbox Name="textbox51">
+                        <Textbox Name="textbox57">
                           <Style>
                             <BorderColor>
                               <Bottom>Black</Bottom>
@@ -1572,7 +1497,7 @@
         </Footer>
       </Table>
     </ReportItems>
-    <Height>10.46268cm</Height>
+    <Height>11.19919cm</Height>
   </Body>
   <Language>en-US</Language>
   <PageFooter>

@@ -26,7 +26,7 @@ namespace CI.Debt.Forms {
 	/// <summary>
 	/// Форма классификаторов.
 	/// </summary>
-	partial class ClassifiersForm : Form, IClassifiersView {
+	partial class ClassifiersForm : Form {
 
 		private ClassifiersFormMode mode;
 
@@ -60,7 +60,7 @@ namespace CI.Debt.Forms {
 			nodes.Clear();
 			if (sortedClsfs.Count == 0 || 5 < level) return;
 
-			IList<Classifier> clsf = new List<Classifier>();
+			var clsf = new List<Classifier>();
 
 			Classifier currClsf = sortedClsfs[0];
 			clsf.Add(currClsf);
@@ -100,10 +100,10 @@ namespace CI.Debt.Forms {
 		private string GetLevelText(int level, Classifier clsf, bool withClsfName) {
 			switch (level) {
 				case 1: return string.Format("{0}     {1}", clsf.GrpCode01, (withClsfName ? clsf.GrpName01 : null)).Trim();
-				case 2: return string.Format("{0} {1}     {2}", clsf.GrpCode02, clsf.GrpCode03, (withClsfName ? string.Format("{0} {1}", clsf.GrpName02, clsf.GrpName03).Trim() : null)).Trim();
-				case 3: return string.Format("{0} {1} {2}     {3}", clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06, (withClsfName ? string.Format("{0} {1} {2}", clsf.GrpName04, clsf.GrpName05, clsf.GrpName06).Trim() : null)).Trim();
-				case 4: return string.Format("{0} {1}     {2}", clsf.GrpCode07, clsf.GrpCode08, (withClsfName ? string.Format("{0} {1}", clsf.GrpName07, clsf.GrpName08).Trim() : null)).Trim();
-				case 5: return string.Format("{0}     {1}", clsf.MaskedCode, (withClsfName ? string.Format("{0} {1}", clsf.GrpName11, clsf.GrpName12).Trim() : null)).Trim();
+				case 2: return string.Format("{0} {1}     {2}", clsf.GrpCode02, clsf.GrpCode03, (withClsfName ? string.Format("{0} - {1}", clsf.GrpName02, clsf.GrpName03).Trim() : null)).Trim();
+				case 3: return string.Format("{0} {1} {2}     {3}", clsf.GrpCode04, clsf.GrpCode05, clsf.GrpCode06, (withClsfName ? string.Format("{0} - {1} - {2}", clsf.GrpName04, clsf.GrpName05, clsf.GrpName06).Trim() : null)).Trim();
+				case 4: return string.Format("{0} {1}     {2}", clsf.GrpCode07, clsf.GrpCode08, (withClsfName ? string.Format("{0} - {1}", clsf.GrpName07, clsf.GrpName08).Trim() : null)).Trim();
+				case 5: return string.Format("{0}     {1}", clsf.MaskedCode, (withClsfName ? string.Format("{0} - {1} - {2} : {3}", clsf.GrpName09, clsf.GrpName10, clsf.GrpName11, clsf.GrpName12).Trim() : null)).Trim();
 			}
 			return string.Empty;
 		}
@@ -132,22 +132,6 @@ namespace CI.Debt.Forms {
 
 		#endregion
 
-		#region IClassifiersView Members
-
-		public void ShowClassifiers(IList<Classifier> classifiers) {
-			classifierBindingSource.DataSource = classifiers;
-
-			treeView.BeginUpdate();
-			FillLevel(1, treeView.Nodes, classifiers);
-			treeView.EndUpdate();
-
-			if (this.ShowDialog() == DialogResult.OK) {
-				if (mode == ClassifiersFormMode.Select && ClassifierSelected != null) {
-					ClassifierSelected(this, EventArgs.Empty);
-				}
-			}
-		}
-
 		public Classifier SelectedClassifier {
 			get {
 				Classifier clsf = null;
@@ -164,10 +148,6 @@ namespace CI.Debt.Forms {
 			}
 		}
 
-		public event EventHandler ClassifierSelected;
-
-		#endregion
-
 		private void radioButton_CheckedChanged(object sender, EventArgs e) {
 			treeView.Visible = radioButtonTree.Checked;
 			dataGridView.Visible = radioButtonList.Checked;
@@ -181,6 +161,13 @@ namespace CI.Debt.Forms {
 		}
 
 		private void ClassifiersForm_Shown(object sender, EventArgs e) {
+			var classifiers = DebtDAO.GetClassifiers();
+			classifierBindingSource.DataSource = classifiers;
+
+			treeView.BeginUpdate();
+			FillLevel(1, treeView.Nodes, classifiers);
+			treeView.EndUpdate();
+
 			if (radioButtonList.Checked) {
 				if (classifierBindingSource.DataSource != null &&
 					selectedClassifier != null &&

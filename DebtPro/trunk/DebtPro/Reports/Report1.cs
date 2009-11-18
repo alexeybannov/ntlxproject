@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using CI.Debt.DAO;
 using CI.Debt.Domain;
-using CI.Debt.Impl;
+using CI.Debt.Utils;
 using Microsoft.Reporting.WinForms;
 
 namespace CI.Debt.Reports {
@@ -27,6 +27,7 @@ namespace CI.Debt.Reports {
 			reportForm.reportViewer.LocalReport.SetParameters(new[] { new ReportParameter("pCaption", reportCaption) });
 
 			reportForm.Show();
+
 
 			IList<DebtRow> rows = null;
 			if (reportParam.GroupBySubjects && 0 < reportParam.comboBoxBudgetName.SelectedIndex) {

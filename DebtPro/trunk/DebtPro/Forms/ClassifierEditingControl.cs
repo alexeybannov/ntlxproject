@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using CI.Debt.Domain;
 using CI.Debt.DAO;
-using CI.Debt.Impl;
+using CI.Debt.Utils;
 
 // Подробнее о DataGridView см. http://www.rsdn.ru/article/dotnet/datagridfaq.xml?print
 // http://www.rsdn.ru/article/dotnet/DataGridView20.xml?print
@@ -18,8 +18,6 @@ namespace CI.Debt.Forms {
 	/// </summary>
 	public partial class ClassifierEditingControl : UserControl, IDataGridViewEditingControl {
 
-		private IClassifiersPresenter classifiersPresenter;
-
 		private MaskedTextBox maskedTextBox;
 
 		private Panel panel1;
@@ -28,17 +26,13 @@ namespace CI.Debt.Forms {
 
 		private FieldInfo caretField;
 
+		private ClassifiersForm clsfForm;
+
 		/// <inheritdoc/>
 		public ClassifierEditingControl() {
 			InitializeComponent();
-			classifiersPresenter = new ClassifiersPresenter(new ClassifiersForm(ClassifiersFormMode.Select));
-			classifiersPresenter.ClassifierSelected += ClassifierSelected;
+			clsfForm = new ClassifiersForm(ClassifiersFormMode.Select);
 			caretField = typeof(MaskedTextBox).GetField("caretTestPos", BindingFlags.NonPublic | BindingFlags.Instance);
-		}
-
-		protected override void Dispose(bool disposing) {
-			if (disposing) classifiersPresenter.ClassifierSelected -= ClassifierSelected;
-			base.Dispose(disposing);
 		}
 
 		private void InitializeComponent() {
@@ -96,15 +90,16 @@ namespace CI.Debt.Forms {
 
 		private void buttonSelect_Click(object sender, EventArgs e) {
 			var clsf = EditingControlDataGridView.CurrentCell.Value as Classifier;
-			classifiersPresenter.SelectedClassifier = clsf ?? Classifier.Empty;
-			classifiersPresenter.ShowClassifiers();
-		}
-
-		private void ClassifierSelected(object sender, EventArgs e) {
-			Classifier clsf = ((IClassifiersPresenter)sender).SelectedClassifier;
-			if (clsf != null) {
-				EditingControlDataGridView.CurrentCell.Value = clsf;
-				EditingControlFormattedValue = clsf.MaskedCode;
+			if (clsf == null || Classifier.Empty.Equals(clsf)) {
+				clsf = DebtDAO.FindNearestClassifier(EditingControlFormattedValue as string);
+			}
+			clsfForm.SelectedClassifier = clsf ?? Classifier.Empty;
+			if (clsfForm.ShowDialog() == DialogResult.OK) {
+				clsf = clsfForm.SelectedClassifier;
+				if (clsf != null) {
+					EditingControlDataGridView.CurrentCell.Value = clsf;
+					EditingControlFormattedValue = clsf.MaskedCode;
+				}
 			}
 		}
 
@@ -185,7 +180,7 @@ namespace CI.Debt.Forms {
 			if (!DebtDAO.GetSettings().IsAutoPasteClassifier) return;
 			//автоподстановка классификатора
 			int position = (int)caretField.GetValue(maskedTextBox) + 1;
-			string code = DebtUtil.RemoveMaskSymbols(Text.Substring(0, position));
+			string code = Classifier.RemoveMaskSymbols(Text.Substring(0, position));
 			if (string.IsNullOrEmpty(code) || code.Length == Classifier.CodeLenght) return;
 
 			var clsf = DebtDAO.FindNearestClassifier(code);

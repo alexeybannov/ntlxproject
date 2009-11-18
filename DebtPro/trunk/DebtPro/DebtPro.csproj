@@ -16,6 +16,21 @@
     </UpgradeBackupLocation>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon>Debt.ico</ApplicationIcon>
+    <PublishUrl>http://localhost/Debt/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,6 +40,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -68,8 +85,10 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\DebtInterceptor.cs" />
     <Compile Include="Domain\DebtSettings.cs" />
-    <Compile Include="Domain\Exceptions.cs" />
+    <Compile Include="Domain\ClassifierFormatException.cs" />
+    <Compile Include="Domain\IUnsavedable.cs" />
     <Compile Include="Forms\DataGridViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -91,10 +110,7 @@
     <Compile Include="Forms\WaitForm.Designer.cs">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Impl\ClassifiersPresenterTest.cs" />
-    <Compile Include="Impl\DebtUtils.cs" />
-    <Compile Include="Domain\IClassifiersPresenter.cs" />
-    <Compile Include="Domain\IClassifiersView.cs" />
+    <Compile Include="Utils\DebtUtils.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,10 +130,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\SubjectsBindingList.cs" />
-    <Compile Include="Impl\ClassifiersPresenter.cs" />
-    <Compile Include="Impl\SubjectsPresenter.cs" />
-    <Compile Include="Domain\ISubjectsPresenter.cs" />
-    <Compile Include="Domain\ISubjectsView.cs" />
     <Compile Include="Domain\Subject.cs" />
     <Compile Include="Domain\DebtRow.cs" />
     <Compile Include="Domain\DebtType.cs" />
@@ -169,7 +181,6 @@
     <None Include="App.config" />
     <Compile Include="Forms\ClassifierColumn.cs">
     </Compile>
-    <Compile Include="Reports\ClassifierFormatProvider.cs" />
     <Compile Include="Reports\Report1.cs" />
     <Compile Include="Reports\Report1Row.cs" />
     <Compile Include="Reports\ReportForm.cs">
@@ -190,8 +201,6 @@
     <Compile Include="Forms\SubjectsForm.Designer.cs">
       <DependentUpon>SubjectsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Xml\XmlClsfRow.cs" />
-    <Compile Include="Xml\XmlClsfRows.cs" />
     <Compile Include="Xml\XmlDebtRowsSerializer.cs" />
     <Compile Include="Xml\XmlDebtRow.cs" />
     <Compile Include="Xml\XmlDebtRows.cs" />
@@ -226,7 +235,7 @@
     <None Include="Resources\folderclose.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\d_importdebt.srd" />
+    <Content Include="Resources\d_importdebt.srd" />
     <None Include="Resources\progress_ajax.gif" />
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +250,23 @@
     </EmbeddedResource>
     <Content Include="Debt.ico" />
     <Content Include="DebtForm.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

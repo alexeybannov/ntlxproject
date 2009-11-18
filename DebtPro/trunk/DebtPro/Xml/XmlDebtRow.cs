@@ -6,77 +6,81 @@ namespace CI.Debt.Xml {
 
 	public class XmlDebtRow {
 
-		internal DebtRow Row {
-			get;
-			private set;
-		}
-
 		[XmlAttribute]
 		public string ClassifierCode {
-			get { return Row.Classifier.Code; }
-			set { Row.Classifier = DebtDAO.FindClassifier(value); }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public double Amount {
-			get { return Row.Amount; }
-			set { Row.Amount = value; }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public double Amount2 {
-			get { return Row.Amount2; }
-			set { Row.Amount2 = value; }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public string SubjectName {
-			get { return Row.Subject.Name; }
-			set { }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public string SubjectCode {
-			get { return Row.Subject.Code; }
-			set { Row.Subject = DebtDAO.GetSubjectByCode(value); }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public long ClassifierId {
-			get { return Row.Classifier.Id; }
-			set { }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public long SubjectId {
-			get { return Row.Subject.Id; }
-			set { }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public int DebtType {
-			get { return (int)Row.DebtType; }
-			set { Row.DebtType = (DebtType)value; }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public int Month {
-			get { return Row.Month; }
-			set { Row.Month = value; }
+			get;
+			set;
 		}
 
 		[XmlAttribute]
 		public int Year {
-			get { return Row.Year; }
-			set { Row.Year = value; }
+			get;
+			set;
 		}
 
 		protected XmlDebtRow() {
-			Row = new DebtRow();
+			
 		}
 
 		internal XmlDebtRow(DebtRow row) {
-			this.Row = row;
+			this.Amount = row.Amount;
+			this.Amount2 = row.Amount2;
+			this.ClassifierCode = row.Classifier.Code;
+			this.ClassifierId = row.Classifier.Id;
+			this.DebtType = (int)row.DebtType;
+			this.Month = row.Month;
+			this.SubjectCode = row.Subject.Code;
+			this.SubjectId = row.Subject.Id;
+			this.SubjectName = row.Subject.Name;
+			this.Year = row.Year;
 		}
 	}
 }
