@@ -68,7 +68,7 @@ namespace Ntlx.Server.Net
 		public event EventHandler<NetConnectionOpenEventArgs> OpenNetConnection;
 
 
-		protected void AddNewXmppConnection(INetConnection connection)
+		protected void AddNewConnection(INetConnection connection)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 
