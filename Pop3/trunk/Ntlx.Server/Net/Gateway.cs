@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using log4net;
 using Ntlx.Server.Collections.Generic;
+using Ntlx.Server.Utils;
 
 namespace Ntlx.Server.Net
 {
@@ -9,7 +10,7 @@ namespace Ntlx.Server.Net
 	{
 		private object syncRoot = new object();
 
-		private IDictionary<string, INetListener> listeners = new Dictionary<string, INetListener>();
+		private IDictionary<string, IListener> listeners = new Dictionary<string, IListener>();
 
 		private IDictionary<string, string> connectionListenerMap = new ThreadSafeDictionary<string, string>();
 
@@ -23,7 +24,7 @@ namespace Ntlx.Server.Net
 		}
 
 
-		public void AddNetListener(INetListener listener)
+		public void AddListener(IListener listener)
 		{
 			if (listener == null) throw new ArgumentNullException("listener");
 			lock (syncRoot)
@@ -33,7 +34,7 @@ namespace Ntlx.Server.Net
 					if (Active) throw new InvalidOperationException("Could not add listener when gateway active.");
 
 					listeners.Add(listener.Name, listener);
-					listener.OpenNetConnection += OpenConnection;
+					listener.OpenConnection += OnOpenConnection;
 
 					log.DebugFormat("Add listener '{0}'", listener.Name);
 				}
@@ -45,7 +46,7 @@ namespace Ntlx.Server.Net
 			}
 		}
 
-		public void RemoveXmppListener(string name)
+		public void RemoveListener(string name)
 		{
 			lock (syncRoot)
 			{
@@ -57,7 +58,7 @@ namespace Ntlx.Server.Net
 					if (listeners.ContainsKey(name))
 					{
 						var listener = listeners[name];
-						listener.OpenNetConnection -= OpenConnection;
+						listener.OpenConnection -= OnOpenConnection;
 						listeners.Remove(name);
 
 						log.DebugFormat("Remove listener '{0}'", listener.Name);
@@ -111,30 +112,37 @@ namespace Ntlx.Server.Net
 			}
 		}
 
-		public INetConnection GetNetConnection(string connectionId)
+		public IConnection GetConnection(string connectionId)
 		{
 			if (string.IsNullOrEmpty(connectionId)) return null;
 
 			string listenerName = null;
 			if (!connectionListenerMap.TryGetValue(connectionId, out listenerName)) return null;
 
-			INetListener listener = null;
+			IListener listener = null;
 			if (!listeners.TryGetValue(listenerName, out listener)) return null;
 
-			return listener.GetNetConnection(connectionId);
+			return listener.GetConnection(connectionId);
 		}
+
+
+		public event EventHandler<ConnectionOpenEventArgs> OpenConnection;
+
+		public event EventHandler<ConnectionCloseEventArgs> CloseConnection;
 
 		
-		private void OpenConnection(object sender, NetConnectionOpenEventArgs e)
+		private void OnOpenConnection(object sender, ConnectionOpenEventArgs e)
 		{
-			connectionListenerMap[e.Connection.Id] = ((INetListener)sender).Name;
-			e.Connection.Closed += CloseConnection;
+			connectionListenerMap[e.Connection.Id] = ((IListener)sender).Name;
+			e.Connection.Closed += OnCloseConnection;
+			EventRaiser.SoftRaiseEvent(OpenConnection, this, e);
 		}
 
-		private void CloseConnection(object sender, NetConnectionCloseEventArgs e)
+		private void OnCloseConnection(object sender, ConnectionCloseEventArgs e)
 		{
-			var connection = (INetConnection)sender;
+			var connection = (IConnection)sender;
 			connection.Closed -= CloseConnection;
+			EventRaiser.SoftRaiseEvent(CloseConnection, this, e);
 			connectionListenerMap.Remove(connection.Id);
 		}
 	}

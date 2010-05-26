@@ -8,13 +8,18 @@ using log4net;
 
 namespace Ntlx.Server.Net
 {
-	public class TcpNetListener : NetListenerBase
+	public class TcpNetListener : ListenerBase
 	{
-		private IPEndPoint bindEndPoint;
 		private X509Certificate certificate;
 		private TcpListener tcpListener;
 
 		private static readonly ILog log = LogManager.GetLogger(typeof(TcpNetListener));
+
+		public IPEndPoint BindEndPoint
+		{
+			get;
+			set;
+		}
 
 
 		public override void Configure(IDictionary<string, string> properties)
@@ -22,14 +27,14 @@ namespace Ntlx.Server.Net
 			try
 			{
 				if (!properties.ContainsKey("port")) throw new ConfigurationErrorsException("Port is not set.");
-				bindEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(properties["port"]));
+				BindEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(properties["port"]));
 
 				if (properties.ContainsKey("cert"))
 				{
 					certificate = X509Certificate.CreateFromCertFile(properties["cert"]);
 				}
-				
-				log.DebugFormat("Configure listener '{0}' on {1}", Name, bindEndPoint);
+
+				log.DebugFormat("Configure listener '{0}' on {1}", Name, BindEndPoint);
 			}
 			catch (Exception e)
 			{
@@ -40,7 +45,7 @@ namespace Ntlx.Server.Net
 
 		protected override void DoStart()
 		{
-			tcpListener = new TcpListener(bindEndPoint);
+			tcpListener = new TcpListener(BindEndPoint);
 			tcpListener.Start();
 			tcpListener.BeginAcceptSocket(BeginAcceptCallback, tcpListener);
 		}
@@ -62,6 +67,7 @@ namespace Ntlx.Server.Net
 				tcpListener.BeginAcceptSocket(BeginAcceptCallback, tcpListener);
 
 				var socket = tcpListener.EndAcceptSocket(asyncResult);
+				AddNewConnection(new TcpNetConnection(socket));
 				//AddNewConnection(certificate == null ? new TcpXmppConnection(socket) : new TcpSslXmppConnection(socket, certificate));
 			}
 			catch (ObjectDisposedException) { }

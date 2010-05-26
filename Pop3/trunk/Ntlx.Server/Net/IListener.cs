@@ -1,9 +1,10 @@
 ﻿using System;
 using Ntlx.Server.Configuration;
+using Ntlx.Server.Formatters;
 
 namespace Ntlx.Server.Net
 {
-	public interface INetListener : IConfigurable
+	public interface IListener : IConfigurable
 	{
 		string Name
 		{
@@ -20,8 +21,8 @@ namespace Ntlx.Server.Net
 
 		void Stop();
 
-		INetConnection GetNetConnection(string id);
+		IConnection GetConnection(string id);
 
-		event EventHandler<NetConnectionOpenEventArgs> OpenNetConnection;
+		event EventHandler<ConnectionOpenEventArgs> OpenConnection;
 	}
 }

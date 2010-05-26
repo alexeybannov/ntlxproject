@@ -1,7 +1,7 @@
 ﻿
 namespace Ntlx.Server.Net
 {
-	public enum NetConnectionCloseReason
+	public enum ConnectionCloseReason
 	{
 		ServerShutdown,
 		ClientShutdown,
