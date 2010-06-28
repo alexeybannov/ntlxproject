@@ -13,8 +13,6 @@ namespace S3CmdPlugin.Accounts
         {
             this.accountManager = accountManager;
             findData.FileName = PluginResources.NewAccount;
-			findData.Attributes = (FileAttributes)0x80000000;
-			findData.Reserved1 = 456;
         }
 
 		public override ExecExitCode Open(PluginContext context)
