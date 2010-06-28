@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Windows.Forms;
 using S3CmdPlugin.Resources;
 using Tools.TotalCommanderT;
-using System.Windows.Forms;
 
 namespace S3CmdPlugin
 {
@@ -10,6 +10,7 @@ namespace S3CmdPlugin
     public class S3CmdWfx : FileSystemPlugin
     {
         private IPathResolver pathResolver = new PluginRoot();
+		private PluginContext context = new PluginContext();
 
 
         public override string Name
@@ -17,23 +18,25 @@ namespace S3CmdPlugin
             get { return PluginResources.ProductName; }
         }
 
-        public S3CmdWfx()
+        
+		public S3CmdWfx()
             : base()
         {
 
         }
 
-        public override object FindFirst(string Path, ref FindData FindData)
+        
+		public override object FindFirst(string Path, ref FindData FindData)
         {
             try
             {
-                var browsable = pathResolver.ResolvePath(Path) as IDirectory;
-                if (browsable != null)
+                var directory = pathResolver.ResolvePath(Path) as IDirectory;
+                if (directory != null)
                 {
-                    browsable.Reset();
-                    if (browsable.MoveNext()) FindData = browsable.Current.FindData;
+                    directory.Reset();
+                    if (directory.MoveNext()) FindData = directory.Current.FindData;
                 }
-                return browsable;
+                return directory;
             }
             catch (Exception ex)
             {
@@ -46,10 +49,10 @@ namespace S3CmdPlugin
         {
             try
             {
-                var browsable = Status as IDirectory;
-                if (browsable != null && browsable.MoveNext())
+				var directory = Status as IDirectory;
+				if (directory != null && directory.MoveNext())
                 {
-                    FindData = browsable.Current.FindData;
+					FindData = directory.Current.FindData;
                     return true;
                 }
             }
@@ -66,7 +69,6 @@ namespace S3CmdPlugin
             {
                 var disposable = Status as IDisposable;
                 if (disposable != null) disposable.Dispose();
-
                 base.FindClose(Status);
             }
             catch (Exception ex)
@@ -76,92 +78,89 @@ namespace S3CmdPlugin
         }
 
 
-        public override ExecExitCode ExecuteFile(IntPtr hMainWin, ref string RemoteName, string Verb)
+		public override bool MkDir(string Path)
+		{
+			try
+			{
+				if (!string.IsNullOrEmpty(Path))
+				{
+					Path = Path.TrimEnd('\\');
+					var position = Path.LastIndexOf('\\') + 1;
+					if (0 < position && position < Path.Length)
+					{
+						var directory = pathResolver.ResolvePath(Path.Substring(0, position)) as IDirectory;
+						if (directory != null)
+						{
+							return directory.Create(context, Path.Substring(position));
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowError(ex);
+			}
+			return false;
+		}
+				
+		public override ExecExitCode ExecuteFile(IntPtr hMainWin, ref string RemoteName, string Verb)
         {
             try
             {
-                var file = pathResolver.ResolvePath(RemoteName) as IFile;
-                if (file == null) return base.ExecuteFile(hMainWin, ref RemoteName, Verb);
-
-                var mainWindow = new MainWindow(hMainWin);
-                var comparison = StringComparison.InvariantCultureIgnoreCase;
-
-                if (Verb.StartsWith("open", comparison)) return file.Open(mainWindow);
-                if (Verb.StartsWith("properties", comparison)) return file.Properties(mainWindow);
-                if (Verb.StartsWith("chmod ", comparison)) return file.ChMod(mainWindow, Verb.Substring(6));
-                if (Verb.StartsWith("quote ", comparison)) return file.Quote(mainWindow, Verb.Substring(6));
+                var file = pathResolver.ResolvePath(RemoteName);
+				if (file != null)
+				{
+					context.SetHandle(hMainWin);
+					var comparison = StringComparison.InvariantCultureIgnoreCase;
+					if (Verb.StartsWith("open", comparison)) return file.Open(context);
+					if (Verb.StartsWith("properties", comparison)) return file.Properties(context);
+					if (Verb.StartsWith("chmod ", comparison)) return file.ChMod(Verb.Substring(6), context);
+					if (Verb.StartsWith("quote ", comparison)) return file.Quote(Verb.Substring(6), context);
+				}
             }
             catch (Exception ex)
             {
                 ShowError(ex);
             }
-            return ExecExitCode.Error;
+            return ExecExitCode.OK;
         }
 
-        public override bool MkDir(string Path)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(Path))
-                {
-                    Path = Path.TrimEnd('\\');
-                    var position = Path.LastIndexOf('\\') + 1;
-                    if (0 < position && position < Path.Length)
-                    {
-                        var dir = pathResolver.ResolvePath(Path.Substring(0, position)) as IDirectory;
-                        if (dir != null) return dir.Create(Path.Substring(position));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex);
-            }
-            return false;
-        }
+		public override FileSystemExitCode RenMovFile(string OldName, string NewName, bool Move, bool OverWrite, RemoteInfo info)
+		{
+			try
+			{
+				var file = pathResolver.ResolvePath(OldName);
+				if (file != null)
+				{
+					return file.Move(NewName, OverWrite, info, context);
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowError(ex);
+			}
+			return FileSystemExitCode.NotSupported;
+		}
 
-        public override bool RemoveDir(string RemoteName)
-        {
-            try
-            {
-                var dir = pathResolver.ResolvePath(RemoteName) as IDirectory;
-                if (dir != null) return dir.Remove();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex);
-            }
-            return false;
-        }
+		public override bool DeleteFile(string RemoteName)
+		{
+			try
+			{
+				var file = pathResolver.ResolvePath(RemoteName);
+				if (file != null)
+				{
+					return file.Delete(context);
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowError(ex);
+			}
+			return false;
+		}
 
-        protected override ExecExitCode ExecuteCommand(IntPtr hMainWin, ref string RemoteName, string command)
-        {
-            return base.ExecuteCommand(hMainWin, ref RemoteName, command);
-        }
 
-        public override FileSystemExitCode RenMovFile(string OldName, string NewName, bool Move, bool OverWrite, RemoteInfo info)
-        {
-            return base.RenMovFile(OldName, NewName, Move, OverWrite, info);
-        }
-
-        public override bool DeleteFile(string RemoteName)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(RemoteName)) return false;
-                if (RemoteName.EndsWith("\\")) return RemoveDir(RemoteName);
-
-                var file = pathResolver.ResolvePath(RemoteName) as IFile;
-                if (file != null) return file.Delete();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex);
-            }
-            return false;
-        }
-
-        private void ShowError(Exception ex)
+		private void ShowError(Exception ex)
         {
             MessageBox.Show(ex.ToString(), Name);
         }

@@ -1,18 +1,24 @@
-﻿using System;
-using Tools.TotalCommanderT;
+﻿using Tools.TotalCommanderT;
 
 namespace S3CmdPlugin
 {
 	interface IFile
 	{
-        ExecExitCode Open(MainWindow mainWindow);
+		FindData FindData
+		{
+			get;
+		}
+		
+		ExecExitCode Open(PluginContext context);
 
-        ExecExitCode Properties(MainWindow mainWindow);
+		ExecExitCode Properties(PluginContext context);
 
-		ExecExitCode ChMod(MainWindow mainWindow, string mod);
+		ExecExitCode ChMod(string mod, PluginContext context);
 
-        ExecExitCode Quote(MainWindow mainWindow, string command);
+		ExecExitCode Quote(string command, PluginContext context);
 
-        bool Delete();
+		FileSystemExitCode Move(string newName, bool overwrite, RemoteInfo info, PluginContext context);
+
+		bool Delete(PluginContext context);
 	}
 }

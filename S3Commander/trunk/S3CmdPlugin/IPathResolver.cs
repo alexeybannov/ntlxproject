@@ -3,6 +3,6 @@ namespace S3CmdPlugin
 {
 	interface IPathResolver
 	{
-		object ResolvePath(string path);
+		IFile ResolvePath(string path);
 	}
 }

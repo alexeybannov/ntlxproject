@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using S3CmdPlugin.Accouts;
-using S3CmdPlugin.Resources;
 using System.Windows.Forms;
+using S3CmdPlugin.Accounts;
+using S3CmdPlugin.Resources;
 
 namespace S3CmdPlugin
 {
-    class PluginRoot : IPathResolver, IDirectory
+	class PluginRoot : FileBase, IPathResolver, IDirectory
     {
-        private List<IFindDataProvider> items;
-        private IEnumerator<IFindDataProvider> enumerator;
+        private List<IFile> items;
+		private IEnumerator<IFile> enumerator;
         private AccountManager accountManager;
 
 
@@ -21,14 +21,14 @@ namespace S3CmdPlugin
             Reset();
         }
 
-        public object ResolvePath(string path)
+        public IFile ResolvePath(string path)
         {
             if (path == null) throw new ArgumentNullException("path");
             if (path == string.Empty) return null;
 
             if (path == "\\") return this;
 
-            if (path[0] == '\\') path = path.Substring(1);
+			path = path.Trim('\\');
             var position = path.IndexOf('\\');
             var name = 0 < position ? path.Substring(0, position) : path;
 
@@ -39,7 +39,7 @@ namespace S3CmdPlugin
         }
 
 
-        public bool Create(string directory)
+        public bool Create(PluginContext context, string directory)
         {
             using (var form = new AccountForm())
             {
@@ -53,13 +53,8 @@ namespace S3CmdPlugin
             return false;
         }
 
-        public bool Remove()
-        {
-            return false;
-        }
 
-
-        public IFindDataProvider Current
+		public IFile Current
         {
             get { return enumerator.Current; }
         }
@@ -71,7 +66,7 @@ namespace S3CmdPlugin
 
         public void Reset()
         {
-            items = new List<IFindDataProvider>();
+			items = new List<IFile>();
             accountManager = new AccountManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), PluginResources.ProductName));
             items.Add(new NewAccount(accountManager));
             accountManager
@@ -92,6 +87,7 @@ namespace S3CmdPlugin
         public void Dispose()
         {
             enumerator.Dispose();
+			enumerator = null;
         }
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using Tools.TotalCommanderT;
 
 namespace S3CmdPlugin
 {
-	interface IDirectory : IEnumerator<IFindDataProvider>
+	interface IDirectory : IEnumerator<IFile>, IFile
 	{
-        bool Create(string directory);
-
-        bool Remove();
+        bool Create(PluginContext context, string directory);
 	}
 }

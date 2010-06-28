@@ -41,6 +41,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK, Version=1.0.9.0, Culture=neutral, PublicKeyToken=cd2d24cd2bace800, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Ref\AWSSDK.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -59,19 +63,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Accouts\Account.cs" />
-    <Compile Include="Accouts\AccountManager.cs" />
-    <Compile Include="Accouts\NewAccount.cs" />
+    <Compile Include="Accounts\Account.cs" />
+    <Compile Include="Accounts\AccountManager.cs" />
+    <Compile Include="Accounts\NewAccount.cs" />
+    <Compile Include="FileBase.cs" />
     <Compile Include="IDirectory.cs" />
     <Compile Include="IFile.cs" />
-    <Compile Include="IFindDataProvider.cs" />
     <Compile Include="IPathResolver.cs" />
-    <Compile Include="MainWindow.cs" />
+    <Compile Include="PluginContext.cs" />
     <Compile Include="PluginRoot.cs" />
-    <Compile Include="Accouts\AccountForm.cs">
+    <Compile Include="Accounts\AccountForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Accouts\AccountForm.Designer.cs">
+    <Compile Include="Accounts\AccountForm.Designer.cs">
       <DependentUpon>AccountForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Resources\PluginResources.Designer.cs">
@@ -91,7 +95,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Accouts\AccountForm.resx">
+    <EmbeddedResource Include="Accounts\AccountForm.resx">
       <DependentUpon>AccountForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\PluginResources.resx">
