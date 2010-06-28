@@ -5,12 +5,14 @@ namespace S3CmdPlugin
 {
 	interface IFile
 	{
-		ExecExitCode Open(IntPtr mainWin);
+        ExecExitCode Open(MainWindow mainWindow);
 
-		ExecExitCode Properties(IntPtr mainWin);
+        ExecExitCode Properties(MainWindow mainWindow);
 
-		ExecExitCode ChMod(IntPtr mainWin, string mod);
+		ExecExitCode ChMod(MainWindow mainWindow, string mod);
 
-		ExecExitCode Quote(IntPtr mainWin, string command);
+        ExecExitCode Quote(MainWindow mainWindow, string command);
+
+        bool Delete();
 	}
 }

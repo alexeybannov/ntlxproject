@@ -6,10 +6,11 @@ namespace S3CmdPlugin
 	class MainWindow
 	{
 		private const int WM_USER = 1024;
+        private const int WM_REFRESH = WM_USER + 51;
 
 		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("user32", SetLastError = true)]
-		private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+		private static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
 		private IntPtr handle;
 
@@ -20,7 +21,7 @@ namespace S3CmdPlugin
 
 		public void Refresh()
 		{
-			PostMessage(handle, WM_USER + 51, (IntPtr)540, IntPtr.Zero);
+            PostMessage(handle, WM_REFRESH, (IntPtr)540, IntPtr.Zero);
 		}
 	}
 }

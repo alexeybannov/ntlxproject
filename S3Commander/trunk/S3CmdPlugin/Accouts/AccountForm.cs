@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using S3CmdPlugin.Resources;
 
 namespace S3CmdPlugin.Accouts
@@ -37,5 +38,10 @@ namespace S3CmdPlugin.Accouts
 			AccountSecretKey = secretKey;
 			Text = PluginResources.EditAccount;
 		}
+
+        private void TextBox1TextChanged(object sender, EventArgs e)
+        {
+            buttonOK.Enabled = ((TextBox)sender).TextLength != 0;
+        }
 	}
 }

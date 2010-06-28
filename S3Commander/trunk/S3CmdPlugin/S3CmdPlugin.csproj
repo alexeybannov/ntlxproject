@@ -62,7 +62,7 @@
     <Compile Include="Accouts\Account.cs" />
     <Compile Include="Accouts\AccountManager.cs" />
     <Compile Include="Accouts\NewAccount.cs" />
-    <Compile Include="IBrowsable.cs" />
+    <Compile Include="IDirectory.cs" />
     <Compile Include="IFile.cs" />
     <Compile Include="IFindDataProvider.cs" />
     <Compile Include="IPathResolver.cs" />
@@ -91,6 +91,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Accouts\AccountForm.resx">
+      <DependentUpon>AccountForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\PluginResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PluginResources.Designer.cs</LastGenOutput>
