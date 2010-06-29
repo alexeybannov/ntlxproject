@@ -97,6 +97,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Accounts\AccountForm.resx">
       <DependentUpon>AccountForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\PluginResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
