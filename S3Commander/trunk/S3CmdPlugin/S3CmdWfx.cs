@@ -135,11 +135,11 @@ namespace S3CmdPlugin
 					return file.Move(NewName, OverWrite, info, context);
 				}
 			}
-			catch (Exception ex)
-			{
-				ShowError(ex);
-			}
-			return FileSystemExitCode.NotSupported;
+            catch (Exception ex)
+            {
+                ShowError(ex);
+            }
+            return FileSystemExitCode.NotSupported;
 		}
 
 		public override bool DeleteFile(string RemoteName)
@@ -162,7 +162,11 @@ namespace S3CmdPlugin
 
 		private void ShowError(Exception ex)
         {
+#if DEBUG
             MessageBox.Show(ex.ToString(), Name);
+#else
+            MessageBox.Show(ex.Message, Name);
+#endif
         }
     }
 }
