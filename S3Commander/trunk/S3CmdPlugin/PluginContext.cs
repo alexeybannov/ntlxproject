@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Tools.TotalCommanderT;
 
 namespace S3CmdPlugin
 {
@@ -8,9 +9,19 @@ namespace S3CmdPlugin
 		[DllImport("user32", SetLastError = true)]
 		private static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-
 		private IntPtr handle;
 
+
+		public S3CmdWfx Plugin
+		{
+			get;
+			private set;
+		}
+
+		public PluginContext(S3CmdWfx plugin)
+		{
+			Plugin = plugin;
+		}
 
 		public void RefreshMainWindow()
 		{

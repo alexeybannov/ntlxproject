@@ -12,6 +12,7 @@
     <AssemblyName>S3Cmd</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ApplicationIcon>Resources\amazon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\Account.cs" />
+    <Compile Include="Accounts\AccountInfo.cs" />
     <Compile Include="Accounts\AccountManager.cs" />
     <Compile Include="Accounts\NewAccount.cs" />
     <Compile Include="FileBase.cs" />
@@ -112,6 +114,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\amazon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\keys.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\new.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\new2.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

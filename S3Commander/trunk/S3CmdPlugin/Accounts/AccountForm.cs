@@ -4,61 +4,47 @@ using S3CmdPlugin.Resources;
 
 namespace S3CmdPlugin.Accounts
 {
-	public partial class AccountForm : Form
+	partial class AccountForm : Form
 	{
 		public string AccountName
 		{
 			get { return textBox1.Text; }
-			set
-			{
-				textBox1.Text = value ?? string.Empty;
-				if (textBox1.Text != string.Empty) textBox2.Focus();
-			}
 		}
 
-		public string AccountAccessKey
+		public AccountInfo AccountInfo
 		{
-			get { return textBox2.Text; }
-			set
-			{
-				textBox2.Text = value ?? string.Empty;
-				if (textBox2.Text != string.Empty) textBox3.Focus();
-			}
-		}
-
-		public string AccountSecretKey
-		{
-			get { return textBox3.Text; }
-			set
-			{
-				textBox3.Text = value ?? string.Empty;
-				if (textBox3.Text != string.Empty) buttonOK.Focus();
-			}
+			get { return new AccountInfo(textBox2.Text, textBox3.Text); }
 		}
 
 
-		public AccountForm()
+		public AccountForm(string name)
 		{
 			InitializeComponent();
+
+			textBox1.Text = name ?? string.Empty;
 			Text = PluginResources.NewAccount;
 		}
 
-		public AccountForm(string name, string accessKey, string secretKey)
-			: this()
+		public AccountForm(string name, AccountInfo info)
+			: this(name)
 		{
-			AccountName = name;
-			AccountAccessKey = accessKey;
-			AccountSecretKey = secretKey;
+			if (info == null) throw new ArgumentNullException("info");
 
 			Text = PluginResources.EditAccount;
 			textBox1.Enabled = false;
-			textBox2.Focus();
-			textBox2.SelectionStart = textBox2.TextLength;
+			textBox2.Text = info.AccessKey ?? string.Empty;
+			textBox3.Text = info.SecretKey ?? string.Empty;
 		}
 
 		private void TextBox1TextChanged(object sender, EventArgs e)
 		{
 			buttonOK.Enabled = ((TextBox)sender).TextLength != 0;
+		}
+
+		private void AccountForm_Shown(object sender, EventArgs e)
+		{
+			if (0 < textBox1.TextLength || 0 < textBox3.TextLength) textBox2.Focus();
+			if (0 < textBox2.TextLength) textBox3.Focus();
 		}
 	}
 }

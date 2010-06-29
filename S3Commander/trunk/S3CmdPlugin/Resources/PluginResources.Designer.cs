@@ -76,6 +76,27 @@ namespace S3CmdPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Icon keys {
+            get {
+                object obj = ResourceManager.GetObject("keys", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon new1 {
+            get {
+                object obj = ResourceManager.GetObject("new1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Icon new2 {
+            get {
+                object obj = ResourceManager.GetObject("new2", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to New Account.
         /// </summary>
@@ -91,6 +112,15 @@ namespace S3CmdPlugin.Resources {
         internal static string ProductName {
             get {
                 return ResourceManager.GetString("ProductName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account with same name exists. Replace it?.
+        /// </summary>
+        internal static string ReplaceAccount {
+            get {
+                return ResourceManager.GetString("ReplaceAccount", resourceCulture);
             }
         }
     }

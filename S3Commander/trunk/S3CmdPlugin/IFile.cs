@@ -1,4 +1,5 @@
-﻿using Tools.TotalCommanderT;
+﻿using System.Drawing;
+using Tools.TotalCommanderT;
 
 namespace S3CmdPlugin
 {
@@ -20,5 +21,7 @@ namespace S3CmdPlugin
 		FileSystemExitCode Move(string newName, bool overwrite, RemoteInfo info, PluginContext context);
 
 		bool Delete(PluginContext context);
+
+		IconExtractResult ExctractCustomIcon(IconExtractFlags ExtractFlags, ref Icon icon);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
-using System.Windows.Forms;
+using System.Drawing;
+using S3CmdPlugin.Resources;
 using Tools.TotalCommanderT;
 
 namespace S3CmdPlugin.Accounts
@@ -7,46 +8,45 @@ namespace S3CmdPlugin.Accounts
 	class Account : FileBase, IDirectory
 	{
 		private AccountManager accountManager;
+		private string name;
 
 
 		public Account(AccountManager accountManager, string name)
 		{
 			this.accountManager = accountManager;
+			this.name = name;
 			findData.FileName = name;
 			findData.Attributes = FileAttributes.Directory;
 		}
 
 
-		public bool Create(PluginContext context, string directory)
+		public bool Create(string directory, PluginContext context)
 		{
 			return false;
 		}
 
 		public override bool Delete(PluginContext context)
 		{
-			accountManager.Remove(FindData.FileName);
+			accountManager.Remove(name);
 			return true;
 		}
 
 		public override FileSystemExitCode Move(string newName, bool overwrite, RemoteInfo info, PluginContext context)
 		{
-			accountManager.Move(FindData.FileName, newName);
+			accountManager.Move(name, newName);
 			return FileSystemExitCode.OK;
 		}
 
 		public override ExecExitCode Properties(PluginContext context)
 		{
-			var accessKey = string.Empty;
-			var secretKey = string.Empty;
-			accountManager.GetAccount(FindData.FileName, out accessKey, out secretKey);
-			using (var form = new AccountForm(FindData.FileName, accessKey, secretKey))
-			{
-				if (form.ShowDialog() == DialogResult.OK)
-				{
-					accountManager.Save(form.AccountName, form.AccountAccessKey, form.AccountSecretKey);
-				}
-			}
+			accountManager.EditAccountForm(name, context);
 			return ExecExitCode.OK;
+		}
+
+		public override IconExtractResult ExctractCustomIcon(IconExtractFlags ExtractFlags, ref Icon icon)
+		{
+			icon = PluginResources.keys;
+			return IconExtractResult.Extracted;
 		}
 
 		public IFile Current

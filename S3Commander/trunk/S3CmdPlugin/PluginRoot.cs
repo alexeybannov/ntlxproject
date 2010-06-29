@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using S3CmdPlugin.Accounts;
-using S3CmdPlugin.Resources;
 
 namespace S3CmdPlugin
 {
@@ -39,18 +36,9 @@ namespace S3CmdPlugin
         }
 
 
-        public bool Create(PluginContext context, string directory)
+        public bool Create(string directory, PluginContext context)
         {
-            using (var form = new AccountForm())
-            {
-                form.AccountName = directory;
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    accountManager.Save(form.AccountName, form.AccountAccessKey, form.AccountSecretKey);
-                    return true;
-                }
-            }
-            return false;
+			return accountManager.CreateNewAccountForm(directory, context);
         }
 
 
@@ -67,7 +55,7 @@ namespace S3CmdPlugin
         public void Reset()
         {
 			items = new List<IFile>();
-            accountManager = new AccountManager(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), PluginResources.ProductName));
+            accountManager = new AccountManager();
             items.Add(new NewAccount(accountManager));
             accountManager
                 .GetAccounts()

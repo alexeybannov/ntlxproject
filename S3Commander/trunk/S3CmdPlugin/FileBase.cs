@@ -1,4 +1,5 @@
-﻿using Tools.TotalCommanderT;
+﻿using System.Drawing;
+using Tools.TotalCommanderT;
 
 namespace S3CmdPlugin
 {
@@ -40,6 +41,16 @@ namespace S3CmdPlugin
 		public virtual bool Delete(PluginContext context)
 		{
 			return false;
+		}
+
+		public virtual IconExtractResult ExctractCustomIcon(IconExtractFlags ExtractFlags, ref Icon icon)
+		{
+			return IconExtractResult.UseDefault;
+		}
+
+		public override string ToString()
+		{
+			return findData.FileName;
 		}
 	}
 }
