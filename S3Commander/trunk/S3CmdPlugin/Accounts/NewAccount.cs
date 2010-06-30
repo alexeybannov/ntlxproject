@@ -27,7 +27,7 @@ namespace S3CmdPlugin.Accounts
 		public override IconExtractResult ExctractCustomIcon(IconExtractFlags ExtractFlags, ref System.Drawing.Icon icon)
 		{
 			icon = PluginResources.new2;
-			return IconExtractResult.Extracted;
+			return IconExtractResult.ExtractedDestroy;
 		}
 	}
 }
