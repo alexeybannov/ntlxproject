@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using S3CmdPlugin.Accounts;
+using S3CmdPlugin.Config;
 
 namespace S3CmdPlugin
 {
@@ -57,6 +58,7 @@ namespace S3CmdPlugin
 			items = new List<IFile>();
             accountManager = new AccountManager();
             items.Add(new NewAccount(accountManager));
+			items.Add(new ConfigRoot());
             accountManager
                 .GetAccounts()
                 .ToList()

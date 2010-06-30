@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Amazon.S3;
+using System.Net;
 
 namespace S3CmdPlugin.Tests
 {
@@ -8,7 +10,9 @@ namespace S3CmdPlugin.Tests
 	{
 		static void Main(string[] args)
 		{
-			var pathRoot = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+			AmazonS3Config cfg = new AmazonS3Config();
+			var re = WebRequest.Create("http://s3.amazon.com");
+			var proxy = WebRequest.GetSystemWebProxy();
 		}
 	}
 }

@@ -63,9 +63,10 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.label1.Location = new System.Drawing.Point(12, 15);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 13);
+			this.label1.Size = new System.Drawing.Size(39, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Name";
 			// 
@@ -89,6 +90,7 @@
 			// 
 			// textBox1
 			// 
+			this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.textBox1.Location = new System.Drawing.Point(81, 12);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(279, 20);
@@ -108,6 +110,7 @@
 			this.textBox3.Name = "textBox3";
 			this.textBox3.Size = new System.Drawing.Size(279, 20);
 			this.textBox3.TabIndex = 3;
+			this.textBox3.UseSystemPasswordChar = true;
 			// 
 			// groupBox1
 			// 

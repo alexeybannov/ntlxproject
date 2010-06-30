@@ -127,7 +127,7 @@ namespace S3CmdPlugin
 			{
 				ShowError(ex);
 			}
-			return ExecExitCode.OK;
+			return ExecExitCode.Error;
 		}
 
 		public override FileSystemExitCode RenMovFile(string OldName, string NewName, bool Move, bool OverWrite, RemoteInfo info)

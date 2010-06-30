@@ -47,6 +47,7 @@
       <HintPath>..\Ref\AWSSDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -68,6 +69,14 @@
     <Compile Include="Accounts\AccountInfo.cs" />
     <Compile Include="Accounts\AccountManager.cs" />
     <Compile Include="Accounts\NewAccount.cs" />
+    <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\ConfigForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Config\ConfigForm.Designer.cs">
+      <DependentUpon>ConfigForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\ConfigManager.cs" />
     <Compile Include="FileBase.cs" />
     <Compile Include="IDirectory.cs" />
     <Compile Include="IFile.cs" />
@@ -101,6 +110,10 @@
       <DependentUpon>AccountForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Config\ConfigForm.resx">
+      <DependentUpon>ConfigForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\PluginResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PluginResources.Designer.cs</LastGenOutput>
@@ -123,6 +136,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\new2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="S3\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
