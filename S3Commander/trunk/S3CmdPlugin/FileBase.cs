@@ -15,22 +15,22 @@ namespace S3CmdPlugin
 
 		public virtual ExecExitCode Open(PluginContext context)
 		{
-			return ExecExitCode.OK;
+			return ExecExitCode.Error;
 		}
 
 		public virtual ExecExitCode Properties(PluginContext context)
 		{
-			return ExecExitCode.OK;
+            return ExecExitCode.Error;
 		}
 
 		public virtual ExecExitCode ChMod(string mod, PluginContext context)
 		{
-			return ExecExitCode.OK;
+            return ExecExitCode.Error;
 		}
 
 		public virtual ExecExitCode Quote(string command, PluginContext context)
 		{
-			return ExecExitCode.OK;
+            return ExecExitCode.Error;
 		}
 
 		public virtual FileSystemExitCode Move(string newName, bool overwrite, RemoteInfo info, PluginContext context)

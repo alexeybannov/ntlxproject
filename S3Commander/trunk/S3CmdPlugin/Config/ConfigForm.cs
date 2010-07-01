@@ -18,8 +18,8 @@ namespace S3CmdPlugin.Config
 			var proxy = WebRequest.GetSystemWebProxy();
 			if (proxy != null)
 			{
-				checkBox1.Checked = true;
-				textBox3.Text = proxy.GetProxy(new Uri(textBox1.Text)).ToString();
+				//checkBox1.Checked = true;
+				//textBox3.Text = proxy.GetProxy(new Uri(textBox1.Text)).ToString();
 			}
 		}
 
@@ -29,5 +29,10 @@ namespace S3CmdPlugin.Config
 				textBox3.Enabled = textBox4.Enabled = textBox5.Enabled =
 					checkBox1.Checked;
 		}
+
+        private void ConfigForm_Load(object sender, EventArgs e)
+        {
+
+        }
 	}
 }
