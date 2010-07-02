@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3CmdPlugin", "S3CmdPlugin\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3CmdPlugin.Tests", "S3CmdPlugin.Tests\S3CmdPlugin.Tests.csproj", "{C6057B62-FBCA-428B-981E-033E792FBADC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.WFX", "TotalCommander.WFX\TotalCommander.WFX.csproj", "{5A4C0890-6532-4B1D-9A32-977ECB568A5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug No Post-Build|Any CPU = Debug No Post-Build|Any CPU
@@ -24,6 +26,12 @@ Global
 		{C6057B62-FBCA-428B-981E-033E792FBADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6057B62-FBCA-428B-981E-033E792FBADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6057B62-FBCA-428B-981E-033E792FBADC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A4C0890-6532-4B1D-9A32-977ECB568A5E}.Debug No Post-Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4C0890-6532-4B1D-9A32-977ECB568A5E}.Debug No Post-Build|Any CPU.Build.0 = Debug|Any CPU
+		{5A4C0890-6532-4B1D-9A32-977ECB568A5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4C0890-6532-4B1D-9A32-977ECB568A5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A4C0890-6532-4B1D-9A32-977ECB568A5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A4C0890-6532-4B1D-9A32-977ECB568A5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
