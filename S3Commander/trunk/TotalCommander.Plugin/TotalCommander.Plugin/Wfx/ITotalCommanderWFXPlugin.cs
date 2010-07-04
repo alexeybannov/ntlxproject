@@ -5,12 +5,7 @@ namespace TotalCommander.Plugin.Wfx
 {
 	public interface ITotalCommanderWfxPlugin
 	{
-		string Name
-		{
-			get;
-		}
-
-		//void Init(Int32 pluginNumber, ProgressCallback progress, LogCallback log, RequestCallback request)
+		void Init(Progress progress, Logger logger, Request request);
 
 		bool FindFirst(string path, FindData findData, out object enumerator);
 

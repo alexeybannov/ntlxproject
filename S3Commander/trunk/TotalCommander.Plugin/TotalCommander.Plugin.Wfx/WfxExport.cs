@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using TotalCommander.Plugin.Wfx.Internal;
+using System.Text;
 
 namespace TotalCommander.Plugin.Wfx
 {
@@ -55,9 +56,15 @@ namespace TotalCommander.Plugin.Wfx
 		}
 
 		[DllExport]
-		public static void FsGetDefRootName([Out, MarshalAs(UnmanagedType.LPStr)]string defRootName, Int32 maxLen)
+		public static void FsGetDefRootName([MarshalAs(UnmanagedType.LPStr)] StringBuilder defRootName, Int32 maxLen)
 		{
-			WfxFunctions.FsGetDefRootName(defRootName, maxLen);
+			var name = WfxFunctions.FsGetDefRootName(maxLen);
+			if (!string.IsNullOrEmpty(name))
+			{
+				defRootName.Append(Encoding.ASCII.GetString(
+					Encoding.Convert(Encoding.Unicode, Encoding.ASCII, Encoding.Unicode.GetBytes(name))
+				));
+			}
 		}
 
 

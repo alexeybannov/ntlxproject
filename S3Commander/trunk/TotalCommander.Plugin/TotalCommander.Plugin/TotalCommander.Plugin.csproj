@@ -41,9 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
+    <Compile Include="Utils\Int64Extension.cs" />
+    <Compile Include="Wfx\Request.cs" />
+    <Compile Include="Wfx\Progress.cs" />
     <Compile Include="Wfx\Internal\Callbacks.cs" />
     <Compile Include="Wfx\Internal\FsDefaultParamStruct.cs" />
     <Compile Include="Wfx\Internal\WIN32_FIND_DATA.cs" />
+    <Compile Include="Wfx\Logger.cs" />
     <Compile Include="Wfx\MessageType.cs" />
     <Compile Include="Wfx\RequestType.cs" />
     <Compile Include="Wfx\TotalCommanderWfxPlugin.cs" />

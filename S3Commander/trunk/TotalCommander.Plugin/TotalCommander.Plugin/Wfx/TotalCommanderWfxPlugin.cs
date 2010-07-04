@@ -4,12 +4,31 @@ namespace TotalCommander.Plugin.Wfx
 {
 	public abstract class TotalCommanderWfxPlugin : ITotalCommanderWfxPlugin
 	{
-		public abstract string Name
+		protected Progress Progress
 		{
 			get;
+			private set;
 		}
 
-		//void Init(Int32 PluginNr, IntPtr progressProc, IntPtr logProc, IntPtr requestProc)
+		protected Logger Logger
+		{
+			get;
+			private set;
+		}
+
+		protected Request Request
+		{
+			get;
+			private set;
+		}
+
+
+		public void Init(Progress progress, Logger logger, Request request)
+		{
+			Progress = progress;
+			Logger = logger;
+			Request = request;
+		}
 
 		public virtual bool FindFirst(string path, FindData findData, out object enumerator)
 		{

@@ -8,7 +8,7 @@ namespace TotalCommander.Plugin.Wfx
 		int requestType,
 		[MarshalAs(UnmanagedType.LPStr)] string customTitle,
 		[MarshalAs(UnmanagedType.LPStr)] string customText,
-		[MarshalAs(UnmanagedType.LPStr)] string defaultText,
+		[MarshalAs(UnmanagedType.LPStr, SizeConst = 260)] string defaultText,
 		int maxLen
 	);
 }

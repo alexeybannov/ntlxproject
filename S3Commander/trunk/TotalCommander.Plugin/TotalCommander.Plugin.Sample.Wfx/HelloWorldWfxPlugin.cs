@@ -5,12 +5,8 @@ using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin.Sample.Wfx
 {
-	[TotalCommanderPlugin("sss")]
+	[TotalCommanderPlugin("Hello World Plugin")]
 	public class HelloWorldWfxPlugin : TotalCommanderWfxPlugin
 	{
-		public override string Name
-		{
-			get { return "Hello, World!"; }
-		}
 	}
 }

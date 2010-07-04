@@ -12,6 +12,7 @@ namespace TotalCommander.Plugin
 
 		public TotalCommanderPluginAttribute(string name)
 		{
+			if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
 			Name = name;
 		}
 	}

@@ -16,7 +16,10 @@ namespace TotalCommander.Plugin.Wfx.Internal
 		{
 			try
 			{
-				
+				var progresser = new Progress(pluginNumber, progress);
+				var logger = new Logger(pluginNumber, log);
+				var requestor = new Request(pluginNumber, request);
+				Plugin.Init(progresser, logger, requestor);
 			}
 			catch (Exception ex)
 			{
@@ -84,16 +87,17 @@ namespace TotalCommander.Plugin.Wfx.Internal
 			}
 		}
 
-		public static void FsGetDefRootName(string defRootName, Int32 maxLen)
+		public static string FsGetDefRootName(Int32 maxLen)
 		{
 			try
 			{
-				defRootName = StringUtil.First(Plugin.Name, maxLen - 1);
+				return StringUtil.First(PluginHolder.GetWfxPluginName(), maxLen - 1);
 			}
 			catch (Exception ex)
 			{
 				ProcessError(ex);
 			}
+			return null;
 		}
 
 
