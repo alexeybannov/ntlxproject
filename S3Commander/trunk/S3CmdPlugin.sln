@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3CmdPlugin", "S3CmdPlugin\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3CmdPlugin.Tests", "S3CmdPlugin.Tests\S3CmdPlugin.Tests.csproj", "{C6057B62-FBCA-428B-981E-033E792FBADC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.WFX", "TotalCommander.Plugin\TotalCommander.Plugin.csproj", "{5A4C0890-6532-4B1D-9A32-977ECB568A5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.Plugin", "TotalCommander.Plugin\TotalCommander.Plugin.csproj", "{5A4C0890-6532-4B1D-9A32-977ECB568A5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntlx.MSBuild.Tasks", "Ntlx.MSBuild.Tasks\Ntlx.MSBuild.Tasks.csproj", "{3DB5091A-2073-4387-918E-677F9FBCD839}"
 EndProject
