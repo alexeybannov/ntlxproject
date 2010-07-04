@@ -11,7 +11,7 @@ namespace TotalCommander.Plugin.Utils
 
 		public static string ToPath(string str)
 		{
-			return First(str, Const.MAX_PATH - 1);
+			return First(str, PluginConst.MAX_PATH - 1);
 		}
 	}
 }

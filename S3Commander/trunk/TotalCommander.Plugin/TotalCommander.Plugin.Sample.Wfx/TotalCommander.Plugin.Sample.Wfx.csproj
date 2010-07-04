@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5A4C0890-6532-4B1D-9A32-977ECB568A5E}</ProjectGuid>
+    <ProjectGuid>{F06EE177-82AF-4533-AAC9-F8B774C5A035}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TotalCommander.Plugin</RootNamespace>
-    <AssemblyName>TotalCommander.Plugin</AssemblyName>
+    <RootNamespace>TotalCommander.Plugin.Sample.Wfx</RootNamespace>
+    <AssemblyName>TotalCommander.Plugin.Sample.Wfx</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,42 +21,40 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DllExportAttribute.cs" />
-    <Compile Include="Wfx\Internal\Callbacks.cs" />
-    <Compile Include="Wfx\Internal\FsDefaultParamStruct.cs" />
-    <Compile Include="Wfx\Internal\WIN32_FIND_DATA.cs" />
-    <Compile Include="Wfx\MessageType.cs" />
-    <Compile Include="Wfx\RequestType.cs" />
-    <Compile Include="Wfx\TotalCommanderWfxPlugin.cs" />
-    <Compile Include="Wfx\FindData.cs" />
-    <Compile Include="Wfx\DefaultParam.cs" />
-    <Compile Include="PluginConst.cs" />
-    <Compile Include="Wfx\Internal\SafeEnumeratorHandle.cs" />
-    <Compile Include="PluginHolder.cs" />
-    <Compile Include="Wfx\Internal\WfxFunctions.cs" />
-    <Compile Include="Wfx\ITotalCommanderWfxPlugin.cs" />
+    <Compile Include="HelloWorldWfxPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TotalCommanderPluginAttribute.cs" />
-    <Compile Include="Utils\StringUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TotalCommander.Plugin.Wfx\TotalCommander.Plugin.Wfx.csproj">
+      <Project>{A24CE8D3-DA5E-42DD-83D9-064F706CC01F}</Project>
+      <Name>TotalCommander.Plugin.Wfx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TotalCommander.Plugin\TotalCommander.Plugin.csproj">
+      <Project>{5A4C0890-6532-4B1D-9A32-977ECB568A5E}</Project>
+      <Name>TotalCommander.Plugin</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

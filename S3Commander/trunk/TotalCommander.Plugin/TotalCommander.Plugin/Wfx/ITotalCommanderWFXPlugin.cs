@@ -1,4 +1,5 @@
 ﻿using System;
+using TotalCommander.Plugin.Wfx.Internal;
 
 namespace TotalCommander.Plugin.Wfx
 {
@@ -9,7 +10,7 @@ namespace TotalCommander.Plugin.Wfx
 			get;
 		}
 
-		//void Init(Int32 PluginNr, IntPtr progressProc, IntPtr logProc, IntPtr requestProc)
+		//void Init(Int32 pluginNumber, ProgressCallback progress, LogCallback log, RequestCallback request)
 
 		bool FindFirst(string path, FindData findData, out object enumerator);
 

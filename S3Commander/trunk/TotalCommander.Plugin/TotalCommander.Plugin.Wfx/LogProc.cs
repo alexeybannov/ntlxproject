@@ -1,10 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace TotalCommander.Plugin.Wfx.Internal
+namespace TotalCommander.Plugin.Wfx
 {
+	[UnmanagedFunctionPointerAttribute(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
 	delegate void LogProc(
 		int pluginNumber,
-		MessageType messageType,
+		int messageType,
 		[MarshalAs(UnmanagedType.LPStr)] string logString
 	);
 }

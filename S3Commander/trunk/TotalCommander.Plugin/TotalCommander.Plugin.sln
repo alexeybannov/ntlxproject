@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.Plugin", "TotalCommander.Plugin.csproj", "{5A4C0890-6532-4B1D-9A32-977ECB568A5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.Plugin", "TotalCommander.Plugin\TotalCommander.Plugin.csproj", "{5A4C0890-6532-4B1D-9A32-977ECB568A5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.Plugin.Sample.Wfx", "..\TotalCommander.Plugin.Sample.Wfx\TotalCommander.Plugin.Sample.Wfx.csproj", "{F06EE177-82AF-4533-AAC9-F8B774C5A035}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.Plugin.Sample.Wfx", "TotalCommander.Plugin.Sample.Wfx\TotalCommander.Plugin.Sample.Wfx.csproj", "{F06EE177-82AF-4533-AAC9-F8B774C5A035}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalCommander.Plugin.Wfx", "TotalCommander.Plugin.Wfx\TotalCommander.Plugin.Wfx.csproj", "{A24CE8D3-DA5E-42DD-83D9-064F706CC01F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,10 @@ Global
 		{F06EE177-82AF-4533-AAC9-F8B774C5A035}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F06EE177-82AF-4533-AAC9-F8B774C5A035}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F06EE177-82AF-4533-AAC9-F8B774C5A035}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A24CE8D3-DA5E-42DD-83D9-064F706CC01F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A24CE8D3-DA5E-42DD-83D9-064F706CC01F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A24CE8D3-DA5E-42DD-83D9-064F706CC01F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A24CE8D3-DA5E-42DD-83D9-064F706CC01F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
