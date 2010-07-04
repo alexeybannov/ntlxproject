@@ -48,21 +48,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FindData.cs" />
-    <Compile Include="DefaultParam.cs" />
-    <Compile Include="Internal\Const.cs" />
-    <Compile Include="Internal\ExportFunctions.cs" />
-    <Compile Include="Internal\FsDefaultParamStruct.cs" />
-    <Compile Include="Internal\WIN32_FIND_DATA.cs" />
-    <Compile Include="ITotalCommanderWFXPlugin.cs" />
+    <Compile Include="DllExportAttribute.cs" />
+    <Compile Include="Wfx\FindData.cs" />
+    <Compile Include="Wfx\DefaultParam.cs" />
+    <Compile Include="Wfx\Internal\Const.cs" />
+    <Compile Include="Wfx\Internal\LogProc.cs" />
+    <Compile Include="Wfx\Internal\SafeEnumeratorHandle.cs" />
+    <Compile Include="PluginHolder.cs" />
+    <Compile Include="Wfx\Internal\RequestProc.cs" />
+    <Compile Include="Wfx\Internal\ExportFunctions.cs" />
+    <Compile Include="Wfx\Internal\FsDefaultParamStruct.cs" />
+    <Compile Include="Wfx\Internal\WIN32_FIND_DATA.cs" />
+    <Compile Include="Wfx\ITotalCommanderWFXPlugin.cs" />
+    <Compile Include="Wfx\Internal\ProgressProc.cs" />
+    <Compile Include="Wfx\MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wfx\RequestType.cs" />
+    <Compile Include="TotalCommanderPluginAttribute.cs" />
+    <Compile Include="Utils\StringUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <UsingTask TaskName="Ntlx.MSBuild.Tasks.DllExport" AssemblyFile="..\Ref\Ntlx.MSBuild.Tasks.dll" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <Target Name="AfterBuild">
+    <DllExport Assembly="$(TargetPath)" OutputType="$(OutputType)" DebugSymbols="$(DebugSymbols)" SignAssembly="$(SignAssembly)" KeyFile="$(KeyFile)" Platform="$(Platform)" />
+  </Target>
 </Project>
