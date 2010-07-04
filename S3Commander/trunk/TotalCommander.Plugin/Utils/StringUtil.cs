@@ -1,5 +1,4 @@
-﻿using TotalCommander.Plugin.Wfx.Internal;
-
+﻿
 namespace TotalCommander.Plugin.Utils
 {
 	static class StringUtil

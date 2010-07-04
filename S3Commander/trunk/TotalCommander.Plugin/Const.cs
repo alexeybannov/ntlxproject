@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TotalCommander.Plugin.Wfx.Internal
+namespace TotalCommander.Plugin
 {
     static class Const
     {

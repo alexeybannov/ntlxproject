@@ -6,7 +6,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
 {
 	class SafeEnumeratorHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
-		public static readonly SafeEnumeratorHandle MinusOne = new SafeEnumeratorHandle();
+		public static readonly SafeEnumeratorHandle MinusOne = new SafeEnumeratorHandle(new IntPtr(-1));
 
 		public object Enumerator
 		{
@@ -14,10 +14,10 @@ namespace TotalCommander.Plugin.Wfx.Internal
 		}
 
 
-		public SafeEnumeratorHandle()
+		public SafeEnumeratorHandle(IntPtr ptr)
 			: base(true)
 		{
-			SetHandle(new IntPtr(-1));
+			SetHandle(ptr);
 		}
 
 		public SafeEnumeratorHandle(object enumerator)
@@ -36,6 +36,17 @@ namespace TotalCommander.Plugin.Wfx.Internal
 				GCHandle.FromIntPtr(handle).Free();
 			}
 			return true;
+		}
+
+
+		public static implicit operator IntPtr(SafeEnumeratorHandle handle)
+		{
+			return handle.handle;
+		}
+
+		public static implicit operator SafeEnumeratorHandle(IntPtr ptr)
+		{
+			return new SafeEnumeratorHandle(ptr);
 		}
 	}
 }

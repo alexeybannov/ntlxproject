@@ -8,9 +8,9 @@
     <ProjectGuid>{5A4C0890-6532-4B1D-9A32-977ECB568A5E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TotalCommander.WFX</RootNamespace>
-    <AssemblyName>TotalCommander.WFX</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>TotalCommander.Plugin</RootNamespace>
+    <AssemblyName>TotalCommander.Plugin</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -35,23 +35,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
+    <Compile Include="Wfx\TotalCommanderWfxPlugin.cs" />
     <Compile Include="Wfx\FindData.cs" />
     <Compile Include="Wfx\DefaultParam.cs" />
-    <Compile Include="Wfx\Internal\Const.cs" />
+    <Compile Include="Const.cs" />
     <Compile Include="Wfx\Internal\LogProc.cs" />
     <Compile Include="Wfx\Internal\SafeEnumeratorHandle.cs" />
     <Compile Include="PluginHolder.cs" />
@@ -59,7 +52,7 @@
     <Compile Include="Wfx\Internal\ExportFunctions.cs" />
     <Compile Include="Wfx\Internal\FsDefaultParamStruct.cs" />
     <Compile Include="Wfx\Internal\WIN32_FIND_DATA.cs" />
-    <Compile Include="Wfx\ITotalCommanderWFXPlugin.cs" />
+    <Compile Include="Wfx\ITotalCommanderWfxPlugin.cs" />
     <Compile Include="Wfx\Internal\ProgressProc.cs" />
     <Compile Include="Wfx\MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

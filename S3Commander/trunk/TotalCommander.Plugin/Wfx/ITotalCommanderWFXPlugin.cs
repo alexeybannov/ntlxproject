@@ -2,7 +2,7 @@
 
 namespace TotalCommander.Plugin.Wfx
 {
-	public interface ITotalCommanderWFXPlugin
+	public interface ITotalCommanderWfxPlugin
 	{
 		string Name
 		{
