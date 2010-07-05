@@ -11,6 +11,8 @@ namespace TotalCommander.Plugin.Wfx.Internal
 			get { return PluginHolder.GetWfxPlugin(); }
 		}
 
+        private static object enumerator;
+
 
 		public static Int32 FsInit(Int32 pluginNumber, ProgressCallback progress, LogCallback log, RequestCallback request)
 		{
@@ -31,7 +33,6 @@ namespace TotalCommander.Plugin.Wfx.Internal
 		public static IntPtr FsFindFirst(string path, IntPtr pFindData)
 		{
 			var findData = new FindData();
-			object enumerator = null;
 			var result = false;
 			try
 			{
@@ -42,16 +43,16 @@ namespace TotalCommander.Plugin.Wfx.Internal
 				ProcessError(ex);
 			}
 			findData.CopyTo(pFindData);
-			return result ? new SafeEnumeratorHandle(enumerator) : SafeEnumeratorHandle.MinusOne;
+			return result ? IntPtr.Zero : PluginConst.INVALID_HANDLE_VALUE;
 		}
 
-		public static bool FsFindNext(SafeEnumeratorHandle handle, IntPtr pFindData)
+		public static bool FsFindNext(IntPtr handle, IntPtr pFindData)
 		{
 			var findData = new FindData();
 			var result = false;
 			try
 			{
-				result = Plugin.FindNext(handle.Enumerator, findData);
+				result = Plugin.FindNext(enumerator, findData);
 			}
 			catch (Exception ex)
 			{
@@ -61,17 +62,17 @@ namespace TotalCommander.Plugin.Wfx.Internal
 			return result;
 		}
 
-		public static Int32 FsFindClose(SafeEnumeratorHandle handle)
+        public static Int32 FsFindClose(IntPtr handle)
 		{
 			try
 			{
-				Plugin.FindClose(handle.Enumerator);
+				Plugin.FindClose(enumerator);
 			}
 			catch (Exception ex)
 			{
 				ProcessError(ex);
 			}
-			handle.Dispose();
+			enumerator = null;
 			return 0;
 		}
 

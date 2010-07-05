@@ -1,7 +1,7 @@
-﻿using TotalCommander.Plugin.Wfx;
+﻿using System;
 using System.IO;
 using System.Reflection;
-using System;
+using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin
 {

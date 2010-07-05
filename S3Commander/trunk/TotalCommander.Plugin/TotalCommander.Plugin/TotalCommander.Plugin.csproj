@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
-    <Compile Include="Utils\Int64Extension.cs" />
     <Compile Include="Wfx\Request.cs" />
     <Compile Include="Wfx\Progress.cs" />
     <Compile Include="Wfx\Internal\Callbacks.cs" />
@@ -54,7 +53,6 @@
     <Compile Include="Wfx\FindData.cs" />
     <Compile Include="Wfx\DefaultParam.cs" />
     <Compile Include="PluginConst.cs" />
-    <Compile Include="Wfx\Internal\SafeEnumeratorHandle.cs" />
     <Compile Include="PluginHolder.cs" />
     <Compile Include="Wfx\Internal\WfxFunctions.cs" />
     <Compile Include="Wfx\ITotalCommanderWfxPlugin.cs" />

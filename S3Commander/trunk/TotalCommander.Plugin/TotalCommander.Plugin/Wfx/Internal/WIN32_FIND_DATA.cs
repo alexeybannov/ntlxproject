@@ -8,17 +8,14 @@ namespace TotalCommander.Plugin.Wfx.Internal
     {
         public int fileAttributes;
         
-        // creationTime was an embedded FILETIME structure.
-        public int creationTime_lowDateTime;
-        public int creationTime_highDateTime;
+        public int creationTimeLow;
+        public int creationTimeHigh;
         
-        // lastAccessTime was an embedded FILETIME structure.
-        public int lastAccessTime_lowDateTime;
-        public int lastAccessTime_highDateTime;
+        public int lastAccessTimeLow;
+        public int lastAccessTimeHigh;
         
-        // lastWriteTime was an embedded FILETIME structure.
-        public int lastWriteTime_lowDateTime;
-        public int lastWriteTime_highDateTime;
+        public int lastWriteTimeLow;
+        public int lastWriteTimeHigh;
         
         public int nFileSizeHigh;
         public int nFileSizeLow;
