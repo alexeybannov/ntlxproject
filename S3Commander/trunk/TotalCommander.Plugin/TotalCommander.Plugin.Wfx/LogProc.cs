@@ -2,7 +2,7 @@
 
 namespace TotalCommander.Plugin.Wfx
 {
-	[UnmanagedFunctionPointerAttribute(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+	[UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
 	delegate void LogProc(
 		int pluginNumber,
 		int messageType,

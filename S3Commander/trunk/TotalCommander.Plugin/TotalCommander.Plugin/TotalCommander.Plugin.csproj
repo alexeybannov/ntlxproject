@@ -41,6 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="Wfx\ExecuteResult.cs" />
+    <Compile Include="Wfx\FileOperationResult.cs" />
+    <Compile Include="Wfx\Internal\RemoteInfoStruct.cs" />
+    <Compile Include="Wfx\RemoteInfo.cs" />
     <Compile Include="Wfx\Request.cs" />
     <Compile Include="Wfx\Progress.cs" />
     <Compile Include="Wfx\Internal\Callbacks.cs" />

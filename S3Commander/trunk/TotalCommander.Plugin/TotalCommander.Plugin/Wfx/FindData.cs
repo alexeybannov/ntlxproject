@@ -91,12 +91,12 @@ namespace TotalCommander.Plugin.Wfx
 
         private int High(Int64 int64)
         {
-            return (int)(int64 >> 8 * sizeof(Int64) / 2);
+            return (int)(int64 >> 8 * sizeof(Int32));
         }
 
         private int Low(Int64 int64)
         {
-            return High(int64 << 8 * sizeof(Int64) / 2);
+            return High(int64 << 8 * sizeof(Int32));
         }
     }
 }

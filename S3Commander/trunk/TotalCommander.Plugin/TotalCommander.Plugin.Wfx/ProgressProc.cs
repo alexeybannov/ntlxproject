@@ -3,7 +3,7 @@
 namespace TotalCommander.Plugin.Wfx
 {
 
-	[UnmanagedFunctionPointerAttribute(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+	[UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
 	delegate int ProgressProc(
 		int pluginNumber,
 		[MarshalAs(UnmanagedType.LPStr)] string sourceName,

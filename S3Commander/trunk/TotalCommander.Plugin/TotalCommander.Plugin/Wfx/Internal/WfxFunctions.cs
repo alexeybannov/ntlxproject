@@ -100,8 +100,35 @@ namespace TotalCommander.Plugin.Wfx.Internal
 			}
 			return null;
 		}
+		
+		public static int FsExecuteFile(IntPtr mainWin, string remoteName, string verb)
+		{
+			var result = ExecuteResult.Error;
+			try
+			{
+				result = Plugin.ExecuteFile(new MainWindow(mainWin), remoteName, verb);
+			}
+			catch (Exception ex)
+			{
+				ProcessError(ex);
+			}
+			return (int)result;
+		}
 
-
+		public static int FsRenMovFile(string oldName, string newName, bool move, bool overWrite, IntPtr ri)
+		{
+			var result = FileOperationResult.NotSupported;
+			try
+			{
+				result = Plugin.RenameMoveFile(oldName, newName, move, overWrite, RemoteInfo.FromPtr(ri));
+			}
+			catch (Exception ex)
+			{
+				ProcessError(ex);
+			}
+			return (int)result;
+		}
+		
 		private static void ProcessError(Exception ex)
 		{
 			MessageBox.Show(ex.ToString());

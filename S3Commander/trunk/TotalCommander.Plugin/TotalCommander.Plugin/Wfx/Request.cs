@@ -19,7 +19,6 @@ namespace TotalCommander.Plugin.Wfx
 
 		public bool GetRequest(RequestType requestType, string customTitle, string customText, string defaultText)
 		{
-			//return request(pluginNumber, (int)requestType, customTitle, customText, StringUtil.First(defaultText, 259), 260);
 			throw new NotImplementedException();
 		}
 	}

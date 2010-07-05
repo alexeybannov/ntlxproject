@@ -2,9 +2,9 @@
 
 namespace TotalCommander.Plugin
 {
-    public static class PluginConst
+    static class PluginConst
     {
-        public const int MAX_PATH = 260;
+        public const int MAX_PATH = 256;
 
         public const long NO_FILETIME = unchecked((long)0xFFFFFFFFFFFFFFFE);
 

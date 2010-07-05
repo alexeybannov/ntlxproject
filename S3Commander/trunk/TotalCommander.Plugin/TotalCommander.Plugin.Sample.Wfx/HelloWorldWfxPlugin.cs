@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TotalCommander.Plugin.Wfx;
 using System.Collections;
+using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin.Sample.Wfx
 {
@@ -17,6 +15,8 @@ namespace TotalCommander.Plugin.Sample.Wfx
             if (en.MoveNext())
             {
                 findData.FileName = (string)en.Current;
+				findData.FileSize = 12345;
+				findData.LastWriteTime = DateTime.Now;
                 return true;
             }
             return false;
@@ -30,7 +30,7 @@ namespace TotalCommander.Plugin.Sample.Wfx
                 findData.FileName = (string)en.Current;
                 return true;
             }
-            return false;
+			return false;
         }
     }
 }

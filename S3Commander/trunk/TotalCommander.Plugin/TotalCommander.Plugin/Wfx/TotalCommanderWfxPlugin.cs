@@ -4,30 +4,54 @@ namespace TotalCommander.Plugin.Wfx
 {
 	public abstract class TotalCommanderWfxPlugin : ITotalCommanderWfxPlugin
 	{
-		protected Progress Progress
+		public Progress Progress
 		{
 			get;
 			private set;
 		}
 
-		protected Logger Logger
+		public Logger Logger
 		{
 			get;
 			private set;
 		}
 
-		protected Request Request
+		public Request Request
 		{
 			get;
 			private set;
 		}
 
+		public Version PluginInterfaceVersion
+		{
+			get;
+			private set;
+		}
+
+		public string DefaultIniFileName
+		{
+			get;
+			private set;
+		}
+
+
+		public void SetDefaultParams(DefaultParam defaultParam)
+		{
+			PluginInterfaceVersion = defaultParam.PluginInterfaceVersion;
+			DefaultIniFileName = defaultParam.DefaultIniFileName;
+		}
 
 		public void Init(Progress progress, Logger logger, Request request)
 		{
 			Progress = progress;
 			Logger = logger;
 			Request = request;
+			OnInit();
+		}
+
+		protected virtual void OnInit()
+		{
+
 		}
 
 		public virtual bool FindFirst(string path, FindData findData, out object enumerator)
@@ -47,9 +71,14 @@ namespace TotalCommander.Plugin.Wfx
 		}
 
 
-		public virtual void SetDefaultParams(DefaultParam defaultParam)
+		public virtual ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb)
 		{
+			return ExecuteResult.Error;
+		}
 
+		public virtual FileOperationResult RenameMoveFile(string oldName, string newName, bool move, bool overWrite, RemoteInfo ri)
+		{
+			return FileOperationResult.NotSupported;
 		}
 	}
 }

@@ -1,10 +1,11 @@
-﻿using System;
-using TotalCommander.Plugin.Wfx.Internal;
-
+﻿
 namespace TotalCommander.Plugin.Wfx
 {
 	public interface ITotalCommanderWfxPlugin
 	{
+		void SetDefaultParams(DefaultParam defaultParam);
+
+
 		void Init(Progress progress, Logger logger, Request request);
 
 		bool FindFirst(string path, FindData findData, out object enumerator);
@@ -14,6 +15,8 @@ namespace TotalCommander.Plugin.Wfx
 		void FindClose(object enumerator);
 
 
-		void SetDefaultParams(DefaultParam defaultParam);
+		ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb);
+
+		FileOperationResult RenameMoveFile(string oldName, string newName, bool move, bool overWrite, RemoteInfo ri);
 	}
 }
