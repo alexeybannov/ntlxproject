@@ -110,19 +110,19 @@ namespace TotalCommander.Plugin.Wfx
 		[DllExport]
 		public static bool FsDeleteFile([MarshalAs(UnmanagedType.LPStr, SizeConst = MAX_PATH)] string remoteName)
 		{
-			return false;
+			return WfxFunctions.FsDeleteFile(remoteName);
 		}
 
 		[DllExport]
 		public static bool FsMkDir([MarshalAs(UnmanagedType.LPStr, SizeConst = MAX_PATH)] string path)
 		{
-			return false;
+			return WfxFunctions.FsMkDir(path);
 		}
 
 		[DllExport]
 		public static bool FsRemoveDir([MarshalAs(UnmanagedType.LPStr, SizeConst = MAX_PATH)] string remoteName)
 		{
-			return false;
+			return WfxFunctions.FsRemoveDir(remoteName);
 		}
 
 		[DllExport]
@@ -220,7 +220,7 @@ namespace TotalCommander.Plugin.Wfx
 
 		private static bool Request(int pluginNumber, int requestType, string customTitle, string customText, string defaultText, int maxLen)
 		{
-			return Request(pluginNumber, requestType, customTitle, customText, defaultText, maxLen);
+			return requestProc(pluginNumber, requestType, customTitle, customText, defaultText, maxLen);
 		}
 
 		#endregion

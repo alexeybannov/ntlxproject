@@ -128,6 +128,49 @@ namespace TotalCommander.Plugin.Wfx.Internal
 			}
 			return (int)result;
 		}
+
+		public static bool FsDeleteFile(string remoteName)
+		{
+			var result = false;
+			try
+			{
+				result = Plugin.RemoveFile(remoteName);
+			}
+			catch (Exception ex)
+			{
+				ProcessError(ex);
+			}
+			return result;
+		}
+
+		public static bool FsMkDir(string path)
+		{
+			var result = false;
+			try
+			{
+				result = Plugin.CreateDirectory(path);
+			}
+			catch (Exception ex)
+			{
+				ProcessError(ex);
+			}
+			return result;
+		}
+
+		public static bool FsRemoveDir(string remoteName)
+		{
+			var result = false;
+			try
+			{
+				result = Plugin.RemoveDirectory(remoteName);
+			}
+			catch (Exception ex)
+			{
+				ProcessError(ex);
+			}
+			return result;
+		}
+		
 		
 		private static void ProcessError(Exception ex)
 		{

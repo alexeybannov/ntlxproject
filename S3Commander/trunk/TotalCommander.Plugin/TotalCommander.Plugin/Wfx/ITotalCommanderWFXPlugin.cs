@@ -18,5 +18,11 @@ namespace TotalCommander.Plugin.Wfx
 		ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb);
 
 		FileOperationResult RenameMoveFile(string oldName, string newName, bool move, bool overWrite, RemoteInfo ri);
+
+		bool RemoveFile(string remoteName);
+
+		bool CreateDirectory(string path);
+
+		bool RemoveDirectory(string remoteName);
 	}
 }

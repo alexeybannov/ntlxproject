@@ -80,5 +80,20 @@ namespace TotalCommander.Plugin.Wfx
 		{
 			return FileOperationResult.NotSupported;
 		}
+
+		public bool RemoveFile(string remoteName)
+		{
+			return false;
+		}
+
+		public bool CreateDirectory(string path)
+		{
+			return false;
+		}
+
+		public bool RemoveDirectory(string remoteName)
+		{
+			return false;
+		}
 	}
 }
