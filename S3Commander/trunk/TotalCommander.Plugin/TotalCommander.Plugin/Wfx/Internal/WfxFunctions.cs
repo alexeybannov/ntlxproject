@@ -14,14 +14,15 @@ namespace TotalCommander.Plugin.Wfx.Internal
         private static object enumerator;
 
 
-		public static Int32 FsInit(Int32 pluginNumber, ProgressCallback progress, LogCallback log, RequestCallback request)
+        public static Int32 FsInit(Int32 number, ProgressCallback progress, LogCallback log, RequestCallback request)
 		{
 			try
 			{
-				var progresser = new Progress(pluginNumber, progress);
-				var logger = new Logger(pluginNumber, log);
-				var requestor = new Request(pluginNumber, request);
-				Plugin.Init(progresser, logger, requestor);
+				Plugin.Init(
+                    new Progress(number, progress),
+                    new Logger(number, log),
+                    new Request(number, request)
+                );
 			}
 			catch (Exception ex)
 			{

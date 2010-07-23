@@ -81,17 +81,17 @@ namespace TotalCommander.Plugin.Wfx
 			return FileOperationResult.NotSupported;
 		}
 
-		public bool RemoveFile(string remoteName)
+        public virtual bool RemoveFile(string remoteName)
 		{
 			return false;
 		}
 
-		public bool CreateDirectory(string path)
+        public virtual bool CreateDirectory(string path)
 		{
 			return false;
 		}
 
-		public bool RemoveDirectory(string remoteName)
+        public virtual bool RemoveDirectory(string remoteName)
 		{
 			return false;
 		}

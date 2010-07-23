@@ -26,7 +26,7 @@ namespace TotalCommander.Plugin.Wfx
 		}
 
 
-		public static RemoteInfo FromPtr(IntPtr ptr)
+		internal static RemoteInfo FromPtr(IntPtr ptr)
 		{
 			var remoteInfo = new RemoteInfo();
 			if (ptr != IntPtr.Zero)

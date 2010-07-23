@@ -25,9 +25,9 @@ namespace TotalCommander.Plugin.Wfx.Internal
 		public int dwReserved1;
         
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public String fileName;
+        public string fileName;
         
 		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-        public String alternateFileName;
+        public string alternateFileName;
     }
 }
