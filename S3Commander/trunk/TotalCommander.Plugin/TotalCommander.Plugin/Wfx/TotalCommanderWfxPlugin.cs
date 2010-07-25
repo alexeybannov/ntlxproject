@@ -95,5 +95,49 @@ namespace TotalCommander.Plugin.Wfx
 		{
 			return false;
 		}
-	}
+
+
+        public virtual FileOperationResult GetFile(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri)
+        {
+            return FileOperationResult.NotSupported;
+        }
+
+        public virtual FileOperationResult PutFile(string localName, string remoteName, CopyFlags copyFlags)
+        {
+            return FileOperationResult.NotSupported;
+        }
+
+        public virtual bool SetAttributes(string remoteName, System.IO.FileAttributes attributes)
+        {
+            return false;
+        }
+
+        public virtual bool SetTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime)
+        {
+            return false;
+        }
+
+
+        public virtual bool Disconnect(string disconnectRoot)
+        {
+            return false;
+        }
+
+        public virtual void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation)
+        {
+            
+        }
+
+        public virtual ExtractIconResult ExtractCustomIcon(string remoteName, ExtractIconFlag extractIconFlag, out System.Drawing.Icon icon)
+        {
+            icon = null;
+            return ExtractIconResult.UseDefault;
+        }
+
+        public virtual PreviewBitmapResult GetPreviewBitmap(string remoteName, System.Drawing.Size size, out System.Drawing.Bitmap bitmap)
+        {
+            bitmap = null;
+            return PreviewBitmapResult.None;
+        }
+    }
 }

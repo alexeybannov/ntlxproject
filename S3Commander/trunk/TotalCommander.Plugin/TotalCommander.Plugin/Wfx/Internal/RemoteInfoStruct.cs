@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace TotalCommander.Plugin.Wfx.Internal
 {
@@ -7,10 +8,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
 	{
 		public int SizeLow;
 		public int SizeHigh;
-
-		public int LastWriteHigh;
-		public int LastWriteLow;
-
+		public FileTime LastWrite;
 		public int Attr;
 	}
 }

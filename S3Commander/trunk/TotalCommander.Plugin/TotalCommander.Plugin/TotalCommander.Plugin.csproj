@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -42,6 +43,13 @@
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
     <Compile Include="MainWindow.cs" />
+    <Compile Include="Utils\DateTimeUtil.cs" />
+    <Compile Include="Wfx\PreviewBitmapResult.cs" />
+    <Compile Include="Wfx\ExtractIconFlag.cs" />
+    <Compile Include="Wfx\ExtractIconResult.cs" />
+    <Compile Include="Wfx\StatusOperation.cs" />
+    <Compile Include="Wfx\StatusInfo.cs" />
+    <Compile Include="Wfx\CopyFlags.cs" />
     <Compile Include="Wfx\ExecuteResult.cs" />
     <Compile Include="Wfx\FileOperationResult.cs" />
     <Compile Include="Wfx\Internal\RemoteInfoStruct.cs" />
@@ -63,7 +71,7 @@
     <Compile Include="Wfx\ITotalCommanderWfxPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TotalCommanderPluginAttribute.cs" />
-    <Compile Include="Utils\StringUtil.cs" />
+    <Compile Include="Utils\LongUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

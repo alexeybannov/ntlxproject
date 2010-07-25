@@ -1,16 +1,15 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace TotalCommander.Plugin.Wfx.Internal
 {
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
 	struct FsDefaultParamStruct
 	{
-		public Int32 Size;
+		public int Size;
 		
-		public Int32 PluginInterfaceVersionLow;
+		public int VersionLow;
 		
-		public Int32 PluginInterfaceVersionHi;
+		public int VersionHi;
 		
 		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = PluginConst.MAX_PATH)]
 		public string DefaultIniName;

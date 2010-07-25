@@ -1,28 +1,50 @@
-﻿
+﻿using System;
+using System.Drawing;
+using System.IO;
+
 namespace TotalCommander.Plugin.Wfx
 {
-	public interface ITotalCommanderWfxPlugin
-	{
-		void SetDefaultParams(DefaultParam defaultParam);
+    public interface ITotalCommanderWfxPlugin
+    {
+        void SetDefaultParams(DefaultParam defaultParam);
 
 
-		void Init(Progress progress, Logger logger, Request request);
+        void Init(Progress progress, Logger logger, Request request);
 
-		bool FindFirst(string path, FindData findData, out object enumerator);
+        bool FindFirst(string path, FindData findData, out object enumerator);
 
-		bool FindNext(object enumerator, FindData findData);
+        bool FindNext(object enumerator, FindData findData);
 
-		void FindClose(object enumerator);
+        void FindClose(object enumerator);
 
 
-		ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb);
+        ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb);
 
-		FileOperationResult RenameMoveFile(string oldName, string newName, bool move, bool overWrite, RemoteInfo ri);
+        FileOperationResult GetFile(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri);
 
-		bool RemoveFile(string remoteName);
+        FileOperationResult PutFile(string localName, string remoteName, CopyFlags copyFlags);
 
-		bool CreateDirectory(string path);
+        FileOperationResult RenameMoveFile(string oldName, string newName, bool move, bool overWrite, RemoteInfo ri);
 
-		bool RemoveDirectory(string remoteName);
-	}
+
+        bool RemoveFile(string remoteName);
+
+        bool CreateDirectory(string path);
+
+        bool RemoveDirectory(string remoteName);
+
+
+        bool SetAttributes(string remoteName, FileAttributes attributes);
+
+        bool SetTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
+
+
+        bool Disconnect(string disconnectRoot);
+
+        void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation);
+
+        ExtractIconResult ExtractCustomIcon(string remoteName, ExtractIconFlag extractIconFlag, out Icon icon);
+
+        PreviewBitmapResult GetPreviewBitmap(string remoteName, Size size, out Bitmap bitmap);
+    }
 }

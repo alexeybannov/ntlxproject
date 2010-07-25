@@ -14,19 +14,19 @@ namespace TotalCommander.Plugin.Wfx
             set;
         }
 
-        public DateTime CreationTime
+        public DateTime? CreationTime
         {
             get;
             set;
         }
 
-        public DateTime LastAccessTime
+        public DateTime? LastAccessTime
         {
             get;
             set;
         }
 
-        public DateTime LastWriteTime
+        public DateTime? LastWriteTime
         {
             get;
             set;
@@ -67,36 +67,18 @@ namespace TotalCommander.Plugin.Wfx
             if (pFindData != IntPtr.Zero)
             {
                 var findData = new WIN32_FIND_DATA();
-                findData.fileName = StringUtil.ToPath(FileName);
-                findData.alternateFileName = StringUtil.First(AlternateFileName, 12);
+                findData.fileName = FileName;
+                findData.alternateFileName = AlternateFileName;
                 findData.fileAttributes = (int)Attributes;
                 findData.dwReserved0 = Reserved0;
                 findData.dwReserved1 = Reserved1;
-                findData.creationTimeHigh = High(ToFileTime(CreationTime));
-                findData.creationTimeLow = Low(ToFileTime(CreationTime));
-                findData.lastAccessTimeHigh = High(ToFileTime(LastAccessTime));
-                findData.lastAccessTimeLow = Low(ToFileTime(LastAccessTime));
-                findData.lastWriteTimeHigh = High(ToFileTime(LastWriteTime));
-                findData.lastWriteTimeLow = Low(ToFileTime(LastWriteTime));
-                findData.nFileSizeHigh = High(FileSize);
-                findData.nFileSizeLow = Low(FileSize);
+                findData.creationTime = DateTimeUtil.ToFileTime(CreationTime);
+                findData.lastAccessTime = DateTimeUtil.ToFileTime(LastAccessTime);
+                findData.lastWriteTime = DateTimeUtil.ToFileTime(LastWriteTime);
+                findData.nFileSizeHigh = LongUtil.High(FileSize);
+                findData.nFileSizeLow = LongUtil.Low(FileSize);
                 Marshal.StructureToPtr(findData, pFindData, false);
             }
-        }
-
-        private long ToFileTime(DateTime dateTime)
-        {
-            return dateTime != DateTime.MinValue ? dateTime.ToFileTime() : PluginConst.NO_FILETIME;
-        }
-
-        private int High(Int64 int64)
-        {
-            return (int)(int64 >> 8 * sizeof(Int32));
-        }
-
-        private int Low(Int64 int64)
-        {
-            return High(int64 << 8 * sizeof(Int32));
         }
     }
 }

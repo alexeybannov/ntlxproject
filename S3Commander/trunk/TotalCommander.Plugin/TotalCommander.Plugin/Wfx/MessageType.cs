@@ -3,7 +3,7 @@ namespace TotalCommander.Plugin.Wfx
 {
 	public enum MessageType
 	{
-		Connect,
+		Connect = 1,
 		Disconnect,
 		Details,
 		TransferComplete,

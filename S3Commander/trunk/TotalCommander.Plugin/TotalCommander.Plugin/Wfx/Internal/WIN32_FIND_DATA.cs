@@ -1,5 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace TotalCommander.Plugin.Wfx.Internal
 {
@@ -7,27 +7,22 @@ namespace TotalCommander.Plugin.Wfx.Internal
     class WIN32_FIND_DATA
     {
         public int fileAttributes;
-        
-        public int creationTimeLow;
-        public int creationTimeHigh;
-        
-        public int lastAccessTimeLow;
-        public int lastAccessTimeHigh;
-        
-        public int lastWriteTimeLow;
-        public int lastWriteTimeHigh;
-        
+
+        public FileTime creationTime;
+        public FileTime lastAccessTime;
+        public FileTime lastWriteTime;
+
         public int nFileSizeHigh;
         public int nFileSizeLow;
-        
+
         public int dwReserved0;
-        
-		public int dwReserved1;
-        
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+
+        public int dwReserved1;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PluginConst.MAX_PATH)]
         public string fileName;
-        
-		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
         public string alternateFileName;
     }
 }
