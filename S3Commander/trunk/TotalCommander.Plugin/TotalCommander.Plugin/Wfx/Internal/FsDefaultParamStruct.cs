@@ -11,7 +11,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
 		
 		public int VersionHi;
 		
-		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = PluginConst.MAX_PATH)]
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = Win32.MAX_PATH)]
 		public string DefaultIniName;
 	};
 }

@@ -18,7 +18,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
         public int dwReserved0;
         public int dwReserved1;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PluginConst.MAX_PATH)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Win32.MAX_PATH)]
         public string fileName;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]

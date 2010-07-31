@@ -11,9 +11,6 @@ namespace TotalCommander.Plugin.Wfx.Internal
 {
     static class WfxFunctions
     {
-        [System.Runtime.InteropServices.DllImport("kernel32")]
-        private static extern void SetLastError(int errorCode);
-
         private static ITotalCommanderWfxPlugin Plugin
         {
             get { return PluginHolder.GetWfxPlugin(); }
@@ -41,7 +38,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
 
         public static IntPtr FsFindFirst(string path, IntPtr pFindData)
         {
-            var handle = PluginConst.Invalid;
+            var handle = Win32.INVALID_HANDLE_VALUE;
             try
             {
                 IEnumerator enumerator = null;
@@ -50,7 +47,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
                 {
                     if (findData == FindData.NoMoreFiles)
                     {
-                        SetLastError(PluginConst.ERROR_NO_MORE_FILES);
+                        Win32.SetLastError(Win32.ERROR_NO_MORE_FILES);
                     }
                     else
                     {
