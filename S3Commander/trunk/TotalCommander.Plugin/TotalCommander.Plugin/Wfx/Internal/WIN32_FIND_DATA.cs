@@ -3,7 +3,7 @@ using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace TotalCommander.Plugin.Wfx.Internal
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
     class WIN32_FIND_DATA
     {
         public int fileAttributes;
@@ -16,7 +16,6 @@ namespace TotalCommander.Plugin.Wfx.Internal
         public int nFileSizeLow;
 
         public int dwReserved0;
-
         public int dwReserved1;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PluginConst.MAX_PATH)]

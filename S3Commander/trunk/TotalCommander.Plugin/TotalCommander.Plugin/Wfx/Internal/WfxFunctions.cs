@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
@@ -9,12 +11,15 @@ namespace TotalCommander.Plugin.Wfx.Internal
 {
     static class WfxFunctions
     {
+        [System.Runtime.InteropServices.DllImport("kernel32")]
+        private static extern void SetLastError(int errorCode);
+
         private static ITotalCommanderWfxPlugin Plugin
         {
             get { return PluginHolder.GetWfxPlugin(); }
         }
 
-        private static object enumerator;
+        private static IDictionary<IntPtr, IEnumerator> enumerators = new Dictionary<IntPtr, IEnumerator>();
 
 
         public static Int32 FsInit(Int32 number, ProgressCallback progress, LogCallback log, RequestCallback request)
@@ -36,47 +41,77 @@ namespace TotalCommander.Plugin.Wfx.Internal
 
         public static IntPtr FsFindFirst(string path, IntPtr pFindData)
         {
-            var findData = new FindData();
-            var result = false;
+            var handle = PluginConst.Invalid;
             try
             {
-                result = Plugin.FindFirst(path, findData, out enumerator);
+                IEnumerator enumerator = null;
+                var findData = Plugin.FindFirst(path, out enumerator);
+                if (findData != null)
+                {
+                    if (findData == FindData.NoMoreFiles)
+                    {
+                        SetLastError(PluginConst.ERROR_NO_MORE_FILES);
+                    }
+                    else
+                    {
+                        findData.CopyTo(pFindData);
+                        lock (enumerators)
+                        {
+                            handle = new IntPtr(enumerators.Count + 1);
+                            enumerators[handle] = enumerator;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
                 ProcessError(ex);
             }
-            findData.CopyTo(pFindData);
-            return result ? IntPtr.Zero : PluginConst.INVALID_HANDLE_VALUE;
+            return handle;
         }
 
         public static bool FsFindNext(IntPtr handle, IntPtr pFindData)
         {
-            var findData = new FindData();
-            var result = false;
             try
             {
-                result = Plugin.FindNext(enumerator, findData);
+                IEnumerator enumerator = null;
+                lock (enumerators)
+                {
+                    if (enumerators.ContainsKey(handle)) enumerator = enumerators[handle];
+                }
+                var findData = Plugin.FindNext(enumerator);
+                if (findData != null && findData != FindData.NoMoreFiles)
+                {
+                    findData.CopyTo(pFindData);
+                    return true;
+                }
             }
             catch (Exception ex)
             {
                 ProcessError(ex);
             }
-            findData.CopyTo(pFindData);
-            return result;
+            return false;
         }
 
         public static Int32 FsFindClose(IntPtr handle)
         {
             try
             {
+                IEnumerator enumerator = null;
+                lock (enumerators)
+                {
+                    if (enumerators.ContainsKey(handle))
+                    {
+                        enumerator = enumerators[handle];
+                        enumerators.Remove(handle);
+                    }
+                }
                 Plugin.FindClose(enumerator);
             }
             catch (Exception ex)
             {
                 ProcessError(ex);
             }
-            enumerator = null;
             return 0;
         }
 
@@ -108,6 +143,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
         public static int FsExecuteFile(IntPtr mainWin, string remoteName, string verb)
         {
             var result = ExecuteResult.Error;
+            if (string.IsNullOrEmpty(remoteName)) return (int)result;
             try
             {
                 result = Plugin.ExecuteFile(new MainWindow(mainWin), remoteName, verb);

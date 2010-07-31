@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace TotalCommander.Plugin.Wfx
 {
@@ -54,18 +55,18 @@ namespace TotalCommander.Plugin.Wfx
 
 		}
 
-		public virtual bool FindFirst(string path, FindData findData, out object enumerator)
+        public virtual FindData FindFirst(string path, out IEnumerator enumerator)
 		{
 			enumerator = null;
-			return false;
+			return null;
 		}
 
-		public virtual bool FindNext(object enumerator, FindData findData)
+        public virtual FindData FindNext(IEnumerator enumerator)
 		{
-			return false;
+			return null;
 		}
 
-		public virtual void FindClose(object enumerator)
+		public virtual void FindClose(IEnumerator enumerator)
 		{
 
 		}

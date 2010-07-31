@@ -8,6 +8,11 @@ namespace TotalCommander.Plugin.Wfx
 {
     public class FindData
     {
+        public static readonly FindData NotOpen = null;
+
+        public static readonly FindData NoMoreFiles = new FindData();
+
+
         public FileAttributes Attributes
         {
             get;
@@ -61,6 +66,30 @@ namespace TotalCommander.Plugin.Wfx
             get;
             set;
         }
+
+
+        public FindData()
+        {
+
+        }
+
+        public FindData(string fileName)
+        {
+            FileName = fileName;
+        }
+
+        public FindData(string fileName, long fileSize)
+            : this(fileName)
+        {
+            FileSize = fileSize;
+        }
+
+        public FindData(string fileName, FileAttributes attributes)
+            : this(fileName)
+        {
+            Attributes = attributes;
+        }
+
 
         internal void CopyTo(IntPtr pFindData)
         {

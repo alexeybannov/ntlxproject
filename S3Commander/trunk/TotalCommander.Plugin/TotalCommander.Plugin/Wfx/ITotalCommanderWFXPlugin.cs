@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Drawing;
 using System.IO;
 
@@ -11,11 +12,11 @@ namespace TotalCommander.Plugin.Wfx
 
         void Init(Progress progress, Logger logger, Request request);
 
-        bool FindFirst(string path, FindData findData, out object enumerator);
+        FindData FindFirst(string path, out IEnumerator enumerator);
 
-        bool FindNext(object enumerator, FindData findData);
-
-        void FindClose(object enumerator);
+        FindData FindNext(IEnumerator enumerator);
+        
+        void FindClose(IEnumerator enumerator);
 
 
         ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb);

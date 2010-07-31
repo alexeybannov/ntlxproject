@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin.Sample.Wfx
@@ -7,30 +8,35 @@ namespace TotalCommander.Plugin.Sample.Wfx
     [TotalCommanderPlugin("Hello World Plugin")]
     public class HelloWorldWfxPlugin : TotalCommanderWfxPlugin
     {
-        public override bool FindFirst(string path, FindData findData, out object enumerator)
+        public override FindData FindFirst(string path, out IEnumerator enumerator)
         {
-            var en = new[] { "Zero", "One", "Two" }.GetEnumerator();
-            enumerator = en;
-
-            if (en.MoveNext())
+            if (path == "\\")
             {
-                findData.FileName = (string)en.Current;
-				findData.FileSize = 12345;
-				findData.LastWriteTime = DateTime.Now;
-                return true;
+                enumerator = new[] { "Zero", "One", "Two" }.GetEnumerator();
+                if (enumerator.MoveNext())
+                {
+                    return new FindData((string)enumerator.Current, 12345)
+                    {
+                        LastWriteTime = DateTime.Now,
+                    };
+                }
             }
-            return false;
+            enumerator = null;
+            return FindData.NoMoreFiles;
         }
 
-        public override bool FindNext(object enumerator, FindData findData)
+        public override FindData FindNext(IEnumerator enumerator)
         {
-            var en = (IEnumerator)enumerator;
-            if (en.MoveNext())
+            if (enumerator != null && enumerator.MoveNext())
             {
-                findData.FileName = (string)en.Current;
-                return true;
+                return new FindData((string)enumerator.Current, FileAttributes.Directory);
             }
-			return false;
+            return FindData.NoMoreFiles;
+        }
+
+        public override ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb)
+        {
+            return base.ExecuteFile(mainWindow, remoteName, verb);
         }
     }
 }
