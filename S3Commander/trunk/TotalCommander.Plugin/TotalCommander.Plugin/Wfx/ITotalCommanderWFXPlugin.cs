@@ -9,9 +9,9 @@ namespace TotalCommander.Plugin.Wfx
     {
         void SetDefaultParams(DefaultParam defaultParam);
 
-
         void Init(Progress progress, Logger logger, Request request);
 
+        
         FindData FindFirst(string path, out IEnumerator enumerator);
 
         FindData FindNext(IEnumerator enumerator);
@@ -21,12 +21,7 @@ namespace TotalCommander.Plugin.Wfx
 
         ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb);
 
-        FileOperationResult GetFile(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri);
-
-        FileOperationResult PutFile(string localName, string remoteName, CopyFlags copyFlags);
-
         FileOperationResult RenameMoveFile(string oldName, string newName, bool move, bool overWrite, RemoteInfo ri);
-
 
         bool RemoveFile(string remoteName);
 
@@ -39,13 +34,17 @@ namespace TotalCommander.Plugin.Wfx
 
         bool SetTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
 
-
-        bool Disconnect(string disconnectRoot);
-
-        void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation);
-
         ExtractIconResult ExtractCustomIcon(string remoteName, ExtractIconFlag extractIconFlag, out Icon icon);
 
         PreviewBitmapResult GetPreviewBitmap(string remoteName, Size size, out Bitmap bitmap);
+
+        void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation);
+
+        bool Disconnect(string disconnectRoot);
+
+
+        FileOperationResult GetFile(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri);
+
+        FileOperationResult PutFile(string localName, string remoteName, CopyFlags copyFlags);
     }
 }

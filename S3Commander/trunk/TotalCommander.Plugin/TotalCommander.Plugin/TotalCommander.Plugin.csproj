@@ -66,7 +66,7 @@
     <Compile Include="Wfx\TotalCommanderWfxPlugin.cs" />
     <Compile Include="Wfx\FindData.cs" />
     <Compile Include="Wfx\DefaultParam.cs" />
-    <Compile Include="PluginConst.cs" />
+    <Compile Include="Win32.cs" />
     <Compile Include="PluginHolder.cs" />
     <Compile Include="Wfx\Internal\WfxFunctions.cs" />
     <Compile Include="Wfx\ITotalCommanderWfxPlugin.cs" />

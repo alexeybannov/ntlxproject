@@ -19,6 +19,24 @@ namespace TotalCommander.Plugin.Wfx
             set;
         }
 
+        public string FileName
+        {
+            get;
+            set;
+        }
+
+        public string AlternateFileName
+        {
+            get;
+            set;
+        }
+
+        public long FileSize
+        {
+            get;
+            set;
+        }
+
         public DateTime? CreationTime
         {
             get;
@@ -37,12 +55,6 @@ namespace TotalCommander.Plugin.Wfx
             set;
         }
 
-        public long FileSize
-        {
-            get;
-            set;
-        }
-
         public int Reserved0
         {
             get;
@@ -50,18 +62,6 @@ namespace TotalCommander.Plugin.Wfx
         }
 
         public int Reserved1
-        {
-            get;
-            set;
-        }
-
-        public string FileName
-        {
-            get;
-            set;
-        }
-
-        public string AlternateFileName
         {
             get;
             set;
