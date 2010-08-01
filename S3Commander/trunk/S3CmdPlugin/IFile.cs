@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Tools.TotalCommanderT;
+using TotalCommander.Plugin.Wfx;
 
 namespace S3CmdPlugin
 {
@@ -10,18 +10,18 @@ namespace S3CmdPlugin
 			get;
 		}
 		
-		ExecExitCode Open(PluginContext context);
+		ExecuteResult Open(PluginContext context);
 
-		ExecExitCode Properties(PluginContext context);
+        ExecuteResult Properties(PluginContext context);
 
-		ExecExitCode ChMod(string mod, PluginContext context);
+        ExecuteResult ChMod(string mod, PluginContext context);
 
-		ExecExitCode Quote(string command, PluginContext context);
+        ExecuteResult Quote(string command, PluginContext context);
 
-		FileSystemExitCode Move(string newName, bool overwrite, RemoteInfo info, PluginContext context);
+		FileOperationResult Move(string newName, bool overwrite, RemoteInfo info, PluginContext context);
 
 		bool Delete(PluginContext context);
 
-		IconExtractResult ExctractCustomIcon(IconExtractFlags ExtractFlags, ref Icon icon);
+        CustomIconResult ExctractCustomIcon(CustomIconFlag ExtractFlags, ref Icon icon);
 	}
 }

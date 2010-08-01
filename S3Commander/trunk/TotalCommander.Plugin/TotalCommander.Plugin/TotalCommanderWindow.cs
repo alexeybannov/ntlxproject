@@ -14,5 +14,11 @@ namespace TotalCommander.Plugin
 		{
 			Handle = handle;
 		}
-	}
+
+
+        public void Refresh()
+        {
+            Win32.PostMessage(Handle, 1024 + 51, (IntPtr)540, IntPtr.Zero);
+        }
+    }
 }

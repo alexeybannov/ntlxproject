@@ -14,5 +14,8 @@ namespace TotalCommander.Plugin
 
         [DllImport("kernel32")]
         public static extern void SetLastError(int errorCode);
+
+        [DllImport("user32")]
+        public static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
     }
 }

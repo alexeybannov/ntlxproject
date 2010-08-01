@@ -14,7 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>Resources\amazon.ico</ApplicationIcon>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>qq.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,14 +58,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tools, Version=1.5.2.0, Culture=neutral, PublicKeyToken=373c02ac923768e6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Ref\Tools.dll</HintPath>
-    </Reference>
-    <Reference Include="Tools.TotalCommander, Version=1.5.2.0, Culture=neutral, PublicKeyToken=373c02ac923768e6, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Ref\Tools.TotalCommander.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\Account.cs" />
@@ -100,14 +93,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="msvcm90d.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="msvcr90d.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Accounts\AccountForm.resx">
       <DependentUpon>AccountForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -123,11 +108,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Microsoft.VC90.DebugCRT.manifest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\amazon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -137,8 +117,13 @@
     <None Include="Resources\new.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="qq.pfx" />
     <None Include="Resources\new2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TotalCommander.Plugin\TotalCommander.Plugin\TotalCommander.Plugin.csproj">
+      <Project>{5A4C0890-6532-4B1D-9A32-977ECB568A5E}</Project>
+      <Name>TotalCommander.Plugin</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="S3\" />
@@ -151,7 +136,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PostBuildEvent Condition=" '$(Configuration)' != 'Debug No Post-Build' ">"$(SolutionDir)Ref\TCPluginBuilder.exe" "$(TargetPath)" /int "$(ProjectDir)obj\$(ConfigurationName)" /keepint</PostBuildEvent>
-  </PropertyGroup>
 </Project>
