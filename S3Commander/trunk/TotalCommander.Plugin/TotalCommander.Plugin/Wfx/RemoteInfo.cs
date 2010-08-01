@@ -26,15 +26,22 @@ namespace TotalCommander.Plugin.Wfx
             set;
         }
 
+        public bool IsDirectory
+        {
+            get;
+            private set;
+        }
+
 
         internal RemoteInfo(IntPtr ptr)
         {
             if (ptr != IntPtr.Zero)
             {
-                var ri = (RemoteInfoStruct)Marshal.PtrToStructure(ptr, typeof(RemoteInfoStruct));
-                Size = LongUtil.MakeLong(ri.SizeHigh, ri.SizeLow);
-                LastWriteTime = DateTimeUtil.FromFileTime(ri.LastWrite);
-                Attributes = (FileAttributes)ri.Attr;
+                var ri = (FsRemoteInfo)Marshal.PtrToStructure(ptr, typeof(FsRemoteInfo));
+                IsDirectory = (ri.SizeHigh == -int.MaxValue && ri.SizeLow == 0);
+                if (!IsDirectory) Size = LongUtil.MakeLong(ri.SizeHigh, ri.SizeLow);
+                LastWriteTime = DateTimeUtil.FromFileTime(ri.LastWriteTime);
+                Attributes = (FileAttributes)ri.Attributes;
             }
         }
     }

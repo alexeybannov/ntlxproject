@@ -5,7 +5,7 @@ using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin
 {
-	static class PluginHolder
+	static class TotalCommanderPluginHolder
 	{
 		private static string wfxPluginName;
 

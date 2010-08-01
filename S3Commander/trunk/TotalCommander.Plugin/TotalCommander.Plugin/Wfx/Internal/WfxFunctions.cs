@@ -13,7 +13,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
     {
         private static ITotalCommanderWfxPlugin Plugin
         {
-            get { return PluginHolder.GetWfxPlugin(); }
+            get { return TotalCommanderPluginHolder.GetWfxPlugin(); }
         }
 
         private static IDictionary<IntPtr, IEnumerator> enumerators = new Dictionary<IntPtr, IEnumerator>();
@@ -128,7 +128,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
         {
             try
             {
-                return PluginHolder.GetWfxPluginName();
+                return TotalCommanderPluginHolder.GetWfxPluginName();
             }
             catch (Exception ex)
             {
@@ -139,11 +139,11 @@ namespace TotalCommander.Plugin.Wfx.Internal
 
         public static int FsExecuteFile(IntPtr mainWin, string remoteName, string verb)
         {
-            var result = ExecuteResult.Error;
+            var result = ExecuteResult.Default;
             if (string.IsNullOrEmpty(remoteName)) return (int)result;
             try
             {
-                result = Plugin.ExecuteFile(new MainWindow(mainWin), remoteName, verb);
+                result = Plugin.FileExecute(new TotalCommanderWindow(mainWin), remoteName, verb);
             }
             catch (Exception ex)
             {
@@ -154,10 +154,10 @@ namespace TotalCommander.Plugin.Wfx.Internal
 
         public static int FsGetFile(string remoteName, string localName, int copyFlags, IntPtr ri)
         {
-            var result = FileOperationResult.NotSupported;
+            var result = FileOperationResult.Default;
             try
             {
-                result = Plugin.GetFile(remoteName, localName, (CopyFlags)copyFlags, new RemoteInfo(ri));
+                result = Plugin.FileGet(remoteName, localName, (CopyFlags)copyFlags, new RemoteInfo(ri));
             }
             catch (Exception ex)
             {
@@ -168,10 +168,10 @@ namespace TotalCommander.Plugin.Wfx.Internal
 
         public static int FsPutFile(string localName, string remoteName, int copyFlags)
         {
-            var result = FileOperationResult.NotSupported;
+            var result = FileOperationResult.Default;
             try
             {
-                result = Plugin.PutFile(localName, remoteName, (CopyFlags)copyFlags);
+                result = Plugin.FilePut(localName, remoteName, (CopyFlags)copyFlags);
             }
             catch (Exception ex)
             {
@@ -182,10 +182,10 @@ namespace TotalCommander.Plugin.Wfx.Internal
 
         public static int FsRenMovFile(string oldName, string newName, bool move, bool overWrite, IntPtr ri)
         {
-            var result = FileOperationResult.NotSupported;
+            var result = FileOperationResult.Default;
             try
             {
-                result = Plugin.RenameMoveFile(oldName, newName, move, overWrite, new RemoteInfo(ri));
+                result = Plugin.FileRenameMove(oldName, newName, move, overWrite, new RemoteInfo(ri));
             }
             catch (Exception ex)
             {
@@ -199,7 +199,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
             var result = false;
             try
             {
-                result = Plugin.RemoveFile(remoteName);
+                result = Plugin.FileRemove(remoteName);
             }
             catch (Exception ex)
             {
@@ -213,7 +213,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
             var result = false;
             try
             {
-                result = Plugin.CreateDirectory(path);
+                result = Plugin.DirectoryCreate(path);
             }
             catch (Exception ex)
             {
@@ -227,7 +227,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
             var result = false;
             try
             {
-                result = Plugin.RemoveDirectory(remoteName);
+                result = Plugin.DirectoryRemove(remoteName);
             }
             catch (Exception ex)
             {
@@ -241,7 +241,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
             var result = false;
             try
             {
-                result = Plugin.SetAttributes(remoteName, (FileAttributes)newAttr);
+                result = Plugin.SetFileAttributes(remoteName, (FileAttributes)newAttr);
             }
             catch (Exception ex)
             {
@@ -255,7 +255,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
             var result = false;
             try
             {
-                result = Plugin.SetTime(
+                result = Plugin.SetFileTime(
                     remoteName,
                     DateTimeUtil.FromFileTime(creationTime),
                     DateTimeUtil.FromFileTime(lastAccessTime),
@@ -297,11 +297,11 @@ namespace TotalCommander.Plugin.Wfx.Internal
 
         public static int FsExtractCustomIcon(string remoteName, int extractFlags, IntPtr iconHandle)
         {
-            var result = ExtractIconResult.UseDefault;
+            var result = CustomIconResult.UseDefault;
             try
             {
                 Icon icon = null;
-                result = Plugin.ExtractCustomIcon(remoteName, (ExtractIconFlag)extractFlags, out icon);
+                result = Plugin.GetCustomIcon(remoteName, (CustomIconFlag)extractFlags, out icon);
                 if (icon != null) iconHandle = icon.Handle;
             }
             catch (Exception ex)

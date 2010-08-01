@@ -10,6 +10,7 @@ namespace TotalCommander.Plugin.Wfx
 		WriteError,
 		UserAbort,
 		NotSupported,
-		ExistsResumeAllowed
+		ExistsResumeAllowed,
+        Default = NotSupported
 	}
 }

@@ -1,7 +1,7 @@
 ﻿
 namespace TotalCommander.Plugin.Wfx
 {
-    public enum ExtractIconFlag
+    public enum CustomIconFlag
 	{
         Small = 1,
         Background

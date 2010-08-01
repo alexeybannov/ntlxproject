@@ -7,8 +7,6 @@ namespace TotalCommander.Plugin.Wfx
 {
     public interface ITotalCommanderWfxPlugin
     {
-        void SetDefaultParams(DefaultParam defaultParam);
-
         void Init(Progress progress, Logger logger, Request request);
 
         
@@ -19,32 +17,35 @@ namespace TotalCommander.Plugin.Wfx
         void FindClose(IEnumerator enumerator);
 
 
-        ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb);
+        ExecuteResult FileExecute(TotalCommanderWindow window, string remoteName, string verb);
 
-        FileOperationResult RenameMoveFile(string oldName, string newName, bool move, bool overWrite, RemoteInfo ri);
+        FileOperationResult FileRenameMove(string oldName, string newName, bool move, bool overwrite, RemoteInfo ri);
 
-        bool RemoveFile(string remoteName);
+        FileOperationResult FileGet(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri);
 
-        bool CreateDirectory(string path);
+        FileOperationResult FilePut(string localName, string remoteName, CopyFlags copyFlags);
 
-        bool RemoveDirectory(string remoteName);
+        bool FileRemove(string remoteName);
+
+        bool DirectoryCreate(string path);
+
+        bool DirectoryRemove(string remoteName);
 
 
-        bool SetAttributes(string remoteName, FileAttributes attributes);
+        void SetDefaultParams(DefaultParam defaultParam);
 
-        bool SetTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
+        bool SetFileAttributes(string remoteName, FileAttributes attributes);
 
-        ExtractIconResult ExtractCustomIcon(string remoteName, ExtractIconFlag extractIconFlag, out Icon icon);
+        bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
+
+        
+        CustomIconResult GetCustomIcon(string remoteName, CustomIconFlag extractIconFlag, out Icon icon);
 
         PreviewBitmapResult GetPreviewBitmap(string remoteName, Size size, out Bitmap bitmap);
 
+        
         void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation);
 
         bool Disconnect(string disconnectRoot);
-
-
-        FileOperationResult GetFile(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri);
-
-        FileOperationResult PutFile(string localName, string remoteName, CopyFlags copyFlags);
     }
 }

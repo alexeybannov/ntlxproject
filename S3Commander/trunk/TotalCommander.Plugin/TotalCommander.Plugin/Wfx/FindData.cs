@@ -95,17 +95,19 @@ namespace TotalCommander.Plugin.Wfx
         {
             if (pFindData != IntPtr.Zero)
             {
-                var findData = new WIN32_FIND_DATA();
-                findData.fileName = FileName;
-                findData.alternateFileName = AlternateFileName;
-                findData.fileAttributes = (int)Attributes;
-                findData.dwReserved0 = Reserved0;
-                findData.dwReserved1 = Reserved1;
-                findData.creationTime = DateTimeUtil.ToFileTime(CreationTime);
-                findData.lastAccessTime = DateTimeUtil.ToFileTime(LastAccessTime);
-                findData.lastWriteTime = DateTimeUtil.ToFileTime(LastWriteTime);
-                findData.nFileSizeHigh = LongUtil.High(FileSize);
-                findData.nFileSizeLow = LongUtil.Low(FileSize);
+                var findData = new FsFindData()
+                {
+                    FileName = FileName,
+                    AlternateFileName = AlternateFileName,
+                    FileAttributes = (int)Attributes,
+                    FileSizeHigh = LongUtil.High(FileSize),
+                    FileSizeLow = LongUtil.Low(FileSize),
+                    CreationTime = DateTimeUtil.ToFileTime(CreationTime),
+                    LastAccessTime = DateTimeUtil.ToFileTime(LastAccessTime),
+                    LastWriteTime = DateTimeUtil.ToFileTime(LastWriteTime),
+                    Reserved0 = Reserved0,
+                    Reserved1 = Reserved1,
+                };
                 Marshal.StructureToPtr(findData, pFindData, false);
             }
         }

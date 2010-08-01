@@ -10,6 +10,7 @@ namespace TotalCommander.Plugin.Sample.Wfx
     {
         public override FindData FindFirst(string path, out IEnumerator enumerator)
         {
+            enumerator = null;
             if (path == "\\")
             {
                 enumerator = new[] { "Zero", "One", "Two" }.GetEnumerator();
@@ -21,7 +22,10 @@ namespace TotalCommander.Plugin.Sample.Wfx
                     };
                 }
             }
-            enumerator = null;
+            if (path == "\\One")
+            {
+                return new FindData("File2", 366);
+            }
             return FindData.NoMoreFiles;
         }
 
@@ -32,11 +36,6 @@ namespace TotalCommander.Plugin.Sample.Wfx
                 return new FindData((string)enumerator.Current, FileAttributes.Directory);
             }
             return FindData.NoMoreFiles;
-        }
-
-        public override ExecuteResult ExecuteFile(MainWindow mainWindow, string remoteName, string verb)
-        {
-            return base.ExecuteFile(mainWindow, remoteName, verb);
         }
     }
 }

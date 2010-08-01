@@ -26,9 +26,9 @@ namespace TotalCommander.Plugin.Wfx
         {
             if (ptr != IntPtr.Zero)
             {
-                var paramStruct = (FsDefaultParamStruct)Marshal.PtrToStructure(ptr, typeof(FsDefaultParamStruct));
-                PluginInterfaceVersion = new Version(paramStruct.VersionHi, paramStruct.VersionLow);
-                DefaultIniFileName = paramStruct.DefaultIniName;
+                var param = (FsDefaultParam)Marshal.PtrToStructure(ptr, typeof(FsDefaultParam));
+                PluginInterfaceVersion = new Version(param.VersionHigh, param.VersionLow);
+                DefaultIniFileName = param.DefaultIniName;
             }
         }
     };

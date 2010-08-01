@@ -3,12 +3,15 @@ using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace TotalCommander.Plugin.Wfx.Internal
 {
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-	struct RemoteInfoStruct
+	[StructLayout(LayoutKind.Sequential)]
+	struct FsRemoteInfo
 	{
 		public int SizeLow;
-		public int SizeHigh;
-		public FileTime LastWrite;
-		public int Attr;
+		
+        public int SizeHigh;
+		
+        public FileTime LastWriteTime;
+		
+        public int Attributes;
 	}
 }

@@ -1,7 +1,7 @@
 ﻿
 namespace TotalCommander.Plugin.Wfx
 {
-    public enum ExtractIconResult
+    public enum CustomIconResult
     {
         UseDefault,
         Extracted,

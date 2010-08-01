@@ -4,24 +4,24 @@ using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 namespace TotalCommander.Plugin.Wfx.Internal
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
-    class WIN32_FIND_DATA
+    struct FsFindData
     {
-        public int fileAttributes;
+        public int FileAttributes;
 
-        public FileTime creationTime;
-        public FileTime lastAccessTime;
-        public FileTime lastWriteTime;
+        public FileTime CreationTime;
+        public FileTime LastAccessTime;
+        public FileTime LastWriteTime;
 
-        public int nFileSizeHigh;
-        public int nFileSizeLow;
+        public int FileSizeHigh;
+        public int FileSizeLow;
 
-        public int dwReserved0;
-        public int dwReserved1;
+        public int Reserved0;
+        public int Reserved1;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Win32.MAX_PATH)]
-        public string fileName;
+        public string FileName;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-        public string alternateFileName;
+        public string AlternateFileName;
     }
 }

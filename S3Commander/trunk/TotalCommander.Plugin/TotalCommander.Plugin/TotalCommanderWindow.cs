@@ -2,7 +2,7 @@
 
 namespace TotalCommander.Plugin
 {
-	public class MainWindow
+	public class TotalCommanderWindow
 	{
 		public IntPtr Handle
 		{
@@ -10,7 +10,7 @@ namespace TotalCommander.Plugin
 			private set;
 		}
 
-		public MainWindow(IntPtr handle)
+		public TotalCommanderWindow(IntPtr handle)
 		{
 			Handle = handle;
 		}

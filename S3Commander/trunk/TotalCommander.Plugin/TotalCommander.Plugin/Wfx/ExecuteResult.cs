@@ -7,5 +7,6 @@ namespace TotalCommander.Plugin.Wfx
         YourSelf,
 		OK,
 		Error,
+        Default = Error
 	}
 }

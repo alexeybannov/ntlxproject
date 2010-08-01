@@ -42,24 +42,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
-    <Compile Include="MainWindow.cs" />
+    <Compile Include="TotalCommanderWindow.cs" />
     <Compile Include="Utils\DateTimeUtil.cs" />
-    <Compile Include="Utils\StringUtil.cs" />
     <Compile Include="Wfx\PreviewBitmapResult.cs" />
-    <Compile Include="Wfx\ExtractIconFlag.cs" />
-    <Compile Include="Wfx\ExtractIconResult.cs" />
+    <Compile Include="Wfx\CustomIconFlag.cs" />
+    <Compile Include="Wfx\CustomIconResult.cs" />
     <Compile Include="Wfx\StatusOperation.cs" />
     <Compile Include="Wfx\StatusInfo.cs" />
     <Compile Include="Wfx\CopyFlags.cs" />
     <Compile Include="Wfx\ExecuteResult.cs" />
     <Compile Include="Wfx\FileOperationResult.cs" />
-    <Compile Include="Wfx\Internal\RemoteInfoStruct.cs" />
+    <Compile Include="Wfx\Internal\FsRemoteInfo.cs" />
     <Compile Include="Wfx\RemoteInfo.cs" />
     <Compile Include="Wfx\Request.cs" />
     <Compile Include="Wfx\Progress.cs" />
     <Compile Include="Wfx\Internal\Callbacks.cs" />
-    <Compile Include="Wfx\Internal\FsDefaultParamStruct.cs" />
-    <Compile Include="Wfx\Internal\WIN32_FIND_DATA.cs" />
+    <Compile Include="Wfx\Internal\FsDefaultParam.cs" />
+    <Compile Include="Wfx\Internal\FsFindData.cs" />
     <Compile Include="Wfx\Logger.cs" />
     <Compile Include="Wfx\MessageType.cs" />
     <Compile Include="Wfx\RequestType.cs" />
@@ -67,7 +66,7 @@
     <Compile Include="Wfx\FindData.cs" />
     <Compile Include="Wfx\DefaultParam.cs" />
     <Compile Include="Win32.cs" />
-    <Compile Include="PluginHolder.cs" />
+    <Compile Include="TotalCommanderPluginHolder.cs" />
     <Compile Include="Wfx\Internal\WfxFunctions.cs" />
     <Compile Include="Wfx\ITotalCommanderWfxPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
