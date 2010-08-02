@@ -2,30 +2,27 @@
 using System.Collections;
 using System.IO;
 using TotalCommander.Plugin.Wfx;
+using NI.Vfs;
 
 namespace TotalCommander.Plugin.Sample.Wfx
 {
     [TotalCommanderPlugin("Hello World Plugin")]
     public class HelloWorldWfxPlugin : TotalCommanderWfxPlugin
     {
+        private IFileSystem fileSystem = new LocalFileSystem("D:\\");
+
         public override FindData FindFirst(string path, out IEnumerator enumerator)
         {
-            enumerator = null;
-            if (path == "\\")
+            var file = GetFile(path);
+            if (file != null)
             {
-                enumerator = new[] { "Zero", "One", "Two" }.GetEnumerator();
+                enumerator = file.GetChildren().GetEnumerator();
                 if (enumerator.MoveNext())
                 {
-                    return new FindData((string)enumerator.Current, 12345)
-                    {
-                        LastWriteTime = DateTime.Now,
-                    };
+                    return ToFindData((IFileObject)enumerator.Current);
                 }
             }
-            if (path == "\\One")
-            {
-                return new FindData("File2", 366);
-            }
+            enumerator = null;
             return FindData.NoMoreFiles;
         }
 
@@ -33,9 +30,51 @@ namespace TotalCommander.Plugin.Sample.Wfx
         {
             if (enumerator != null && enumerator.MoveNext())
             {
-                return new FindData((string)enumerator.Current, FileAttributes.Directory);
+                return ToFindData((IFileObject)enumerator.Current);
             }
             return FindData.NoMoreFiles;
+        }
+
+        public override bool DirectoryCreate(string path)
+        {
+            try
+            {
+                GetFile(path).CreateFolder();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public override bool DirectoryRemove(string remoteName)
+        {
+            try
+            {
+                GetFile(remoteName).Delete();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private IFileObject GetFile(string path)
+        {
+            return path == "\\" ? fileSystem.Root : fileSystem.ResolveFile("D:" + path);
+        }
+
+        private FindData ToFindData(IFileObject file)
+        {
+            var findData = new FindData(Path.GetFileName(file.Name));
+            var fileInfo = file.GetContent();
+            if (file.Type == FileType.Folder) findData.Attributes |= FileAttributes.Directory;
+            else findData.FileSize = fileInfo.Size;
+            findData.LastWriteTime = fileInfo.LastModifiedTime;
+            fileInfo.Close();
+            return findData;
         }
     }
 }
