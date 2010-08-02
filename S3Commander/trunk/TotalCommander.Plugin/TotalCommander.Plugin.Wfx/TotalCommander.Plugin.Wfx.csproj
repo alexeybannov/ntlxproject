@@ -34,12 +34,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="LogProc.cs" />
-    <Compile Include="ProgressProc.cs" />
-    <Compile Include="RequestProc.cs" />
     <Compile Include="WfxExport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -224,5 +224,35 @@ namespace TotalCommander.Plugin.Wfx
         }
 
         #endregion
+
+
+        #region Delegates
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        public delegate void LogProc(
+            int pluginNumber,
+            int messageType,
+            [MarshalAs(UnmanagedType.LPStr)] string logString
+        );
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        public delegate int ProgressProc(
+            int pluginNumber,
+            [MarshalAs(UnmanagedType.LPStr)] string sourceName,
+            [MarshalAs(UnmanagedType.LPStr)] string targetName,
+            int percentDone
+        );
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        public delegate bool RequestProc(
+            int pluginNumber,
+            int requestType,
+            [MarshalAs(UnmanagedType.LPStr)] string customTitle,
+            [MarshalAs(UnmanagedType.LPStr)] string customText,
+            [MarshalAs(UnmanagedType.LPStr)] string defaultText,
+            int maxLen
+        );
+
+        #endregion
     }
 }
