@@ -10,6 +10,11 @@ namespace TotalCommander.Plugin.Wfx
     public enum CopyFlags
     {
         /// <summary>
+        /// Not set.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
         /// If set, overwrite any existing file without asking. If not set, simply fail copying.
         /// </summary>
         Overwrite = 1,

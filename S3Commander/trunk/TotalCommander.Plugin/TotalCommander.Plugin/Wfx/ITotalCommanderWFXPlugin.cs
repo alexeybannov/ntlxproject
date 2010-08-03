@@ -10,7 +10,7 @@ namespace TotalCommander.Plugin.Wfx
     /// File system plugins will show up in Network Neighborhood, not in the new file system.
     /// </summary>
     /// <remarks>
-    /// <br />
+    /// <para>
     /// <strong>The minimum functions needed for a read-only (browsing) plugin are:</strong>
     /// <list type="table">
     /// <item>
@@ -30,7 +30,8 @@ namespace TotalCommander.Plugin.Wfx
     /// <description>Close the search handle.</description>
     /// </item>
     /// </list>
-    /// <br />
+    /// </para>
+    /// <para>
     /// <strong>The following optional functions allow to manipulate individual files.</strong>
     /// <list type="table">
     /// <item>
@@ -90,7 +91,8 @@ namespace TotalCommander.Plugin.Wfx
     /// <description>These functions are almost identical to the Content* functions of the content plugin interface.</description>
     /// </item>
     /// </list>
-    /// <br />
+    /// </para>
+    /// <para>
     /// <strong>There are also 3 classes which the plugin can use:</strong>
     /// <list type="table">
     /// <item>
@@ -106,54 +108,61 @@ namespace TotalCommander.Plugin.Wfx
     /// <description>Request input from the user, e.g. a user name, password etc.</description>
     /// </item>
     /// </list>
-    /// <br />
+    /// </para>
     /// <strong>How it works:</strong>
-    /// <br /><br />
-    /// When a user installs the plugin in Total Commander, the plugin is loaded and FsGetDefRootName is called without a previous call to FsInit.
-    /// The name returned will be saved to wincmd.ini. Then the plugin will be unloaded.
-    /// When the user enters Network Neighborhood, Totalcmd will enumerate all plugins listed in wincmd.ini without loading the plugins!
-    /// A plugin will only be loaded when the user tries to enter the plugin root directory.
-    /// It's also possible that a user jumps directly to a plugin subdirectory by using the 'directory hotlist' or 'directory history' functions in Totalcmd.
-    /// <br /><br />
-    /// When the plugin is loaded, Totalcmd tries to get the addresses for the above functions.
-    /// If any of the minimum functions isn't implemented, loading of the plugin will fail.
-    /// If any of the optional functions is missing, loading will succeed, but the functions (e.g. deletion) will not be available to the user.
-    /// After retrieving the function addresses, Totalcmd will call FsInit to let the plugin know its number and the callback function addresses.
-    /// <br /><br />
-    /// The framework (Total Commander) will refresh the file list whenever the user enters any directory in the plugin's file system.
-    /// The same procedure will also be executed if the framework wants to work with subdirectories, 
+    /// <para>
+    /// When a user installs the plugin in Total Commander, the plugin is loaded, class with attribute of type
+    /// <see cref="TotalCommanderPluginAttribute"/> is found and name from attribute will be saved to wincmd.ini.
+    /// Then the plugin will be unloaded.
+    /// When the user enters Network Neighborhood, Totalcmd will enumerate all plugins listed in wincmd.ini without 
+    /// loading the plugins! A plugin will only be loaded when the user tries to enter the plugin root directory.
+    /// It's also possible that a user jumps directly to a plugin subdirectory by using the 'directory hotlist' or 
+    /// 'directory history' functions in Totalcmd. When the plugin is loaded, 
+    /// Totalcmd will call <see cref="ITotalCommanderWfxPlugin.Init"/>.
+    /// </para>
+    /// <para>
+    /// The framework (Total Commander) will refresh the file list whenever the user enters any directory in the 
+    /// plugin's file system. The same procedure will also be executed if the framework wants to work with subdirectories, 
     /// e.g. while copying/moving/deleting files in a subdir selected by the user. 
-    /// This is done by recursively calling FsFindFirst()...FsFindNext()...FsFindClose() for every directory encountered in the tree. 
+    /// This is done by recursively calling <see cref="ITotalCommanderWfxPlugin.FindFirst"/>, 
+    /// <see cref="ITotalCommanderWfxPlugin.FindNext"/>, <see cref="ITotalCommanderWfxPlugin.FindClose"/> 
+    /// for every directory encountered in the tree.
     /// This system will be called FNC (findfirst-next-close) in this text. 
-    /// <br /><br />
-    /// For the plugin root, Totalcmd calls FsFindFirst() with the parameter Path set to "\". 
-    /// The plugin should return all the items in the root, e.g. the drive letters of a remote machine, the available file systems etc. 
-    /// When the returned item has the directory flag set, Totalcmd will use the name to build a subdirectory path. 
-    /// Subdirectories are built by concatenating returned directory names separated by Backslashes, e.g. \drive1\c:\some\subdir.
-    /// <br /><br />
+    /// </para>
+    /// <para>
+    /// For the plugin root, Totalcmd calls <see cref="ITotalCommanderWfxPlugin.FindFirst"/> with the parameter 
+    /// Path set to "\". The plugin should return all the items in the root, e.g. the drive letters of a 
+    /// remote machine, the available file systems etc. When the returned item has the directory flag set, 
+    /// Totalcmd will use the name to build a subdirectory path. Subdirectories are built by concatenating 
+    /// returned directory names separated by Backslashes, e.g. \drive1\c:\some\subdir.
+    /// </para>
+    /// <para>
     /// While downloading or remote-copying whole directory trees, the framework executes a complete FNC loop of a 
     /// subdir and stores the files in an internal list. Then it checks the list for files and copies these files, and in a 
     /// second loop it checks the list for directories, and if it encounters them, it recursively copies the subdirs. 
     /// This allows to recursively copy a whole tree.
-    /// <br /><br />
+    /// </para>
+    /// <para>
     /// For counting the files in subdirs and for deleting files, 
-    /// multiple open file handles are needed. You should therefore initialise a temporary structure whenever FsFindFirst() is called, 
-    /// return its handle (pointer) to the framework, and delete it in FsFindClose(), using that same handle that is now returned to you. 
+    /// multiple open file handles are needed. You should therefore initialise a temporary structure whenever 
+    /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/> is called, return its handle (pointer) to the framework, 
+    /// and delete it in <see cref="ITotalCommanderWfxPlugin.FindClose"/>, using that same handle that is now returned to you. 
     /// It's important to know that there may be multiple open find handles a the same time, although great care is taken to avoid this.
-    /// <br /><br />
-    /// Some framework function may call other functions when the need arises - for instance, FsRemoveDir() is called during 
-    /// moving of files in order to delete the directories that are no longer needed. 
-    /// <br /><br />
+    /// </para>
+    /// <para>
+    /// Some framework function may call other functions when the need arises - for instance, <see cref="ITotalCommanderWfxPlugin.DirectoryRemove"/>
+    /// is called during moving of files in order to delete the directories that are no longer needed. 
+    /// </para>
+    /// <para>
     /// Here are some cases when you CAN'T rely on the FNC to get called (because it has already been called before):<br />
     /// - when copying some files in the currently active directory, and there are no directories selected for copying<br />
     /// - when viewing a file with F3
-    /// <br /><br />
-    /// If FsStatusInfo is implemented, the plugin will be informed every time an operation starts and ends. 
-    /// No plugin functions except for FsInit and FsDisconnect will be called without an enclosing pair of FsStatusInfo calls.
-    /// <br /><br />
-    /// It is strongly recommended to start with an existing plugin source and modify it, e.g. with the very simple fsplugin sample source. 
-    /// Then first implement FsInit, FsFindFirst, FsFindNext and FsFindClose to browse your file system. 
-    /// When this works, you can add the other functions to add functionality like uploading and downloading.
+    /// </para>
+    /// <para>
+    /// By <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> method, the plugin will be informed every time an operation starts and ends. 
+    /// No plugin functions except for <see cref="ITotalCommanderWfxPlugin.Init"/> and <see cref="ITotalCommanderWfxPlugin.Disconnect"/> 
+    /// will be called without an enclosing pair of <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> calls.
+    /// </para>
     /// </remarks>
     public interface ITotalCommanderWfxPlugin
     {
@@ -171,7 +180,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <seealso cref="ITotalCommanderWfxPlugin.SetDefaultParams"/>
         void Init(Progress progress, Logger logger, Request request);
 
-        
+
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/> is called to retrieve the first file in a directory of the plugin's file system.
         /// </summary>
@@ -222,7 +231,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <seealso cref="ITotalCommanderWfxPlugin.FindFirst"/>
         /// <seealso cref="ITotalCommanderWfxPlugin.FindClose"/>
         FindData FindNext(IEnumerator enumerator);
-        
+
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.FindClose"/> is called to end a 
         /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/> loop, 
@@ -234,14 +243,314 @@ namespace TotalCommander.Plugin.Wfx
         void FindClose(IEnumerator enumerator);
 
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.FileExecute"/> is called to execute a file on the plugin's file system,
+        /// or show its property sheet. It is also called to show a plugin configuration dialog when the 
+        /// user right clicks on the plugin root and chooses 'properties'.
+        /// The plugin is then called with <paramref name="remoteName"/>="\" and <paramref name="verb"/>="properties" 
+        /// (requires TC>=5.51).
+        /// </summary>
+        /// <param name="window">Parent window which can be used for showing a property sheet.</param>
+        /// <param name="remoteName">Name of the file to be executed, with full path.</param>
+        /// <param name="verb">
+        /// This can be either "open", "properties", "chmod" or "quote" (case-insensitive).
+        /// <para>
+        /// <strong>open:</strong> This is called when the user presses ENTER on a file. There are three ways to handle it:<br />
+        /// a) For internal commands like "Add new connection", execute it in the plugin and return 
+        /// <see cref="ExecuteResult.OK"/> or <see cref="ExecuteResult.Error"/><br />
+        /// b) Let Total Commander download the file and execute it locally: return <see cref="ExecuteResult.YourSelf"/><br />
+        /// c) If the file is a (symbolic) link, set <paramref name="remoteName"/> to the location to which the link points 
+        /// (including the full plugin path), and return <see cref="ExecuteResult.SymLink"/>. 
+        /// Total Commander will then switch to that directory. You can also switch to a directory on the local harddisk! 
+        /// To do this, return a path starting either with a drive letter, or an UNC location (\\server\share). 
+        /// The maximum allowed length of such a path is MAX_PATH-1 = 259 characters!
+        /// </para>
+        /// <para>
+        /// <strong>properties:</strong> Show a property sheet for the file (optional). Currently not handled by internal Totalcmd functions 
+        /// if <see cref="ExecuteResult.YourSelf"/> is returned, so the plugin needs to do it internally.
+        /// </para>
+        /// <para>
+        /// <strong>chmod xxx:</strong> The xxx stands for the new Unix mode (attributes) to be applied to the file 
+        /// <paramref name="remoteName"/>. This verb is only used when returning Unix attributes through 
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/>
+        /// </para>
+        /// <para>
+        /// <strong>quote commandline:</strong> Execute the command line entered by the user in the directory <paramref name="remoteName"/>.
+        /// This is called when the user enters a command in Totalcmd's command line, and presses ENTER.
+        /// This is optional, and allows to send plugin-specific commands. It's up to the plugin writer what 
+        /// to support here. If the user entered e.g. a cd directory command, you can return the new path in 
+        /// <paramref name="remoteName"/> (max 259 characters), and give <see cref="ExecuteResult.SymLink"/> as return value.
+        /// Return <see cref="ExecuteResult.OK"/> to cause a refresh (re-read) of the active panel.
+        /// </para>
+        /// </param>
+        /// <returns>
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="ExecuteResult.YourSelf"/></term>
+        /// <description>Total Commander should download the file and execute it locally.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="ExecuteResult.OK"/></term>
+        /// <description>The command was executed successfully in the plugin 
+        /// (or if the command isn't applicable and no further action is needed).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="ExecuteResult.Error"/></term>
+        /// <description>Execution failed.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="ExecuteResult.SymLink"/></term>
+        /// <description>This was a (symbolic) link or .lnk file pointing to a different directory.</description>
+        /// </item>
+        /// </list>
+        /// </returns>
         ExecuteResult FileExecute(TotalCommanderWindow window, string remoteName, string verb);
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.FileRenameMove"/> is called to transfer 
+        /// (copy or move) a file within the plugin's file system.
+        /// </summary>
+        /// <param name="oldName">Name of the remote source file, with full path. The name always 
+        /// starts with a backslash, then the names returned by 
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/> 
+        /// separated by backslashes.</param>
+        /// <param name="newName">Name of the remote destination file, with full path. The name always starts 
+        /// with a backslash, then the names returned by 
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/> 
+        /// separated by backslashes.</param>
+        /// <param name="move">If true, the file needs to be moved to the new location and name. 
+        /// Many file systems allow to rename/move a file without actually moving any of its data,
+        /// only the pointer to it.</param>
+        /// <param name="overwrite">Tells the function whether it should overwrite the target file 
+        /// or not. See notes below on how this parameter is used.</param>
+        /// <param name="ri">A structure of type <see cref="RemoteInfo"/> which contains 
+        /// the parameters of the file being renamed/moved (not of the target file!).</param>
+        /// <returns>Return one of the following values:
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="FileOperationResult.OK"/></term>
+        /// <description>The file was copied/moved OK.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.Exists"/></term>
+        /// <description>The target file already exists.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.NotFound"/></term>
+        /// <description>The source file couldn't be found or opened.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.ReadError"/></term>
+        /// <description>There was an error reading from the source file.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.WriteError"/></term>
+        /// <description>There was an error writing to the target file, e.g. disk full.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.UserAbort"/></term>
+        /// <description>Copying was aborted by the user (through Progress).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.NotSupported"/></term>
+        /// <description>The operation is not supported (e.g. resume).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.ExistsResumeAllowed"/></term>
+        /// <description>Not used here.</description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// Total Commander usually calls this function twice:<br />
+        /// - once with <paramref name="overwrite"/> == <strong>false</strong>. 
+        /// If the remote file exists, return <see cref="FileOperationResult.Exists"/>. 
+        /// If it doesn't exist, try to copy the file, and return an appropriate error code.<br />
+        /// - a second time with <paramref name="overwrite"/> == <strong>true</strong>, 
+        /// if the user chose to overwrite the file.<br />
+        /// While copying the file, but at least at the beginning and the end, 
+        /// call <see cref="Progress.SetProgress"/> to show the copy progress and allow 
+        /// the user to abort the operation.
+        /// </remarks>
         FileOperationResult FileRenameMove(string oldName, string newName, bool move, bool overwrite, RemoteInfo ri);
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.FileGet"/> is called to transfer a file from 
+        /// the plugin's file system to the normal file system (drive letters or UNC).
+        /// </summary>
+        /// <param name="remoteName">Name of the file to be retrieved, with full path. The name always 
+        /// starts with a backslash, then the names returned by 
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/> 
+        /// separated by backslashes.</param>
+        /// <param name="localName">Local file name with full path, either with a drive 
+        /// letter or UNC path (\\Server\Share\filename). The plugin may change the 
+        /// NAME/EXTENSION of the file (e.g. when file conversion is done), but not the path!</param>
+        /// <param name="copyFlags">Can be a combination of the following three flags:<br />
+        /// <see cref="CopyFlags.Overwrite"/>: If set, overwrite any existing file without asking.
+        /// If not set, simply fail copying.<br />
+        /// <see cref="CopyFlags.Resume"/>: Resume an aborted or failed transfer.<br />
+        /// <see cref="CopyFlags.Move"/>: The plugin needs to delete the remote file after uploading.<br />
+        /// See below for important notes!</param>
+        /// <param name="ri">This parameter contains information about the remote file which was previously 
+        /// retrieved via <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/>:
+        /// The size, date/time, and attributes of the remote file. May be useful to copy 
+        /// the attributes with the file, and for displaying a progress dialog.</param>
+        /// <returns>Return one of the following values:
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="FileOperationResult.OK"/></term>
+        /// <description>The file was copied/moved OK.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.Exists"/></term>
+        /// <description>The target file already exists.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.NotFound"/></term>
+        /// <description>The source file couldn't be found or opened.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.ReadError"/></term>
+        /// <description>There was an error reading from the source file.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.WriteError"/></term>
+        /// <description>There was an error writing to the target file, e.g. disk full.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.UserAbort"/></term>
+        /// <description>Copying was aborted by the user (through Progress).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.NotSupported"/></term>
+        /// <description>The operation is not supported (e.g. resume).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.ExistsResumeAllowed"/></term>
+        /// <description>The remote file already exists, and resume is supported.</description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Total Commander usually calls this function twice:<br />
+        /// - once with <paramref name="copyFlags"/> == <see cref="CopyFlags.None"/> or 
+        /// <paramref name="copyFlags"/> == <see cref="CopyFlags.Move"/>. 
+        /// If the local file exists and resume is supported, 
+        /// return <see cref="FileOperationResult.ExistsResumeAllowed"/>.
+        /// If resume isn't allowed, return <see cref="FileOperationResult.Exists"/>.<br />
+        /// - a second time with <see cref="CopyFlags.Resume"/> or <see cref="CopyFlags.Overwrite"/>, 
+        /// depending on the user's choice. The resume option is only offered to the user 
+        /// if <see cref="FileOperationResult.ExistsResumeAllowed"/> was returned by the first call.<br />
+        /// - <see cref="CopyFlags.ExistsSameCase"/> and <see cref="CopyFlags.ExistsDifferentCase"/>
+        /// are NEVER passed to this function, because the plugin can easily 
+        /// determine whether a local file exists or not.<br />
+        /// - <see cref="CopyFlags.Move"/> is set, the plugin needs to delete the remote file after a successful download.
+        /// </para>
+        /// <para>
+        /// While copying the file, but at least at the beginning and the end, call 
+        /// ProgressProc to show the copy progress and allow the user 
+        /// to abort the operation.
+        /// </para>
+        ///</remarks>
         FileOperationResult FileGet(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri);
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.FilePut"/> is called to transfer a file from 
+        /// the normal file system (drive letters or UNC) to the plugin's file system.
+        /// </summary>
+        /// <param name="localName">
+        /// Local file name with full path, either with a drive letter or 
+        /// UNC path (\\Server\Share\filename). This file needs to be uploaded to the plugin's file system.
+        /// </param>
+        /// <param name="remoteName">
+        /// Name of the remote file, with full path. The name always 
+        /// starts with a backslash, then the names returned by 
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/> 
+        /// separated by backslashes. The plugin may change the NAME/EXTENSION of the file 
+        /// (e.g. when file conversion is done), but not the path!
+        /// </param>
+        /// <param name="copyFlags">
+        /// Can be a combination of the following three flags:<br />
+        /// <see cref="CopyFlags.Overwrite"/>: If set, overwrite any existing file without asking.
+        /// If not set, simply fail copying.<br />
+        /// <see cref="CopyFlags.Resume"/>: Resume an aborted or failed transfer.<br />
+        /// <see cref="CopyFlags.Move"/>: The plugin needs to delete the remote file after uploading.<br />
+        /// <see cref="CopyFlags.ExistsSameCase"/>: A hint from the calling program: The remote file exists and 
+        /// has the same case (upper/lowercase) as the local file.<br />
+        /// <see cref="CopyFlags.ExistsDifferentCase"/>:  A hint from the calling program: The remote file exists and 
+        /// has different case (upper/lowercase) than the local file.<br />
+        /// See below for important notes!
+        /// </param>
+        /// <returns>Return one of the following values:
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="FileOperationResult.OK"/></term>
+        /// <description>The file was copied/moved OK.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.Exists"/></term>
+        /// <description>The target file already exists.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.NotFound"/></term>
+        /// <description>The source file couldn't be found or opened.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.ReadError"/></term>
+        /// <description>There was an error reading from the source file.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.WriteError"/></term>
+        /// <description>There was an error writing to the target file, e.g. disk full.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.UserAbort"/></term>
+        /// <description>Copying was aborted by the user (through Progress).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.NotSupported"/></term>
+        /// <description>The operation is not supported (e.g. resume).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="FileOperationResult.ExistsResumeAllowed"/></term>
+        /// <description>The remote file already exists, and resume is supported.</description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// Total Commander usually calls this function twice, with the following parameters in <paramref name="copyFlags"/>:<br />
+        /// - once with neither <see cref="CopyFlags.Resume"/> nor <see cref="CopyFlags.Overwrite"/> set.
+        /// If the remote file exists and resume is supported, return <see cref="FileOperationResult.ExistsResumeAllowed"/>.
+        /// If resume isn't allowed, return <see cref="FileOperationResult.Exists"/><br />
+        /// - a second time with <see cref="CopyFlags.Resume"/> or <see cref="CopyFlags.Overwrite"/>, 
+        /// depending on the user's choice. The resume option is only offered to the user 
+        /// if <see cref="FileOperationResult.ExistsResumeAllowed"/> was returned by the first call.<br />
+        /// - The flags <see cref="CopyFlags.ExistsSameCase"/> or <see cref="CopyFlags.ExistsDifferentCase"/> 
+        /// are added to <paramref name="copyFlags"/> when the remote file exists and needs to be overwritten. 
+        /// This is a hint to the plugin to allow optimizations: Depending on the plugin type, 
+        /// it may be very slow to check the server for every single file when uploading.<br />
+        /// - If the flag <see cref="CopyFlags.Move"/> is set, the plugin needs to delete the local 
+        /// file after a successful upload.
+        /// </para>
+        /// <para>
+        /// While copying the file, but at least at the beginning and the end, call 
+        /// <see cref="Progress.SetProgress"/> to show the copy progress and allow the user to abort the operation.
+        /// </para>
+        ///</remarks>
         FileOperationResult FilePut(string localName, string remoteName, CopyFlags copyFlags);
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.FileRemove"/> is called to delete a file from the plugin's file system.
+        /// </summary>
+        /// <param name="remoteName">
+        /// Name of the file to be deleted, with full path. The name always starts with a backslash, 
+        /// then the names returned by 
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/>
+        /// separated by backslashes.
+        /// </param>
+        /// <returns>Return <strong>true</strong> if the file could be deleted, <strong>false</strong> if not.</returns>
         bool FileRemove(string remoteName);
 
         /// <summary>
@@ -252,7 +561,7 @@ namespace TotalCommander.Plugin.Wfx
         /// The name always starts with a backslash, then the names returned by 
         /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/> separated by backslashes.
         /// </param>
-        /// <returns>Return true if the directory could be created, false if not.</returns>
+        /// <returns>Return <strong>true</strong> if the directory could be created, <strong>false</strong> if not.</returns>
         /// <seealso cref="ITotalCommanderWfxPlugin.DirectoryRemove"/>
         bool DirectoryCreate(string path);
 
@@ -264,7 +573,7 @@ namespace TotalCommander.Plugin.Wfx
         /// The name always starts with a backslash, then the names returned by 
         /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/> separated by backslashes.
         /// </param>
-        /// <returns>Return true if the directory could be removed, false if not.</returns>
+        /// <returns>Return <strong>true</strong> if the directory could be removed, <strong>false</strong> if not.</returns>
         /// <seealso cref="ITotalCommanderWfxPlugin.DirectoryCreate"/>
         bool DirectoryRemove(string remoteName);
 
@@ -292,7 +601,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <param name="remoteName">Name of the file/directory whose attributes have to be set.</param>
         /// <param name="attributes">New file attributes. These are a commbination of the following standard file attributes: 
         /// <see cref="FileAttributes.ReadOnly"/>, <see cref="FileAttributes.Hidden"/>, <see cref="FileAttributes.System"/>, <see cref="FileAttributes.Archive"/>.</param>
-        /// <returns>Return true if successful, false if the function failed.</returns>
+        /// <returns>Return <strong>true</strong> if successful, <strong>false</strong> if the function failed.</returns>
         /// <seealso cref="ITotalCommanderWfxPlugin.FileExecute"/>
         /// <seealso cref="ITotalCommanderWfxPlugin.SetFileTime"/>
         bool SetFileAttributes(string remoteName, FileAttributes attributes);
@@ -304,16 +613,16 @@ namespace TotalCommander.Plugin.Wfx
         /// <param name="creationTime">Creation time of the file. May be NULL to leave it unchanged.</param>
         /// <param name="lastAccessTime">Last access time of the file. May be NULL to leave it unchanged.</param>
         /// <param name="lastWriteTime">Last write time of the file. May be NULL to leave it unchanged. If your file system only supports one time, use this parameter!</param>
-        /// <returns>Return true if successful, false if the function failed.</returns>
+        /// <returns>Return <strong>true</strong> if successful, <strong>false</strong> if the function failed.</returns>
         /// <seealso cref="ITotalCommanderWfxPlugin.SetFileAttributes"/>
         bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
 
-        
+
         CustomIconResult GetCustomIcon(string remoteName, CustomIconFlag extractIconFlag, out Icon icon);
 
         PreviewBitmapResult GetPreviewBitmap(string remoteName, Size size, out Bitmap bitmap);
 
-        
+
         void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation);
 
         bool Disconnect(string disconnectRoot);
