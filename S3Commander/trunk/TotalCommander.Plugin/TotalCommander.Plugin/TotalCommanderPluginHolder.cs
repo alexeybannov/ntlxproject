@@ -42,11 +42,10 @@ namespace TotalCommander.Plugin
 					var assembly = Assembly.LoadFrom(file);
 					foreach (var type in assembly.GetExportedTypes())
 					{
-						var attributes = type.GetCustomAttributes(typeof(TotalCommanderPluginAttribute), false);
-						if (attributes.Length == 0) continue;
+                        var attribute = Attribute.GetCustomAttribute(type, typeof(TotalCommanderPluginAttribute), false) as TotalCommanderPluginAttribute;
+                        if (attribute == null) continue;
 
-						var attribute = (TotalCommanderPluginAttribute)attributes[0];
-						wfxPluginName = attribute.Name;
+                        wfxPluginName = attribute.Name;
 						if (Array.Exists(type.GetInterfaces(), i => i == typeof(ITotalCommanderWfxPlugin)))
 						{
 							wfxPlugin = (ITotalCommanderWfxPlugin)Activator.CreateInstance(type);
