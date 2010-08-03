@@ -2,6 +2,7 @@
 
 namespace TotalCommander.Plugin
 {
+    [AttributeUsage(AttributeTargets.Class)]
 	public class TotalCommanderPluginAttribute : Attribute
 	{
 		public string Name

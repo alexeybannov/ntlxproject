@@ -1,9 +1,21 @@
-﻿
+﻿using System;
+
 namespace TotalCommander.Plugin.Wfx
 {
+    /// <summary>
+    /// Defines constants that are used by the <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>
+    /// </summary>
+    [Flags]
     public enum CustomIconFlag
 	{
+        /// <summary>
+        /// Requests the small 16x16 icon.
+        /// </summary>
         Small = 1,
-        Background
+
+        /// <summary>
+        /// The function is called from the background thread.
+        /// </summary>
+        Background = 2
 	}
 }

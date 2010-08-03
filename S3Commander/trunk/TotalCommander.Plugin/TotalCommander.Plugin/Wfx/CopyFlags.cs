@@ -2,6 +2,10 @@
 
 namespace TotalCommander.Plugin.Wfx
 {
+    /// <summary>
+    /// Defines constants that are used by the 
+    /// <see cref="ITotalCommanderWfxPlugin.FileGet"/> and <see cref="ITotalCommanderWfxPlugin.FilePut"/> methods.
+    /// </summary>
     [Flags]
     public enum CopyFlags
     {

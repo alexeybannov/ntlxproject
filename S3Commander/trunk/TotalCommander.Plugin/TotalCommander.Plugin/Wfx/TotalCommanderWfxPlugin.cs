@@ -31,7 +31,7 @@ namespace TotalCommander.Plugin.Wfx
             private set;
         }
 
-        public string DefaultIniFileName
+        public string IniFilePath
         {
             get;
             private set;
@@ -164,7 +164,7 @@ namespace TotalCommander.Plugin.Wfx
         public void SetDefaultParams(DefaultParam defaultParam)
         {
             PluginInterfaceVersion = defaultParam.PluginInterfaceVersion;
-            DefaultIniFileName = defaultParam.DefaultIniFileName;
+            IniFilePath = defaultParam.DefaultIniFileName;
         }
 
         public virtual bool SetFileAttributes(string remoteName, FileAttributes attributes)
