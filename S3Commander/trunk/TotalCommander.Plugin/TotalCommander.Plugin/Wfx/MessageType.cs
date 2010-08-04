@@ -1,7 +1,7 @@
 ﻿
 namespace TotalCommander.Plugin.Wfx
 {
-	public enum MessageType
+	enum MessageType
 	{
 		Connect = 1,
 		Disconnect,

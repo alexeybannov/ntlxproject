@@ -10,6 +10,8 @@ namespace TotalCommander.Plugin.Wfx
     /// <see cref="FindData"/> is used by the
     /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/> and <see cref="ITotalCommanderWfxPlugin.FindNext"/> methods.
     /// </summary>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FindFirst"/>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FindNext"/>
     public class FindData
     {
         public static readonly FindData NotOpen = null;

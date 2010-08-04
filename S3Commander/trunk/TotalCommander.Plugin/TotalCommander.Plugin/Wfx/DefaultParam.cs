@@ -8,6 +8,7 @@ namespace TotalCommander.Plugin.Wfx
     /// <see cref="DefaultParam"/> is passed to <see cref="ITotalCommanderWfxPlugin.SetDefaultParams"/>
     /// to inform the plugin about the current plugin interface version and ini file location.
     /// </summary>
+    /// <seealso cref="ITotalCommanderWfxPlugin.SetDefaultParams"/>
     public class DefaultParam
     {
         /// <summary>

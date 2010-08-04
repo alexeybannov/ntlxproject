@@ -4,6 +4,7 @@ namespace TotalCommander.Plugin.Wfx
     /// <summary>
     /// Defines constants that are returned by the <see cref="ITotalCommanderWfxPlugin.FileExecute"/> method.
     /// </summary>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FileExecute"/>
 	public enum ExecuteResult
 	{
         /// <summary>

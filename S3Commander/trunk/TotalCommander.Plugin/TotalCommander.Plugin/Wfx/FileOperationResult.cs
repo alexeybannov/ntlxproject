@@ -5,8 +5,11 @@ namespace TotalCommander.Plugin.Wfx
     /// Defines constants that are returned by the 
     /// <see cref="ITotalCommanderWfxPlugin.FileRenameMove"/>, 
     /// <see cref="ITotalCommanderWfxPlugin.FileGet"/> and
-    /// <see cref="ITotalCommanderWfxPlugin.FileGet"/> methods.
+    /// <see cref="ITotalCommanderWfxPlugin.FilePut"/> methods.
     /// </summary>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FileRenameMove"/>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FileGet"/>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FilePut"/>
     public enum FileOperationResult
     {
         /// <summary>

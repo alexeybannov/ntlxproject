@@ -618,8 +618,198 @@ namespace TotalCommander.Plugin.Wfx
         bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
 
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/> is called when a file/directory is displayed in the file list. 
+        /// It can be used to specify a custom icon for that file/directory. 
+        /// This function is new in version 1.1. It requires Total Commander >=5.51, but is ignored by older versions.
+        /// </summary>
+        /// <param name="remoteName">
+        /// This is the full path to the file or directory whose icon is to be retrieved. 
+        /// When extracting an icon, you can return an icon name here - this ensures that the icon is only cached once in the calling program. 
+        /// The returned icon name must not be longer than MAX_PATH characters (including terminating 0!). 
+        /// The icon handle must still be returned in <paramref name="icon"/>!</param>
+        /// <param name="extractIconFlag">
+        /// Flags for the extract operation. A combination of the following:<br />
+        /// <see cref="CustomIconFlag.Small"/>: Requests the small 16x16 icon<br />
+        /// <see cref="CustomIconFlag.Background"/>: The function is called from the background thread (see note below).
+        /// </param>
+        /// <param name="icon">
+        /// Here you need to return the icon.
+        /// </param>
+        /// <returns>
+        /// The function has to return one of the following values:<br />
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="CustomIconResult.UseDefault"/></term>
+        /// <description>No icon is returned. The calling app should show the default icon for this file type.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="CustomIconResult.Extracted"/></term>
+        /// <description>An icon was returned in <paramref name="icon"/>. The icon must NOT be freed by the calling app, 
+        /// e.g. because it was loaded with LoadIcon, or the DLL handles destruction of the icon.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="CustomIconResult.ExtractedDestroy"/></term>
+        /// <description>An icon was returned in <paramref name="icon"/>. The icon MUST be destroyed by the calling app, 
+        /// e.g. because it was created with CreateIcon(), or extracted with ExtractIconEx().</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="CustomIconResult.Delayed"/></term>
+        /// <description>This return value is only valid if <see cref="CustomIconFlag.Background"/> was NOT set. 
+        /// It tells the calling app to show a default icon, and request the true icon in a background thread. 
+        /// See note below.</description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// If you return <see cref="CustomIconResult.Delayed"/>, <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>
+        /// will be called again from a background thread at a later time. 
+        /// A critical section is used by the calling app to ensure that <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>
+        /// is never entered twice at the same time. This return value should be used for icons which take a while to extract, 
+        /// e.g. EXE icons. In the fsplugin sample plugin, the drive icons are returned immediately 
+        /// (because they are stored in the plugin itself), but the EXE icons are loaded with a delay. 
+        /// If the user turns off background loading of icons, the function will be called 
+        /// in the foreground with the <see cref="CustomIconFlag.Background"/> flag.
+        /// </remarks>
         CustomIconResult GetCustomIcon(string remoteName, CustomIconFlag extractIconFlag, out Icon icon);
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.GetPreviewBitmap"/> is called when a file/directory is displayed in thumbnail view. 
+        /// It can be used to return a custom bitmap for that file/directory. 
+        /// This function is new in version 1.4. It requires Total Commander >=7.0, but is ignored by older versions.
+        /// </summary>
+        /// <param name="remoteName">
+        /// This is the full path to the file or directory whose bitmap is to be retrieved. 
+        /// When extracting a bitmap, you can return a bitmap name here - this ensures that the icon is only cached once in the calling program. 
+        /// The returned bitmap name must not be longer than MAX_PATH characters (including terminating 0!). 
+        /// The bitmap handle must still be returned in <paramref name="bitmap"/>!
+        /// </param>
+        /// <param name="size">
+        /// The maximum dimensions of the preview bitmap. If your image is smaller, or has a different side ratio, 
+        /// then you need to return an image which is smaller than these dimensions! See notes below!
+        /// </param>
+        /// <param name="bitmap">
+        /// Here you need to return the bitmap.
+        /// </param>
+        /// <returns>
+        /// The function has to return one of the following values:<br />
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="PreviewBitmapResult.None"/></term>
+        /// <description>There is no preview bitmap.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="PreviewBitmapResult.Extracted"/></term>
+        /// <description>The image was extracted and is returned in <paramref name="bitmap"/>.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="PreviewBitmapResult.ExtractYourSelf"/></term>
+        /// <description>Tells the caller to extract the image by itself. 
+        /// The full local path to the file needs to be returned in <paramref name="remoteName"/>. 
+        /// The returned bitmap name must not be longer than MAX_PATH.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="PreviewBitmapResult.ExtractYourSelfAndDelete"/></term>
+        /// <description>Tells the caller to extract the image by itself, and then delete the temporary image file. 
+        /// The full local path to the temporary image file needs to be returned in <paramref name="remoteName"/>. 
+        /// The returned bitmap name must not be longer than MAX_PATH. 
+        /// In this case, the plugin downloads the file to TEMP and then asks TC to extract the image.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="PreviewBitmapResult.Cache"/></term>
+        /// <description>This value must be ADDED to one of the above values if the caller should cache the image. 
+        /// Do NOT add this image if you will cache the image yourself!</description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// <list type="number">
+        /// <item>
+        /// <term>This function is only called in Total Commander 7.0 and later. The reported plugin version will be >= 1.4.</term>
+        /// </item>
+        /// <item>
+        /// <term>The bitmap handle goes into possession of Total Commander, which will delete it after using it. 
+        /// The plugin must not delete the bitmap handle!</term>
+        /// </item>
+        /// <item>
+        /// <term>This function is only called in Total Commander 7.0 and later. The reported plugin version will be >= 1.4.</term>
+        /// </item>
+        /// <item>
+        /// <term>Make sure you scale your image correctly to the desired maximum width+height! 
+        /// Do not fill the rest of the bitmap - instead, create a bitmap which is SMALLER than requested! 
+        /// This way, Total Commander can center your image and fill the rest with the default background color.</term>
+        /// </item>
+        /// </list>
+        /// <example>
+        /// The following sample code will stretch a bitmap with dimensions bigwidth*bigheight down to max. 
+        /// width*height keeping the correct aspect ratio (proportions):
+        /// <code>
+        /// int __stdcall FsGetPreviewBitmap(char* RemoteName,int width,int height, HBITMAP* ReturnedBitmap)
+        /// {
+        ///     int w,h,bigx,bigy;
+        ///     int stretchx,stretchy;
+        ///     OSVERSIONINFO vx;
+        ///     BOOL is_nt;
+        ///     BITMAP bmpobj;
+        ///     HBITMAP bmp_image,bmp_thumbnail,oldbmp_image,oldbmp_thumbnail;
+        ///     HDC maindc,dc_thumbnail,dc_image;
+        ///     POINT pt;
+        ///     
+        ///     // check for operating system: Windows 9x does NOT support the HALFTONE stretchblt mode!
+        ///     vx.dwOSVersionInfoSize=sizeof(vx);
+        ///     GetVersionEx(&amp;vx);
+        ///     is_nt=vx.dwPlatformId==VER_PLATFORM_WIN32_NT;
+        ///     
+        ///     // here you load your image
+        ///     bmp_image=SomeHowLoadImageFromFile(RemoteName);
+        ///     
+        ///     if (bmp_image &amp;&amp; GetObject(bmp_image,sizeof(bmpobj),&amp;bmpobj)) {
+        ///         bigx=bmpobj.bmWidth;
+        ///         bigy=bmpobj.bmHeight;
+        ///         // do we need to stretch?
+        ///         if ((bigx&gt;=width || bigy&gt;=height) &amp;&amp; (bigx&gt;0 &amp;&amp; bigy&gt;0)) {
+        ///             stretchy=MulDiv(width,bigy,bigx);
+        ///             if (stretchy&lt;=height) {
+        ///                 w=width;
+        ///                 h=stretchy;
+        ///                 if (h&lt;1) h=1;
+        ///             } else {
+        ///                 stretchx=MulDiv(height,bigx,bigy);
+        ///                 w=stretchx;
+        ///                 if (w&lt;1) w=1;
+        ///                 h=height;
+        ///             }
+        ///             
+        ///             maindc=GetDC(GetDesktopWindow());
+        ///             dc_thumbnail=CreateCompatibleDC(maindc);
+        ///             dc_image=CreateCompatibleDC(maindc);
+        ///             bmp_thumbnail=CreateCompatibleBitmap(maindc,w,h);
+        ///             ReleaseDC(GetDesktopWindow(),maindc);
+        ///             oldbmp_image=(HBITMAP)SelectObject(dc_image,bmp_image);
+        ///             oldbmp_thumbnail=(HBITMAP)SelectObject(dc_thumbnail,bmp_thumbnail);
+        ///             if(is_nt) {
+        ///                 SetStretchBltMode(dc_thumbnail,HALFTONE);
+        ///                 SetBrushOrgEx(dc_thumbnail,0,0,&amp;pt);
+        ///             } else {
+        ///                 SetStretchBltMode(dc_thumbnail,COLORONCOLOR);
+        ///             }
+        ///             StretchBlt(dc_thumbnail,0,0,w,h,dc_image,0,0,bigx,bigy,SRCCOPY);
+        ///             SelectObject(dc_image,oldbmp_image);
+        ///             SelectObject(dc_thumbnail,oldbmp_thumbnail);
+        ///             DeleteDC(dc_image);
+        ///             DeleteDC(dc_thumbnail);
+        ///             DeleteObject(bmp_image);
+        ///             *ReturnedBitmap=bmp_thumbnail;
+        ///             return FS_BITMAP_EXTRACTED | FS_BITMAP_CACHE;
+        ///         }
+        ///         *ReturnedBitmap=bmp_image;
+        ///         return FS_BITMAP_EXTRACTED | FS_BITMAP_CACHE;
+        ///     }
+        ///     return FS_BITMAP_NONE;
+        /// }
+        /// </code>
+        /// </example>
+        /// </remarks>
         PreviewBitmapResult GetPreviewBitmap(string remoteName, Size size, out Bitmap bitmap);
 
 

@@ -6,6 +6,8 @@ namespace TotalCommander.Plugin.Wfx
     /// Defines constants that are used by the 
     /// <see cref="ITotalCommanderWfxPlugin.FileGet"/> and <see cref="ITotalCommanderWfxPlugin.FilePut"/> methods.
     /// </summary>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FileGet"/>
+    /// <seealso cref="ITotalCommanderWfxPlugin.FilePut"/>
     [Flags]
     public enum CopyFlags
     {

@@ -5,6 +5,7 @@ namespace TotalCommander.Plugin.Wfx
     /// <summary>
     /// Defines constants that are used by the <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>
     /// </summary>
+    /// <seealso cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>
     [Flags]
     public enum CustomIconFlag
 	{
