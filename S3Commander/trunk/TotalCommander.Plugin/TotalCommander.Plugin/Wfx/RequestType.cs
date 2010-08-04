@@ -1,7 +1,7 @@
 ﻿
 namespace TotalCommander.Plugin.Wfx
 {
-	public enum RequestType
+	enum RequestType
 	{
 		Other,
 		UserName,

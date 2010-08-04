@@ -218,7 +218,7 @@ namespace TotalCommander.Plugin.Wfx
             logProc(pluginNumber, messageType, logString);
         }
 
-        private static bool Request(int pluginNumber, int requestType, string customTitle, string customText, string defaultText, int maxLen)
+        private static bool Request(int pluginNumber, int requestType, string customTitle, string customText, StringBuilder defaultText, int maxLen)
         {
             return requestProc(pluginNumber, requestType, customTitle, customText, defaultText, maxLen);
         }
@@ -249,7 +249,7 @@ namespace TotalCommander.Plugin.Wfx
             int requestType,
             [MarshalAs(UnmanagedType.LPStr)] string customTitle,
             [MarshalAs(UnmanagedType.LPStr)] string customText,
-            [MarshalAs(UnmanagedType.LPStr)] string defaultText,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder defaultText,
             int maxLen
         );
 

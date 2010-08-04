@@ -102,8 +102,14 @@ namespace TotalCommander.Plugin.Wfx
         /// </summary>
         SyncDelete,
 
+        /// <summary>
+        /// Get multiple files, may include subdirs in background thread.
+        /// </summary>
         GetMultiThread,
 
+        /// <summary>
+        /// Put multiple files, may include subdirs in background thread.
+        /// </summary>
         PutMultiThread
     }
 }

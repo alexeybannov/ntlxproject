@@ -14,8 +14,14 @@ namespace TotalCommander.Plugin.Wfx
     /// <seealso cref="ITotalCommanderWfxPlugin.FindNext"/>
     public class FindData
     {
+        /// <summary>
+        /// The directory does not exist, and Total Commander will not try to open it.
+        /// </summary>
         public static readonly FindData NotOpen = null;
 
+        /// <summary>
+        /// The directory exists, but it's empty (Totalcmd can open it, e.g. to copy files to it).
+        /// </summary>
         public static readonly FindData NoMoreFiles = new FindData();
 
         
