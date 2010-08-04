@@ -43,6 +43,7 @@
     <Compile Include="DllExportAttribute.cs" />
     <Compile Include="TotalCommanderWindow.cs" />
     <Compile Include="Utils\DateTimeUtil.cs" />
+    <Compile Include="Wfx\Result.cs" />
     <Compile Include="Wfx\WfxDispatcher.cs" />
     <Compile Include="Wfx\PreviewBitmapResult.cs" />
     <Compile Include="Wfx\CustomIconFlag.cs" />
