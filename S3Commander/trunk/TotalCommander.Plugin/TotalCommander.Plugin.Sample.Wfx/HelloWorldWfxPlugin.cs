@@ -64,7 +64,7 @@ namespace TotalCommander.Plugin.Sample.Wfx
         public override ExecuteResult ExecuteOpen(TotalCommanderWindow window, ref string remoteName)
         {
             var username = "Nikolay";
-            var r = Request.GetUserName(ref username, "Get your name:", "S3 Browser");
+            var r = Request.MessageBox("Hello, World!");
             return ExecuteResult.OK;
         }
 

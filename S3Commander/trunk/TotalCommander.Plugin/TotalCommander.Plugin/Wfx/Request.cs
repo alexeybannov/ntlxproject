@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using TotalCommander.Plugin.Wfx.Internal;
+using System.Windows.Forms;
 
 namespace TotalCommander.Plugin.Wfx
 {
@@ -8,24 +9,25 @@ namespace TotalCommander.Plugin.Wfx
     /// <see cref="Request"/> is a class, which the plugin can use to request input from the user.
     /// This class is received through the <see cref="ITotalCommanderWfxPlugin.Init"/> function when the plugin is loaded.
     /// </summary>
-	public class Request
-	{
-		private int pluginNumber;
+    public class Request
+    {
+        private int pluginNumber;
 
-		private RequestCallback request;
+        private RequestCallback request;
 
-		internal Request(int pluginNumber, RequestCallback request)
-		{
-			if (request == null) throw new ArgumentNullException("request");
+        internal Request(int pluginNumber, RequestCallback request)
+        {
+            if (request == null) throw new ArgumentNullException("request");
 
-			this.pluginNumber = pluginNumber;
-			this.request = request;
+            this.pluginNumber = pluginNumber;
+            this.request = request;
         }
 
         #region UserName
 
         /// <summary>
-        /// Ask for the user name, e.g. for a connection.        /// </summary>
+        /// Ask for the user name, e.g. for a connection.
+        /// </summary>
         /// <param name="username">
         /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
         /// Set <paramref name="username"/> = null to have no default text.
@@ -58,11 +60,11 @@ namespace TotalCommander.Plugin.Wfx
         /// Set <paramref name="username"/> = null to have no default text.
         /// </param>
         /// <param name="text">Override the default text.</param>
-        /// <param name="title">Custom title for the dialog box.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
-        public bool GetUserName(ref string username, string text, string title)
+        public bool GetUserName(ref string username, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, title, ref username);
+            return GetRequest(RequestType.UserName, text, caption, ref username);
         }
 
         #endregion UserName
@@ -71,7 +73,8 @@ namespace TotalCommander.Plugin.Wfx
         #region Password
 
         /// <summary>
-        /// Ask for a password, e.g. for a connection (shows ***).        /// </summary>
+        /// Ask for a password, e.g. for a connection (shows ***).
+        /// </summary>
         /// <param name="password">
         /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
         /// Set <paramref name="password"/> = null to have no default text.
@@ -104,17 +107,315 @@ namespace TotalCommander.Plugin.Wfx
         /// Set <paramref name="password"/> = null to have no default text.
         /// </param>
         /// <param name="text">Override the default text.</param>
-        /// <param name="title">Custom title for the dialog box.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
-        public bool GetPassword(ref string password, string text, string title)
+        public bool GetPassword(ref string password, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, title, ref password);
+            return GetRequest(RequestType.UserName, text, caption, ref password);
         }
 
         #endregion Password
 
 
-        private bool GetRequest(RequestType requestType, string text, string title, ref string result)
+        #region Account
+
+        /// <summary>
+        /// Ask for an account (needed for some FTP servers).
+        /// </summary>
+        /// <param name="account">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="account"/> = null to have no default text.
+        /// </param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetAccount(ref string account)
+        {
+            return GetRequest(RequestType.UserName, null, null, ref account);
+        }
+
+        /// <summary>
+        /// Ask for an account (needed for some FTP servers).
+        /// </summary>
+        /// <param name="account">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="account"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetAccount(ref string account, string text)
+        {
+            return GetRequest(RequestType.UserName, text, null, ref account);
+        }
+
+        /// <summary>
+        /// Ask for an account (needed for some FTP servers).
+        /// </summary>
+        /// <param name="account">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="account"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetAccount(ref string account, string text, string caption)
+        {
+            return GetRequest(RequestType.UserName, text, caption, ref account);
+        }
+
+        #endregion Account
+
+
+        #region UserNameFirewall
+
+        /// <summary>
+        /// User name for a firewall.
+        /// </summary>
+        /// <param name="userNameFirewall">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="userNameFirewall"/> = null to have no default text.
+        /// </param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetUserNameFirewall(ref string userNameFirewall)
+        {
+            return GetRequest(RequestType.UserName, null, null, ref userNameFirewall);
+        }
+
+        /// <summary>
+        /// User name for a firewall.
+        /// </summary>
+        /// <param name="userNameFirewall">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="userNameFirewall"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetUserNameFirewall(ref string userNameFirewall, string text)
+        {
+            return GetRequest(RequestType.UserName, text, null, ref userNameFirewall);
+        }
+
+        /// <summary>
+        /// User name for a firewall.
+        /// </summary>
+        /// <param name="userNameFirewall">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="userNameFirewall"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetUserNameFirewall(ref string userNameFirewall, string text, string caption)
+        {
+            return GetRequest(RequestType.UserName, text, caption, ref userNameFirewall);
+        }
+
+        #endregion UserNameFirewall
+
+
+        #region PasswordFirewall
+
+        /// <summary>
+        /// Password for a firewall.
+        /// </summary>
+        /// <param name="passwordFirewall">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="passwordFirewall"/> = null to have no default text.
+        /// </param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetPasswordFirewall(ref string passwordFirewall)
+        {
+            return GetRequest(RequestType.UserName, null, null, ref passwordFirewall);
+        }
+
+        /// <summary>
+        /// Password for a firewall.
+        /// </summary>
+        /// <param name="passwordFirewall">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="passwordFirewall"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetPasswordFirewall(ref string passwordFirewall, string text)
+        {
+            return GetRequest(RequestType.UserName, text, null, ref passwordFirewall);
+        }
+
+        /// <summary>
+        /// Password for a firewall.
+        /// </summary>
+        /// <param name="passwordFirewall">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="passwordFirewall"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetPasswordFirewall(ref string passwordFirewall, string text, string caption)
+        {
+            return GetRequest(RequestType.UserName, text, caption, ref passwordFirewall);
+        }
+
+        #endregion PasswordFirewall
+
+
+        #region TargetDir
+
+        /// <summary>
+        /// Asks for a local directory (with browse button).
+        /// </summary>
+        /// <param name="targetDir">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="targetDir"/> = null to have no default text.
+        /// </param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetTargetDir(ref string targetDir)
+        {
+            return GetRequest(RequestType.UserName, null, null, ref targetDir);
+        }
+
+        /// <summary>
+        /// Asks for a local directory (with browse button).
+        /// </summary>
+        /// <param name="targetDir">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="targetDir"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetTargetDir(ref string targetDir, string text)
+        {
+            return GetRequest(RequestType.UserName, text, null, ref targetDir);
+        }
+
+        /// <summary>
+        /// Asks for a local directory (with browse button).
+        /// </summary>
+        /// <param name="targetDir">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="targetDir"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetTargetDir(ref string targetDir, string text, string caption)
+        {
+            return GetRequest(RequestType.UserName, text, caption, ref targetDir);
+        }
+
+        #endregion TargetDir
+
+
+        #region Url
+
+        /// <summary>
+        /// Asks for an URL.
+        /// </summary>
+        /// <param name="url">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="url"/> = null to have no default text.
+        /// </param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetUrl(ref string url)
+        {
+            return GetRequest(RequestType.UserName, null, null, ref url);
+        }
+
+        /// <summary>
+        /// Asks for an URL.
+        /// </summary>
+        /// <param name="url">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="url"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetUrl(ref string url, string text)
+        {
+            return GetRequest(RequestType.UserName, text, null, ref url);
+        }
+
+        /// <summary>
+        /// Asks for an URL.
+        /// </summary>
+        /// <param name="url">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="url"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetUrl(ref string url, string text, string caption)
+        {
+            return GetRequest(RequestType.UserName, text, caption, ref url);
+        }
+
+        #endregion Url
+
+
+        #region MessageBox
+
+        /// <summary>
+        /// Shows MessageBox.
+        /// </summary>
+        /// <param name="text">The text to display in the message box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool MessageBox(string text)
+        {
+            return GetRequest(RequestType.MsgOK, text, null);
+        }
+
+        /// <summary>
+        /// Shows MessageBox.
+        /// </summary>
+        /// <param name="text">The text to display in the message box.</param>
+        /// <param name="caption">The text to display in the title bar of the message box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool MessageBox(string text, string caption)
+        {
+            return GetRequest(RequestType.MsgOK, text, caption);
+        }
+
+        /// <summary>
+        /// Shows MessageBox.
+        /// </summary>
+        /// <param name="text">The text to display in the message box.</param>
+        /// <param name="buttons">One of the <see cref="MessageBoxButtons"/>
+        /// values that specifies which buttons to display in the message box.
+        /// Only <see cref="MessageBoxButtons.OK"/>, <see cref="MessageBoxButtons.OKCancel"/> 
+        /// and <see cref="MessageBoxButtons.YesNo"/> supported.
+        /// </param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool MessageBox(string text, MessageBoxButtons buttons)
+        {
+            return GetRequest(ResolveRequestType(buttons), text, null);
+        }
+
+        /// <summary>
+        /// Shows MessageBox.
+        /// </summary>
+        /// <param name="text">The text to display in the message box.</param>
+        /// <param name="caption">The text to display in the title bar of the message box.</param>
+        /// <param name="buttons">One of the <see cref="MessageBoxButtons"/>
+        /// values that specifies which buttons to display in the message box.
+        /// Only <see cref="MessageBoxButtons.OK"/>, <see cref="MessageBoxButtons.OKCancel"/> 
+        /// and <see cref="MessageBoxButtons.YesNo"/> supported.
+        /// </param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool MessageBox(string text, string caption, MessageBoxButtons buttons)
+        {
+            return GetRequest(ResolveRequestType(buttons), text, null);
+        }
+
+        #endregion MessageBox
+
+
+        private bool GetRequest(RequestType requestType, string text, string caption)
+        {
+            string result = null;
+            return GetRequest(RequestType.MsgOK, text, caption, ref result);
+        }
+
+        private bool GetRequest(RequestType requestType, string text, string caption, ref string result)
         {
             var resultBuilder = new StringBuilder(result ?? string.Empty);
             resultBuilder.EnsureCapacity(Win32.MAX_PATH);
@@ -122,7 +423,7 @@ namespace TotalCommander.Plugin.Wfx
             var ok = request(
                 pluginNumber,
                 (int)requestType,
-                !string.IsNullOrEmpty(title) ? title : null,
+                !string.IsNullOrEmpty(caption) ? caption : null,
                 !string.IsNullOrEmpty(text) ? text : null,
                 resultBuilder,
                 Win32.MAX_PATH);
@@ -130,6 +431,16 @@ namespace TotalCommander.Plugin.Wfx
             result = resultBuilder.ToString();
 
             return ok;
+        }
+
+        private RequestType ResolveRequestType(MessageBoxButtons buttons)
+        {
+            switch (buttons)
+            {
+                case MessageBoxButtons.OKCancel: return RequestType.MsgOKCancel;
+                case MessageBoxButtons.YesNo: return RequestType.MsgYesNo;
+                default: return RequestType.MsgOK;
+            }
         }
     }
 }
