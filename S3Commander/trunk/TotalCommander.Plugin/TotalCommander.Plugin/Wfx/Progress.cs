@@ -1,13 +1,15 @@
 ﻿using System;
-using TotalCommander.Plugin.Wfx.Internal;
 
 namespace TotalCommander.Plugin.Wfx
 {
     /// <summary>
     /// <see cref="Progress"/> is a class, which the plugin can use to show copy progress.
-    /// This class is received through the <see cref="ITotalCommanderWfxPlugin.Init"/> function when the plugin is loaded.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// This class is received through the <see cref="ITotalCommanderWfxPlugin.Init"/> 
+    /// function when the plugin is loaded.
+    /// </para>
     /// <para>
     /// You should call this function at least twice in the copy functions 
     /// <see cref="ITotalCommanderWfxPlugin.FileGet"/>, <see cref="ITotalCommanderWfxPlugin.FilePut"/> and 
@@ -27,9 +29,9 @@ namespace TotalCommander.Plugin.Wfx
 	{
 		private int pluginNumber;
 
-		private ProgressCallback progress;
+		private Progress.Callback progress;
 
-		internal Progress(int pluginNumber, ProgressCallback progress)
+		internal Progress(int pluginNumber, Progress.Callback progress)
 		{
 			if (progress == null) throw new ArgumentNullException("progress");
 
@@ -58,5 +60,8 @@ namespace TotalCommander.Plugin.Wfx
 		{
             return progress(pluginNumber, source, target, percent) == 0;
 		}
+
+
+        internal delegate int Callback(int pluginNumber, string sourceName, string targetName, int percentDone);
 	}
 }

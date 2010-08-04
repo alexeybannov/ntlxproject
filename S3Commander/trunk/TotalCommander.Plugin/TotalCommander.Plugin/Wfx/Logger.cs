@@ -1,14 +1,15 @@
 ﻿using System;
-using TotalCommander.Plugin.Wfx.Internal;
 
 namespace TotalCommander.Plugin.Wfx
 {
     /// <summary>
     /// <see cref="Logger"/> is a class, which the plugin can use to show the FTP connections toolbar, and to pass log messages to it.
     /// Totalcmd can show these messages in the log window (ftp toolbar) and write them to a log file.
-    /// This class is received through the <see cref="ITotalCommanderWfxPlugin.Init"/> function when the plugin is loaded.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// This class is received through the <see cref="ITotalCommanderWfxPlugin.Init"/> function when the plugin is loaded.
+    /// </para>
     /// <para>
     /// Total Commander supports logging to files. 
     /// While one log file will store all messages, the other will only store important errors, connects, disconnects and 
@@ -28,9 +29,9 @@ namespace TotalCommander.Plugin.Wfx
 	{
 		private int pluginNumber;
 
-		private LogCallback log;
+		private Logger.Callback log;
 
-		internal Logger(int pluginNumber, LogCallback log)
+		internal Logger(int pluginNumber, Logger.Callback log)
 		{
 			if (log == null) throw new ArgumentNullException("log");
 
@@ -123,5 +124,19 @@ namespace TotalCommander.Plugin.Wfx
 		{
 			log(pluginNumber, (int)messageType, message);
 		}
-	}
+
+
+        enum MessageType
+        {
+            Connect = 1,
+            Disconnect,
+            Details,
+            TransferComplete,
+            ConnectComplete,
+            ImportantError,
+            OperationComplete,
+        }
+
+        internal delegate void Callback(int pluginNumber, int messageType, string logString);
+    }
 }

@@ -6,10 +6,15 @@ using NI.Vfs;
 
 namespace TotalCommander.Plugin.Sample.Wfx
 {
-    [TotalCommanderPlugin("Hello World Plugin")]
+    [TotalCommanderPlugin]
     public class HelloWorldWfxPlugin : TotalCommanderWfxPlugin
     {
         private IFileSystem fileSystem = new LocalFileSystem("D:\\");
+
+        public override string PluginName
+        {
+            get { return "Hello World Plugin"; }
+        }
 
         public override FindData FindFirst(string path, out IEnumerator enumerator)
         {
@@ -64,8 +69,9 @@ namespace TotalCommander.Plugin.Sample.Wfx
         public override ExecuteResult ExecuteOpen(TotalCommanderWindow window, ref string remoteName)
         {
             var username = "Nikolay";
-            var r = Request.MessageBox("Hello, World!");
-            return ExecuteResult.OK;
+            remoteName = "\\Work";
+            var r = Request.GetString(ref username, "Hello, World!");
+            return ExecuteResult.SymLink;
         }
 
         private IFileObject GetFile(string path)

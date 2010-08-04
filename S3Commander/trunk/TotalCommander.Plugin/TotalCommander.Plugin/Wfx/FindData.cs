@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using TotalCommander.Plugin.Utils;
-using TotalCommander.Plugin.Wfx.Internal;
+using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace TotalCommander.Plugin.Wfx
 {
@@ -170,6 +170,28 @@ namespace TotalCommander.Plugin.Wfx
                 };
                 Marshal.StructureToPtr(findData, pFindData, false);
             }
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        struct FsFindData
+        {
+            public int FileAttributes;
+
+            public FileTime CreationTime;
+            public FileTime LastAccessTime;
+            public FileTime LastWriteTime;
+
+            public int FileSizeHigh;
+            public int FileSizeLow;
+
+            public int Reserved0;
+            public int Reserved1;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Win32.MAX_PATH)]
+            public string FileName;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+            public string AlternateFileName;
         }
     }
 }

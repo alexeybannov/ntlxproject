@@ -167,6 +167,19 @@ namespace TotalCommander.Plugin.Wfx
     public interface ITotalCommanderWfxPlugin
     {
         /// <summary>
+        /// The default root name which should appear in the Network Neighborhood. 
+        /// </summary>
+        /// <remarks>
+        /// This root name is NOT part of the path passed to the plugin when Totalcmd accesses the 
+        /// plugin file system! The root will always be "\", and all subpaths will be built from 
+        /// the directory names returned by the plugin.
+        /// </remarks>
+        string PluginName
+        {
+            get;
+        }
+
+        /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.Init"/> is called when loading the plugin.
         /// The passed values should be stored in the plugin for later use.
         /// </summary>

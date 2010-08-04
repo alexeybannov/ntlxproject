@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Text;
-using TotalCommander.Plugin.Wfx.Internal;
 using System.Windows.Forms;
 
 namespace TotalCommander.Plugin.Wfx
 {
     /// <summary>
     /// <see cref="Request"/> is a class, which the plugin can use to request input from the user.
-    /// This class is received through the <see cref="ITotalCommanderWfxPlugin.Init"/> function when the plugin is loaded.
     /// </summary>
+    /// <remarks>
+    /// This class is received through the <see cref="ITotalCommanderWfxPlugin.Init"/> function when the plugin is loaded.
+    /// </remarks>
     public class Request
     {
         private int pluginNumber;
+        private string pluginName;
+        private Request.Callback request;
 
-        private RequestCallback request;
-
-        internal Request(int pluginNumber, RequestCallback request)
+        internal Request(int pluginNumber, string pluginName, Request.Callback request)
         {
             if (request == null) throw new ArgumentNullException("request");
 
             this.pluginNumber = pluginNumber;
+            this.pluginName = pluginName;
             this.request = request;
         }
 
@@ -403,16 +405,50 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool MessageBox(string text, string caption, MessageBoxButtons buttons)
         {
-            return GetRequest(ResolveRequestType(buttons), text, null);
+            return GetRequest(ResolveRequestType(buttons), text, caption);
         }
 
         #endregion MessageBox
 
 
+        #region 
+
+        /// <summary>
+        /// Asks for a string.
+        /// </summary>
+        /// <param name="returned">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="returned"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetString(ref string returned, string text)
+        {
+            return GetRequest(RequestType.Other, text, null, ref returned);
+        }
+
+        /// <summary>
+        /// Asks for a string.
+        /// </summary>
+        /// <param name="returned">
+        /// This string contains the default text presented to the user, and will receive the (modified) text which the user enters.
+        /// Set <paramref name="returned"/> = null to have no default text.
+        /// </param>
+        /// <param name="text">Override the default text.</param>
+        /// <param name="caption">Custom title for the dialog box.</param>
+        /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
+        public bool GetString(ref string returned, string text, string caption)
+        {
+            return GetRequest(RequestType.Other, text, caption, ref returned);
+        }
+
+        #endregion
+
+
         private bool GetRequest(RequestType requestType, string text, string caption)
         {
             string result = null;
-            return GetRequest(RequestType.MsgOK, text, caption, ref result);
+            return GetRequest(requestType, text, caption, ref result);
         }
 
         private bool GetRequest(RequestType requestType, string text, string caption, ref string result)
@@ -423,7 +459,7 @@ namespace TotalCommander.Plugin.Wfx
             var ok = request(
                 pluginNumber,
                 (int)requestType,
-                !string.IsNullOrEmpty(caption) ? caption : null,
+                !string.IsNullOrEmpty(caption) ? caption : pluginName,
                 !string.IsNullOrEmpty(text) ? text : null,
                 resultBuilder,
                 Win32.MAX_PATH);
@@ -442,5 +478,23 @@ namespace TotalCommander.Plugin.Wfx
                 default: return RequestType.MsgOK;
             }
         }
+
+
+        enum RequestType
+        {
+            Other,
+            UserName,
+            Password,
+            Account,
+            UserNameFirewall,
+            PasswordFirewall,
+            TargetDir,
+            URL,
+            MsgOK,
+            MsgYesNo,
+            MsgOKCancel
+        }
+
+        internal delegate bool Callback(int pluginNumber, int requestType, string customTitle, string customText, StringBuilder defaultText, int maxLen);
     }
 }

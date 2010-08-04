@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using TotalCommander.Plugin.Utils;
-using TotalCommander.Plugin.Wfx.Internal;
+using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace TotalCommander.Plugin.Wfx
 {
@@ -24,7 +24,7 @@ namespace TotalCommander.Plugin.Wfx
         public long Size
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace TotalCommander.Plugin.Wfx
         public DateTime? LastWriteTime
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace TotalCommander.Plugin.Wfx
         public FileAttributes Attributes
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>
@@ -65,6 +65,18 @@ namespace TotalCommander.Plugin.Wfx
                 LastWriteTime = DateTimeUtil.FromFileTime(ri.LastWriteTime);
                 Attributes = (FileAttributes)ri.Attributes;
             }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct FsRemoteInfo
+        {
+            public int SizeLow;
+
+            public int SizeHigh;
+
+            public FileTime LastWriteTime;
+
+            public int Attributes;
         }
     }
 }

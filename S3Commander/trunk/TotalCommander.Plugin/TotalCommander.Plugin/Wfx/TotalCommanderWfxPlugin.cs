@@ -7,6 +7,11 @@ namespace TotalCommander.Plugin.Wfx
 {
     public abstract class TotalCommanderWfxPlugin : ITotalCommanderWfxPlugin
     {
+        public abstract string PluginName
+        {
+            get;
+        }
+
         public Progress Progress
         {
             get;
@@ -25,6 +30,9 @@ namespace TotalCommander.Plugin.Wfx
             private set;
         }
 
+        /// <summary>
+        /// Plugin interface version.
+        /// </summary>
         public Version PluginInterfaceVersion
         {
             get;
@@ -53,7 +61,10 @@ namespace TotalCommander.Plugin.Wfx
 
         public abstract FindData FindFirst(string path, out IEnumerator enumerator);
 
-        public abstract FindData FindNext(IEnumerator enumerator);
+        public virtual FindData FindNext(IEnumerator enumerator)
+        {
+            return FindData.NoMoreFiles;
+        }
 
         public virtual void FindClose(IEnumerator enumerator)
         {
@@ -185,7 +196,7 @@ namespace TotalCommander.Plugin.Wfx
 
         public virtual void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation)
         {
-            
+
         }
     }
 }

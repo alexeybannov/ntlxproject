@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using TotalCommander.Plugin.Wfx.Internal;
 
 namespace TotalCommander.Plugin.Wfx
 {
@@ -17,7 +16,7 @@ namespace TotalCommander.Plugin.Wfx
         public Version PluginInterfaceVersion
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>
@@ -29,7 +28,7 @@ namespace TotalCommander.Plugin.Wfx
         public string DefaultIniFileName
         {
             get;
-            set;
+            private set;
         }
 
 
@@ -42,5 +41,18 @@ namespace TotalCommander.Plugin.Wfx
                 DefaultIniFileName = param.DefaultIniName;
             }
         }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        struct FsDefaultParam
+        {
+            public int Size;
+
+            public int VersionLow;
+
+            public int VersionHigh;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Win32.MAX_PATH)]
+            public string DefaultIniName;
+        };
     };
 }

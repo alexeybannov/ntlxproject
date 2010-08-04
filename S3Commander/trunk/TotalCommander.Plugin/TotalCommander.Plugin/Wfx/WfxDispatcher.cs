@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Windows.Forms;
 using TotalCommander.Plugin.Utils;
 
-namespace TotalCommander.Plugin.Wfx.Internal
+namespace TotalCommander.Plugin.Wfx
 {
-    static class WfxFunctions
+    static class WfxDispatcher
     {
         private static ITotalCommanderWfxPlugin Plugin
         {
@@ -20,14 +19,14 @@ namespace TotalCommander.Plugin.Wfx.Internal
         private static IDictionary<IntPtr, IEnumerator> enumerators = new Dictionary<IntPtr, IEnumerator>();
 
 
-        public static Int32 FsInit(Int32 number, ProgressCallback progress, LogCallback log, RequestCallback request)
+        public static Int32 FsInit(Int32 number, Progress.Callback progress, Logger.Callback log, Request.Callback request)
         {
             try
             {
                 Plugin.Init(
                     new Progress(number, progress),
                     new Logger(number, log),
-                    new Request(number, request)
+                    new Request(number, Plugin.PluginName, request)
                 );
             }
             catch (Exception ex)
@@ -129,7 +128,7 @@ namespace TotalCommander.Plugin.Wfx.Internal
         {
             try
             {
-                return TotalCommanderPluginHolder.GetWfxPluginName();
+                return Plugin.PluginName;
             }
             catch (Exception ex)
             {
@@ -138,15 +137,17 @@ namespace TotalCommander.Plugin.Wfx.Internal
             return null;
         }
 
-        public static int FsExecuteFile(IntPtr mainWin, StringBuilder remoteName, string verb)
+        public static int FsExecuteFile(IntPtr mainWin, IntPtr remoteName, string verb)
         {
             var result = ExecuteResult.Default;
-            if (remoteName == null || remoteName.Length == 0) return (int)result;
             try
             {
-                var nameRef = GetRemoteName(remoteName);
-                result = Plugin.FileExecute(new TotalCommanderWindow(mainWin), ref nameRef, verb);
-                SetRemoteName(remoteName, nameRef);
+                var nameRef = Win32.PtrToStringAnsi(remoteName);
+                if (!string.IsNullOrEmpty(nameRef))
+                {
+                    result = Plugin.FileExecute(new TotalCommanderWindow(mainWin), ref nameRef, verb);
+                    Win32.WriteStringAnsi(remoteName, nameRef);
+                }
             }
             catch (Exception ex)
             {
@@ -155,14 +156,14 @@ namespace TotalCommander.Plugin.Wfx.Internal
             return (int)result;
         }
 
-        public static int FsGetFile(string remoteName, StringBuilder localName, int copyFlags, IntPtr ri)
+        public static int FsGetFile(string remoteName, IntPtr localName, int copyFlags, IntPtr ri)
         {
             var result = FileOperationResult.Default;
             try
             {
-                var nameRef = GetRemoteName(localName);
+                var nameRef = Win32.PtrToStringAnsi(localName);
                 result = Plugin.FileGet(remoteName, ref nameRef, (CopyFlags)copyFlags, new RemoteInfo(ri));
-                SetRemoteName(localName, nameRef);
+                Win32.WriteStringAnsi(localName, nameRef);
             }
             catch (Exception ex)
             {
@@ -171,14 +172,14 @@ namespace TotalCommander.Plugin.Wfx.Internal
             return (int)result;
         }
 
-        public static int FsPutFile(string localName, StringBuilder remoteName, int copyFlags)
+        public static int FsPutFile(string localName, IntPtr remoteName, int copyFlags)
         {
             var result = FileOperationResult.Default;
             try
             {
-                var nameRef = GetRemoteName(remoteName);
+                var nameRef = Win32.PtrToStringAnsi(remoteName);
                 result = Plugin.FilePut(localName, ref nameRef, (CopyFlags)copyFlags);
-                SetRemoteName(remoteName, nameRef);
+                Win32.WriteStringAnsi(remoteName, nameRef);
             }
             catch (Exception ex)
             {
@@ -302,16 +303,16 @@ namespace TotalCommander.Plugin.Wfx.Internal
             }
         }
 
-        public static int FsExtractCustomIcon(StringBuilder remoteName, int extractFlags, IntPtr iconHandle)
+        public static int FsExtractCustomIcon(IntPtr remoteName, int extractFlags, IntPtr iconHandle)
         {
             var result = CustomIconResult.UseDefault;
             try
             {
                 Icon icon = null;
-                var nameRef = GetRemoteName(remoteName);
+                var nameRef = Win32.PtrToStringAnsi(remoteName);
                 result = Plugin.GetCustomIcon(ref nameRef, (CustomIconFlag)extractFlags, out icon);
                 if (icon != null) iconHandle = icon.Handle;
-                SetRemoteName(remoteName, nameRef);
+                Win32.WriteStringAnsi(remoteName, nameRef);
             }
             catch (Exception ex)
             {
@@ -320,16 +321,16 @@ namespace TotalCommander.Plugin.Wfx.Internal
             return (int)result;
         }
 
-        public static int FsGetPreviewBitmap(StringBuilder remoteName, int width, int height, IntPtr bitmapHandle)
+        public static int FsGetPreviewBitmap(IntPtr remoteName, int width, int height, IntPtr bitmapHandle)
         {
             var result = PreviewBitmapResult.None;
             try
             {
                 Bitmap bitmap = null;
-                var nameRef = GetRemoteName(remoteName);
+                var nameRef = Win32.PtrToStringAnsi(remoteName);
                 result = Plugin.GetPreviewBitmap(ref nameRef, new Size(width, height), out bitmap);
                 if (bitmap != null) bitmapHandle = bitmap.GetHbitmap();
-                SetRemoteName(remoteName, nameRef);
+                Win32.WriteStringAnsi(remoteName, nameRef);
             }
             catch (Exception ex)
             {
@@ -342,20 +343,6 @@ namespace TotalCommander.Plugin.Wfx.Internal
         private static void ProcessError(Exception ex)
         {
             MessageBox.Show(ex.ToString());
-        }
-
-        private static string GetRemoteName(StringBuilder remoteName)
-        {
-            return remoteName != null ? remoteName.ToString() : string.Empty;
-        }
-
-        private static void SetRemoteName(StringBuilder remoteName, string nameRef)
-        {
-            if (remoteName != null)
-            {
-                remoteName.Remove(0, remoteName.Length);
-                remoteName.Insert(0, Win32.MAX_PATH - 1 < (nameRef ?? string.Empty).Length ? nameRef.Substring(0, Win32.MAX_PATH - 1) : nameRef);
-            }
         }
     }
 }

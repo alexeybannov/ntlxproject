@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using TotalCommander.Plugin.Wfx.Internal;
 using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace TotalCommander.Plugin.Wfx
@@ -26,17 +25,7 @@ namespace TotalCommander.Plugin.Wfx
         [DllExport]
         public static void FsGetDefRootName(IntPtr defRootName, Int32 maxLen)
         {
-            if (defRootName == IntPtr.Zero) return;
-
-            var name = WfxFunctions.FsGetDefRootName();
-
-            var i = 0;
-            if (!string.IsNullOrEmpty(name))
-            {
-                var bytes = Encoding.Convert(Encoding.Unicode, Encoding.ASCII, Encoding.Unicode.GetBytes(name));
-                for (i = 0; i < Math.Min(bytes.Length, maxLen - 1); i++) Marshal.WriteByte(defRootName, i, bytes[i]);
-            }
-            Marshal.WriteByte(defRootName, i, 0);//null-terminated
+            Win32.WriteStringAnsi(defRootName, WfxDispatcher.FsGetDefRootName(), maxLen);
         }
 
         #endregion
@@ -53,25 +42,25 @@ namespace TotalCommander.Plugin.Wfx
             progressProc = pProgressProc;
             logProc = pLogProc;
             requestProc = pRequestProc;
-            return WfxFunctions.FsInit(pluginNumber, Progress, Log, Request);
+            return WfxDispatcher.FsInit(pluginNumber, Progress, Log, Request);
         }
 
         [DllExport]
         public static IntPtr FsFindFirst([MarshalAs(UnmanagedType.LPStr)]string path, IntPtr pFindData)
         {
-            return WfxFunctions.FsFindFirst(path, pFindData);
+            return WfxDispatcher.FsFindFirst(path, pFindData);
         }
 
         [DllExport]
         public static bool FsFindNext(IntPtr handle, IntPtr pFindData)
         {
-            return WfxFunctions.FsFindNext(handle, pFindData);
+            return WfxDispatcher.FsFindNext(handle, pFindData);
         }
 
         [DllExport]
         public static Int32 FsFindClose(IntPtr handle)
         {
-            return WfxFunctions.FsFindClose(handle);
+            return WfxDispatcher.FsFindClose(handle);
         }
 
         #endregion
@@ -79,7 +68,7 @@ namespace TotalCommander.Plugin.Wfx
         [DllExport]
         public static void FsSetDefaultParams(IntPtr dps)
         {
-            WfxFunctions.FsSetDefaultParams(dps);
+            WfxDispatcher.FsSetDefaultParams(dps);
         }
 
 
@@ -88,10 +77,10 @@ namespace TotalCommander.Plugin.Wfx
         [DllExport]
         public static int FsExecuteFile(
             IntPtr mainWin,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
+            IntPtr remoteName,
             [MarshalAs(UnmanagedType.LPStr)] string verb)
         {
-            return WfxFunctions.FsExecuteFile(mainWin, remoteName, verb);
+            return WfxDispatcher.FsExecuteFile(mainWin, remoteName, verb);
         }
 
         [DllExport]
@@ -102,44 +91,44 @@ namespace TotalCommander.Plugin.Wfx
             bool overWrite,
             IntPtr ri)
         {
-            return WfxFunctions.FsRenMovFile(oldName, newName, move, overWrite, ri);
+            return WfxDispatcher.FsRenMovFile(oldName, newName, move, overWrite, ri);
         }
 
         [DllExport]
         public static bool FsDeleteFile([MarshalAs(UnmanagedType.LPStr)] string remoteName)
         {
-            return WfxFunctions.FsDeleteFile(remoteName);
+            return WfxDispatcher.FsDeleteFile(remoteName);
         }
 
         [DllExport]
         public static bool FsMkDir([MarshalAs(UnmanagedType.LPStr)] string path)
         {
-            return WfxFunctions.FsMkDir(path);
+            return WfxDispatcher.FsMkDir(path);
         }
 
         [DllExport]
         public static bool FsRemoveDir([MarshalAs(UnmanagedType.LPStr)] string remoteName)
         {
-            return WfxFunctions.FsRemoveDir(remoteName);
+            return WfxDispatcher.FsRemoveDir(remoteName);
         }
 
         [DllExport]
         public static int FsGetFile(
             [MarshalAs(UnmanagedType.LPStr)] string remoteName,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder localName,
+            IntPtr localName,
             int copyFlags,
             IntPtr ri)
         {
-            return WfxFunctions.FsGetFile(remoteName, localName, copyFlags, ri);
+            return WfxDispatcher.FsGetFile(remoteName, localName, copyFlags, ri);
         }
 
         [DllExport]
         public static int FsPutFile(
             [MarshalAs(UnmanagedType.LPStr)] string localName,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
+            IntPtr remoteName,
             int copyFlags)
         {
-            return WfxFunctions.FsPutFile(localName, remoteName, copyFlags);
+            return WfxDispatcher.FsPutFile(localName, remoteName, copyFlags);
         }
 
         #endregion
@@ -149,7 +138,7 @@ namespace TotalCommander.Plugin.Wfx
             [MarshalAs(UnmanagedType.LPStr)] string remoteName,
             int newAttr)
         {
-            return WfxFunctions.FsSetAttr(remoteName, newAttr);
+            return WfxDispatcher.FsSetAttr(remoteName, newAttr);
         }
 
         [DllExport]
@@ -159,13 +148,13 @@ namespace TotalCommander.Plugin.Wfx
             [MarshalAs(UnmanagedType.LPStruct)] FileTime lastAccessTime,
             [MarshalAs(UnmanagedType.LPStruct)] FileTime lastWriteTime)
         {
-            return WfxFunctions.FsSetTime(remoteName, creationTime, lastAccessTime, lastWriteTime);
+            return WfxDispatcher.FsSetTime(remoteName, creationTime, lastAccessTime, lastWriteTime);
         }
 
         [DllExport]
         public static bool FsDisconnect([MarshalAs(UnmanagedType.LPStr)] string disconnectRoot)
         {
-            return WfxFunctions.FsDisconnect(disconnectRoot);
+            return WfxDispatcher.FsDisconnect(disconnectRoot);
         }
 
         [DllExport]
@@ -174,26 +163,26 @@ namespace TotalCommander.Plugin.Wfx
             int infoStartEnd,
             int infoOperation)
         {
-            WfxFunctions.FsStatusInfo(remoteDir, infoStartEnd, infoOperation);
+            WfxDispatcher.FsStatusInfo(remoteDir, infoStartEnd, infoOperation);
         }
 
         [DllExport]
         public static int FsExtractCustomIcon(
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
+            IntPtr remoteName,
             int extractFlags,
             IntPtr theIcon)
         {
-            return WfxFunctions.FsExtractCustomIcon(remoteName, extractFlags, theIcon);
+            return WfxDispatcher.FsExtractCustomIcon(remoteName, extractFlags, theIcon);
         }
 
         [DllExport]
         public static int FsGetPreviewBitmap(
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
+            IntPtr remoteName,
             int width,
             int height,
             IntPtr returnedBitmap)
         {
-            return WfxFunctions.FsGetPreviewBitmap(remoteName, width, height, returnedBitmap);
+            return WfxDispatcher.FsGetPreviewBitmap(remoteName, width, height, returnedBitmap);
         }
 
         #region Private Methods
