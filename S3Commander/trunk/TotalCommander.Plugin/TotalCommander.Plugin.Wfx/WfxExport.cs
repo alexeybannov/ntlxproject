@@ -88,7 +88,7 @@ namespace TotalCommander.Plugin.Wfx
         [DllExport]
         public static int FsExecuteFile(
             IntPtr mainWin,
-            [MarshalAs(UnmanagedType.LPStr)] string remoteName,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
             [MarshalAs(UnmanagedType.LPStr)] string verb)
         {
             return WfxFunctions.FsExecuteFile(mainWin, remoteName, verb);
@@ -126,7 +126,7 @@ namespace TotalCommander.Plugin.Wfx
         [DllExport]
         public static int FsGetFile(
             [MarshalAs(UnmanagedType.LPStr)] string remoteName,
-            [MarshalAs(UnmanagedType.LPStr)] string localName,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder localName,
             int copyFlags,
             IntPtr ri)
         {
@@ -136,10 +136,10 @@ namespace TotalCommander.Plugin.Wfx
         [DllExport]
         public static int FsPutFile(
             [MarshalAs(UnmanagedType.LPStr)] string localName,
-            [MarshalAs(UnmanagedType.LPStr)] string remoteName,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
             int copyFlags)
         {
-            return WfxFunctions.FsPutFile(remoteName, localName, copyFlags);
+            return WfxFunctions.FsPutFile(localName, remoteName, copyFlags);
         }
 
         #endregion
@@ -179,7 +179,7 @@ namespace TotalCommander.Plugin.Wfx
 
         [DllExport]
         public static int FsExtractCustomIcon(
-            [MarshalAs(UnmanagedType.LPStr)] string remoteName,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
             int extractFlags,
             IntPtr theIcon)
         {
@@ -188,7 +188,7 @@ namespace TotalCommander.Plugin.Wfx
 
         [DllExport]
         public static int FsGetPreviewBitmap(
-            [MarshalAs(UnmanagedType.LPStr)] string remoteName,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder remoteName,
             int width,
             int height,
             IntPtr returnedBitmap)

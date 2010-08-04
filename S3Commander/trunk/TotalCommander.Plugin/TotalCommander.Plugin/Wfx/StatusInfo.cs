@@ -8,7 +8,8 @@ namespace TotalCommander.Plugin.Wfx
     public enum StatusInfo
 	{
         /// <summary>
-        /// Operation starts (allocate buffers if needed).        /// </summary>
+        /// Operation starts (allocate buffers if needed).
+        /// </summary>
 		Start,
 
         /// <summary>

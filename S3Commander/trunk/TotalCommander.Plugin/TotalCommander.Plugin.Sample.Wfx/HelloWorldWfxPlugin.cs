@@ -61,6 +61,12 @@ namespace TotalCommander.Plugin.Sample.Wfx
             }
         }
 
+        public override ExecuteResult ExecuteOpen(TotalCommanderWindow window, ref string remoteName)
+        {
+            remoteName = "\\Docs";
+            return ExecuteResult.SymLink;
+        }
+
         private IFileObject GetFile(string path)
         {
             return path == "\\" ? fileSystem.Root : fileSystem.ResolveFile("D:" + path);

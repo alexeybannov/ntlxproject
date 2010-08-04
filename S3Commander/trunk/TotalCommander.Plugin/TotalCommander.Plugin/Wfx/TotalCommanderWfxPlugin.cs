@@ -38,7 +38,7 @@ namespace TotalCommander.Plugin.Wfx
         }
 
 
-        public void Init(Progress progress, Logger logger, Request request)
+        void ITotalCommanderWfxPlugin.Init(Progress progress, Logger logger, Request request)
         {
             Progress = progress;
             Logger = logger;
@@ -61,52 +61,52 @@ namespace TotalCommander.Plugin.Wfx
         }
 
 
-        public ExecuteResult FileExecute(TotalCommanderWindow window, string remoteName, string verb)
+        ExecuteResult ITotalCommanderWfxPlugin.FileExecute(TotalCommanderWindow window, ref string remoteName, string verb)
         {
             if (string.IsNullOrEmpty(verb)) return ExecuteResult.Error;
             var command = 0 < verb.IndexOf(' ') ? verb.Substring(verb.IndexOf(' ')).Trim() : string.Empty;
             switch (verb.ToLower().Substring(0, 1))
             {
-                case "o": return ExecuteOpen(window, remoteName);
-                case "p": return ExecuteProperties(window, remoteName);
-                case "c": return ExecuteChMode(window, remoteName, command);
-                case "q": return ExecuteCommand(window, remoteName, command);
+                case "o": return ExecuteOpen(window, ref remoteName);
+                case "p": return ExecuteProperties(window, ref remoteName);
+                case "c": return ExecuteChMode(window, ref remoteName, command);
+                case "q": return ExecuteCommand(window, ref remoteName, command);
             }
             return ExecuteResult.Default;
         }
 
-        public virtual ExecuteResult ExecuteProperties(TotalCommanderWindow window, string remoteName)
+        public virtual ExecuteResult ExecuteProperties(TotalCommanderWindow window, ref string remoteName)
         {
             return ExecuteResult.Default;
         }
 
-        public virtual ExecuteResult ExecuteChMode(TotalCommanderWindow window, string remoteName, string mode)
+        public virtual ExecuteResult ExecuteChMode(TotalCommanderWindow window, ref string remoteName, string mode)
         {
             return ExecuteResult.Default;
         }
 
-        public virtual ExecuteResult ExecuteCommand(TotalCommanderWindow window, string remoteName, string command)
+        public virtual ExecuteResult ExecuteCommand(TotalCommanderWindow window, ref string remoteName, string command)
         {
             return ExecuteResult.Default;
         }
 
-        public virtual ExecuteResult ExecuteOpen(TotalCommanderWindow window, string remoteName)
+        public virtual ExecuteResult ExecuteOpen(TotalCommanderWindow window, ref string remoteName)
         {
             return ExecuteResult.Default;
         }
 
 
-        public virtual FileOperationResult FileGet(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri)
+        public virtual FileOperationResult FileGet(string remoteName, ref string localName, CopyFlags copyFlags, RemoteInfo ri)
         {
             return FileOperationResult.Default;
         }
 
-        public virtual FileOperationResult FilePut(string localName, string remoteName, CopyFlags copyFlags)
+        public virtual FileOperationResult FilePut(string localName, ref string remoteName, CopyFlags copyFlags)
         {
             return FileOperationResult.Default;
         }
 
-        public FileOperationResult FileRenameMove(string oldName, string newName, bool move, bool overwrite, RemoteInfo ri)
+        FileOperationResult ITotalCommanderWfxPlugin.FileRenameMove(string oldName, string newName, bool move, bool overwrite, RemoteInfo ri)
         {
             return ri.IsDirectory ?
                 DirectoryRename(oldName, newName, overwrite, ri) :
@@ -148,20 +148,20 @@ namespace TotalCommander.Plugin.Wfx
 
 
 
-        public virtual CustomIconResult GetCustomIcon(string remoteName, CustomIconFlag extractIconFlag, out Icon icon)
+        public virtual CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon)
         {
             icon = null;
             return CustomIconResult.UseDefault;
         }
 
-        public virtual PreviewBitmapResult GetPreviewBitmap(string remoteName, Size size, out Bitmap bitmap)
+        public virtual PreviewBitmapResult GetPreviewBitmap(ref string remoteName, Size size, out Bitmap bitmap)
         {
             bitmap = null;
             return PreviewBitmapResult.None;
         }
 
-        
-        public void SetDefaultParams(DefaultParam defaultParam)
+
+        void ITotalCommanderWfxPlugin.SetDefaultParams(DefaultParam defaultParam)
         {
             PluginInterfaceVersion = defaultParam.PluginInterfaceVersion;
             IniFilePath = defaultParam.DefaultIniFileName;
@@ -185,7 +185,7 @@ namespace TotalCommander.Plugin.Wfx
 
         public virtual void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation)
         {
-
+            
         }
     }
 }

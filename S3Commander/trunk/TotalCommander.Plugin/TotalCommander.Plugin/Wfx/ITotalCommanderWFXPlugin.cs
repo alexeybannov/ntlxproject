@@ -304,7 +304,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </item>
         /// </list>
         /// </returns>
-        ExecuteResult FileExecute(TotalCommanderWindow window, string remoteName, string verb);
+        ExecuteResult FileExecute(TotalCommanderWindow window, ref string remoteName, string verb);
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.FileRenameMove"/> is called to transfer 
@@ -453,7 +453,7 @@ namespace TotalCommander.Plugin.Wfx
         /// to abort the operation.
         /// </para>
         ///</remarks>
-        FileOperationResult FileGet(string remoteName, string localName, CopyFlags copyFlags, RemoteInfo ri);
+        FileOperationResult FileGet(string remoteName, ref string localName, CopyFlags copyFlags, RemoteInfo ri);
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.FilePut"/> is called to transfer a file from 
@@ -539,7 +539,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <see cref="Progress.SetProgress"/> to show the copy progress and allow the user to abort the operation.
         /// </para>
         ///</remarks>
-        FileOperationResult FilePut(string localName, string remoteName, CopyFlags copyFlags);
+        FileOperationResult FilePut(string localName, ref string remoteName, CopyFlags copyFlags);
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.FileRemove"/> is called to delete a file from the plugin's file system.
@@ -671,7 +671,7 @@ namespace TotalCommander.Plugin.Wfx
         /// If the user turns off background loading of icons, the function will be called 
         /// in the foreground with the <see cref="CustomIconFlag.Background"/> flag.
         /// </remarks>
-        CustomIconResult GetCustomIcon(string remoteName, CustomIconFlag extractIconFlag, out Icon icon);
+        CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon);
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.GetPreviewBitmap"/> is called when a file/directory is displayed in thumbnail view. 
@@ -810,11 +810,68 @@ namespace TotalCommander.Plugin.Wfx
         /// </code>
         /// </example>
         /// </remarks>
-        PreviewBitmapResult GetPreviewBitmap(string remoteName, Size size, out Bitmap bitmap);
+        PreviewBitmapResult GetPreviewBitmap(ref string remoteName, Size size, out Bitmap bitmap);
 
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> is called just as an information to the plugin that a 
+        /// certain operation starts or ends. It can be used to allocate/free buffers, and/or to flush data from a cache. 
+        /// There is no need to implement this function if the plugin doesn't require it.
+        /// </summary>
+        /// <param name="remoteName">
+        /// This is the current source directory when the operation starts. May be used to find out which part of the file system is affected.
+        /// </param>
+        /// <param name="info">
+        /// Information whether the operation starts or ends. Possible values:<br />
+        /// <see cref="Wfx.StatusInfo.Start"/>: Operation starts (allocate buffers if needed)<br />
+        /// <see cref="Wfx.StatusInfo.End"/>: Operation has ended (free buffers, flush cache etc)<br />
+        /// </param>
+        /// <param name="operation">
+        /// Information of which operaration starts/ends.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// Please note that future versions of the framework may send additional values!
+        /// </para>
+        /// <para>
+        /// This function has been added for the convenience of plugin writers. All calls to plugin functions will be enclosed in a pair of 
+        /// <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> calls. Multiple plugin calls can be between these two calls. 
+        /// For example, a download may contain multiple calls to <see cref="ITotalCommanderWfxPlugin.FileGet"/>, and 
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>, <see cref="ITotalCommanderWfxPlugin.FindNext"/>, 
+        /// <see cref="ITotalCommanderWfxPlugin.FindClose"/> (for copying subdirs).
+        /// </para>
+        /// <para>
+        /// Please also note that this function is only called for file operations. It isn't called for any of the <strong>Content*</strong> functions to 
+        /// get file details, and also not for the following functions: 
+        /// <see cref="ITotalCommanderWfxPlugin.SetDefaultParams"/>, <see cref="ITotalCommanderWfxPlugin.GetPreviewBitmap"/>, 
+        /// <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>, <see cref="ITotalCommanderWfxPlugin.Disconnect"/>.
+        /// </para>
+        /// </remarks>
         void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation);
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.Disconnect"/> is called when the user presses the Disconnect button in the FTP connections toolbar. 
+        /// This toolbar is only shown if <see cref="Logger.Connect"/> is called.
+        /// </summary>
+        /// <param name="disconnectRoot">This is the root dir which was passed to <see cref="Logger.Connect"/> when connecting. 
+        /// It allows the plugin to have serveral open connections to different file systems (e.g. ftp servers). 
+        /// Should be either \ (for a single possible connection) or \Servername (e.g. when having multiple open connections).
+        /// </param>
+        /// <returns>Return <strong>true</strong> if the connection was closed (or never open), <strong>false</strong> if it couldn't be closed.</returns>
+        /// <remarks>
+        /// <para>
+        /// To get calls to this function, the plugin MUST call <see cref="Logger.Connect"/>. The parameter <paramref name="message"/> 
+        /// MUST start with "CONNECT", followed by one whitespace and the root of the file system which has been connected. 
+        /// This file system root will be passed to <see cref="ITotalCommanderWfxPlugin.Disconnect"/> when the user presses the Disconnect button, 
+        /// so the plugin knows which connection to close.
+        /// Do NOT call <see cref="Logger.Connect"/> if your plugin does not require connect/disconnect!
+        /// </para>
+        /// <para>
+        /// - FTP requires connect/disconnect. Connect can be done automatically when the user enters a subdir, 
+        /// disconnect when the user clicks the Disconnect button.<br />
+        /// - Access to local file systems (e.g. Linux EXT2) does not require connect/disconnect, so don't call <see cref="Logger.Connect"/>.
+        /// </para>
+        /// </remarks>
         bool Disconnect(string disconnectRoot);
     }
 }
