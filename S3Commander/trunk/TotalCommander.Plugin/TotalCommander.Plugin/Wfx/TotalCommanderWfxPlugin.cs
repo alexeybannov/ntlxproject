@@ -12,19 +12,31 @@ namespace TotalCommander.Plugin.Wfx
             get;
         }
 
+        public int PluginNumber
+        {
+            get;
+            private set;
+        }
+        
         public Progress Progress
         {
             get;
             private set;
         }
 
-        public Logger Logger
+        public Log Log
         {
             get;
             private set;
         }
 
         public Request Request
+        {
+            get;
+            private set;
+        }
+
+        public Password Password
         {
             get;
             private set;
@@ -46,11 +58,13 @@ namespace TotalCommander.Plugin.Wfx
         }
 
 
-        void ITotalCommanderWfxPlugin.Init(Progress progress, Logger logger, Request request)
+        void ITotalCommanderWfxPlugin.Init(int pluginNumber, Progress progress, Log log, Request request)
         {
+            PluginNumber = pluginNumber;
             Progress = progress;
-            Logger = logger;
+            Log = log;
             Request = request;
+            
             Init();
         }
 
@@ -186,6 +200,11 @@ namespace TotalCommander.Plugin.Wfx
         public virtual bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime)
         {
             return false;
+        }
+
+        void ITotalCommanderWfxPlugin.SetPasswordStore(Password password)
+        {
+            Password = password;
         }
 
 

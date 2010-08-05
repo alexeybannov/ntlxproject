@@ -36,13 +36,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
     <Compile Include="TotalCommanderWindow.cs" />
     <Compile Include="Utils\DateTimeUtil.cs" />
+    <Compile Include="Wfx\Password.cs" />
     <Compile Include="Wfx\WfxDispatcher.cs" />
     <Compile Include="Wfx\PreviewBitmapResult.cs" />
     <Compile Include="Wfx\CustomIconFlag.cs" />
@@ -55,7 +58,7 @@
     <Compile Include="Wfx\RemoteInfo.cs" />
     <Compile Include="Wfx\Request.cs" />
     <Compile Include="Wfx\Progress.cs" />
-    <Compile Include="Wfx\Logger.cs" />
+    <Compile Include="Wfx\Log.cs" />
     <Compile Include="Wfx\TotalCommanderWfxPlugin.cs" />
     <Compile Include="Wfx\FindData.cs" />
     <Compile Include="Wfx\DefaultParam.cs" />

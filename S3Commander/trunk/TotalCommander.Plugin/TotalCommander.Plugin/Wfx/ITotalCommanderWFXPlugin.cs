@@ -100,7 +100,7 @@ namespace TotalCommander.Plugin.Wfx
     /// <description>Use this to indicate the progress in percent of a single copy operation.</description>
     /// </item>
     /// <item>
-    /// <term><see cref="Logger"/></term>
+    /// <term><see cref="Log"/></term>
     /// <description>Use to add information to the log file, and to make the FTP toolbar appear.</description>
     /// </item>
     /// <item>
@@ -183,15 +183,16 @@ namespace TotalCommander.Plugin.Wfx
         /// <see cref="ITotalCommanderWfxPlugin.Init"/> is called when loading the plugin.
         /// The passed values should be stored in the plugin for later use.
         /// </summary>
+        /// <param name="pluginNumber">Internal number this plugin was given in Total Commander.</param>
         /// <param name="progress"><see cref="Progress"/> class, which contains progress functions.</param>
-        /// <param name="logger"><see cref="Logger"/> class, which contains logging functions.</param>
+        /// <param name="log"><see cref="Log"/> class, which contains logging functions.</param>
         /// <param name="request"><see cref="Request"/> class, which contains request text functions.</param>
         /// <remarks>
         /// <see cref="ITotalCommanderWfxPlugin.Init"/> is NOT called when the user initially installs the plugin.
         /// The plugin DLL is loaded when the user enters the plugin root in Network Neighborhood.
         /// </remarks>
         /// <seealso cref="ITotalCommanderWfxPlugin.SetDefaultParams"/>
-        void Init(Progress progress, Logger logger, Request request);
+        void Init(int pluginNumber, Progress progress, Log log, Request request);
 
 
         /// <summary>
@@ -630,6 +631,8 @@ namespace TotalCommander.Plugin.Wfx
         /// <seealso cref="ITotalCommanderWfxPlugin.SetFileAttributes"/>
         bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
 
+        void SetPasswordStore(Password password);
+
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/> is called when a file/directory is displayed in the file list. 
@@ -840,7 +843,85 @@ namespace TotalCommander.Plugin.Wfx
         /// <see cref="Wfx.StatusInfo.End"/>: Operation has ended (free buffers, flush cache etc)<br />
         /// </param>
         /// <param name="operation">
-        /// Information of which operaration starts/ends.
+        /// Information of which operaration starts/ends. Possible values:<br />
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="StatusOperation.List"/></term>
+        /// <description>Retrieve a directory listing.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.GetSingle"/></term>
+        /// <description>Get a single file from the plugin file system.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.GetMulti"/></term>
+        /// <description>Get multiple files, may include subdirs.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.PutSingle"/></term>
+        /// <description>Put a single file to the plugin file system.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.PutMulti"/></term>
+        /// <description>Put multiple files, may include subdirs.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.RenameMoveSingle"/></term>
+        /// <description>RenMov multiple files, may include subdirs.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.Delete"/></term>
+        /// <description>Delete multiple files, may include subdirs.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.Attributes"/></term>
+        /// <description>Change attributes/times, may include subdirs.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.CreateDirectory"/></term>
+        /// <description>Create a single directory.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.Execute"/></term>
+        /// <description>Start a single remote item, or a command line.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.CalculateSize"/></term>
+        /// <description>Calculating size of subdir (user pressed SPACE).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.Search"/></term>
+        /// <description>Searching for file names only (using <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/>/<see cref="ITotalCommanderWfxPlugin.FindClose"/>).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.SearchText"/></term>
+        /// <description>Searching for file contents (using also <see cref="ITotalCommanderWfxPlugin.FileGet"/> calls).</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.SyncSearch"/></term>
+        /// <description>Synchronize dirs searches subdirs for info.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.SyncGet"/></term>
+        /// <description>Synchronize: Downloading files from plugin.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.SyncPut"/></term>
+        /// <description>Synchronize: Uploading files to plugin.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.SyncDelete"/></term>
+        /// <description>Synchronize: Deleting files from plugin.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.GetMultiThread"/></term>
+        /// <description>Get multiple files, may include subdirs in background thread.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="StatusOperation.PutMultiThread"/></term>
+        /// <description>Put multiple files, may include subdirs in background thread.</description>
+        /// </item>
+        /// </list>
         /// </param>
         /// <remarks>
         /// <para>
@@ -864,25 +945,25 @@ namespace TotalCommander.Plugin.Wfx
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.Disconnect"/> is called when the user presses the Disconnect button in the FTP connections toolbar. 
-        /// This toolbar is only shown if <see cref="Logger.Connect"/> is called.
+        /// This toolbar is only shown if <see cref="Log.Connect"/> is called.
         /// </summary>
-        /// <param name="disconnectRoot">This is the root dir which was passed to <see cref="Logger.Connect"/> when connecting. 
+        /// <param name="disconnectRoot">This is the root dir which was passed to <see cref="Log.Connect"/> when connecting. 
         /// It allows the plugin to have serveral open connections to different file systems (e.g. ftp servers). 
         /// Should be either \ (for a single possible connection) or \Servername (e.g. when having multiple open connections).
         /// </param>
         /// <returns>Return <strong>true</strong> if the connection was closed (or never open), <strong>false</strong> if it couldn't be closed.</returns>
         /// <remarks>
         /// <para>
-        /// To get calls to this function, the plugin MUST call <see cref="Logger.Connect"/>. The parameter <paramref name="message"/> 
+        /// To get calls to this function, the plugin MUST call <see cref="Log.Connect"/>. The parameter <paramref name="message"/> 
         /// MUST start with "CONNECT", followed by one whitespace and the root of the file system which has been connected. 
         /// This file system root will be passed to <see cref="ITotalCommanderWfxPlugin.Disconnect"/> when the user presses the Disconnect button, 
         /// so the plugin knows which connection to close.
-        /// Do NOT call <see cref="Logger.Connect"/> if your plugin does not require connect/disconnect!
+        /// Do NOT call <see cref="Log.Connect"/> if your plugin does not require connect/disconnect!
         /// </para>
         /// <para>
         /// - FTP requires connect/disconnect. Connect can be done automatically when the user enters a subdir, 
         /// disconnect when the user clicks the Disconnect button.<br />
-        /// - Access to local file systems (e.g. Linux EXT2) does not require connect/disconnect, so don't call <see cref="Logger.Connect"/>.
+        /// - Access to local file systems (e.g. Linux EXT2) does not require connect/disconnect, so don't call <see cref="Log.Connect"/>.
         /// </para>
         /// </remarks>
         bool Disconnect(string disconnectRoot);

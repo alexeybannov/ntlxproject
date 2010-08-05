@@ -12,6 +12,7 @@ namespace TotalCommander.Plugin.Wfx
         private static ProgressProc progressProc;
         private static LogProc logProc;
         private static RequestProc requestProc;
+        private static CryptProc cryptProc;
 
 
         static WfxExport()
@@ -185,6 +186,16 @@ namespace TotalCommander.Plugin.Wfx
             return WfxDispatcher.FsGetPreviewBitmap(remoteName, width, height, returnedBitmap);
         }
 
+        [DllExport]
+        public static void FsSetCryptCallback(
+            [MarshalAs(UnmanagedType.FunctionPtr)] CryptProc pCryptProc,
+            int cryptoNumber,
+            int flags)
+        {
+            cryptProc = pCryptProc;
+            WfxDispatcher.FsSetCryptCallback(Crypt, cryptoNumber, flags);
+        }
+
         #region Private Methods
 
         private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)
@@ -210,6 +221,11 @@ namespace TotalCommander.Plugin.Wfx
         private static bool Request(int pluginNumber, int requestType, string customTitle, string customText, StringBuilder defaultText, int maxLen)
         {
             return requestProc(pluginNumber, requestType, customTitle, customText, defaultText, maxLen);
+        }
+
+        private static int Crypt(int pluginNumber, int cryptoNumber, int mode, string connectionName, StringBuilder password, int maxLen)
+        {
+            return cryptProc(pluginNumber, cryptoNumber, mode, connectionName, password, maxLen);
         }
 
         #endregion
@@ -239,6 +255,16 @@ namespace TotalCommander.Plugin.Wfx
             [MarshalAs(UnmanagedType.LPStr)] string customTitle,
             [MarshalAs(UnmanagedType.LPStr)] string customText,
             [MarshalAs(UnmanagedType.LPStr)] StringBuilder defaultText,
+            int maxLen
+        );
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        public delegate int CryptProc(
+            int pluginNumber,
+            int cryptoNumber,
+            int mode,
+            [MarshalAs(UnmanagedType.LPStr)] string connectionName,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder password,
             int maxLen
         );
 

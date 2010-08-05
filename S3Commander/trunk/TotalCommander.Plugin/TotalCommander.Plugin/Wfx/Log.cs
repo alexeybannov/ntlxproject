@@ -3,7 +3,7 @@
 namespace TotalCommander.Plugin.Wfx
 {
     /// <summary>
-    /// <see cref="Logger"/> is a class, which the plugin can use to show the FTP connections toolbar, and to pass log messages to it.
+    /// <see cref="Log"/> is a class, which the plugin can use to show the FTP connections toolbar, and to pass log messages to it.
     /// Totalcmd can show these messages in the log window (ftp toolbar) and write them to a log file.
     /// </summary>
     /// <remarks>
@@ -13,10 +13,10 @@ namespace TotalCommander.Plugin.Wfx
     /// <para>
     /// Total Commander supports logging to files. 
     /// While one log file will store all messages, the other will only store important errors, connects, disconnects and 
-    /// complete operations/transfers, but not messages by <see cref="Logger.Details"/> method.
+    /// complete operations/transfers, but not messages by <see cref="Log.Details"/> method.
     /// </para>
     /// <para>
-    /// Do NOT call <see cref="Logger.Connect"/> if your plugin does not require connect/disconnect!
+    /// Do NOT call <see cref="Log.Connect"/> if your plugin does not require connect/disconnect!
     /// If you call it, the function <see cref="ITotalCommanderWfxPlugin.Disconnect"/> will be called when the user presses the Disconnect button.
     /// </para>
     /// <para>
@@ -25,13 +25,13 @@ namespace TotalCommander.Plugin.Wfx
     /// - Access to local file systems (e.g. Linux EXT2) does not require connect/disconnect
     /// </para>
     /// </remarks>
-	public class Logger
+	public class Log
 	{
 		private int pluginNumber;
 
-		private Logger.Callback log;
+		private Log.Callback log;
 
-		internal Logger(int pluginNumber, Logger.Callback log)
+		internal Log(int pluginNumber, Log.Callback log)
 		{
 			if (log == null) throw new ArgumentNullException("log");
 
@@ -49,7 +49,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
 		public void Connect(string message)
 		{
-			Log(MessageType.Connect, message);
+			LogMessage(MessageType.Connect, message);
 		}
 		
         /// <summary>
@@ -60,7 +60,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
         public void Disconnect(string message)
 		{
-			Log(MessageType.Disconnect, message);
+			LogMessage(MessageType.Disconnect, message);
 		}
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
         public void Details(string message)
 		{
-			Log(MessageType.Details, message);
+			LogMessage(MessageType.Details, message);
 		}
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
         public void TransferComplete(string message)
 		{
-			Log(MessageType.TransferComplete, message);
+			LogMessage(MessageType.TransferComplete, message);
 		}
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
         public void ConnectComplete(string message)
 		{
-			Log(MessageType.ConnectComplete, message);
+			LogMessage(MessageType.ConnectComplete, message);
 		}
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
         public void ImportantError(string message)
 		{
-			Log(MessageType.ImportantError, message);
+			LogMessage(MessageType.ImportantError, message);
 		}
 
         /// <summary>
@@ -116,11 +116,11 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
         public void OperationComplete(string message)
 		{
-			Log(MessageType.OperationComplete, message);
+			LogMessage(MessageType.OperationComplete, message);
 		}
 
 
-		private void Log(MessageType messageType, string message)
+		private void LogMessage(MessageType messageType, string message)
 		{
 			log(pluginNumber, (int)messageType, message);
 		}

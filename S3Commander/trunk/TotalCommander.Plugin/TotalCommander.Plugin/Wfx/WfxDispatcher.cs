@@ -18,14 +18,18 @@ namespace TotalCommander.Plugin.Wfx
 
         private static IDictionary<IntPtr, IEnumerator> enumerators = new Dictionary<IntPtr, IEnumerator>();
 
+        private static int pluginNumber;
 
-        public static Int32 FsInit(Int32 number, Progress.Callback progress, Logger.Callback log, Request.Callback request)
+
+        public static Int32 FsInit(Int32 number, Progress.Callback progress, Log.Callback log, Request.Callback request)
         {
             try
             {
+                pluginNumber = number;
                 Plugin.Init(
+                    number,
                     new Progress(number, progress),
-                    new Logger(number, log),
+                    new Log(number, log),
                     new Request(number, Plugin.PluginName, request)
                 );
             }
@@ -337,6 +341,18 @@ namespace TotalCommander.Plugin.Wfx
                 ProcessError(ex);
             }
             return (int)result;
+        }
+
+        public static void FsSetCryptCallback(Password.Callback password, int cryptoNumber, int flags)
+        {
+            try
+            {
+                Plugin.SetPasswordStore(new Password(password, pluginNumber, cryptoNumber, flags));
+            }
+            catch (Exception ex)
+            {
+                ProcessError(ex);
+            }
         }
 
 

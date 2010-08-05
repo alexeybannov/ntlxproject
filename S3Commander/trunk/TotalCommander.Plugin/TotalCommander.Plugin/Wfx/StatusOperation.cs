@@ -12,93 +12,93 @@ namespace TotalCommander.Plugin.Wfx
     public enum StatusOperation
     {
         /// <summary>
-        /// Retrieve a directory listing
+        /// Retrieve a directory listing.
         /// </summary>
         List = 1,
 
         /// <summary>
-        /// Get a single file from the plugin file system
+        /// Get a single file from the plugin file system.
         /// </summary>
         GetSingle,
 
         /// <summary>
-        /// Get multiple files, may include subdirs
+        /// Get multiple files, may include subdirs.
         /// </summary>
         GetMulti,
 
         /// <summary>
-        /// Put a single file to the plugin file system
+        /// Put a single file to the plugin file system.
         /// </summary>
         PutSingle,
 
         /// <summary>
-        /// Put multiple files, may include subdirs
+        /// Put multiple files, may include subdirs.
         /// </summary>
         PutMulti,
 
         /// <summary>
-        /// Rename/Move/Remote copy a single file
+        /// Rename/Move/Remote copy a single file.
         /// </summary>
         RenameMoveSingle,
 
         /// <summary>
-        /// RenMov multiple files, may include subdirs
+        /// RenMov multiple files, may include subdirs.
         /// </summary>
         RenameMoveMulti,
 
         /// <summary>
-        /// Delete multiple files, may include subdirs
+        /// Delete multiple files, may include subdirs.
         /// </summary>
         Delete,
 
         /// <summary>
-        /// Change attributes/times, may include subdirs
+        /// Change attributes/times, may include subdirs.
         /// </summary>
         Attributes,
 
         /// <summary>
-        /// Create a single directory
+        /// Create a single directory.
         /// </summary>
         CreateDirectory,
 
         /// <summary>
-        /// Start a single remote item, or a command line
+        /// Start a single remote item, or a command line.
         /// </summary>
         Execute,
 
         /// <summary>
-        /// Calculating size of subdir (user pressed SPACE)
+        /// Calculating size of subdir (user pressed SPACE).
         /// </summary>
         CalculateSize,
 
         /// <summary>
         /// Searching for file names only (using 
-        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/>/<see cref="ITotalCommanderWfxPlugin.FindClose"/>)
+        /// <see cref="ITotalCommanderWfxPlugin.FindFirst"/>/<see cref="ITotalCommanderWfxPlugin.FindNext"/>/<see cref="ITotalCommanderWfxPlugin.FindClose"/>).
         /// </summary>
         Search,
 
         /// <summary>
-        /// Searching for file contents (using also <see cref="ITotalCommanderWfxPlugin.FileGet"/> calls)
+        /// Searching for file contents (using also <see cref="ITotalCommanderWfxPlugin.FileGet"/> calls).
         /// </summary>
         SearchText,
 
         /// <summary>
-        /// Synchronize dirs searches subdirs for info
+        /// Synchronize dirs searches subdirs for info.
         /// </summary>
         SyncSearch,
 
         /// <summary>
-        /// Synchronize: Downloading files from plugin
+        /// Synchronize: Downloading files from plugin.
         /// </summary>
         SyncGet,
 
         /// <summary>
-        /// Synchronize: Uploading files to plugin
+        /// Synchronize: Uploading files to plugin.
         /// </summary>
         SyncPut,
 
         /// <summary>
-        /// Synchronize: Deleting files from plugin
+        /// Synchronize: Deleting files from plugin.
         /// </summary>
         SyncDelete,
 
