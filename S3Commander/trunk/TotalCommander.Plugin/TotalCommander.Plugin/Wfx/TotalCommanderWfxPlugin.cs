@@ -7,35 +7,53 @@ namespace TotalCommander.Plugin.Wfx
 {
     public abstract class TotalCommanderWfxPlugin : ITotalCommanderWfxPlugin
     {
+        /// <summary>
+        /// The default root name which should appear in the Network Neighborhood.
+        /// </summary>
         public abstract string PluginName
         {
             get;
         }
 
+        /// <summary>
+        /// Internal number this plugin was given in Total Commander.
+        /// </summary>
         public int PluginNumber
         {
             get;
             private set;
         }
-        
+
+        /// <summary>
+        /// <see cref="Progress"/> class, which contains progress functions.
+        /// </summary>
         public Progress Progress
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// <see cref="Log"/> class, which contains logging functions.
+        /// </summary>
         public Log Log
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// <see cref="Request"/> class, which contains request text functions.
+        /// </summary>
         public Request Request
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// You can use this class to store passwords in Total Commander's secure password store.
+        /// </summary>
         public Password Password
         {
             get;
@@ -51,10 +69,31 @@ namespace TotalCommander.Plugin.Wfx
             private set;
         }
 
+        /// <summary>
+        /// Suggested location+name of the ini file where the plugin could store its data.
+        /// </summary>
         public string IniFilePath
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// The plugin is a temporary panel-style plugin or a normal file system plugin.
+        /// Temporary file panels just hold links to files on the local file.
+        /// </summary>
+        public virtual bool TemporaryPanelPlugin
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// Called by Total Commander 7.51 or newer to determine whether the plugin supports 
+        /// background operations (uploads and downloads), and if yes, how they are supported.
+        /// </summary>
+        public virtual BackgroundFlags BackgroundSupport
+        {
+            get { return BackgroundFlags.NotSupported; }
         }
 
 
@@ -64,22 +103,40 @@ namespace TotalCommander.Plugin.Wfx
             Progress = progress;
             Log = log;
             Request = request;
-            
+
             Init();
         }
 
+        /// <summary>
+        /// Called when loading the plugin.
+        /// </summary>
         public virtual void Init()
         {
 
         }
 
+        /// <summary>
+        /// Сalled to retrieve the first file in a directory of the plugin's file system.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
         public abstract FindData FindFirst(string path, out IEnumerator enumerator);
 
+        /// <summary>
+        /// Сalled to retrieve the next file in a directory of the plugin's file system.
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
         public virtual FindData FindNext(IEnumerator enumerator)
         {
             return FindData.NoMoreFiles;
         }
 
+        /// <summary>
+        /// Сalled to end a FindFirst/FindNext loop, either after retrieving all files, or when the user aborts it.
+        /// </summary>
+        /// <param name="enumerator"></param>
         public virtual void FindClose(IEnumerator enumerator)
         {
 
@@ -140,12 +197,12 @@ namespace TotalCommander.Plugin.Wfx
                 FileCopy(oldName, newName, overwrite, ri);
         }
 
-        public virtual FileOperationResult FileMove(string oldName, string newName, bool overwrite, RemoteInfo ri)
+        public virtual FileOperationResult FileMove(string source, string target, bool overwrite, RemoteInfo ri)
         {
             return FileOperationResult.Default;
         }
 
-        public virtual FileOperationResult FileCopy(string oldName, string newName, bool overwrite, RemoteInfo ri)
+        public virtual FileOperationResult FileCopy(string source, string target, bool overwrite, RemoteInfo ri)
         {
             return FileOperationResult.Default;
         }
@@ -161,7 +218,7 @@ namespace TotalCommander.Plugin.Wfx
             return false;
         }
 
-        public virtual bool DirectoryCreate(string path)
+        public virtual bool DirectoryCreate(string remoteName)
         {
             return false;
         }
@@ -171,6 +228,10 @@ namespace TotalCommander.Plugin.Wfx
             return false;
         }
 
+        BackgroundFlags ITotalCommanderWfxPlugin.GetBackgroundFlags()
+        {
+            return BackgroundSupport;
+        }
 
 
         public virtual CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon)
@@ -183,6 +244,17 @@ namespace TotalCommander.Plugin.Wfx
         {
             bitmap = null;
             return PreviewBitmapResult.None;
+        }
+
+
+        bool ITotalCommanderWfxPlugin.IsLinksToLocalFiles()
+        {
+            return TemporaryPanelPlugin;
+        }
+
+        public virtual string GetLocalName(string remoteName)
+        {
+            return null;
         }
 
 
@@ -213,7 +285,7 @@ namespace TotalCommander.Plugin.Wfx
             return false;
         }
 
-        public virtual void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation)
+        public virtual void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation)
         {
 
         }

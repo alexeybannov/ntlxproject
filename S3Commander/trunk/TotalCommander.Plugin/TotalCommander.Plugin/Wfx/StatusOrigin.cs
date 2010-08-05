@@ -5,7 +5,7 @@ namespace TotalCommander.Plugin.Wfx
     /// Defines constants that are used by the <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> method.
     /// </summary>
     /// <seealso cref="ITotalCommanderWfxPlugin.StatusInfo"/>
-    public enum StatusInfo
+    public enum StatusOrigin
 	{
         /// <summary>
         /// Operation starts (allocate buffers if needed).

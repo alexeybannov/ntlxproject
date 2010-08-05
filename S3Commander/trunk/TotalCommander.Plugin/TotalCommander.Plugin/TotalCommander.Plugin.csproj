@@ -45,13 +45,14 @@
     <Compile Include="DllExportAttribute.cs" />
     <Compile Include="TotalCommanderWindow.cs" />
     <Compile Include="Utils\DateTimeUtil.cs" />
+    <Compile Include="Wfx\BackgroundFlags.cs" />
     <Compile Include="Wfx\Password.cs" />
     <Compile Include="Wfx\WfxDispatcher.cs" />
     <Compile Include="Wfx\PreviewBitmapResult.cs" />
     <Compile Include="Wfx\CustomIconFlag.cs" />
     <Compile Include="Wfx\CustomIconResult.cs" />
     <Compile Include="Wfx\StatusOperation.cs" />
-    <Compile Include="Wfx\StatusInfo.cs" />
+    <Compile Include="Wfx\StatusOrigin.cs" />
     <Compile Include="Wfx\CopyFlags.cs" />
     <Compile Include="Wfx\ExecuteResult.cs" />
     <Compile Include="Wfx\FileOperationResult.cs" />

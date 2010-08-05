@@ -299,7 +299,7 @@ namespace TotalCommander.Plugin.Wfx
         {
             try
             {
-                Plugin.StatusInfo(remoteDir, (StatusInfo)infoStartEnd, (StatusOperation)infoOperation);
+                Plugin.StatusInfo(remoteDir, (StatusOrigin)infoStartEnd, (StatusOperation)infoOperation);
             }
             catch (Exception ex)
             {
@@ -353,6 +353,54 @@ namespace TotalCommander.Plugin.Wfx
             {
                 ProcessError(ex);
             }
+        }
+
+        public static bool FsLinksToLocalFiles()
+        {
+            var result = false;
+            try
+            {
+                result = Plugin.IsLinksToLocalFiles();
+            }
+            catch (Exception ex)
+            {
+                ProcessError(ex);
+            }
+            return result;
+        }
+
+        public static bool FsGetLocalName(IntPtr ptr, int maxlen)
+        {
+            var result = false;
+            try
+            {
+                var remote = Win32.PtrToStringAnsi(ptr);
+                var local = Plugin.GetLocalName(remote);
+                if (!string.IsNullOrEmpty(local) && local != remote)
+                {
+                    Win32.WriteStringAnsi(ptr, local, maxlen);
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessError(ex);
+            }
+            return result;
+        }
+
+        public static int FsGetBackgroundFlags()
+        {
+            var result = 0;
+            try
+            {
+                result = (int)Plugin.GetBackgroundFlags();
+            }
+            catch (Exception ex)
+            {
+                ProcessError(ex);
+            }
+            return result;
         }
 
 

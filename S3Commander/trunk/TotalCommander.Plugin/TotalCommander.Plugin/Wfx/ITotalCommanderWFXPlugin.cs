@@ -167,7 +167,7 @@ namespace TotalCommander.Plugin.Wfx
     public interface ITotalCommanderWfxPlugin
     {
         /// <summary>
-        /// The default root name which should appear in the Network Neighborhood. 
+        /// The default root name which should appear in the Network Neighborhood.
         /// </summary>
         /// <remarks>
         /// This root name is NOT part of the path passed to the plugin when Totalcmd accesses the 
@@ -643,6 +643,72 @@ namespace TotalCommander.Plugin.Wfx
 
 
         /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.GetBackgroundFlags"/> is called by Total Commander 7.51 or 
+        /// newer to determine whether the plugin supports background operations (uploads and downloads), 
+        /// and if yes, how they are supported.
+        /// </summary>
+        /// <returns>
+        /// A combination of the following flags:<br />
+        /// <list type="table">
+        /// <item>
+        /// <term><see cref="BackgroundFlags.NotSupported"/></term>
+        /// <description>Background operations are not supported.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="BackgroundFlags.Download"/></term>
+        /// <description>Download in background is supported.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="BackgroundFlags.Upload"/></term>
+        /// <description>Upload in background is supported.</description>
+        /// </item>
+        /// <item>
+        /// <term><see cref="BackgroundFlags.AskUser"/></term>
+        /// <description>
+        /// If this flag is set, the user must be asked BEFORE the transfer starts whether the file 
+        /// should be sent/retrieved in background or foreground. 
+        /// This is necessary for plugins where a separate connection is needed for background transfers,
+        /// e.g. the SFTP (secure ftp) plugin.
+        /// If the flag isn't set, there will be a "background" button in the actual progress window.
+        /// </description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// If the flag <see cref="BackgroundFlags.AskUser"/> is set and the user checks the option to 
+        /// transfer the file in background, Total Commander starts a background thread and calls 
+        /// <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> with parameters 
+        /// <see cref="StatusOrigin.Start"/> and <see cref="StatusOperation.GetMultiThread"/> instead of 
+        /// <see cref="StatusOperation.GetMulti"/> for downloads, and 
+        /// <see cref="StatusOperation.PutMultiThread"/> instead of <see cref="StatusOperation.PutMulti"/>
+        /// for uploads. A corresponding <see cref="StatusOrigin.End"/> is sent when the 
+        /// transfer is done. These notifications can be used to build up the background connection 
+        /// and to close it when done. You need to use 
+        /// <see cref="System.Threading.Thread.ManagedThreadId"/> to recognize a 
+        /// background operation. <see cref="System.Threading.Thread.ManagedThreadId"/> 
+        /// will return the same value for the entire operation in 
+        /// <see cref="ITotalCommanderWfxPlugin.StatusInfo"/>, 
+        /// <see cref="ITotalCommanderWfxPlugin.FileGet"/> and 
+        /// <see cref="ITotalCommanderWfxPlugin.FilePut"/>.
+        /// </para>
+        /// <para>
+        /// If the flag <see cref="BackgroundFlags.AskUser"/> is NOT set, all uploads and downloads 
+        /// with F5 or F6 will be started in a background thread. Initially the normal foreground 
+        /// transfer window will be shown, which will be changed to a background transfer window 
+        /// when the user clicks on "Background". For the plugin, the entire operation will take 
+        /// place in the same background thread, though. This method is recommended only for 
+        /// plugins where no extra connections are needed for multiple parallel transfers, or where 
+        /// the additional connections are built up very quickly. Example of a plugin using this 
+        /// method is the WinCE plugin for Windows Mobile devices.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="ITotalCommanderWfxPlugin.StatusInfo"/>
+        /// <seealso cref="ITotalCommanderWfxPlugin.FilePut"/>
+        /// <seealso cref="ITotalCommanderWfxPlugin.FileGet"/>
+        BackgroundFlags GetBackgroundFlags();
+
+        /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/> is called when a file/directory is displayed in the file list. 
         /// It can be used to specify a custom icon for that file/directory. 
         /// This function is new in version 1.1. It requires Total Commander >=5.51, but is ignored by older versions.
@@ -838,17 +904,83 @@ namespace TotalCommander.Plugin.Wfx
 
 
         /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.IsLinksToLocalFiles"/> indicates that 
+        /// the plugin is a temporary panel-style plugin or a normal file system plugin.
+        /// Temporary file panels just hold links to files on the local file system.
+        /// </summary>
+        /// <returns>
+        /// Return <strong>true</strong> if the plugin is a temporary panel-style plugin.
+        /// Return <strong>false</strong> if the plugin is a normal file system plugin.
+        /// </returns>
+        /// <remarks>
+        /// If your plugin is a temporary panel plugin, the following functions MUST be 
+        /// thread-safe (can be called from background transfer manager):<br />
+        /// - <see cref="ITotalCommanderWfxPlugin.IsLinksToLocalFiles"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.GetLocalName"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.FindFirst"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.FindNext"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.FindClose"/><br />
+        /// This means that when uploading subdirectories from your plugin to FTP in the background, 
+        /// Total Commander will call these functions in a background thread. If the user continues 
+        /// to work in the foreground, calls to <see cref="ITotalCommanderWfxPlugin.FindFirst"/> and 
+        /// <see cref="ITotalCommanderWfxPlugin.FindNext"/> may be occuring at the same 
+        /// time! Therefore it's very important to use the search handle to keep temporary information 
+        /// about the search. <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> will NOT be called 
+        /// from the background thread!
+        /// </remarks>
+        /// <seealso cref="ITotalCommanderWfxPlugin.IsLinksToLocalFiles"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.GetLocalName"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.FindFirst"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.FindNext"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.FindClose"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.StatusInfo"/>
+        bool IsLinksToLocalFiles();
+
+        /// <summary>
+        /// Temporary file panels just hold links to files on the local file system.
+        /// </summary>
+        /// <param name="remoteName">
+        /// Full path to the file name in the plugin namespace, e.g. \somedir\file.ext.
+        /// </param>
+        /// <returns>
+        /// Return the path of the file on the local file system, e.g. c:\windows\file.ext.
+        /// </returns>
+        /// <remarks>
+        /// If your plugin is a temporary panel plugin, the following functions MUST be 
+        /// thread-safe (can be called from background transfer manager):<br />
+        /// - <see cref="ITotalCommanderWfxPlugin.IsLinksToLocalFiles"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.GetLocalName"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.FindFirst"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.FindNext"/><br />
+        /// - <see cref="ITotalCommanderWfxPlugin.FindClose"/><br />
+        /// This means that when uploading subdirectories from your plugin to FTP in the background, 
+        /// Total Commander will call these functions in a background thread. If the user continues 
+        /// to work in the foreground, calls to <see cref="ITotalCommanderWfxPlugin.FindFirst"/> and 
+        /// <see cref="ITotalCommanderWfxPlugin.FindNext"/> may be occuring at the same 
+        /// time! Therefore it's very important to use the search handle to keep temporary information 
+        /// about the search. <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> will NOT be called 
+        /// from the background thread!
+        /// </remarks>
+        /// <seealso cref="ITotalCommanderWfxPlugin.IsLinksToLocalFiles"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.GetLocalName"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.FindFirst"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.FindNext"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.FindClose"/><br />
+        /// <seealso cref="ITotalCommanderWfxPlugin.StatusInfo"/>
+        string GetLocalName(string remoteName);
+
+
+        /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.StatusInfo"/> is called just as an information to the plugin that a 
         /// certain operation starts or ends. It can be used to allocate/free buffers, and/or to flush data from a cache. 
-        /// There is no need to implement this function if the plugin doesn't require it.
         /// </summary>
         /// <param name="remoteName">
         /// This is the current source directory when the operation starts. May be used to find out which part of the file system is affected.
         /// </param>
-        /// <param name="info">
+        /// <param name="origin">
         /// Information whether the operation starts or ends. Possible values:<br />
-        /// <see cref="Wfx.StatusInfo.Start"/>: Operation starts (allocate buffers if needed)<br />
-        /// <see cref="Wfx.StatusInfo.End"/>: Operation has ended (free buffers, flush cache etc)<br />
+        /// <see cref="StatusOrigin.Start"/>: Operation starts (allocate buffers if needed)<br />
+        /// <see cref="StatusOrigin.End"/>: Operation has ended (free buffers, flush cache etc)<br />
         /// </param>
         /// <param name="operation">
         /// Information of which operaration starts/ends. Possible values:<br />
@@ -949,7 +1081,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <see cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>, <see cref="ITotalCommanderWfxPlugin.Disconnect"/>.
         /// </para>
         /// </remarks>
-        void StatusInfo(string remoteName, StatusInfo info, StatusOperation operation);
+        void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation);
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.Disconnect"/> is called when the user presses the Disconnect button in the FTP connections toolbar. 

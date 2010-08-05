@@ -196,6 +196,24 @@ namespace TotalCommander.Plugin.Wfx
             WfxDispatcher.FsSetCryptCallback(Crypt, cryptoNumber, flags);
         }
 
+        [DllExport]
+        public static bool FsLinksToLocalFiles()
+        {
+            return WfxDispatcher.FsLinksToLocalFiles();
+        }
+
+        [DllExport]
+        public static bool FsGetLocalName(IntPtr remoteName, int maxlen)
+        {
+            return WfxDispatcher.FsGetLocalName(remoteName, maxlen);
+        }
+
+        [DllExport]
+        public static int FsGetBackgroundFlags()
+        {
+            return WfxDispatcher.FsGetBackgroundFlags();
+        }
+
         #region Private Methods
 
         private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)
