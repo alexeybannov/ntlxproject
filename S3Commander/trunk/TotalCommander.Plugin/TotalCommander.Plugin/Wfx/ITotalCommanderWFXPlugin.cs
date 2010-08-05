@@ -631,6 +631,14 @@ namespace TotalCommander.Plugin.Wfx
         /// <seealso cref="ITotalCommanderWfxPlugin.SetFileAttributes"/>
         bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime);
 
+        /// <summary>
+        /// <see cref="ITotalCommanderWfxPlugin.SetPasswordStore"/> is called when loading the plugin.
+        /// The passed value should be stored in the plugin for later use. 
+        /// </summary>
+        /// <param name="password">
+        /// You can use this class to store passwords in Total Commander's secure password store.
+        /// The user will be asked for the master password automatically.
+        /// </param>
         void SetPasswordStore(Password password);
 
 
