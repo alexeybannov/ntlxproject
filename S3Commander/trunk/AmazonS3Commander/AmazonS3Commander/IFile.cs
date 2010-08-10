@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using TotalCommander.Plugin.Wfx;
+using TotalCommander.Plugin;
 
 namespace AmazonS3Commander
 {
@@ -27,5 +29,8 @@ namespace AmazonS3Commander
         }
 
         IEnumerable<IFile> GetChildren();
+
+
+        ExecuteResult Open(TotalCommanderWindow window);
     }
 }

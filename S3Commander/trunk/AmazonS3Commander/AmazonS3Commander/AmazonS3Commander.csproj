@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmazonS3Plugin.cs" />
+    <Compile Include="FileSystemContext.cs" />
     <Compile Include="IFile.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -41,6 +41,14 @@ namespace AmazonS3Commander
             var disposable = enumerator as IDisposable;
             if (disposable != null) disposable.Dispose();
         }
+
+
+        public override ExecuteResult ExecuteOpen(TotalCommanderWindow window, ref string remoteName)
+        {
+            var file = fileSystem.ResolvePath(remoteName);
+            if (file != null) return file.Open(window);
+            return base.ExecuteOpen(window, ref remoteName);
+        }
         
 
         private FindData ToFindData(IFile file)
