@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
-using TotalCommander.Plugin;
-using TotalCommander.Plugin.Wfx;
+using System.Drawing;
+using System.IO;
 
 namespace TotalCommander.Plugin.Wfx.FileSystem
 {
     public abstract class TotalCommanderFileSystemPlugin : ITotalCommanderWfxPlugin
     {
         private IFileSystem fileSystem;
+
         private FileSystemContext context;
 
 
@@ -25,38 +26,54 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public virtual BackgroundFlags BackgroundSupport
         {
             get;
+            protected set;
         }
+
 
         public void Init(int pluginNumber, Progress progress, Log log, Request request)
         {
-            context = new FileSystemContext();
-            context.PluginName = PluginName;
-            context.PluginNumber = pluginNumber;
-            context.Progress = progress;
-            context.Log = log;
-            context.Request = request;
-            context.TemporaryPanelPlugin = IsLinksToLocalFiles(
+            TemporaryPanelPlugin = false;
+            BackgroundSupport = BackgroundFlags.NotSupported;
+
+            context = new FileSystemContext()
+            {
+                PluginName = PluginName,
+                PluginNumber = pluginNumber,
+                Progress = progress,
+                Log = log,
+                Request = request,
+                TemporaryPanelPlugin = TemporaryPanelPlugin,
+                BackgroundSupport = BackgroundSupport
+            };
         }
 
-                
+        public void SetDefaultParams(DefaultParam defaultParam)
+        {
+            context.PluginInterfaceVersion = defaultParam.PluginInterfaceVersion;
+            context.IniFilePath = defaultParam.DefaultIniFileName;
+        }
+
+        public void SetPasswordStore(Password password)
+        {
+            context.Password = password;
+
+            fileSystem = CreateFileSystem();
+            if (fileSystem != null) fileSystem.Initialize(context);
+        }
+
+        protected abstract IFileSystem CreateFileSystem();
+
+
         public FindData FindFirst(string path, out IEnumerator enumerator)
         {
-            enumerator = null;
-
-            var file = fileSystem.ResolvePath(path);
-            if (file != null)
-            {
-                enumerator = file.GetChildren().GetEnumerator();
-                return FindNext(enumerator);
-            }
-            return FindData.NotOpen;
+            enumerator = fileSystem != null ? fileSystem.GetFiles(path) : null;
+            return FindNext(enumerator);
         }
 
         public FindData FindNext(IEnumerator enumerator)
         {
-            return enumerator != null && enumerator.MoveNext() ?
-                ToFindData((IFile)enumerator.Current) :
-                FindData.NoMoreFiles;
+            if (enumerator == null) return FindData.NotOpen;
+            return enumerator.MoveNext() ? ((IFile)enumerator.Current).GetFileInfo() : FindData.NoMoreFiles;
         }
 
         public void FindClose(IEnumerator enumerator)
@@ -66,104 +83,111 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         }
 
 
-        private FindData ToFindData(IFile file)
-        {
-            return new FindData(file.Name)
-            {
-                Attributes = file.Attributes,
-                FileSize = file.FileSize,
-                LastWriteTime = file.LastWriteTime
-            };
-        }
-
         public ExecuteResult FileExecute(TotalCommanderWindow window, ref string remoteName, string verb)
         {
-            throw new NotImplementedException();
+            var file = ResolvePath(remoteName);
+            switch ((verb ?? " ").ToLower().Substring(0, 1))
+            {
+                case "o": return file.Open(window, ref remoteName);
+                case "p": return file.Properties(window, ref remoteName);
+                //case "c": return ExecuteChMode(window, ref remoteName, command);
+                //case "q": return ExecuteCommand(window, ref remoteName, command);
+                default: return ExecuteResult.Default;
+            }
         }
+
 
         public FileOperationResult FileRenameMove(string oldName, string newName, bool move, bool overwrite, RemoteInfo ri)
         {
-            throw new NotImplementedException();
+            return FileOperationResult.Default;
         }
 
         public FileOperationResult FileGet(string remoteName, ref string localName, CopyFlags copyFlags, RemoteInfo ri)
         {
-            throw new NotImplementedException();
+            return FileOperationResult.Default;
         }
 
         public FileOperationResult FilePut(string localName, ref string remoteName, CopyFlags copyFlags)
         {
-            throw new NotImplementedException();
+            return FileOperationResult.Default;
         }
 
         public bool FileRemove(string remoteName)
         {
-            throw new NotImplementedException();
+            return ResolvePath(remoteName).Remove();
         }
+
 
         public bool DirectoryCreate(string path)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(path)) return false;
+            var pos = path.Trim('\\').LastIndexOf('\\');
+            if (0 < pos)
+            {
+                return ResolvePath(path.Substring(0, pos)).CreateFolder(path.Substring(pos + 1));
+            }
+            return false;
         }
 
         public bool DirectoryRemove(string remoteName)
         {
-            throw new NotImplementedException();
+            return ResolvePath(remoteName).Remove();
         }
 
-        public void SetDefaultParams(DefaultParam defaultParam)
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool SetFileAttributes(string remoteName, System.IO.FileAttributes attributes)
+        public bool SetFileAttributes(string remoteName, FileAttributes attributes)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public void SetPasswordStore(Password password)
-        {
-            throw new NotImplementedException();
-        }
 
         public BackgroundFlags GetBackgroundFlags()
         {
-            throw new NotImplementedException();
+            return context.BackgroundSupport;
         }
 
-        public CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out System.Drawing.Icon icon)
+        public CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon)
         {
-            throw new NotImplementedException();
+            icon = null;
+            return ResolvePath(remoteName).GetIcon(ref remoteName, extractIconFlag, ref icon);
         }
 
-        public PreviewBitmapResult GetPreviewBitmap(ref string remoteName, System.Drawing.Size size, out System.Drawing.Bitmap bitmap)
+        public PreviewBitmapResult GetPreviewBitmap(ref string remoteName, Size size, out Bitmap bitmap)
         {
-            throw new NotImplementedException();
+            bitmap = null;
+            return ResolvePath(remoteName).GetPreviewBitmap(ref remoteName, size, ref bitmap);
         }
 
         public bool IsLinksToLocalFiles()
         {
-            throw new NotImplementedException();
+            return context.TemporaryPanelPlugin;
         }
 
         public string GetLocalName(string remoteName)
         {
-            throw new NotImplementedException();
+            return null;
         }
+
 
         public void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation)
         {
-            throw new NotImplementedException();
+            if (fileSystem != null) fileSystem.StatusInfo(remoteName, origin, operation);
         }
 
         public bool Disconnect(string disconnectRoot)
         {
-            throw new NotImplementedException();
+            return fileSystem != null ? fileSystem.Disconnect(disconnectRoot) : false;
+        }
+
+
+        private IFile ResolvePath(string path)
+        {
+            return (fileSystem != null ? fileSystem.ResolvePath(path) : null) ?? File.Empty;
         }
     }
 }

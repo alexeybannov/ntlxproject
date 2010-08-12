@@ -1,38 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using TotalCommander.Plugin.Wfx;
-using TotalCommander.Plugin;
+﻿using System.Drawing;
 
 namespace TotalCommander.Plugin.Wfx.FileSystem
 {
     public interface IFile
     {
-        string Name
-        {
-            get;
-        }
-
-        FileAttributes Attributes
-        {
-            get;
-        }
-
-        long FileSize
-        {
-            get;
-        }
-
-        DateTime? LastWriteTime
-        {
-            get;
-        }
-
-        IEnumerable<IFile> GetChildren();
+        FindData GetFileInfo();
 
 
         ExecuteResult Open(TotalCommanderWindow window, ref string link);
 
         ExecuteResult Properties(TotalCommanderWindow window, ref string link);
+
+
+        bool CreateFolder(string name);
+
+        bool Remove();
+
+
+        CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon);
+
+        PreviewBitmapResult GetPreviewBitmap(ref string cache, Size size, ref Bitmap bitmap);
     }
 }
