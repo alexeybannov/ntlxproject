@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DocumentationFile>bin\Debug\TotalCommander.Plugin.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -46,6 +47,10 @@
     <Compile Include="TotalCommanderWindow.cs" />
     <Compile Include="Utils\DateTimeUtil.cs" />
     <Compile Include="Wfx\BackgroundFlags.cs" />
+    <Compile Include="Wfx\FileSystem\TotalCommanderFileSystemPlugin.cs" />
+    <Compile Include="Wfx\FileSystem\FileSystemContext.cs" />
+    <Compile Include="Wfx\FileSystem\IFile.cs" />
+    <Compile Include="Wfx\FileSystem\IFileSystem.cs" />
     <Compile Include="Wfx\Password.cs" />
     <Compile Include="Wfx\WfxDispatcher.cs" />
     <Compile Include="Wfx\PreviewBitmapResult.cs" />

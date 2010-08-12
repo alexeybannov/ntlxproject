@@ -31,8 +31,8 @@ namespace AmazonS3Commander
 
         public override FindData FindNext(IEnumerator enumerator)
         {
-            return enumerator != null && enumerator.MoveNext() ? 
-                ToFindData((IFile)enumerator.Current) : 
+            return enumerator != null && enumerator.MoveNext() ?
+                ToFindData((IFile)enumerator.Current) :
                 FindData.NoMoreFiles;
         }
 
@@ -46,10 +46,11 @@ namespace AmazonS3Commander
         public override ExecuteResult ExecuteOpen(TotalCommanderWindow window, ref string remoteName)
         {
             var file = fileSystem.ResolvePath(remoteName);
-            if (file != null) return file.Open(window);
+            var link = string.Empty;
+            if (file != null) return file.Open(window, ref link);
             return base.ExecuteOpen(window, ref remoteName);
         }
-        
+
 
         private FindData ToFindData(IFile file)
         {

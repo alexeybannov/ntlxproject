@@ -4,9 +4,9 @@ using System.IO;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin;
 
-namespace AmazonS3Commander
+namespace TotalCommander.Plugin.Wfx.FileSystem
 {
-    interface IFile
+    public interface IFile
     {
         string Name
         {
