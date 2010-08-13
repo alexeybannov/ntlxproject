@@ -67,6 +67,13 @@ namespace AmazonS3Commander.Properties {
             }
         }
         
+        internal static System.Drawing.Icon BucketIcon {
+            get {
+                object obj = ResourceManager.GetObject("BucketIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Edit Account.
         /// </summary>

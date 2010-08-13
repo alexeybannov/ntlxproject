@@ -99,13 +99,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AccountIcon.ico" />
+    <None Include="Resources\Bucket.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\NewAccountIcon.ico" />
+    <None Include="Resources\NewAccount.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\settings.ico" />
+    <None Include="Resources\Settings.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Amazon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

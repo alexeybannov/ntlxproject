@@ -27,7 +27,7 @@ namespace AmazonS3Commander.Accounts
 		{
 			InitializeComponent();
 
-            Icon = Resources.AccountIcon;
+            Icon = Resources.NewAccountIcon;
 			Text = Resources.NewAccount;
             MinimumSize = Size;
             textBox1.Text = name ?? string.Empty;
@@ -39,6 +39,7 @@ namespace AmazonS3Commander.Accounts
 		{
 			if (info == null) throw new ArgumentNullException("info");
 
+            Icon = Resources.AccountIcon;
 			Text = Resources.EditAccount;
 			textBox1.Enabled = false;
 			textBox2.Text = info.AccessKey ?? string.Empty;
