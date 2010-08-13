@@ -26,5 +26,10 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon);
 
         PreviewBitmapResult GetPreviewBitmap(ref string cache, Size size, ref Bitmap bitmap);
+
+
+        void OperationBegin(StatusOperation operation);
+
+        void OperationEnd(StatusOperation operation);
     }
 }

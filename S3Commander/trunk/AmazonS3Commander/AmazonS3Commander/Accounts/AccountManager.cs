@@ -10,6 +10,8 @@ namespace AmazonS3Commander.Accounts
 {
     class AccountManager
     {
+        private readonly FileSystemContext context;
+
         private readonly string path;
 
         private readonly Encoding encoding = Encoding.Unicode;
@@ -17,8 +19,9 @@ namespace AmazonS3Commander.Accounts
         private const string EXT = ".s3a";
 
 
-        public AccountManager()
+        public AccountManager(FileSystemContext context)
         {
+            this.context = context;
             path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Resources.ProductName);
             if (!Directory.Exists(path))
             {
@@ -31,7 +34,8 @@ namespace AmazonS3Commander.Accounts
         {
             return Directory
                 .GetFiles(path, "*" + EXT)
-                .Select(p => (IFile)new Account(this, p));
+                .Select(p => (IFile)new Account(this, p, context))
+                .ToList();
         }
 
         public AccountInfo GetAccountInfo(string name)

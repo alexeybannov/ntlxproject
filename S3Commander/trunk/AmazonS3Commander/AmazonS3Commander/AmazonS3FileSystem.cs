@@ -17,14 +17,15 @@ namespace AmazonS3Commander
 
         private IFile config;
 
+        private IEnumerable<IFile> firstLevel;
+
 
         public void Initialize(FileSystemContext context)
         {
             this.context = context;
-            accountManager = new AccountManager();
+            accountManager = new AccountManager(context);
             newAccount = new NewAccount(accountManager, context.Request);
             config = new ConfigurationFile();
-            //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
         }
 
 
@@ -35,7 +36,7 @@ namespace AmazonS3Commander
 
             var depth = path.Split('\\').Length - 1;
             if (depth == 0) return this;
-            
+
             var name = path.Substring(path.IndexOf('\\') + 1);
             if (depth == 1) return GetFirstLevel().SingleOrDefault(a => a.Info.FileName == name);
 
@@ -45,6 +46,7 @@ namespace AmazonS3Commander
 
         public override IEnumerator<IFile> GetFiles()
         {
+            firstLevel = null;
             return GetFirstLevel().GetEnumerator();
         }
 
@@ -54,11 +56,6 @@ namespace AmazonS3Commander
         }
 
 
-        public void StatusInfo(string path, StatusOrigin origin, StatusOperation operation)
-        {
-
-        }
-
         public bool Disconnect(string root)
         {
             return false;
@@ -67,9 +64,13 @@ namespace AmazonS3Commander
 
         private IEnumerable<IFile> GetFirstLevel()
         {
-            return accountManager
+            if (firstLevel == null)
+            {
+                firstLevel = accountManager
                 .GetAccounts()
                 .Union(new[] { newAccount, config });
+            }
+            return firstLevel;
         }
     }
 }

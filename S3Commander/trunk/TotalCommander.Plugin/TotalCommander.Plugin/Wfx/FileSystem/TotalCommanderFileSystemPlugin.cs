@@ -38,22 +38,18 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public virtual bool TemporaryPanelPlugin
         {
-            get;
-            protected set;
+            get { return false; }
         }
 
         public virtual BackgroundFlags BackgroundSupport
         {
-            get;
-            protected set;
+            get { return BackgroundFlags.NotSupported; }
         }
 
 
         public void Init(int pluginNumber, Progress progress, Log log, Request request)
         {
             fileSystemInitialized = false;
-            TemporaryPanelPlugin = false;
-            BackgroundSupport = BackgroundFlags.NotSupported;
 
             context = new FileSystemContext()
             {
@@ -193,7 +189,9 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation)
         {
-            if (FileSystem != null) FileSystem.StatusInfo(remoteName, origin, operation);
+            var file = ResolvePath(remoteName);
+            if (origin == StatusOrigin.Start) file.OperationBegin(operation);
+            if (origin == StatusOrigin.End) file.OperationEnd(operation);
         }
 
         public bool Disconnect(string disconnectRoot)

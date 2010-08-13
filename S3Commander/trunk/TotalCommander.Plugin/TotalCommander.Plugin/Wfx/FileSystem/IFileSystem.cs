@@ -7,8 +7,6 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         IFile ResolvePath(string path);
 
-        void StatusInfo(string path, StatusOrigin origin, StatusOperation operation);
-
         bool Disconnect(string root);
     }
 }

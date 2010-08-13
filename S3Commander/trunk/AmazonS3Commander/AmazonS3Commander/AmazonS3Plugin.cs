@@ -1,5 +1,6 @@
 ﻿using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx.FileSystem;
+using TotalCommander.Plugin.Wfx;
 
 namespace AmazonS3Commander
 {
@@ -14,6 +15,11 @@ namespace AmazonS3Commander
         protected override IFileSystem CreateFileSystem()
         {
             return new AmazonS3FileSystem();
+        }
+        
+        public override BackgroundFlags BackgroundSupport
+        {
+            get { return BackgroundFlags.AskUser; }
         }
     }
 }
