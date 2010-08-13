@@ -1,6 +1,6 @@
 ﻿namespace AmazonS3Commander.Accounts
 {
-	partial class AccountForm
+	partial class AccountForm2
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -99,11 +99,12 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AccountForm";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Shown += new System.EventHandler(this.AccountForm_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();

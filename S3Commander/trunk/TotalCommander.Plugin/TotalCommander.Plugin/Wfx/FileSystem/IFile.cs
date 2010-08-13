@@ -1,10 +1,13 @@
 ﻿using System.Drawing;
+using System.Collections.Generic;
 
 namespace TotalCommander.Plugin.Wfx.FileSystem
 {
     public interface IFile
     {
         FindData GetFileInfo();
+
+        IEnumerator<IFile> GetFiles();
 
 
         ExecuteResult Open(TotalCommanderWindow window, ref string link);

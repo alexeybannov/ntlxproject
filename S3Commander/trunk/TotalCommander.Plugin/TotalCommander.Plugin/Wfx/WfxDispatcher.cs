@@ -307,7 +307,7 @@ namespace TotalCommander.Plugin.Wfx
             }
         }
 
-        public static int FsExtractCustomIcon(IntPtr remoteName, int extractFlags, IntPtr iconHandle)
+        public static int FsExtractCustomIcon(IntPtr remoteName, int extractFlags, ref IntPtr iconHandle)
         {
             var result = CustomIconResult.UseDefault;
             try
@@ -325,7 +325,7 @@ namespace TotalCommander.Plugin.Wfx
             return (int)result;
         }
 
-        public static int FsGetPreviewBitmap(IntPtr remoteName, int width, int height, IntPtr bitmapHandle)
+        public static int FsGetPreviewBitmap(IntPtr remoteName, int width, int height, ref IntPtr bitmapHandle)
         {
             var result = PreviewBitmapResult.None;
             try

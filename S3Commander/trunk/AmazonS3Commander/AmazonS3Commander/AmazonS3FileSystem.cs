@@ -1,40 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AmazonS3Commander.Accounts;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
-using AmazonS3Commander.Accounts;
 
 namespace AmazonS3Commander
 {
-    class AmazonS3FileSystem : IFileSystem
+    class AmazonS3FileSystem : FileBase, IFileSystem
     {
         private FileSystemContext context;
+
+        private AccountManager accountManager;
+
+        private IFile newAccount;
+
 
         public void Initialize(FileSystemContext context)
         {
             this.context = context;
+            accountManager = new AccountManager();
+            newAccount = new NewAccount(accountManager, context.Request);
+            //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
         }
+
 
         public IFile ResolvePath(string path)
         {
-            if (string.IsNullOrEmpty(path)) return null;
+            if (path == null) return null;
             path = path.TrimEnd('\\');
+
+            var depth = path.Split('\\').Length - 1;
+            if (depth == 0) return this;
+            var name = path.Substring(path.IndexOf('\\') + 1);
+            if (depth == 1) return GetFirstLevel().SingleOrDefault(a => a.GetFileInfo().FileName == name);
+
             return null;
         }
 
-        public IEnumerator<IFile> GetFiles(string path)
+
+        public override IEnumerator<IFile> GetFiles()
         {
-            if (string.IsNullOrEmpty(path)) return null;
-            
-            path = path.TrimEnd('\\');
-            if (path == string.Empty)
-            {
-                var accounts = new List<IFile>();
-                accounts.Add(new NewAccount(new AccountManager(), context.Request));
-                return accounts.GetEnumerator();
-            }
-            return null;
+            return GetFirstLevel().GetEnumerator();
         }
+
+        public override bool CreateFolder(string name)
+        {
+            return newAccount.CreateFolder(name);
+        }
+
 
         public void StatusInfo(string path, StatusOrigin origin, StatusOperation operation)
         {
@@ -44,6 +57,14 @@ namespace AmazonS3Commander
         public bool Disconnect(string root)
         {
             return false;
+        }
+
+
+        private IEnumerable<IFile> GetFirstLevel()
+        {
+            return accountManager
+                .GetAccounts()
+                .Union(new [] { newAccount });
         }
     }
 }

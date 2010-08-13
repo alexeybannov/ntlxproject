@@ -28,8 +28,8 @@ namespace TotalCommander.Plugin.Wfx
 		Error,
 
         /// <summary>
-        /// Default value, equal <see cref="ExecuteResult.Error"/>
+        /// Default value, equal <see cref="ExecuteResult.OK"/>
         /// </summary>
-        Default = Error
+        Default = OK
 	}
 }

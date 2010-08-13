@@ -1,73 +1,70 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Windows.Forms;
+using AmazonS3Commander.Properties;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
-using System.Windows.Forms;
-using AmazonS3Commander.Properties;
 
 namespace AmazonS3Commander.Accounts
 {
-    class NewAccount : IFile
+    class NewAccount : FileBase
     {
         private AccountManager accountManager;
 
         private Request request;
+
+        private Icon icon;
 
 
         public NewAccount(AccountManager accountManager, Request request)
         {
             this.accountManager = accountManager;
             this.request = request;
+            this.icon = Resources.NewAccountIcon;
         }
 
 
-        public FindData GetFileInfo()
+        public override FindData GetFileInfo()
         {
             return new FindData(Resources.NewAccount);
         }
 
-        public ExecuteResult Open(TotalCommanderWindow window, ref string link)
+        public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
         {
-            using (var form = new AccountForm(""))
+            if (CreateFolder(string.Empty))
             {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    if (accountManager.Exists(form.AccountName))
-                    {
-                        var answer = request.MessageBox("Заменить?", MessageBoxButtons.YesNo);
-                        if (!answer) return ExecuteResult.Error;
-                    }
-                    accountManager.Save(form.AccountName, form.AccountInfo);
-                    return ExecuteResult.OK;
-                }
+                window.Refresh();
+                return ExecuteResult.OK;
             }
             return ExecuteResult.Error;
         }
 
-        public ExecuteResult Properties(TotalCommanderWindow window, ref string link)
+        public override bool CreateFolder(string name)
         {
-            return Open(window, ref link);
+            using (var form = new AccountForm(name))
+            {
+                if (form.ShowDialog() != DialogResult.OK || string.Compare(form.AccountName, Resources.NewAccount, true) == 0) return false;
+                if (accountManager.Exists(form.AccountName))
+                {
+                    var replace = request.MessageBox(
+                        string.Format(Resources.ReplaceAccount, form.AccountName),
+                        MessageBoxButtons.YesNo
+                    );
+                    if (!replace) return false;
+                }
+                accountManager.Save(form.AccountName, form.AccountInfo);
+                return true;
+            }
         }
 
-        public bool CreateFolder(string name)
+        public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool Remove()
-        {
-            throw new NotImplementedException();
-        }
-
-        public CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
-        {
-            throw new NotImplementedException();
-        }
-
-        public PreviewBitmapResult GetPreviewBitmap(ref string cache, Size size, ref Bitmap bitmap)
-        {
-            throw new NotImplementedException();
+            if (extractIconFlag == CustomIconFlag.Small)
+            {
+                icon = this.icon;
+                return CustomIconResult.Extracted;
+            }
+            return CustomIconResult.UseDefault;
         }
     }
 }

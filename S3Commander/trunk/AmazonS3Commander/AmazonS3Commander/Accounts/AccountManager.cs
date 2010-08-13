@@ -1,69 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System;
-using System.Windows.Forms;
 using AmazonS3Commander.Properties;
+using TotalCommander.Plugin.Wfx;
+using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander.Accounts
 {
     class AccountManager
     {
         private string path;
+
         private const string EXT = ".s3a";
+
 
         public AccountManager()
         {
             path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Resources.ProductName);
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
 
-        public IEnumerable<string> GetAccounts()
+
+        public IEnumerable<IFile> GetAccounts()
         {
             return Directory
                 .GetFiles(path, "*" + EXT)
-                .Select(p => Path.GetFileNameWithoutExtension(p));
+                .Select(p => (IFile)new Account(this, p));
         }
 
-        public bool CreateNewAccountForm(string name)
-        {
-            using (var form = new AccountForm(name))
-            {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    var path = GetPath(form.AccountName);
-                    if (File.Exists(path))
-                    {
-                    }
-                    Save(path, form.AccountInfo);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool EditAccountForm(string name)
+        public AccountInfo GetAccountInfo(string name)
         {
             var path = GetPath(name);
-            if (File.Exists(path))
-            {
-                var account = AccountInfo.Parse(File.ReadAllLines(path, Encoding.Unicode));
-                using (var form = new AccountForm(name, account))
-                {
-                    if (form.ShowDialog() == DialogResult.OK)
-                    {
-                        Save(path, form.AccountInfo);
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return File.Exists(path) ?
+                AccountInfo.Parse(File.ReadAllLines(path, Encoding.Unicode)) :
+                null;
         }
 
         public bool Exists(string name)
         {
-            return true;
+            return File.Exists(GetPath(name));
         }
 
         public void Move(string oldName, string newName)
@@ -73,9 +53,10 @@ namespace AmazonS3Commander.Accounts
 
         public bool Remove(string name)
         {
-            if (File.Exists(GetPath(name)))
+            var path = GetPath(name);
+            if (File.Exists(path))
             {
-                File.Delete(GetPath(name));
+                File.Delete(path);
                 return true;
             }
             return false;
@@ -83,7 +64,7 @@ namespace AmazonS3Commander.Accounts
 
         public void Save(string name, AccountInfo info)
         {
-            File.WriteAllLines(path, new[] { info.ToString() }, Encoding.Unicode);
+            File.WriteAllLines(GetPath(name), new[] { info.ToString() }, Encoding.Unicode);
         }
 
         private string GetPath(string name)

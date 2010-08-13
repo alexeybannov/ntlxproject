@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
@@ -9,7 +10,25 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
     {
         private IFileSystem fileSystem;
 
+        private bool fileSystemInitialized;
+
         private FileSystemContext context;
+
+        private IFileSystem FileSystem
+        {
+            [DebuggerStepThrough]
+            get
+            {
+                if (!fileSystemInitialized)
+                {
+                    fileSystemInitialized = true;
+                    fileSystem = CreateFileSystem();
+                    fileSystem.Initialize(context);
+                }
+                return fileSystem;
+            }
+        }
+
 
 
         public abstract string PluginName
@@ -32,6 +51,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public void Init(int pluginNumber, Progress progress, Log log, Request request)
         {
+            fileSystemInitialized = false;
             TemporaryPanelPlugin = false;
             BackgroundSupport = BackgroundFlags.NotSupported;
 
@@ -56,9 +76,6 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public void SetPasswordStore(Password password)
         {
             context.Password = password;
-
-            fileSystem = CreateFileSystem();
-            if (fileSystem != null) fileSystem.Initialize(context);
         }
 
         protected abstract IFileSystem CreateFileSystem();
@@ -66,7 +83,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public FindData FindFirst(string path, out IEnumerator enumerator)
         {
-            enumerator = fileSystem != null ? fileSystem.GetFiles(path) : null;
+            enumerator = ResolvePath(path).GetFiles();
             return FindNext(enumerator);
         }
 
@@ -121,8 +138,8 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public bool DirectoryCreate(string path)
         {
             if (string.IsNullOrEmpty(path)) return false;
-            var pos = path.Trim('\\').LastIndexOf('\\');
-            if (0 < pos)
+            var pos = path.TrimEnd('\\').LastIndexOf('\\');
+            if (0 <= pos)
             {
                 return ResolvePath(path.Substring(0, pos)).CreateFolder(path.Substring(pos + 1));
             }
@@ -176,18 +193,18 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation)
         {
-            if (fileSystem != null) fileSystem.StatusInfo(remoteName, origin, operation);
+            if (FileSystem != null) FileSystem.StatusInfo(remoteName, origin, operation);
         }
 
         public bool Disconnect(string disconnectRoot)
         {
-            return fileSystem != null ? fileSystem.Disconnect(disconnectRoot) : false;
+            return FileSystem != null ? FileSystem.Disconnect(disconnectRoot) : false;
         }
 
 
         private IFile ResolvePath(string path)
         {
-            return (fileSystem != null ? fileSystem.ResolvePath(path) : null) ?? File.Empty;
+            return (FileSystem != null ? FileSystem.ResolvePath(path) : null) ?? FileBase.Empty;
         }
     }
 }

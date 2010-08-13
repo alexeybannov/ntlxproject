@@ -1,77 +1,69 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
+using System.IO;
+using TotalCommander.Plugin;
+using TotalCommander.Plugin.Wfx;
+using TotalCommander.Plugin.Wfx.FileSystem;
+using System.Windows.Forms;
 using System.Drawing;
-using S3CmdPlugin.Resources;
-using Tools.TotalCommanderT;
+using AmazonS3Commander.Properties;
 
 namespace AmazonS3Commander.Accounts
 {
-    class Account : FileBase, IDirectory
+    class Account : FileBase
     {
+        private FindData findData;
+
+        private Icon icon;
+
         private AccountManager accountManager;
-        private string name;
 
 
-        public Account(AccountManager accountManager, string name)
+        public Account(AccountManager accountManager, string file)
         {
             this.accountManager = accountManager;
-            this.name = name;
-            findData.FileName = name;
-            findData.Attributes = FileAttributes.Directory;
+            var name = Path.GetFileNameWithoutExtension(Path.GetFileName(file));
+            findData = new FindData(name, FileAttributes.Directory);
+            findData.LastWriteTime = File.GetLastWriteTime(file);
+            icon = Resources.AccountIcon;
         }
 
 
-        public bool Create(string directory, PluginContext context)
+        public override FindData GetFileInfo()
         {
-            return false;
+            return findData;
         }
 
-        public override bool Delete(PluginContext context)
+        public override IEnumerator<IFile> GetFiles()
         {
-            accountManager.Remove(name);
-            return true;
+            return new List<IFile>().GetEnumerator();
         }
 
-        public override FileSystemExitCode Move(string newName, bool overwrite, RemoteInfo info, PluginContext context)
+        public override ExecuteResult Properties(TotalCommanderWindow window, ref string link)
         {
-            accountManager.Move(name, newName);
-            return FileSystemExitCode.OK;
+            var name = findData.FileName;
+            using (var form = new AccountForm(name, accountManager.GetAccountInfo(name)))
+            {
+                if (form.ShowDialog() == DialogResult.OK && accountManager.Exists(form.AccountName))
+                {
+                    accountManager.Save(form.AccountName, form.AccountInfo);
+                }
+            }
+            return ExecuteResult.OK;
         }
 
-        public override ExecExitCode Properties(PluginContext context)
+        public override bool Remove()
         {
-            accountManager.EditAccountForm(name, context);
-            return ExecExitCode.OK;
+            return accountManager.Remove(findData.FileName);
         }
 
-        public override IconExtractResult ExctractCustomIcon(IconExtractFlags ExtractFlags, ref Icon icon)
+        public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
         {
-            icon = PluginResources.keys;
-            return IconExtractResult.ExtractedDestroy;
-        }
-
-        public IFile Current
-        {
-            get { return null; }
-        }
-
-        object IEnumerator.Current
-        {
-            get { return Current; }
-        }
-
-        public bool MoveNext()
-        {
-            return false;
-        }
-
-        public void Reset()
-        {
-
-        }
-
-        public void Dispose()
-        {
-
+            if (extractIconFlag == CustomIconFlag.Small)
+            {
+                icon = this.icon;
+                return CustomIconResult.Extracted;
+            }
+            return CustomIconResult.UseDefault;
         }
     }
 }

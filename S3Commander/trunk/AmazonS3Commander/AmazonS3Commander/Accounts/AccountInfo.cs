@@ -32,7 +32,8 @@ namespace AmazonS3Commander.Accounts
 			return new StringBuilder()
 				.AppendLine(AccessKey)
 				.AppendLine(SecretKey)
-				.ToString();
+				.ToString()
+                .Trim();
 		}
 
 		public static AccountInfo Parse(string[] info)

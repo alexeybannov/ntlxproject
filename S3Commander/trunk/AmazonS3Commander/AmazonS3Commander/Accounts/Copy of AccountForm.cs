@@ -5,7 +5,7 @@ using AmazonS3Commander.Properties;
 
 namespace AmazonS3Commander.Accounts
 {
-	partial class AccountForm : Form
+	partial class AccountForm2 : Form
 	{
 		public string AccountName
 		{
@@ -20,16 +20,15 @@ namespace AmazonS3Commander.Accounts
 		}
 
 
-		public AccountForm(string name)
+		public AccountForm2(string name)
 		{
 			InitializeComponent();
 
-            Icon = Resources.AccountIcon;
 			textBox1.Text = name ?? string.Empty;
 			Text = Resources.NewAccount;
 		}
 
-		public AccountForm(string name, AccountInfo info)
+		public AccountForm2(string name, AccountInfo info)
 			: this(name)
 		{
 			if (info == null) throw new ArgumentNullException("info");

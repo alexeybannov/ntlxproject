@@ -1,15 +1,21 @@
 ﻿using System.Drawing;
+using System.Collections.Generic;
 
 namespace TotalCommander.Plugin.Wfx.FileSystem
 {
-    class File : IFile
+    public class FileBase : IFile
     {
-        public readonly static IFile Empty = new File();
+        public readonly static IFile Empty = new FileBase();
 
 
         public virtual FindData GetFileInfo()
         {
             return FindData.NotOpen;
+        }
+
+        public virtual IEnumerator<IFile> GetFiles()
+        {
+            return null;
         }
 
         public virtual ExecuteResult Open(TotalCommanderWindow window, ref string link)

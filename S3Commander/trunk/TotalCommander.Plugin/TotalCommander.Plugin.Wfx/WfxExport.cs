@@ -171,9 +171,9 @@ namespace TotalCommander.Plugin.Wfx
         public static int FsExtractCustomIcon(
             IntPtr remoteName,
             int extractFlags,
-            IntPtr theIcon)
+            ref IntPtr theIcon)
         {
-            return WfxDispatcher.FsExtractCustomIcon(remoteName, extractFlags, theIcon);
+            return WfxDispatcher.FsExtractCustomIcon(remoteName, extractFlags, ref theIcon);
         }
 
         [DllExport]
@@ -181,9 +181,9 @@ namespace TotalCommander.Plugin.Wfx
             IntPtr remoteName,
             int width,
             int height,
-            IntPtr returnedBitmap)
+            ref IntPtr returnedBitmap)
         {
-            return WfxDispatcher.FsGetPreviewBitmap(remoteName, width, height, returnedBitmap);
+            return WfxDispatcher.FsGetPreviewBitmap(remoteName, width, height, ref returnedBitmap);
         }
 
         [DllExport]
