@@ -8,12 +8,12 @@ namespace AmazonS3Commander.Configuration
 {
     class ConfigurationFile : FileBase
     {
-        private Icon icon = Resources.SettingsIcon;
+        private readonly Icon icon = Resources.SettingsIcon;
 
 
-        public override FindData GetFileInfo()
+        public ConfigurationFile()
         {
-            return new FindData(Resources.Settings);
+            Info = new FindData(Resources.Settings);
         }
 
         public override ExecuteResult Open(TotalCommanderWindow window, ref string link)

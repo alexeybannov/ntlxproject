@@ -4,14 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using AmazonS3Commander.Properties;
-using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander.Accounts
 {
     class AccountManager
     {
-        private string path;
+        private readonly string path;
+
+        private readonly Encoding encoding = Encoding.Unicode;
 
         private const string EXT = ".s3a";
 
@@ -37,7 +38,7 @@ namespace AmazonS3Commander.Accounts
         {
             var path = GetPath(name);
             return File.Exists(path) ?
-                AccountInfo.Parse(File.ReadAllLines(path, Encoding.Unicode)) :
+                AccountInfo.Parse(File.ReadAllLines(path, encoding)) :
                 null;
         }
 
@@ -64,7 +65,7 @@ namespace AmazonS3Commander.Accounts
 
         public void Save(string name, AccountInfo info)
         {
-            File.WriteAllLines(GetPath(name), new[] { info.ToString() }, Encoding.Unicode);
+            File.WriteAllLines(GetPath(name), new[] { info.ToString() }, encoding);
         }
 
         private string GetPath(string name)

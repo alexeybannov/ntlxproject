@@ -9,11 +9,11 @@ namespace AmazonS3Commander.Accounts
 {
     class NewAccount : FileBase
     {
-        private AccountManager accountManager;
+        private readonly AccountManager accountManager;
 
-        private Request request;
+        private readonly Request request;
 
-        private Icon icon;
+        private readonly Icon icon;
 
 
         public NewAccount(AccountManager accountManager, Request request)
@@ -21,13 +21,9 @@ namespace AmazonS3Commander.Accounts
             this.accountManager = accountManager;
             this.request = request;
             this.icon = Resources.NewAccountIcon;
+            this.Info = new FindData(Resources.NewAccount);
         }
 
-
-        public override FindData GetFileInfo()
-        {
-            return new FindData(Resources.NewAccount);
-        }
 
         public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
         {

@@ -5,7 +5,10 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 {
     public interface IFile
     {
-        FindData GetFileInfo();
+        FindData Info
+        {
+            get;
+        }
 
         IEnumerator<IFile> GetFiles();
 

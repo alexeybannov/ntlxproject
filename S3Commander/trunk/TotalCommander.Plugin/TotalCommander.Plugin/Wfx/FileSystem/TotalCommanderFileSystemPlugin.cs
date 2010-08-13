@@ -90,7 +90,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public FindData FindNext(IEnumerator enumerator)
         {
             if (enumerator == null) return FindData.NotOpen;
-            return enumerator.MoveNext() ? ((IFile)enumerator.Current).GetFileInfo() : FindData.NoMoreFiles;
+            return enumerator.MoveNext() ? ((IFile)enumerator.Current).Info : FindData.NoMoreFiles;
         }
 
         public void FindClose(IEnumerator enumerator)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using AmazonS3Commander.Properties;
@@ -7,12 +8,14 @@ namespace AmazonS3Commander.Accounts
 {
 	partial class AccountForm : Form
 	{
+        [Browsable(false)]
 		public string AccountName
 		{
             [DebuggerStepThrough]
 			get { return textBox1.Text; }
 		}
 
+        [Browsable(false)]
 		public AccountInfo AccountInfo
 		{
             [DebuggerStepThrough]

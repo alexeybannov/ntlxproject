@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AmazonS3Commander.Accounts;
+using AmazonS3Commander.Configuration;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
-using AmazonS3Commander.Configuration;
 
 namespace AmazonS3Commander
 {
@@ -35,8 +35,9 @@ namespace AmazonS3Commander
 
             var depth = path.Split('\\').Length - 1;
             if (depth == 0) return this;
+            
             var name = path.Substring(path.IndexOf('\\') + 1);
-            if (depth == 1) return GetFirstLevel().SingleOrDefault(a => a.GetFileInfo().FileName == name);
+            if (depth == 1) return GetFirstLevel().SingleOrDefault(a => a.Info.FileName == name);
 
             return null;
         }

@@ -7,13 +7,13 @@ namespace AmazonS3Commander.Accounts
 		public string AccessKey
 		{
 			get;
-			set;
+			private set;
 		}
 
 		public string SecretKey
 		{
 			get;
-			set;
+            private set;
 		}
 
 		public AccountInfo()
