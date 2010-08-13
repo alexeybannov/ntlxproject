@@ -71,17 +71,20 @@
             // textBox1
             // 
             resources.ApplyResources(this.textBox1, "textBox1");
+            this.textBox1.HideSelection = false;
             this.textBox1.Name = "textBox1";
             this.textBox1.TextChanged += new System.EventHandler(this.TextBox1TextChanged);
             // 
             // textBox2
             // 
             resources.ApplyResources(this.textBox2, "textBox2");
+            this.textBox2.HideSelection = false;
             this.textBox2.Name = "textBox2";
             // 
             // textBox3
             // 
             resources.ApplyResources(this.textBox3, "textBox3");
+            this.textBox3.HideSelection = false;
             this.textBox3.Name = "textBox3";
             this.textBox3.UseSystemPasswordChar = true;
             // 

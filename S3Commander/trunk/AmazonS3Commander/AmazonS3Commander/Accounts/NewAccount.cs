@@ -34,9 +34,8 @@ namespace AmazonS3Commander.Accounts
             if (CreateFolder(string.Empty))
             {
                 window.Refresh();
-                return ExecuteResult.OK;
             }
-            return ExecuteResult.Error;
+            return ExecuteResult.OK;
         }
 
         public override bool CreateFolder(string name)

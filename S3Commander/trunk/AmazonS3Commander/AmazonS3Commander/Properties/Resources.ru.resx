@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EditAccount" xml:space="preserve">
+    <value>Редактировать учетную запись</value>
+  </data>
   <data name="NewAccount" xml:space="preserve">
-    <value>Новый аккаунт</value>
+    <value>Новая учетная запись</value>
   </data>
   <data name="ReplaceAccount" xml:space="preserve">
-    <value>Аккаунт с именем {0} уже существует. Перезаписать его?</value>
+    <value>Учетная запись {0} уже существует. Перезаписать её?</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Настройки</value>
   </data>
 </root>

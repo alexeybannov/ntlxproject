@@ -25,8 +25,10 @@ namespace AmazonS3Commander.Accounts
 			InitializeComponent();
 
             Icon = Resources.AccountIcon;
-			textBox1.Text = name ?? string.Empty;
 			Text = Resources.NewAccount;
+            MinimumSize = Size;
+            textBox1.Text = name ?? string.Empty;
+            textBox1.SelectionStart = textBox1.TextLength;
 		}
 
 		public AccountForm(string name, AccountInfo info)
@@ -48,7 +50,7 @@ namespace AmazonS3Commander.Accounts
 		private void AccountForm_Shown(object sender, EventArgs e)
 		{
 			if (0 < textBox1.TextLength || 0 < textBox3.TextLength) textBox2.Focus();
-			if (0 < textBox2.TextLength) textBox3.Focus();
+			else if (0 < textBox2.TextLength) textBox3.Focus();
 		}
 	}
 }

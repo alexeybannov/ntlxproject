@@ -3,6 +3,7 @@ using System.Linq;
 using AmazonS3Commander.Accounts;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
+using AmazonS3Commander.Configuration;
 
 namespace AmazonS3Commander
 {
@@ -14,12 +15,15 @@ namespace AmazonS3Commander
 
         private IFile newAccount;
 
+        private IFile config;
+
 
         public void Initialize(FileSystemContext context)
         {
             this.context = context;
             accountManager = new AccountManager();
             newAccount = new NewAccount(accountManager, context.Request);
+            config = new ConfigurationFile();
             //Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
         }
 
@@ -64,7 +68,7 @@ namespace AmazonS3Commander
         {
             return accountManager
                 .GetAccounts()
-                .Union(new [] { newAccount });
+                .Union(new[] { newAccount, config });
         }
     }
 }
