@@ -18,7 +18,8 @@ namespace AmazonS3Commander.Accounts
 
         private readonly FileSystemContext context;
 
-        private readonly Icon icon;
+        private readonly Icon icon16x16;
+        private readonly Icon icon32x32;
 
         private readonly S3Service s3;
 
@@ -31,7 +32,8 @@ namespace AmazonS3Commander.Accounts
         {
             this.context = context;
             this.accountManager = accountManager;
-            this.icon = Resources.AccountIcon;
+            this.icon16x16 = Resources.AccountIcon;
+            this.icon32x32 = Resources.AccountIcon32x32;
 
             var name = Path.GetFileNameWithoutExtension(Path.GetFileName(file));
             Info = new FindData(name, FileAttributes.Directory)
@@ -79,7 +81,12 @@ namespace AmazonS3Commander.Accounts
         {
             if (extractIconFlag == CustomIconFlag.Small)
             {
-                icon = this.icon;
+                icon = icon16x16;
+                return CustomIconResult.Extracted;
+            }
+            if (extractIconFlag == CustomIconFlag.Large)
+            {
+                icon = icon32x32;
                 return CustomIconResult.Extracted;
             }
             return CustomIconResult.UseDefault;

@@ -189,9 +189,8 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation)
         {
-            var file = ResolvePath(remoteName);
-            if (origin == StatusOrigin.Start) file.OperationBegin(operation);
-            if (origin == StatusOrigin.End) file.OperationEnd(operation);
+            if (origin == StatusOrigin.Start) ResolvePath(remoteName).OperationBegin(operation);
+            if (origin == StatusOrigin.End) ResolvePath(remoteName).OperationEnd(operation);
         }
 
         public bool Disconnect(string disconnectRoot)

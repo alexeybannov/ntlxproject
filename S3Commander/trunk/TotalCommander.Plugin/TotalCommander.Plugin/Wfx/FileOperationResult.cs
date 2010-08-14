@@ -53,8 +53,8 @@ namespace TotalCommander.Plugin.Wfx
         ExistsResumeAllowed,
 
         /// <summary>
-        /// Default value equal <see cref="FileOperationResult.NotSupported"/>
+        /// Default value equal <see cref="FileOperationResult.OK"/>
         /// </summary>
-        Default = NotSupported
+        Default = OK
     }
 }

@@ -13,14 +13,13 @@ namespace AmazonS3Commander.Accounts
 
         private readonly Request request;
 
-        private readonly Icon icon;
+        private readonly Icon icon = Resources.NewAccountIcon;
 
 
         public NewAccount(AccountManager accountManager, Request request)
         {
             this.accountManager = accountManager;
             this.request = request;
-            this.icon = Resources.NewAccountIcon;
             this.Info = new FindData(Resources.NewAccount);
         }
 
@@ -54,7 +53,7 @@ namespace AmazonS3Commander.Accounts
 
         public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
         {
-            if (extractIconFlag == CustomIconFlag.Small)
+            if ((extractIconFlag & CustomIconFlag.Background) != CustomIconFlag.Background)
             {
                 icon = this.icon;
                 return CustomIconResult.Extracted;

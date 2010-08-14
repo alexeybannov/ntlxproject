@@ -34,9 +34,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBox1 = new AmazonS3Commander.Controls.TextBoxEx();
+            this.textBox2 = new AmazonS3Commander.Controls.TextBoxEx();
+            this.textBox3 = new AmazonS3Commander.Controls.TextBoxEx();
             this.SuspendLayout();
             // 
             // buttonOK
@@ -74,12 +74,14 @@
             this.textBox1.HideSelection = false;
             this.textBox1.Name = "textBox1";
             this.textBox1.TextChanged += new System.EventHandler(this.TextBox1TextChanged);
+            this.textBox1.Pasted += new System.EventHandler(this.textBox_Pasted);
             // 
             // textBox2
             // 
             resources.ApplyResources(this.textBox2, "textBox2");
             this.textBox2.HideSelection = false;
             this.textBox2.Name = "textBox2";
+            this.textBox2.Pasted += new System.EventHandler(this.textBox_Pasted);
             // 
             // textBox3
             // 
@@ -87,6 +89,7 @@
             this.textBox3.HideSelection = false;
             this.textBox3.Name = "textBox3";
             this.textBox3.UseSystemPasswordChar = true;
+            this.textBox3.Pasted += new System.EventHandler(this.textBox_Pasted);
             // 
             // AccountForm
             // 
@@ -120,8 +123,8 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+		private AmazonS3Commander.Controls.TextBoxEx textBox1;
+        private AmazonS3Commander.Controls.TextBoxEx textBox2;
+        private AmazonS3Commander.Controls.TextBoxEx textBox3;
 	}
 }

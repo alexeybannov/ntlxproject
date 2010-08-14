@@ -8,7 +8,8 @@ namespace AmazonS3Commander.Configuration
 {
     class ConfigurationFile : FileBase
     {
-        private readonly Icon icon = Resources.SettingsIcon;
+        private readonly Icon icon16x16 = Resources.SettingsIcon;
+        private readonly Icon icon32x32 = Resources.SettingsIcon32x32;
 
 
         public ConfigurationFile()
@@ -25,7 +26,12 @@ namespace AmazonS3Commander.Configuration
         {
             if (extractIconFlag == CustomIconFlag.Small)
             {
-                icon = this.icon;
+                icon = icon16x16;
+                return CustomIconResult.Extracted;
+            }
+            if (extractIconFlag == CustomIconFlag.Large)
+            {
+                icon = icon32x32;
                 return CustomIconResult.Extracted;
             }
             return CustomIconResult.UseDefault;

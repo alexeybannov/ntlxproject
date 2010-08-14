@@ -10,6 +10,11 @@ namespace TotalCommander.Plugin.Wfx
     public enum CustomIconFlag
 	{
         /// <summary>
+        /// Requests the large 48x48 icon.
+        /// </summary>
+        Large = 0,
+
+        /// <summary>
         /// Requests the small 16x16 icon.
         /// </summary>
         Small = 1,
