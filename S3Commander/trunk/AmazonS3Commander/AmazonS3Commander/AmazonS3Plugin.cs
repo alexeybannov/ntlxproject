@@ -12,9 +12,9 @@ namespace AmazonS3Commander
             get { return "Amazon S3 Commander"; }
         }
 
-        protected override IFileSystem CreateFileSystem()
+        protected override IFileSystem CreateFileSystem(FileSystemContext context)
         {
-            return new AmazonS3FileSystem();
+            return new AmazonS3FileSystem(context);
         }
         
         public override BackgroundFlags BackgroundSupport

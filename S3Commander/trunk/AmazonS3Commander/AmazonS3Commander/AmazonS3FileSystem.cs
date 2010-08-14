@@ -9,18 +9,18 @@ namespace AmazonS3Commander
 {
     class AmazonS3FileSystem : FileBase, IFileSystem
     {
-        private FileSystemContext context;
+        private readonly FileSystemContext context;
 
-        private AccountManager accountManager;
+        private readonly AccountManager accountManager;
 
-        private IFile newAccount;
+        private readonly IFile newAccount;
 
-        private IFile config;
+        private readonly IFile config;
 
         private IEnumerable<IFile> firstLevel;
 
 
-        public void Initialize(FileSystemContext context)
+        public AmazonS3FileSystem(FileSystemContext context)
         {
             this.context = context;
             accountManager = new AccountManager(context);
@@ -38,16 +38,17 @@ namespace AmazonS3Commander
             if (depth == 0) return this;
 
             var name = path.Substring(path.IndexOf('\\') + 1);
-            if (depth == 1) return GetFirstLevel().SingleOrDefault(a => a.Info.FileName == name);
+            //if (depth == 1) return GetFirstLevel().SingleOrDefault(a => a. == name);
 
             return null;
         }
 
 
-        public override IEnumerator<IFile> GetFiles()
+        public override IEnumerator<FindData> GetFiles()
         {
-            firstLevel = null;
-            return GetFirstLevel().GetEnumerator();
+            //firstLevel = null;
+            //return GetFirstLevel().GetEnumerator();
+            return null;
         }
 
         public override bool CreateFolder(string name)

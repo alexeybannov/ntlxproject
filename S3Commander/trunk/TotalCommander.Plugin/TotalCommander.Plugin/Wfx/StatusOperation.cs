@@ -12,6 +12,11 @@ namespace TotalCommander.Plugin.Wfx
     public enum StatusOperation
     {
         /// <summary>
+        /// No operation.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
         /// Retrieve a directory listing.
         /// </summary>
         List = 1,

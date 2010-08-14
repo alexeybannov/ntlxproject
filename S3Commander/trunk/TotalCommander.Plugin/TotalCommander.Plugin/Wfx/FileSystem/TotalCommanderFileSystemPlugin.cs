@@ -8,23 +8,16 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 {
     public abstract class TotalCommanderFileSystemPlugin : ITotalCommanderWfxPlugin
     {
-        private IFileSystem fileSystem;
-
-        private bool fileSystemInitialized;
-
         private FileSystemContext context;
+
+        private IFileSystem fileSystem;
 
         private IFileSystem FileSystem
         {
             [DebuggerStepThrough]
             get
             {
-                if (!fileSystemInitialized)
-                {
-                    fileSystemInitialized = true;
-                    fileSystem = CreateFileSystem();
-                    fileSystem.Initialize(context);
-                }
+                if (fileSystem == null) fileSystem = CreateFileSystem(context);
                 return fileSystem;
             }
         }
@@ -49,8 +42,6 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public void Init(int pluginNumber, Progress progress, Log log, Request request)
         {
-            fileSystemInitialized = false;
-
             context = new FileSystemContext()
             {
                 PluginName = PluginName,
@@ -74,7 +65,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
             context.Password = password;
         }
 
-        protected abstract IFileSystem CreateFileSystem();
+        protected abstract IFileSystem CreateFileSystem(FileSystemContext context);
 
 
         public FindData FindFirst(string path, out IEnumerator enumerator)
@@ -86,7 +77,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public FindData FindNext(IEnumerator enumerator)
         {
             if (enumerator == null) return FindData.NotOpen;
-            return enumerator.MoveNext() ? ((IFile)enumerator.Current).Info : FindData.NoMoreFiles;
+            return enumerator.MoveNext() ? (FindData)enumerator.Current : FindData.NoMoreFiles;
         }
 
         public void FindClose(IEnumerator enumerator)
@@ -189,8 +180,8 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation)
         {
-            if (origin == StatusOrigin.Start) ResolvePath(remoteName).OperationBegin(operation);
-            if (origin == StatusOrigin.End) ResolvePath(remoteName).OperationEnd(operation);
+            if (origin == StatusOrigin.Start) OperationContext.OperationBegin(remoteName, operation);
+            if (origin == StatusOrigin.End) OperationContext.OperationEnd();
         }
 
         public bool Disconnect(string disconnectRoot)

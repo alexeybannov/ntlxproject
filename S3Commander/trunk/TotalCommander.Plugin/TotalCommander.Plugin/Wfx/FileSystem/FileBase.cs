@@ -19,7 +19,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
             Info = FindData.NotOpen;
         }
 
-        public virtual IEnumerator<IFile> GetFiles()
+        public virtual IEnumerator<FindData> GetFiles()
         {
             return null;
         }

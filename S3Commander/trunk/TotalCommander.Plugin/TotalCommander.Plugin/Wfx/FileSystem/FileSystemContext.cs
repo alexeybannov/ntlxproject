@@ -1,10 +1,15 @@
 ﻿using System;
-using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin.Wfx.FileSystem
 {
-    public class FileSystemContext
+    public sealed class FileSystemContext
     {
+        internal FileSystemContext()
+        {
+
+        }
+
+
         public string PluginName
         {
             get;
@@ -53,13 +58,13 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
             internal set;
         }
 
-        public virtual bool TemporaryPanelPlugin
+        public bool TemporaryPanelPlugin
         {
             get;
             internal set;
         }
 
-        public virtual BackgroundFlags BackgroundSupport
+        public BackgroundFlags BackgroundSupport
         {
             get;
             internal set;

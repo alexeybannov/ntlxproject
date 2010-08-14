@@ -46,7 +46,7 @@ namespace AmazonS3Commander.Accounts
         }
 
 
-        public override IEnumerator<IFile> GetFiles()
+        public override IEnumerator<FindData> GetFiles()
         {
             if (!open) return null;
 
@@ -55,7 +55,7 @@ namespace AmazonS3Commander.Accounts
 
             return s3
                 .GetAllBuckets()
-                .Select(b => (IFile)new BucketFile(b))
+                .Select(b => ToFindData(b))
                 .GetEnumerator();
         }
 
@@ -100,6 +100,14 @@ namespace AmazonS3Commander.Accounts
         public override void OperationEnd(StatusOperation operation)
         {
             open = operation != StatusOperation.List;
+        }
+
+        private FindData ToFindData(Bucket bucket)
+        {
+            return new FindData(bucket.Name, FileAttributes.Directory)
+            {
+                LastWriteTime = bucket.CreationDate
+            };
         }
     }
 }
