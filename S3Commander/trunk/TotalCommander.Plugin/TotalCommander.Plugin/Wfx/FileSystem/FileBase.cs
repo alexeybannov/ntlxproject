@@ -54,16 +54,5 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         {
             return PreviewBitmapResult.None;
         }
-
-
-        public virtual void OperationBegin(StatusOperation operation)
-        {
-
-        }
-
-        public virtual void OperationEnd(StatusOperation operation)
-        {
-
-        }
     }
 }

@@ -18,22 +18,18 @@ namespace AmazonS3Commander.Accounts
 
         private readonly FileSystemContext context;
 
-        private readonly Icon icon16x16;
-        private readonly Icon icon32x32;
+        private readonly Icon icon;
 
         private readonly S3Service s3;
 
         private AccountInfo accountInfo;
-
-        private bool open = false;
 
 
         public Account(AccountManager accountManager, string file, FileSystemContext context)
         {
             this.context = context;
             this.accountManager = accountManager;
-            this.icon16x16 = Resources.AccountIcon;
-            this.icon32x32 = Resources.AccountIcon32x32;
+            this.icon = Resources.AccountIcon;
 
             var name = Path.GetFileNameWithoutExtension(Path.GetFileName(file));
             Info = new FindData(name, FileAttributes.Directory)
@@ -48,7 +44,7 @@ namespace AmazonS3Commander.Accounts
 
         public override IEnumerator<FindData> GetFiles()
         {
-            if (!open) return null;
+            if (OperationContext.Operation != StatusOperation.List) return null;
 
             s3.AccessKeyID = accountInfo.AccessKey;
             s3.SecretAccessKey = accountInfo.SecretKey;
@@ -79,27 +75,12 @@ namespace AmazonS3Commander.Accounts
 
         public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
         {
-            if (extractIconFlag == CustomIconFlag.Small)
+            if ((extractIconFlag &= CustomIconFlag.Background) != CustomIconFlag.Background)
             {
-                icon = icon16x16;
-                return CustomIconResult.Extracted;
-            }
-            if (extractIconFlag == CustomIconFlag.Large)
-            {
-                icon = icon32x32;
+                icon = this.icon;
                 return CustomIconResult.Extracted;
             }
             return CustomIconResult.UseDefault;
-        }
-
-        public override void OperationBegin(StatusOperation operation)
-        {
-            open = operation == StatusOperation.List;
-        }
-
-        public override void OperationEnd(StatusOperation operation)
-        {
-            open = operation != StatusOperation.List;
         }
 
         private FindData ToFindData(Bucket bucket)

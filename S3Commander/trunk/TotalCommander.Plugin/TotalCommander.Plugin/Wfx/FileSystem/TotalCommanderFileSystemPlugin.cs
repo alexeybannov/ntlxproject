@@ -180,8 +180,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public void StatusInfo(string remoteName, StatusOrigin origin, StatusOperation operation)
         {
-            if (origin == StatusOrigin.Start) OperationContext.OperationBegin(remoteName, operation);
-            if (origin == StatusOrigin.End) OperationContext.OperationEnd();
+            if (FileSystem != null) FileSystem.OperationInfo(remoteName, origin, operation);
         }
 
         public bool Disconnect(string disconnectRoot)

@@ -5,6 +5,8 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
     {
         IFile ResolvePath(string path);
 
+        void OperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation);
+
         bool Disconnect(string root);
     }
 }

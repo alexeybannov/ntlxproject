@@ -57,6 +57,12 @@ namespace AmazonS3Commander
         }
 
 
+        public void OperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
+        {
+            if (origin == StatusOrigin.Start) OperationContext.OperationBegin(remoteDir, operation);
+            if (origin == StatusOrigin.End) OperationContext.OperationEnd();
+        }
+
         public bool Disconnect(string root)
         {
             return false;

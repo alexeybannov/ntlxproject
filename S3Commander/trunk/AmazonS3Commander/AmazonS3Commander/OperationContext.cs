@@ -1,8 +1,9 @@
 ﻿using System;
+using TotalCommander.Plugin.Wfx;
 
-namespace TotalCommander.Plugin.Wfx.FileSystem
+namespace AmazonS3Commander
 {
-    public sealed class OperationContext
+    static class OperationContext
     {
         [ThreadStatic]
         private static string _remoteDir;

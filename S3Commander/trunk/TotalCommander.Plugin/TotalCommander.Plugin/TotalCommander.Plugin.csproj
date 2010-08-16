@@ -48,7 +48,6 @@
     <Compile Include="Utils\DateTimeUtil.cs" />
     <Compile Include="Wfx\BackgroundFlags.cs" />
     <Compile Include="Wfx\FileSystem\FileBase.cs" />
-    <Compile Include="Wfx\FileSystem\OperationContext.cs" />
     <Compile Include="Wfx\FileSystem\TotalCommanderFileSystemPlugin.cs" />
     <Compile Include="Wfx\FileSystem\FileSystemContext.cs" />
     <Compile Include="Wfx\FileSystem\IFile.cs" />
