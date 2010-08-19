@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AmazonS3Commander.Accounts;
 using AmazonS3Commander.Configuration;
+using AmazonS3Commander.Properties;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
 
@@ -16,8 +18,6 @@ namespace AmazonS3Commander
         private readonly IFile newAccount;
 
         private readonly IFile config;
-
-        private IEnumerable<IFile> firstLevel;
 
 
         public AmazonS3FileSystem(FileSystemContext context)
@@ -34,11 +34,31 @@ namespace AmazonS3Commander
             if (path == null) return null;
             path = path.TrimEnd('\\');
 
-            var depth = path.Split('\\').Length - 1;
+            var parts = path.Split('\\');
+            var depth = parts.Length - 1;
+
+            //root
             if (depth == 0) return this;
 
-            var name = path.Substring(path.IndexOf('\\') + 1);
-            //if (depth == 1) return GetFirstLevel().SingleOrDefault(a => a. == name);
+            //accounts
+            if (depth == 1)
+            {
+                if (EqualStrings(parts[depth], Resources.Settings)) return config;
+                if (EqualStrings(parts[depth], Resources.NewAccount)) return newAccount;
+                return accountManager.GetAccount(parts[depth]);
+            }
+
+            //buckets
+            if (depth == 2)
+            {
+
+            }
+
+            //amazon s3 folders
+            if (depth == 3)
+            {
+
+            }
 
             return null;
         }
@@ -46,9 +66,10 @@ namespace AmazonS3Commander
 
         public override IEnumerator<FindData> GetFiles()
         {
-            //firstLevel = null;
-            //return GetFirstLevel().GetEnumerator();
-            return null;
+            return accountManager
+                .GetAccounts()
+                .Union(new[] { new FindData(Resources.NewAccount), new FindData(Resources.Settings) })
+                .GetEnumerator();
         }
 
         public override bool CreateFolder(string name)
@@ -59,8 +80,7 @@ namespace AmazonS3Commander
 
         public void OperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
         {
-            if (origin == StatusOrigin.Start) OperationContext.OperationBegin(remoteDir, operation);
-            if (origin == StatusOrigin.End) OperationContext.OperationEnd();
+            OperationContext.ProcessOperationInfo(remoteDir, origin, operation);
         }
 
         public bool Disconnect(string root)
@@ -69,15 +89,9 @@ namespace AmazonS3Commander
         }
 
 
-        private IEnumerable<IFile> GetFirstLevel()
+        private bool EqualStrings(string str1, string str2)
         {
-            if (firstLevel == null)
-            {
-                firstLevel = accountManager
-                .GetAccounts()
-                .Union(new[] { newAccount, config });
-            }
-            return firstLevel;
+            return string.Compare(str1, str2, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
     }
 }

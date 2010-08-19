@@ -18,8 +18,6 @@ namespace AmazonS3Commander.Accounts
 
         private readonly FileSystemContext context;
 
-        private readonly Icon icon;
-
         private readonly S3Service s3;
 
         private AccountInfo accountInfo;
@@ -29,15 +27,7 @@ namespace AmazonS3Commander.Accounts
         {
             this.context = context;
             this.accountManager = accountManager;
-            this.icon = Resources.AccountIcon;
-
-            var name = Path.GetFileNameWithoutExtension(Path.GetFileName(file));
-            Info = new FindData(name, FileAttributes.Directory)
-            {
-                LastWriteTime = File.GetLastWriteTime(file)
-            };
-
-            this.accountInfo = accountManager.GetAccountInfo(name);
+            //this.accountInfo = accountManager.GetAccountInfo(name);
             this.s3 = new S3Service();
         }
 
@@ -75,12 +65,8 @@ namespace AmazonS3Commander.Accounts
 
         public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
         {
-            if ((extractIconFlag &= CustomIconFlag.Background) != CustomIconFlag.Background)
-            {
-                icon = this.icon;
-                return CustomIconResult.Extracted;
-            }
-            return CustomIconResult.UseDefault;
+            icon = Icons.Account;
+            return CustomIconResult.Extracted;
         }
 
         private FindData ToFindData(Bucket bucket)

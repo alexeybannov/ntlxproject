@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using AmazonS3Commander.Properties;
 using TotalCommander.Plugin.Wfx.FileSystem;
+using TotalCommander.Plugin.Wfx;
 
 namespace AmazonS3Commander.Accounts
 {
@@ -30,12 +31,27 @@ namespace AmazonS3Commander.Accounts
         }
 
 
-        public IEnumerable<IFile> GetAccounts()
+        public IEnumerable<FindData> GetAccounts()
         {
             return Directory
                 .GetFiles(path, "*" + EXT)
-                .Select(p => (IFile)new Account(this, p, context))
-                .ToList();
+                .Select(file =>
+                {
+                    var name = Path.GetFileNameWithoutExtension(Path.GetFileName(file));
+                    return new FindData(name, FileAttributes.Directory)
+                    {
+                        LastWriteTime = File.GetLastWriteTime(file)
+                    };
+
+                });
+        }
+
+        public IFile GetAccount(string name)
+        {
+            var path = GetPath(name);
+            return File.Exists(path) ?
+                new Account(this, path, context) :
+                null;
         }
 
         public AccountInfo GetAccountInfo(string name)

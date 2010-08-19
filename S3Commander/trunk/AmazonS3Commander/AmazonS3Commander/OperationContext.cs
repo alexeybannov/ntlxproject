@@ -23,16 +23,10 @@ namespace AmazonS3Commander
         }
 
 
-        internal static void OperationBegin(string remoteDir, StatusOperation operation)
+        internal static void ProcessOperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
         {
-            _remoteDir = remoteDir;
-            _operation = operation;
-        }
-
-        internal static void OperationEnd()
-        {
-            _remoteDir = null;
-            _operation = StatusOperation.None;
+            _remoteDir = origin == StatusOrigin.Start ? remoteDir : null;
+            _operation = origin == StatusOrigin.Start ? operation : StatusOperation.None;
         }
     }
 }
