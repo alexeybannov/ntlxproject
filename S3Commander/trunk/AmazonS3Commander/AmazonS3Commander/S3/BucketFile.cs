@@ -17,10 +17,6 @@ namespace AmazonS3Commander.S3
 
         public BucketFile(Bucket bucket)
         {
-            Info = new FindData(bucket.Name, FileAttributes.Directory)
-            {
-                LastWriteTime = bucket.CreationDate
-            };
         }
 
         public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)

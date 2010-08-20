@@ -47,20 +47,21 @@ namespace AmazonS3Commander.Accounts
 
         public override ExecuteResult Properties(TotalCommanderWindow window, ref string link)
         {
-            using (var form = new AccountForm(Info.FileName, accountInfo))
+            /*using (var form = new AccountForm(Info.FileName, accountInfo))
             {
                 if (form.ShowDialog() == DialogResult.OK && accountManager.Exists(form.AccountName))
                 {
                     accountInfo = form.AccountInfo;
                     accountManager.Save(form.AccountName, accountInfo);
                 }
-            }
+            }*/
             return ExecuteResult.OK;
         }
 
         public override bool Remove()
         {
-            return accountManager.Remove(Info.FileName);
+            //return accountManager.Remove(Info.FileName);
+            return false;
         }
 
         public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)

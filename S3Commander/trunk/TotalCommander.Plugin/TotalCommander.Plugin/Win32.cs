@@ -10,7 +10,7 @@ namespace TotalCommander.Plugin
 
         public const int ERROR_NO_MORE_FILES = 18;
 
-        public static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+        public static readonly IntPtr INVALID_HANDLE = new IntPtr(-1);
 
 
         [DllImport("kernel32")]

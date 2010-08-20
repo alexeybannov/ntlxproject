@@ -8,17 +8,6 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public readonly static IFile Empty = new FileBase();
 
 
-        public FindData Info
-        {
-            get;
-            protected set;
-        }
-
-        public FileBase()
-        {
-            Info = FindData.NotOpen;
-        }
-
         public virtual IEnumerator<FindData> GetFiles()
         {
             return null;

@@ -36,6 +36,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public virtual BackgroundFlags BackgroundSupport
         {
+            [DebuggerStepThrough]
             get { return BackgroundFlags.NotSupported; }
         }
 

@@ -18,7 +18,6 @@ namespace AmazonS3Commander.Accounts
         {
             this.accountManager = accountManager;
             this.request = request;
-            this.Info = new FindData(Resources.NewAccount);
         }
 
 

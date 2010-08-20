@@ -42,7 +42,7 @@ namespace TotalCommander.Plugin.Wfx
 
         public static IntPtr FsFindFirst(string path, IntPtr pFindData)
         {
-            var handle = Win32.INVALID_HANDLE_VALUE;
+            var handle = Win32.INVALID_HANDLE;
             try
             {
                 IEnumerator enumerator = null;
