@@ -4,6 +4,7 @@ using System.Linq;
 using AmazonS3Commander.Accounts;
 using AmazonS3Commander.Configuration;
 using AmazonS3Commander.Properties;
+using AmazonS3Commander.S3;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
 
@@ -15,6 +16,8 @@ namespace AmazonS3Commander
 
         private readonly AccountManager accountManager;
 
+        private readonly S3ServiceProvider s3ServiceProvider;
+
         private readonly IFile newAccount;
 
         private readonly IFile config;
@@ -23,8 +26,9 @@ namespace AmazonS3Commander
         public AmazonS3FileSystem(FileSystemContext context)
         {
             this.context = context;
-            accountManager = new AccountManager(context);
-            newAccount = new NewAccount(accountManager, context.Request);
+            accountManager = new AccountManager();
+            s3ServiceProvider = new S3ServiceProvider(accountManager);
+            newAccount = new NewAccount(accountManager, context);
             config = new ConfigurationFile();
         }
 
@@ -40,18 +44,21 @@ namespace AmazonS3Commander
             //root
             if (depth == 0) return this;
 
+            var name = parts[depth];
+            if (name == "..") return null;
+
             //accounts
             if (depth == 1)
             {
-                if (EqualStrings(parts[depth], Resources.Settings)) return config;
-                if (EqualStrings(parts[depth], Resources.NewAccount)) return newAccount;
-                return accountManager.GetAccount(parts[depth]);
+                if (name.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase)) return config;
+                if (name.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase)) return newAccount;
+                return accountManager.Exists(name) ? new Account(name, accountManager, s3ServiceProvider, context) : null;
             }
 
             //buckets
             if (depth == 2)
             {
-
+                return new BucketFile(s3ServiceProvider.GetS3Service(parts[1]), name);
             }
 
             //amazon s3 folders
@@ -86,12 +93,6 @@ namespace AmazonS3Commander
         public bool Disconnect(string root)
         {
             return false;
-        }
-
-
-        private bool EqualStrings(string str1, string str2)
-        {
-            return string.Compare(str1, str2, StringComparison.InvariantCultureIgnoreCase) == 0;
         }
     }
 }

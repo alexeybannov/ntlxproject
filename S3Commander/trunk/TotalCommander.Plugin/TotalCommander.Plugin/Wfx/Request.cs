@@ -84,7 +84,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetPassword(ref string password)
         {
-            return GetRequest(RequestType.UserName, null, null, ref password);
+            return GetRequest(RequestType.Password, null, null, ref password);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetPassword(ref string password, string text)
         {
-            return GetRequest(RequestType.UserName, text, null, ref password);
+            return GetRequest(RequestType.Password, text, null, ref password);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetPassword(ref string password, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, caption, ref password);
+            return GetRequest(RequestType.Password, text, caption, ref password);
         }
 
         #endregion Password
@@ -131,7 +131,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetAccount(ref string account)
         {
-            return GetRequest(RequestType.UserName, null, null, ref account);
+            return GetRequest(RequestType.Account, null, null, ref account);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetAccount(ref string account, string text)
         {
-            return GetRequest(RequestType.UserName, text, null, ref account);
+            return GetRequest(RequestType.Account, text, null, ref account);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetAccount(ref string account, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, caption, ref account);
+            return GetRequest(RequestType.Account, text, caption, ref account);
         }
 
         #endregion Account
@@ -178,7 +178,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetUserNameFirewall(ref string userNameFirewall)
         {
-            return GetRequest(RequestType.UserName, null, null, ref userNameFirewall);
+            return GetRequest(RequestType.UserNameFirewall, null, null, ref userNameFirewall);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetUserNameFirewall(ref string userNameFirewall, string text)
         {
-            return GetRequest(RequestType.UserName, text, null, ref userNameFirewall);
+            return GetRequest(RequestType.UserNameFirewall, text, null, ref userNameFirewall);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetUserNameFirewall(ref string userNameFirewall, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, caption, ref userNameFirewall);
+            return GetRequest(RequestType.UserNameFirewall, text, caption, ref userNameFirewall);
         }
 
         #endregion UserNameFirewall
@@ -225,7 +225,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetPasswordFirewall(ref string passwordFirewall)
         {
-            return GetRequest(RequestType.UserName, null, null, ref passwordFirewall);
+            return GetRequest(RequestType.PasswordFirewall, null, null, ref passwordFirewall);
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetPasswordFirewall(ref string passwordFirewall, string text)
         {
-            return GetRequest(RequestType.UserName, text, null, ref passwordFirewall);
+            return GetRequest(RequestType.PasswordFirewall, text, null, ref passwordFirewall);
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetPasswordFirewall(ref string passwordFirewall, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, caption, ref passwordFirewall);
+            return GetRequest(RequestType.PasswordFirewall, text, caption, ref passwordFirewall);
         }
 
         #endregion PasswordFirewall
@@ -272,7 +272,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetTargetDir(ref string targetDir)
         {
-            return GetRequest(RequestType.UserName, null, null, ref targetDir);
+            return GetRequest(RequestType.TargetDir, null, null, ref targetDir);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetTargetDir(ref string targetDir, string text)
         {
-            return GetRequest(RequestType.UserName, text, null, ref targetDir);
+            return GetRequest(RequestType.TargetDir, text, null, ref targetDir);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetTargetDir(ref string targetDir, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, caption, ref targetDir);
+            return GetRequest(RequestType.TargetDir, text, caption, ref targetDir);
         }
 
         #endregion TargetDir
@@ -319,7 +319,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetUrl(ref string url)
         {
-            return GetRequest(RequestType.UserName, null, null, ref url);
+            return GetRequest(RequestType.URL, null, null, ref url);
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetUrl(ref string url, string text)
         {
-            return GetRequest(RequestType.UserName, text, null, ref url);
+            return GetRequest(RequestType.URL, text, null, ref url);
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
         public bool GetUrl(ref string url, string text, string caption)
         {
-            return GetRequest(RequestType.UserName, text, caption, ref url);
+            return GetRequest(RequestType.URL, text, caption, ref url);
         }
 
         #endregion Url

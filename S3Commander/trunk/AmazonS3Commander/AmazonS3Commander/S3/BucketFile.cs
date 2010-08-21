@@ -13,20 +13,21 @@ namespace AmazonS3Commander.S3
 {
     class BucketFile : FileBase
     {
-        private readonly Icon icon = Resources.BucketIcon;
+        private readonly S3Service s3Service;
 
-        public BucketFile(Bucket bucket)
+        private readonly string bucketName;
+
+
+        public BucketFile(S3Service s3Service, string bucketName)
         {
+            this.s3Service = s3Service;
+            this.bucketName = bucketName;
         }
 
         public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
         {
-            if (extractIconFlag == CustomIconFlag.Small)
-            {
-                icon = this.icon;
-                return CustomIconResult.Extracted;
-            }
-            return CustomIconResult.UseDefault;
+            icon = Icons.Bucket;
+            return CustomIconResult.Extracted;
         }
     }
 }

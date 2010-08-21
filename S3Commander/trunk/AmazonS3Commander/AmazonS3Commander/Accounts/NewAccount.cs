@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using AmazonS3Commander.Properties;
 using TotalCommander.Plugin;
@@ -11,13 +12,13 @@ namespace AmazonS3Commander.Accounts
     {
         private readonly AccountManager accountManager;
 
-        private readonly Request request;
+        private readonly FileSystemContext context;
 
 
-        public NewAccount(AccountManager accountManager, Request request)
+        public NewAccount(AccountManager accountManager, FileSystemContext context)
         {
             this.accountManager = accountManager;
-            this.request = request;
+            this.context = context;
         }
 
 
@@ -34,14 +35,19 @@ namespace AmazonS3Commander.Accounts
         {
             using (var form = new AccountForm(name))
             {
-                if (form.ShowDialog() != DialogResult.OK || string.Compare(form.AccountName, Resources.NewAccount, true) == 0) return false;
-                if (accountManager.Exists(form.AccountName))
+                if (form.ShowDialog() != DialogResult.OK)
                 {
-                    var replace = request.MessageBox(
-                        string.Format(Resources.ReplaceAccount, form.AccountName),
-                        MessageBoxButtons.YesNo
-                    );
-                    if (!replace) return false;
+                    return false;
+                }
+                if (form.AccountName.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase) ||
+                    form.AccountName.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return false;
+                }
+                if (accountManager.Exists(form.AccountName) &&
+                    context.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
+                {
+                    return false;
                 }
                 accountManager.Save(form.AccountName, form.AccountInfo);
                 return true;

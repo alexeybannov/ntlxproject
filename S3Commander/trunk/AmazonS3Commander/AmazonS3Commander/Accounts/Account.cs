@@ -3,9 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using AmazonS3Commander.Properties;
 using AmazonS3Commander.S3;
-using LitS3;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
@@ -16,66 +14,53 @@ namespace AmazonS3Commander.Accounts
     {
         private readonly AccountManager accountManager;
 
+        private readonly S3ServiceProvider s3ServiceProvider;
+
         private readonly FileSystemContext context;
 
-        private readonly S3Service s3;
-
-        private AccountInfo accountInfo;
+        private readonly string accountName;
 
 
-        public Account(AccountManager accountManager, string file, FileSystemContext context)
+        public Account(string accountName, AccountManager accountManager, S3ServiceProvider s3ServiceProvider, FileSystemContext context)
         {
             this.context = context;
             this.accountManager = accountManager;
-            //this.accountInfo = accountManager.GetAccountInfo(name);
-            this.s3 = new S3Service();
+            this.s3ServiceProvider = s3ServiceProvider;
+            this.accountName = accountName;
         }
 
 
         public override IEnumerator<FindData> GetFiles()
         {
-            if (OperationContext.Operation != StatusOperation.List) return null;
+            if (OperationContext.Operation != StatusOperation.List) return new List<FindData>().GetEnumerator();
 
-            s3.AccessKeyID = accountInfo.AccessKey;
-            s3.SecretAccessKey = accountInfo.SecretKey;
-
-            return s3
+            return s3ServiceProvider.GetS3Service(accountName)
                 .GetAllBuckets()
-                .Select(b => ToFindData(b))
+                .Select(b => new FindData(b.Name, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
                 .GetEnumerator();
         }
 
         public override ExecuteResult Properties(TotalCommanderWindow window, ref string link)
         {
-            /*using (var form = new AccountForm(Info.FileName, accountInfo))
+            using (var form = new AccountForm(accountName, accountManager.GetAccountInfo(accountName)))
             {
-                if (form.ShowDialog() == DialogResult.OK && accountManager.Exists(form.AccountName))
+                if (form.ShowDialog() == DialogResult.OK && accountManager.Exists(accountName))
                 {
-                    accountInfo = form.AccountInfo;
-                    accountManager.Save(form.AccountName, accountInfo);
+                    accountManager.Save(accountName, form.AccountInfo);
                 }
-            }*/
+            }
             return ExecuteResult.OK;
         }
 
         public override bool Remove()
         {
-            //return accountManager.Remove(Info.FileName);
-            return false;
+            return accountManager.Remove(accountName);
         }
 
         public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
         {
             icon = Icons.Account;
             return CustomIconResult.Extracted;
-        }
-
-        private FindData ToFindData(Bucket bucket)
-        {
-            return new FindData(bucket.Name, FileAttributes.Directory)
-            {
-                LastWriteTime = bucket.CreationDate
-            };
         }
     }
 }

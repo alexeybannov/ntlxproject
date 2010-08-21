@@ -10,5 +10,7 @@ namespace AmazonS3Commander
         public static readonly Icon NewAccount = Resources.NewAccountIcon;
 
         public static readonly Icon Settings = Resources.SettingsIcon;
+
+        public static readonly Icon Bucket = Resources.BucketIcon;
     }
 }

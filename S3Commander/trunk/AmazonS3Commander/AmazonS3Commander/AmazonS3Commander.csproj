@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Icons.cs" />
     <Compile Include="S3\BucketFile.cs" />
+    <Compile Include="S3\S3ServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\TotalCommander.Plugin\TotalCommander.Plugin\TotalCommander.Plugin.csproj">

@@ -23,27 +23,34 @@ namespace AmazonS3Commander.Accounts
         }
 
 
-        public AccountForm(string name)
+        public AccountForm()
         {
             InitializeComponent();
+            MinimumSize = Size;
+        }
 
+        public AccountForm(string name)
+            : this()
+        {
             Icon = Resources.NewAccountIcon;
             Text = Resources.NewAccount;
-            MinimumSize = Size;
+
             textBox1.Text = name ?? string.Empty;
             textBox1.SelectionStart = textBox1.TextLength;
         }
 
         public AccountForm(string name, AccountInfo info)
-            : this(name)
+            : this()
         {
             if (info == null) throw new ArgumentNullException("info");
 
             Icon = Resources.AccountIcon;
             Text = Resources.EditAccount;
-            textBox1.Enabled = false;
+
+            textBox1.Text = name ?? string.Empty;
             textBox2.Text = info.AccessKey ?? string.Empty;
             textBox3.Text = info.SecretKey ?? string.Empty;
+            textBox1.Enabled = false;
         }
 
         private void TextBox1TextChanged(object sender, EventArgs e)

@@ -4,15 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using AmazonS3Commander.Properties;
-using TotalCommander.Plugin.Wfx.FileSystem;
 using TotalCommander.Plugin.Wfx;
 
 namespace AmazonS3Commander.Accounts
 {
     class AccountManager
     {
-        private readonly FileSystemContext context;
-
         private readonly string path;
 
         private readonly Encoding encoding = Encoding.Unicode;
@@ -20,9 +17,8 @@ namespace AmazonS3Commander.Accounts
         private const string EXT = ".s3a";
 
 
-        public AccountManager(FileSystemContext context)
+        public AccountManager()
         {
-            this.context = context;
             path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Resources.ProductName);
             if (!Directory.Exists(path))
             {
@@ -37,29 +33,22 @@ namespace AmazonS3Commander.Accounts
                 .GetFiles(path, "*" + EXT)
                 .Select(file =>
                 {
-                    var name = Path.GetFileNameWithoutExtension(Path.GetFileName(file));
-                    return new FindData(name, FileAttributes.Directory)
+                    return new FindData(Path.GetFileNameWithoutExtension(file), FileAttributes.Directory)
                     {
                         LastWriteTime = File.GetLastWriteTime(file)
                     };
-
                 });
-        }
-
-        public IFile GetAccount(string name)
-        {
-            var path = GetPath(name);
-            return File.Exists(path) ?
-                new Account(this, path, context) :
-                null;
         }
 
         public AccountInfo GetAccountInfo(string name)
         {
             var path = GetPath(name);
-            return File.Exists(path) ?
-                AccountInfo.Parse(File.ReadAllLines(path, encoding)) :
-                null;
+            return File.Exists(path) ? AccountInfo.Parse(File.ReadAllLines(path, encoding)) : null;
+        }
+
+        public void Save(string name, AccountInfo info)
+        {
+            File.WriteAllLines(GetPath(name), new[] { info.ToString() }, encoding);
         }
 
         public bool Exists(string name)
@@ -81,11 +70,6 @@ namespace AmazonS3Commander.Accounts
                 return true;
             }
             return false;
-        }
-
-        public void Save(string name, AccountInfo info)
-        {
-            File.WriteAllLines(GetPath(name), new[] { info.ToString() }, encoding);
         }
 
         private string GetPath(string name)

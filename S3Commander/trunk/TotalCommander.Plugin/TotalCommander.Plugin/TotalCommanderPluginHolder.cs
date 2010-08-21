@@ -15,7 +15,7 @@ namespace TotalCommander.Plugin
 			if (wfxPlugin == null)
 			{
                 var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                foreach (var file in Directory.GetFiles(path))
+                foreach (var file in Directory.GetFiles(path, "*.dll"))
                 {
                     try
                     {
