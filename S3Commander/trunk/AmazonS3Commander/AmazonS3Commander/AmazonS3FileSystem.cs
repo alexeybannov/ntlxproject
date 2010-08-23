@@ -7,6 +7,7 @@ using AmazonS3Commander.Properties;
 using AmazonS3Commander.S3;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
+using System.Diagnostics;
 
 namespace AmazonS3Commander
 {
@@ -90,6 +91,7 @@ namespace AmazonS3Commander
 
         public void OperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
         {
+            Debug.WriteLine(string.Format("Operation {0} for directory '{1}' {2}", operation, remoteDir, origin.ToString().ToLower()));
             OperationContext.ProcessOperationInfo(remoteDir, origin, operation);
         }
 

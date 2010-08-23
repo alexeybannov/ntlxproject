@@ -26,7 +26,7 @@ namespace AmazonS3Commander.S3
         public override IEnumerator<FindData> GetFiles()
         {
             return s3Service
-                .ListAllObjects(bucket, path)
+                .ListObjects(bucket, path)
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
         }

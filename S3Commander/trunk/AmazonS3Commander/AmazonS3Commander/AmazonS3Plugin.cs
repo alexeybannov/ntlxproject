@@ -16,10 +16,15 @@ namespace AmazonS3Commander
         {
             return new AmazonS3FileSystem(context);
         }
-        
+
         public override BackgroundFlags BackgroundSupport
         {
             get { return BackgroundFlags.AskUser; }
+        }
+
+        public override bool TemporaryPanelPlugin
+        {
+            get { return false; }
         }
     }
 }
