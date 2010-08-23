@@ -44,27 +44,30 @@ namespace AmazonS3Commander
             //root
             if (depth == 0) return this;
 
-            var name = parts[depth];
-            if (name == "..") return null;
+            if (parts[depth] == "..") return null;
 
+            var accountName = parts[1];
+            
             //accounts
             if (depth == 1)
             {
-                if (name.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase)) return config;
-                if (name.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase)) return newAccount;
-                return accountManager.Exists(name) ? new Account(name, accountManager, s3ServiceProvider, context) : null;
+                if (accountName.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase)) return config;
+                if (accountName.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase)) return newAccount;
+                return accountManager.Exists(accountName) ? new Account(accountName, accountManager, s3ServiceProvider, context) : null;
             }
+
+            var bucketName = parts[2];
 
             //buckets
             if (depth == 2)
             {
-                return new BucketFile(s3ServiceProvider.GetS3Service(parts[1]), name);
+                return new S3Bucket(s3ServiceProvider.GetS3Service(accountName), bucketName);
             }
 
             //amazon s3 folders
-            if (depth == 3)
+            if (3 <= depth)
             {
-
+                return new S3Folder(s3ServiceProvider.GetS3Service(accountName), bucketName, string.Join("/", parts, 3, depth - 2));
             }
 
             return null;
