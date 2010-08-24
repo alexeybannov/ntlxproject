@@ -4,6 +4,7 @@ using System.Linq;
 using LitS3;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
+using System;
 
 namespace AmazonS3Commander.S3
 {
@@ -13,22 +14,80 @@ namespace AmazonS3Commander.S3
 
         private readonly string bucket;
 
-        private readonly string path;
+        private readonly string key;
+
+        private readonly FileSystemContext context;
 
 
-        public S3Folder(S3Service s3Service, string bucket, string path)
+        public override bool ResumeAllowed
+        {
+            get { return true; }
+        }
+
+
+        public S3Folder(S3Service s3Service, string bucket, string key, FileSystemContext context)
         {
             this.s3Service = s3Service;
             this.bucket = bucket;
-            this.path = !string.IsNullOrEmpty(path) && !path.EndsWith("/") ? path + "/" : string.Empty;
+            this.key = key;
+            this.context = context;
         }
 
         public override IEnumerator<FindData> GetFiles()
         {
             return s3Service
-                .ListObjects(bucket, path)
+                .ListObjects(bucket, !string.IsNullOrEmpty(key) ? key + "/" : string.Empty)
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
+        }
+
+        public override FileOperationResult Download(string localName, CopyFlags copyFlags, RemoteInfo info)
+        {
+            var localFile = new FileInfo(localName);
+
+            if ((copyFlags == CopyFlags.None || copyFlags == CopyFlags.Move) && localFile.Exists)
+            {
+                return ResumeAllowed ? FileOperationResult.ExistsResumeAllowed : FileOperationResult.Exists;
+            }
+
+            var offset = 0L;
+            if ((copyFlags &= CopyFlags.Resume) == CopyFlags.Resume)
+            {
+                offset = localFile.Length;
+            }
+            if ((copyFlags &= CopyFlags.Overwrite) == CopyFlags.Overwrite)
+            {
+                try
+                {
+                    localFile.Delete();
+                }
+                catch
+                {
+                    return FileOperationResult.WriteError;
+                }
+            }
+
+            try
+            {
+                //download
+                s3Service.GetObjectProgress += GetObjectProgress;
+                s3Service.GetObject(bucket, key, localName);
+            }
+            catch
+            {
+                return FileOperationResult.ReadError;
+            }
+            finally
+            {
+                s3Service.GetObjectProgress -= GetObjectProgress;
+            }
+
+            if ((copyFlags &= CopyFlags.Move) == CopyFlags.Move)
+            {
+                if (!Delete()) return FileOperationResult.WriteError;
+            }
+
+            return FileOperationResult.OK;
         }
 
         private FindData ToFindData(ListEntry entry)
@@ -42,6 +101,11 @@ namespace AmazonS3Commander.S3
                 };
             }
             return new FindData(entry.Name, FileAttributes.Directory);
+        }
+
+        private void GetObjectProgress(object sender, S3ProgressEventArgs e)
+        {
+            context.Progress.SetProgress(e.Key, null, e.ProgressPercentage);
         }
     }
 }

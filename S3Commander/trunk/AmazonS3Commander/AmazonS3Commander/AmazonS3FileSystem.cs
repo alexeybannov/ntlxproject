@@ -68,7 +68,11 @@ namespace AmazonS3Commander
             //amazon s3 folders
             if (3 <= depth)
             {
-                return new S3Folder(s3ServiceProvider.GetS3Service(accountName), bucketName, string.Join("/", parts, 3, depth - 2));
+                return new S3Folder(
+                    s3ServiceProvider.GetS3Service(accountName),
+                    bucketName, 
+                    string.Join("/", parts, 3, depth - 2),
+                    context);
             }
 
             return null;
