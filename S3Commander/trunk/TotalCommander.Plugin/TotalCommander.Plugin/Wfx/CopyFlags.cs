@@ -39,6 +39,11 @@ namespace TotalCommander.Plugin.Wfx
         /// <summary>
         /// A hint from the calling program: The remote file exists and has different case (upper/lowercase) than the local file.
         /// </summary>
-        ExistsDifferentCase = 16
+        ExistsDifferentCase = 16,
+
+        /// <summary>
+        /// A hint from the calling program: The remote file exists.
+        /// </summary>
+        Exists = ExistsDifferentCase | ExistsSameCase
     }
 }

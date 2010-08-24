@@ -5,6 +5,22 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 {
     public interface IFile
     {
+        bool ResumeAllowed
+        {
+            get;
+        }
+
+        bool Exists
+        {
+            get;
+        }
+
+        string LocalName
+        {
+            get;
+        }
+
+
         IEnumerator<FindData> GetFiles();
 
 
@@ -12,10 +28,22 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         ExecuteResult Properties(TotalCommanderWindow window, ref string link);
 
+        ExecuteResult ChangeMode(TotalCommanderWindow window, string mode, ref string link);
+
+        ExecuteResult Command(TotalCommanderWindow window, string command, ref string link);
+
+
+        FileOperationResult CopyTo(IFile dest, RemoteInfo info);
+
+        FileOperationResult MoveTo(IFile dest, RemoteInfo info);
+
+        FileOperationResult Download(string localName, CopyFlags copyFlags, RemoteInfo info);
+
+        FileOperationResult Upload(string localName, CopyFlags copyFlags);
 
         bool CreateFolder(string name);
 
-        bool Remove();
+        bool Delete();
 
 
         CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon);

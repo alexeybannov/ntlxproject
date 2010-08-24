@@ -8,10 +8,27 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public readonly static IFile Empty = new FileBase();
 
 
+        public virtual bool ResumeAllowed
+        {
+            get { return false; }
+        }
+
+        public virtual bool Exists
+        {
+            get { return false; }
+        }
+
+        public virtual string LocalName
+        {
+            get { return null; }
+        }
+
+        
         public virtual IEnumerator<FindData> GetFiles()
         {
             return null;
         }
+
 
         public virtual ExecuteResult Open(TotalCommanderWindow window, ref string link)
         {
@@ -23,12 +40,43 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
             return ExecuteResult.Default;
         }
 
+        public virtual ExecuteResult ChangeMode(TotalCommanderWindow window, string mode, ref string link)
+        {
+            return ExecuteResult.Default;
+        }
+
+        public virtual ExecuteResult Command(TotalCommanderWindow window, string command, ref string link)
+        {
+            return ExecuteResult.Default;
+        }
+
+
+        public virtual FileOperationResult CopyTo(IFile dest, RemoteInfo info)
+        {
+            return FileOperationResult.Default;
+        }
+
+        public virtual FileOperationResult MoveTo(IFile dest, RemoteInfo info)
+        {
+            return FileOperationResult.Default;
+        }
+
+        public virtual FileOperationResult Download(string localName, CopyFlags copyFlags, RemoteInfo info)
+        {
+            return FileOperationResult.Default;
+        }
+
+        public virtual FileOperationResult Upload(string localName, CopyFlags copyFlags)
+        {
+            return FileOperationResult.Default;
+        }
+
         public virtual bool CreateFolder(string name)
         {
             return false;
         }
 
-        public virtual bool Remove()
+        public virtual bool Delete()
         {
             return false;
         }

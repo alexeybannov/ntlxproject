@@ -52,7 +52,7 @@ namespace AmazonS3Commander.Accounts
             return ExecuteResult.OK;
         }
 
-        public override bool Remove()
+        public override bool Delete()
         {
             return accountManager.Remove(accountName);
         }

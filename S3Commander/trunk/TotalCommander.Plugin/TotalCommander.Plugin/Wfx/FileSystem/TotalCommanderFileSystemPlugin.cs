@@ -23,14 +23,15 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         }
 
 
-
         public abstract string PluginName
         {
+            [DebuggerStepThrough]
             get;
         }
 
         public virtual bool TemporaryPanelPlugin
         {
+            [DebuggerStepThrough]
             get { return false; }
         }
 
@@ -66,6 +67,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
             context.Password = password;
         }
 
+
         protected abstract IFileSystem CreateFileSystem(FileSystemContext context);
 
 
@@ -91,12 +93,12 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public ExecuteResult FileExecute(TotalCommanderWindow window, ref string remoteName, string verb)
         {
             var file = ResolvePath(remoteName);
-            switch ((verb ?? " ").ToLower().Substring(0, 1))
+            switch ((verb ?? "  ").ToLower().Substring(0, 1))
             {
                 case "o": return file.Open(window, ref remoteName);
                 case "p": return file.Properties(window, ref remoteName);
-                //case "c": return ExecuteChMode(window, ref remoteName, command);
-                //case "q": return ExecuteCommand(window, ref remoteName, command);
+                case "c": return file.ChangeMode(window, verb.Substring(verb.IndexOf(' ') + 1), ref remoteName);
+                case "q": return file.Command(window, verb.Substring(verb.IndexOf(' ') + 1), ref remoteName);
                 default: return ExecuteResult.Default;
             }
         }
@@ -104,22 +106,30 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public FileOperationResult FileRenameMove(string oldName, string newName, bool move, bool overwrite, RemoteInfo ri)
         {
-            return FileOperationResult.Default;
+            var oldFile = ResolvePath(oldName);
+            var newFile = ResolvePath(newName);
+
+            if (!overwrite && newFile.Exists)
+            {
+                return newFile.ResumeAllowed ? FileOperationResult.ExistsResumeAllowed : FileOperationResult.Exists;
+            }
+
+            return move ? oldFile.MoveTo(newFile, ri) : oldFile.CopyTo(newFile, ri);
         }
 
         public FileOperationResult FileGet(string remoteName, ref string localName, CopyFlags copyFlags, RemoteInfo ri)
         {
-            return FileOperationResult.Default;
+            return ResolvePath(remoteName).Download(localName, copyFlags, ri);
         }
 
         public FileOperationResult FilePut(string localName, ref string remoteName, CopyFlags copyFlags)
         {
-            return FileOperationResult.Default;
+            return ResolvePath(remoteName).Upload(localName, copyFlags);
         }
 
         public bool FileRemove(string remoteName)
         {
-            return ResolvePath(remoteName).Remove();
+            return ResolvePath(remoteName).Delete();
         }
 
 
@@ -136,7 +146,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public bool DirectoryRemove(string remoteName)
         {
-            return ResolvePath(remoteName).Remove();
+            return FileRemove(remoteName);
         }
 
 
@@ -170,12 +180,12 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public bool IsLinksToLocalFiles()
         {
-            return context.TemporaryPanelPlugin;
+            return TemporaryPanelPlugin;
         }
 
         public string GetLocalName(string remoteName)
         {
-            return null;
+            return TemporaryPanelPlugin ? ResolvePath(remoteName).LocalName : null;
         }
 
 
