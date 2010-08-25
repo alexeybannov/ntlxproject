@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 
 namespace TotalCommander.Plugin.Wfx.FileSystem
 {
@@ -90,6 +92,17 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
         public virtual PreviewBitmapResult GetPreviewBitmap(ref string cache, Size size, ref Bitmap bitmap)
         {
             return PreviewBitmapResult.None;
+        }
+
+
+        public bool SetAttributes(FileAttributes attributes)
+        {
+            return false;
+        }
+
+        public bool SetTime(DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime)
+        {
+            return false;
         }
     }
 }

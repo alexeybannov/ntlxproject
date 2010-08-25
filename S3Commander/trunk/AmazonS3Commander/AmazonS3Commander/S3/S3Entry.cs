@@ -4,11 +4,10 @@ using System.Linq;
 using LitS3;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
-using System;
 
 namespace AmazonS3Commander.S3
 {
-    class S3Folder : FileBase
+    class S3Entry : FileBase
     {
         private readonly S3Service s3Service;
 
@@ -25,7 +24,7 @@ namespace AmazonS3Commander.S3
         }
 
 
-        public S3Folder(S3Service s3Service, string bucket, string key, FileSystemContext context)
+        public S3Entry(S3Service s3Service, string bucket, string key, FileSystemContext context)
         {
             this.s3Service = s3Service;
             this.bucket = bucket;

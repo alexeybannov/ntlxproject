@@ -152,12 +152,12 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public bool SetFileAttributes(string remoteName, FileAttributes attributes)
         {
-            return false;
+            return ResolvePath(remoteName).SetAttributes(attributes);
         }
 
         public bool SetFileTime(string remoteName, DateTime? creationTime, DateTime? lastAccessTime, DateTime? lastWriteTime)
         {
-            return false;
+            return ResolvePath(remoteName).SetTime(creationTime, lastAccessTime, lastWriteTime);
         }
 
 

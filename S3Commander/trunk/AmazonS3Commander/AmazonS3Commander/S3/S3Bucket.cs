@@ -21,7 +21,7 @@ namespace AmazonS3Commander.S3
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return new S3Folder(s3Service, bucketName, string.Empty, null)
+            return new S3Entry(s3Service, bucketName, string.Empty, null)
                 .GetFiles();
         }
 

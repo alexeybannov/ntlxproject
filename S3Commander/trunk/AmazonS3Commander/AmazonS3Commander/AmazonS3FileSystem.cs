@@ -37,18 +37,18 @@ namespace AmazonS3Commander
         public IFile ResolvePath(string path)
         {
             if (path == null) return null;
-            path = path.TrimEnd('\\');
 
+            path = path.TrimEnd('\\');
             var parts = path.Split('\\');
             var depth = parts.Length - 1;
 
             //root
-            if (depth == 0) return this;
+            if (depth <= 0) return this;
 
             if (parts[depth] == "..") return null;
 
             var accountName = parts[1];
-            
+
             //accounts
             if (depth == 1)
             {
@@ -68,7 +68,7 @@ namespace AmazonS3Commander
             //amazon s3 folders
             if (3 <= depth)
             {
-                return new S3Folder(
+                return new S3Entry(
                     s3ServiceProvider.GetS3Service(accountName),
                     bucketName, 
                     string.Join("/", parts, 3, depth - 2),

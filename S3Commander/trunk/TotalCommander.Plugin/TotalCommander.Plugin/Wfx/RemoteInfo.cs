@@ -60,7 +60,7 @@ namespace TotalCommander.Plugin.Wfx
             if (ptr != IntPtr.Zero)
             {
                 var ri = (FsRemoteInfo)Marshal.PtrToStructure(ptr, typeof(FsRemoteInfo));
-                IsDirectory = (ri.SizeHigh == -int.MaxValue && ri.SizeLow == 0);
+                IsDirectory = (ri.SizeHigh == -1 && ri.SizeLow == 0);
                 if (!IsDirectory) Size = LongUtil.MakeLong(ri.SizeHigh, ri.SizeLow);
                 LastWriteTime = DateTimeUtil.FromFileTime(ri.LastWriteTime);
                 Attributes = (FileAttributes)ri.Attributes;

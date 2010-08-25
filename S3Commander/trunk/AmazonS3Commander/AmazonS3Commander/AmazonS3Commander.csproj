@@ -76,7 +76,7 @@
     </Compile>
     <Compile Include="Icons.cs" />
     <Compile Include="S3\S3Bucket.cs" />
-    <Compile Include="S3\S3Folder.cs" />
+    <Compile Include="S3\S3Entry.cs" />
     <Compile Include="S3\S3ServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
