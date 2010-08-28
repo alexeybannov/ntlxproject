@@ -4,21 +4,17 @@ using System.Windows.Forms;
 using AmazonS3Commander.Properties;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
-using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander.Accounts
 {
-    class NewAccount : FileBase
+    class NewAccount : S3CommanderFile
     {
         private readonly AccountManager accountManager;
 
-        private readonly FileSystemContext context;
 
-
-        public NewAccount(AccountManager accountManager, FileSystemContext context)
+        public NewAccount(AccountManager accountManager)
         {
             this.accountManager = accountManager;
-            this.context = context;
         }
 
 
@@ -45,7 +41,7 @@ namespace AmazonS3Commander.Accounts
                     return false;
                 }
                 if (accountManager.Exists(form.AccountName) &&
-                    context.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
+                    S3CommanderContext.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
                 {
                     return false;
                 }

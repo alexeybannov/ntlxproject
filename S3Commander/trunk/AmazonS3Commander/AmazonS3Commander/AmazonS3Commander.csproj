@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD4B9C54-0F60-4AC8-984F-C83BF68B1CB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,13 +56,14 @@
     <Compile Include="Accounts\AccountInfo.cs" />
     <Compile Include="Accounts\AccountManager.cs" />
     <Compile Include="Accounts\NewAccount.cs" />
-    <Compile Include="AmazonS3FileSystem.cs" />
-    <Compile Include="AmazonS3Plugin.cs" />
+    <Compile Include="S3CommanderFile.cs" />
+    <Compile Include="S3CommanderFileSystem.cs" />
+    <Compile Include="S3CommanderPlugin.cs" />
     <Compile Include="Configuration\ConfigurationFile.cs" />
     <Compile Include="Controls\TextBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OperationContext.cs" />
+    <Compile Include="S3CommanderContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.ru.Designer.cs">
       <DependentUpon>Resources.ru.resx</DependentUpon>

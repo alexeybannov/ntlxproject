@@ -5,7 +5,7 @@ using TotalCommander.Plugin.Wfx;
 namespace AmazonS3Commander
 {
     [TotalCommanderPlugin]
-    public class AmazonS3Plugin : TotalCommanderFileSystemPlugin
+    public class S3CommanderPlugin : TotalCommanderFileSystemPlugin
     {
         public override string PluginName
         {
@@ -14,12 +14,12 @@ namespace AmazonS3Commander
 
         protected override IFileSystem CreateFileSystem(FileSystemContext context)
         {
-            return new AmazonS3FileSystem(context);
+            return new S3CommanderFileSystem(context);
         }
 
         public override BackgroundFlags BackgroundSupport
         {
-            get { return BackgroundFlags.AskUser; }
+            get { return BackgroundFlags.Download | BackgroundFlags.Upload; }
         }
 
         public override bool TemporaryPanelPlugin

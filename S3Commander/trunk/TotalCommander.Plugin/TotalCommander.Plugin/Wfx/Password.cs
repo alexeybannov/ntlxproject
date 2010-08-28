@@ -245,7 +245,7 @@ namespace TotalCommander.Plugin.Wfx
 
         private FileOperationResult Crypt(CryptMode mode, string connectionName, ref string password)
         {
-            var passwordBuilder = new StringBuilder(password ?? string.Empty);
+            var passwordBuilder = new StringBuilder(password);
             passwordBuilder.EnsureCapacity(Win32.MAX_PATH);
 
             var result = callback(

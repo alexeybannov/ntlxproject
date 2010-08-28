@@ -78,7 +78,7 @@ namespace TotalCommander.Plugin.Wfx
                 IEnumerator enumerator = null;
                 lock (enumerators)
                 {
-                    if (enumerators.ContainsKey(handle)) enumerator = enumerators[handle];
+                    enumerators.TryGetValue(handle, out enumerator);
                 }
                 var findData = Plugin.FindNext(enumerator);
                 if (findData != null && findData != FindData.NoMoreFiles)
@@ -101,9 +101,8 @@ namespace TotalCommander.Plugin.Wfx
                 IEnumerator enumerator = null;
                 lock (enumerators)
                 {
-                    if (enumerators.ContainsKey(handle))
+                    if (enumerators.TryGetValue(handle, out enumerator))
                     {
-                        enumerator = enumerators[handle];
                         enumerators.Remove(handle);
                     }
                 }

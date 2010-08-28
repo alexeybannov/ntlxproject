@@ -6,22 +6,20 @@ using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander.S3
 {
-    class S3Bucket : FileBase
+    class S3Bucket : S3CommanderFile
     {
-        private readonly S3Service s3Service;
-
         private readonly string bucketName;
 
 
-        public S3Bucket(S3Service s3Service, string bucketName)
+        public S3Bucket(string bucketName)
         {
-            this.s3Service = s3Service;
             this.bucketName = bucketName;
         }
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return new S3Entry(s3Service, bucketName, string.Empty, null)
+            return new S3Entry(bucketName, string.Empty)
+                .Initialize(S3CommanderContext)
                 .GetFiles();
         }
 

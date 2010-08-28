@@ -7,15 +7,11 @@ using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander.S3
 {
-    class S3Entry : FileBase
+    class S3Entry : S3CommanderFile
     {
-        private readonly S3Service s3Service;
-
         private readonly string bucket;
 
         private readonly string key;
-
-        private readonly FileSystemContext context;
 
 
         public override bool ResumeAllowed
@@ -24,17 +20,15 @@ namespace AmazonS3Commander.S3
         }
 
 
-        public S3Entry(S3Service s3Service, string bucket, string key, FileSystemContext context)
+        public S3Entry(string bucket, string key)
         {
-            this.s3Service = s3Service;
             this.bucket = bucket;
             this.key = key;
-            this.context = context;
         }
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return s3Service
+            return S3CommanderContext.S3Service
                 .ListObjects(bucket, !string.IsNullOrEmpty(key) ? key + "/" : string.Empty)
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
@@ -69,8 +63,8 @@ namespace AmazonS3Commander.S3
             try
             {
                 //download
-                s3Service.GetObjectProgress += GetObjectProgress;
-                s3Service.GetObject(bucket, key, localName);
+                S3CommanderContext.S3Service.GetObjectProgress += GetObjectProgress;
+                S3CommanderContext.S3Service.GetObject(bucket, key, localName);
             }
             catch
             {
@@ -78,7 +72,7 @@ namespace AmazonS3Commander.S3
             }
             finally
             {
-                s3Service.GetObjectProgress -= GetObjectProgress;
+                S3CommanderContext.S3Service.GetObjectProgress -= GetObjectProgress;
             }
 
             if ((copyFlags &= CopyFlags.Move) == CopyFlags.Move)
@@ -104,7 +98,7 @@ namespace AmazonS3Commander.S3
 
         private void GetObjectProgress(object sender, S3ProgressEventArgs e)
         {
-            context.Progress.SetProgress(e.Key, null, e.ProgressPercentage);
+            S3CommanderContext.Progress.SetProgress(e.Key, null, e.ProgressPercentage);
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System.Drawing;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
-using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander.Configuration
 {
-    class ConfigurationFile : FileBase
+    class ConfigurationFile : S3CommanderFile
     {
         public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
         {

@@ -14,7 +14,6 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         private IFileSystem FileSystem
         {
-            [DebuggerStepThrough]
             get
             {
                 if (fileSystem == null) fileSystem = CreateFileSystem(context);
@@ -25,19 +24,16 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public abstract string PluginName
         {
-            [DebuggerStepThrough]
             get;
         }
 
         public virtual bool TemporaryPanelPlugin
         {
-            [DebuggerStepThrough]
             get { return false; }
         }
 
         public virtual BackgroundFlags BackgroundSupport
         {
-            [DebuggerStepThrough]
             get { return BackgroundFlags.NotSupported; }
         }
 

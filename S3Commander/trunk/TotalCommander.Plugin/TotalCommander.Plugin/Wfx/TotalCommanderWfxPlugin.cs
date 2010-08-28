@@ -104,13 +104,13 @@ namespace TotalCommander.Plugin.Wfx
             Log = log;
             Request = request;
 
-            Init();
+            Initialize();
         }
 
         /// <summary>
         /// Called when loading the plugin.
         /// </summary>
-        public virtual void Init()
+        public virtual void Initialize()
         {
 
         }
