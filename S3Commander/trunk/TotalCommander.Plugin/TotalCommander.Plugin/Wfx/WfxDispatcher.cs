@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
-using System.Windows.Forms;
 using TotalCommander.Plugin.Utils;
 
 namespace TotalCommander.Plugin.Wfx
@@ -405,7 +404,14 @@ namespace TotalCommander.Plugin.Wfx
 
         private static void ProcessError(Exception ex)
         {
-            MessageBox.Show(ex.ToString());
+            try
+            {
+                if (Plugin != null)
+                {
+                    Plugin.OnError(ex);
+                }
+            }
+            catch { }
         }
     }
 }

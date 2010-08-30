@@ -195,6 +195,11 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
             return FileSystem != null ? FileSystem.Disconnect(disconnectRoot) : false;
         }
 
+        public virtual void OnError(Exception error)
+        {
+
+        }
+
 
         private IFile ResolvePath(string path)
         {

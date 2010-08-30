@@ -1,6 +1,5 @@
 ﻿using System;
 using AmazonS3Commander.S3;
-using LitS3;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
 

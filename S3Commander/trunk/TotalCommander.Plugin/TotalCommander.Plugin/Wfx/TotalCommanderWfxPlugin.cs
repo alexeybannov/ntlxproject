@@ -289,5 +289,10 @@ namespace TotalCommander.Plugin.Wfx
         {
 
         }
+
+        public virtual void OnError(Exception error)
+        {
+
+        }
     }
 }

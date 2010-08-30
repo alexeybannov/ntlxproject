@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -21,16 +22,25 @@ namespace AmazonS3Commander.Accounts
 
         public override IEnumerator<FindData> GetFiles()
         {
-            if (S3CommanderContext.CurrentOperation != StatusOperation.List) return new List<FindData>().GetEnumerator();
-            return S3CommanderContext.S3Service
-                .GetAllBuckets()
-                .Select(b => new FindData(b.Name, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
+            if (Context.CurrentOperation != StatusOperation.List) return new List<FindData>().GetEnumerator();
+            return Context.S3Service
+                .GetBuckets()
+                .Select(b =>
+                {
+                    var findData = new FindData(b.BucketName, FileAttributes.Directory);
+                    var dateTime = DateTime.MinValue;
+                    if (!string.IsNullOrEmpty(b.CreationDate) && DateTime.TryParse(b.CreationDate, out dateTime))
+                    {
+                        findData.LastWriteTime = dateTime;
+                    }
+                    return findData;
+                })
                 .GetEnumerator();
         }
 
         public override ExecuteResult Properties(TotalCommanderWindow window, ref string link)
         {
-            var accountName = S3CommanderContext.CurrentAccount;
+            var accountName = Context.CurrentAccount;
             using (var form = new AccountForm(accountName, accountManager.GetAccountInfo(accountName)))
             {
                 if (form.ShowDialog() == DialogResult.OK && accountManager.Exists(accountName))
@@ -43,7 +53,7 @@ namespace AmazonS3Commander.Accounts
 
         public override bool Delete()
         {
-            return accountManager.Remove(S3CommanderContext.CurrentAccount);
+            return accountManager.Remove(Context.CurrentAccount);
         }
 
         protected override Icon GetIcon()

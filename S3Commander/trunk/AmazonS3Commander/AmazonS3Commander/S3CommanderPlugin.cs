@@ -1,6 +1,8 @@
-﻿using TotalCommander.Plugin;
-using TotalCommander.Plugin.Wfx.FileSystem;
+﻿using System;
+using System.Windows.Forms;
+using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
+using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander
 {
@@ -12,19 +14,20 @@ namespace AmazonS3Commander
             get { return "Amazon S3 Commander"; }
         }
 
-        protected override IFileSystem CreateFileSystem(FileSystemContext context)
-        {
-            return new S3CommanderFileSystem(context);
-        }
-
         public override BackgroundFlags BackgroundSupport
         {
             get { return BackgroundFlags.Download | BackgroundFlags.Upload; }
         }
 
-        public override bool TemporaryPanelPlugin
+
+        protected override IFileSystem CreateFileSystem(FileSystemContext context)
         {
-            get { return false; }
+            return new S3CommanderFileSystem(context);
+        }
+
+        public override void OnError(Exception error)
+        {
+            MessageBox.Show(error.ToString(), PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

@@ -5,36 +5,38 @@ using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin
 {
-	static class TotalCommanderPluginHolder
-	{
-		private static ITotalCommanderWfxPlugin wfxPlugin;
+    static class TotalCommanderPluginHolder
+    {
+        private static ITotalCommanderWfxPlugin wfxPlugin;
+
+        private static bool wfxPluginInitialized = false;
 
 
-		public static ITotalCommanderWfxPlugin GetWfxPlugin()
-		{
-			if (wfxPlugin == null)
-			{
-                var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                foreach (var file in Directory.GetFiles(path, "*.dll"))
+        public static ITotalCommanderWfxPlugin GetWfxPlugin()
+        {
+            if (wfxPluginInitialized) return wfxPlugin;
+
+            wfxPluginInitialized = true;
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            foreach (var file in Directory.GetFiles(path, "*.dll"))
+            {
+                try
                 {
-                    try
+                    if (string.Compare(Assembly.GetExecutingAssembly().Location, file, true) == 0) continue;
+                    var assembly = Assembly.LoadFrom(file);
+                    foreach (var type in assembly.GetExportedTypes())
                     {
-                        if (string.Compare(Assembly.GetExecutingAssembly().Location, file, true) == 0) continue;
-                        var assembly = Assembly.LoadFrom(file);
-                        foreach (var type in assembly.GetExportedTypes())
+                        if (!Attribute.IsDefined(type, typeof(TotalCommanderPluginAttribute))) continue;
+                        if (Array.Exists(type.GetInterfaces(), i => i == typeof(ITotalCommanderWfxPlugin)))
                         {
-                            if (!Attribute.IsDefined(type, typeof(TotalCommanderPluginAttribute))) continue;
-                            if (Array.Exists(type.GetInterfaces(), i => i == typeof(ITotalCommanderWfxPlugin)))
-                            {
-                                wfxPlugin = (ITotalCommanderWfxPlugin)Activator.CreateInstance(type);
-                                return wfxPlugin;
-                            }
+                            wfxPlugin = (ITotalCommanderWfxPlugin)Activator.CreateInstance(type);
+                            return wfxPlugin;
                         }
                     }
-                    catch { }
                 }
+                catch { }
             }
-			return wfxPlugin;
-		}
-	}
+            return wfxPlugin;
+        }
+    }
 }

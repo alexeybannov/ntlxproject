@@ -65,12 +65,12 @@ namespace AmazonS3Commander
             //buckets
             else if (depth == 2)
             {
-                file = new S3Bucket(parts[2]);
+                file = new Bucket(parts[2]);
             }
             //amazon s3 folders or file
             else if (3 <= depth)
             {
-                file = new S3Entry(parts[2], string.Join("/", parts, 3, depth - 2));
+                file = new Entry(parts[2], string.Join("/", parts, 3, depth - 2));
             }
 
             if (file != null)

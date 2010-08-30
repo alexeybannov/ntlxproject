@@ -1107,5 +1107,11 @@ namespace TotalCommander.Plugin.Wfx
         /// </para>
         /// </remarks>
         bool Disconnect(string disconnectRoot);
+
+        /// <summary>
+        /// Called when an exception occurs.
+        /// </summary>
+        /// <param name="error">The error.</param>
+        void OnError(Exception error);
     }
 }

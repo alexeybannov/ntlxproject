@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using AmazonS3Commander.Accounts;
-using LitS3;
 
 namespace AmazonS3Commander.S3
 {
@@ -24,11 +23,7 @@ namespace AmazonS3Commander.S3
             if (cache.ContainsKey(key)) return cache[key];
 
             var accountInfo = accountManager.GetAccountInfo(accountName);
-            cache[key] = new S3Service()
-            {
-                AccessKeyID = accountInfo.AccessKey,
-                SecretAccessKey = accountInfo.SecretKey
-            };
+            cache[key] = new S3Service(accountInfo.AccessKey, accountInfo.SecretKey);
             return cache[key];
         }
     }

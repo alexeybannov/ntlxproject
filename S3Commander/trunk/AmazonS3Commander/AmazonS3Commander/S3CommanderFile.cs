@@ -6,7 +6,7 @@ namespace AmazonS3Commander
 {
     class S3CommanderFile : FileBase
     {
-        public S3CommanderContext S3CommanderContext
+        public S3CommanderContext Context
         {
             get;
             private set;
@@ -18,7 +18,7 @@ namespace AmazonS3Commander
 
         public S3CommanderFile Initialize(S3CommanderContext context)
         {
-            S3CommanderContext = context;
+            Context = context;
             return this;
         }
 

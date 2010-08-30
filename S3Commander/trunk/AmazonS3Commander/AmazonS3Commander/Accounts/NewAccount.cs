@@ -41,7 +41,7 @@ namespace AmazonS3Commander.Accounts
                     return false;
                 }
                 if (accountManager.Exists(form.AccountName) &&
-                    S3CommanderContext.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
+                    Context.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
                 {
                     return false;
                 }
