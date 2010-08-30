@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using LitS3;
 using TotalCommander.Plugin.Wfx;
-using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander.S3
 {
@@ -23,10 +21,9 @@ namespace AmazonS3Commander.S3
                 .GetFiles();
         }
 
-        public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
+        protected override Icon GetIcon()
         {
-            icon = Icons.Bucket;
-            return CustomIconResult.Extracted;
+            return Icons.Bucket;
         }
     }
 }

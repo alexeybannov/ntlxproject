@@ -50,10 +50,9 @@ namespace AmazonS3Commander.Accounts
             }
         }
 
-        public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
+        protected override Icon GetIcon()
         {
-            icon = Icons.NewAccount;
-            return CustomIconResult.Extracted;
+            return Icons.NewAccount;
         }
     }
 }

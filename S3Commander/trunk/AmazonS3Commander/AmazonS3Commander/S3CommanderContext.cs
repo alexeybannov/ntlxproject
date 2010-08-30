@@ -44,7 +44,7 @@ namespace AmazonS3Commander
             get { return context.Password; }
         }
 
-        public string CurrentRemoteDir
+        public string CurrentDirectory
         {
             get { return currentRemoteDir; }
         }

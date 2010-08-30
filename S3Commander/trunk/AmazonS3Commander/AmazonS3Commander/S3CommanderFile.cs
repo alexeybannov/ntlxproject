@@ -1,4 +1,6 @@
-﻿using TotalCommander.Plugin.Wfx.FileSystem;
+﻿using System.Drawing;
+using TotalCommander.Plugin.Wfx;
+using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander
 {
@@ -18,6 +20,17 @@ namespace AmazonS3Commander
         {
             S3CommanderContext = context;
             return this;
+        }
+
+        public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
+        {
+            icon = GetIcon();
+            return icon != null ? CustomIconResult.Extracted : CustomIconResult.UseDefault;
+        }
+
+        protected virtual Icon GetIcon()
+        {
+            return null;
         }
     }
 }

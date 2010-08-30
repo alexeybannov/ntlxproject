@@ -46,10 +46,9 @@ namespace AmazonS3Commander.Accounts
             return accountManager.Remove(S3CommanderContext.CurrentAccount);
         }
 
-        public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
+        protected override Icon GetIcon()
         {
-            icon = Icons.Account;
-            return CustomIconResult.Extracted;
+            return Icons.Account;
         }
     }
 }
