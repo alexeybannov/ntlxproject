@@ -505,6 +505,11 @@
             Constructor
             </summary>
         </member>
+        <member name="M:Affirma.ThreeSharp.Model.BucketListRequest.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
         <member name="T:Affirma.ThreeSharp.Model.DistributionConfig">
             <summary>
             DistributionConfig

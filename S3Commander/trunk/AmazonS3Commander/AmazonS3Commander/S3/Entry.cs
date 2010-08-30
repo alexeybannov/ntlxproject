@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
-using Amazon.S3.Model;
 using System;
 
 namespace AmazonS3Commander.S3
@@ -84,17 +83,17 @@ namespace AmazonS3Commander.S3
             return FileOperationResult.OK;
         }
 
-        private FindData ToFindData(object entry)
+        private FindData ToFindData(S3Entry entry)
         {
-            var file = entry as S3Object;
+            var file = entry as S3File;
             if (file != null)
             {
-                return new FindData(file.Key, file.Size)
+                return new FindData(file.Name, file.Size)
                 {
-                    LastWriteTime = DateTime.Parse(file.LastModified)
+                    LastWriteTime = file.CreationDate
                 };
             }
-            return new FindData(((string)entry).Trim('/'), FileAttributes.Directory);
+            return new FindData(entry.Name, FileAttributes.Directory);
         }
 
         /*private void GetObjectProgress(object sender, S3ProgressEventArgs e)

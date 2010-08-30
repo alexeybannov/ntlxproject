@@ -59,7 +59,7 @@ namespace AmazonS3Commander
             private set;
         }
 
-        public S3Service S3Service
+        public IS3Service S3Service
         {
             get { return provider.GetS3Service(CurrentAccount); }
         }

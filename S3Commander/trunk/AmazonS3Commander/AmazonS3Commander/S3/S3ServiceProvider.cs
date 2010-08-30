@@ -7,23 +7,23 @@ namespace AmazonS3Commander.S3
     {
         private readonly AccountManager accountManager;
 
-        private readonly IDictionary<string, S3Service> cache;
+        private readonly IDictionary<string, IS3Service> cache;
 
 
         public S3ServiceProvider(AccountManager accountManager)
         {
             this.accountManager = accountManager;
-            this.cache = new Dictionary<string, S3Service>();
+            this.cache = new Dictionary<string, IS3Service>();
         }
 
-        public S3Service GetS3Service(string accountName)
+        public IS3Service GetS3Service(string accountName)
         {
             var key = accountName.ToLowerInvariant();
 
             if (cache.ContainsKey(key)) return cache[key];
 
             var accountInfo = accountManager.GetAccountInfo(accountName);
-            cache[key] = new S3Service(accountInfo.AccessKey, accountInfo.SecretKey);
+            cache[key] = new ThreeSharpS3Service(accountInfo.AccessKey, accountInfo.SecretKey);
             return cache[key];
         }
     }

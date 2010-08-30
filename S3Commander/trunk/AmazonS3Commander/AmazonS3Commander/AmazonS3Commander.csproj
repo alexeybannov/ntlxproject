@@ -32,9 +32,9 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AWSSDK, Version=1.0.11.0, Culture=neutral, PublicKeyToken=cd2d24cd2bace800, processorArchitecture=MSIL">
+    <Reference Include="Affirma.ThreeSharp, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Ref\AWSSDK.dll</HintPath>
+      <HintPath>..\..\Ref\Affirma.ThreeSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -44,6 +44,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\Account.cs" />
@@ -78,7 +81,12 @@
     <Compile Include="Icons.cs" />
     <Compile Include="S3\Bucket.cs" />
     <Compile Include="S3\Entry.cs" />
-    <Compile Include="S3\S3Service.cs" />
+    <Compile Include="S3\IS3Service.cs" />
+    <Compile Include="S3\S3Bucket.cs" />
+    <Compile Include="S3\S3Entry.cs" />
+    <Compile Include="S3\S3File.cs" />
+    <Compile Include="S3\S3Folder.cs" />
+    <Compile Include="S3\ThreeSharpS3Service.cs" />
     <Compile Include="S3\S3ServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>

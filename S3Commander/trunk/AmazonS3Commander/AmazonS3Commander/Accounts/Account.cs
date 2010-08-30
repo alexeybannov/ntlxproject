@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -25,16 +24,7 @@ namespace AmazonS3Commander.Accounts
             if (Context.CurrentOperation != StatusOperation.List) return new List<FindData>().GetEnumerator();
             return Context.S3Service
                 .GetBuckets()
-                .Select(b =>
-                {
-                    var findData = new FindData(b.BucketName, FileAttributes.Directory);
-                    var dateTime = DateTime.MinValue;
-                    if (!string.IsNullOrEmpty(b.CreationDate) && DateTime.TryParse(b.CreationDate, out dateTime))
-                    {
-                        findData.LastWriteTime = dateTime;
-                    }
-                    return findData;
-                })
+                .Select(b => new FindData(b.Name, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
                 .GetEnumerator();
         }
 
