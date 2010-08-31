@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using Affirma.ThreeSharp;
-using Affirma.ThreeSharp.Query;
 using Affirma.ThreeSharp.Model;
+using Affirma.ThreeSharp.Query;
 
 namespace AmazonS3Commander.S3
 {
@@ -59,7 +59,11 @@ namespace AmazonS3Commander.S3
                         };
                     });
             }
-            return null;
+        }
+
+        public Stream GetObjectStream(string bucketName, string key)
+        {
+            throw new NotSupportedException();
         }
 
 

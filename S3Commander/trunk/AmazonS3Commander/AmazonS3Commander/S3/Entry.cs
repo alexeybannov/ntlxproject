@@ -36,50 +36,63 @@ namespace AmazonS3Commander.S3
 
         public override FileOperationResult Download(string localName, CopyFlags copyFlags, RemoteInfo info)
         {
-            /*var localFile = new FileInfo(localName);
-
-            if ((copyFlags == CopyFlags.None || copyFlags == CopyFlags.Move) && localFile.Exists)
-            {
-                return ResumeAllowed ? FileOperationResult.ExistsResumeAllowed : FileOperationResult.Exists;
-            }
-
             var offset = 0L;
-            if ((copyFlags &= CopyFlags.Resume) == CopyFlags.Resume)
+            try
             {
-                offset = localFile.Length;
-            }
-            if ((copyFlags &= CopyFlags.Overwrite) == CopyFlags.Overwrite)
-            {
-                try
+                var localFile = new FileInfo(localName);
+                if (localFile.Exists && (copyFlags.Equals(CopyFlags.None) || copyFlags.Equals(CopyFlags.Move)))
+                {
+                    return ResumeAllowed ? FileOperationResult.ExistsResumeAllowed : FileOperationResult.Exists;
+                }
+                if (copyFlags.IsSet(CopyFlags.Resume))
+                {
+                    offset = localFile.Length;
+                }
+                if (copyFlags.IsSet(CopyFlags.Overwrite))
                 {
                     localFile.Delete();
                 }
-                catch
-                {
-                    return FileOperationResult.WriteError;
-                }
+            }
+            catch
+            {
+                return FileOperationResult.WriteError;
             }
 
             try
             {
                 //download
-                Context.S3Service.GetObjectProgress += GetObjectProgress;
-                Context.S3Service.GetObject(bucket, key, localName);
+                var length = 0L;
+                using (var stream = Context.S3Service.GetObjectStream(bucket, key, offset, out length))
+                using (var file = new FileStream(localName, FileMode.Append))
+                {
+                    var buffer = new byte[1024 * 4];
+                    var total = offset;
+                    length += offset;
+                    while (true)
+                    {
+                        var readed = stream.Read(buffer, 0, buffer.Length);
+                        if (readed <= 0) break;
+
+                        file.Write(buffer, 0, readed);
+                        total += readed;
+                        if (Context.Progress.SetProgress(key, localName, (int)(total * 100 / length)) == false)
+                        {
+                            //abort
+                            break;
+                        }
+                    }
+                }
+
+                if (copyFlags.IsSet(CopyFlags.Move))
+                {
+                    if (!Delete()) return FileOperationResult.WriteError;
+                }
             }
             catch
             {
                 return FileOperationResult.ReadError;
             }
-            finally
-            {
-                Context.S3Service.GetObjectProgress -= GetObjectProgress;
-            }
 
-            if ((copyFlags &= CopyFlags.Move) == CopyFlags.Move)
-            {
-                if (!Delete()) return FileOperationResult.WriteError;
-            }
-            */
             return FileOperationResult.OK;
         }
 
@@ -95,10 +108,5 @@ namespace AmazonS3Commander.S3
             }
             return new FindData(entry.Name, FileAttributes.Directory);
         }
-
-        /*private void GetObjectProgress(object sender, S3ProgressEventArgs e)
-        {
-            Context.Progress.SetProgress(e.Key, null, e.ProgressPercentage);
-        }*/
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using LitS3;
 
@@ -37,6 +38,11 @@ namespace AmazonS3Commander.S3
                         (S3Entry)new S3File(f.Name) { Size = f.Size, CreationDate = f.LastModified } :
                         (S3Entry)new S3Folder(o.Name);
                 });
+        }
+
+        public Stream GetObjectStream(string bucketName, string key, long from, out long length)
+        {
+            return client.GetObjectStream(bucketName, key, from, out length);
         }
     }
 }

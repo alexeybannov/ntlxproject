@@ -574,6 +574,19 @@ namespace LitS3
         }
 
         /// <summary>
+        /// Gets a data stream for an existing object in S3. It is your responsibility to close
+        /// the Stream when you are finished.
+        /// </summary>
+        public Stream GetObjectStream(string bucketName, string key, long from, out long length)
+        {
+            var request = new GetObjectRequest(this, bucketName, key);
+            request.AddRange((int)from);
+            var response = request.GetResponse();
+            length = response.ContentLength;
+            return response.GetResponseStream();
+        }
+
+        /// <summary>
         /// Gets an existing object in S3 and copies its data to the given Stream.
         /// </summary>
         public void GetObject(string bucketName, string key, Stream outputStream, 
