@@ -577,12 +577,11 @@ namespace LitS3
         /// Gets a data stream for an existing object in S3. It is your responsibility to close
         /// the Stream when you are finished.
         /// </summary>
-        public Stream GetObjectStream(string bucketName, string key, long from, out long length)
+        public Stream GetObjectStream(string bucketName, string key, long from)
         {
             var request = new GetObjectRequest(this, bucketName, key);
             request.AddRange((int)from);
             var response = request.GetResponse();
-            length = response.ContentLength;
             return response.GetResponseStream();
         }
 

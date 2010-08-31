@@ -16,7 +16,7 @@ namespace TotalCommander.Plugin.Utils
 
         public static long MakeLong(int high, int low)
         {
-            return (long)high << 32 + low;
+            return ((long)high << 32) + low;
         }
     }
 }

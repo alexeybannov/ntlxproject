@@ -9,6 +9,6 @@ namespace AmazonS3Commander.S3
 
         IEnumerable<S3Entry> GetObjects(string bucketName, string prefix);
 
-        Stream GetObjectStream(string bucketName, string key, long from, out long length);
+        Stream GetObjectStream(string bucketName, string key, long from);
     }
 }

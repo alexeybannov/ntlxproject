@@ -60,25 +60,24 @@ namespace AmazonS3Commander.S3
 
             try
             {
+                SetProgress(localName, offset, info.Size);
+
                 //download
-                var length = 0L;
-                using (var stream = Context.S3Service.GetObjectStream(bucket, key, offset, out length))
+                using (var stream = Context.S3Service.GetObjectStream(bucket, key, offset))
                 using (var file = new FileStream(localName, FileMode.Append))
                 {
                     var buffer = new byte[1024 * 4];
                     var total = offset;
-                    length += offset;
                     while (true)
                     {
                         var readed = stream.Read(buffer, 0, buffer.Length);
                         if (readed <= 0) break;
 
                         file.Write(buffer, 0, readed);
-                        total += readed;
-                        if (Context.Progress.SetProgress(key, localName, (int)(total * 100 / length)) == false)
+
+                        if (SetProgress(localName, total += readed, info.Size) == false)
                         {
-                            //abort
-                            break;
+                            return FileOperationResult.UserAbort;
                         }
                     }
                 }
@@ -87,6 +86,8 @@ namespace AmazonS3Commander.S3
                 {
                     if (!Delete()) return FileOperationResult.WriteError;
                 }
+
+                SetProgress(localName, 100, 100);
             }
             catch
             {
@@ -94,6 +95,11 @@ namespace AmazonS3Commander.S3
             }
 
             return FileOperationResult.OK;
+        }
+
+        public override ExecuteResult Open(TotalCommander.Plugin.TotalCommanderWindow window, ref string link)
+        {
+            return ExecuteResult.YourSelf;
         }
 
         private FindData ToFindData(S3Entry entry)
@@ -107,6 +113,12 @@ namespace AmazonS3Commander.S3
                 };
             }
             return new FindData(entry.Name, FileAttributes.Directory);
+        }
+
+        private bool SetProgress(string localName, long offset, long length)
+        {
+            var percent = length != 0 ? (int)(offset * 100 / length) : 100;
+            return Context.Progress.SetProgress(key, localName, percent);
         }
     }
 }

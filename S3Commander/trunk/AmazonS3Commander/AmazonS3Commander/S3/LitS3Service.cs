@@ -40,9 +40,9 @@ namespace AmazonS3Commander.S3
                 });
         }
 
-        public Stream GetObjectStream(string bucketName, string key, long from, out long length)
+        public Stream GetObjectStream(string bucketName, string key, long from)
         {
-            return client.GetObjectStream(bucketName, key, from, out length);
+            return client.GetObjectStream(bucketName, key, from);
         }
     }
 }
