@@ -36,10 +36,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Ref\Affirma.ThreeSharp.dll</HintPath>
     </Reference>
-    <Reference Include="LitS3, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Ref\LitS3.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -95,6 +91,10 @@
     <Compile Include="S3\S3ServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LitS3-1.0.1\LitS3\LitS3.csproj">
+      <Project>{C564E026-D515-4E8B-ADED-36087E89443E}</Project>
+      <Name>LitS3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\TotalCommander.Plugin\TotalCommander.Plugin\TotalCommander.Plugin.csproj">
       <Project>{5A4C0890-6532-4B1D-9A32-977ECB568A5E}</Project>
       <Name>TotalCommander.Plugin</Name>
