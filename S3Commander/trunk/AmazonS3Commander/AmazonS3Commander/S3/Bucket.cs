@@ -21,10 +21,9 @@ namespace AmazonS3Commander.S3
                 .GetFiles();
         }
 
-        public override CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon)
+        protected override Icon GetIcon()
         {
-            icon = Icons.Bucket;
-            return CustomIconResult.Extracted;
+            return Icons.Bucket;
         }
     }
 }
