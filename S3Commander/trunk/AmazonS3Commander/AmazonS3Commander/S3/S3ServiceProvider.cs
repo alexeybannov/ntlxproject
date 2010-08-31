@@ -23,7 +23,7 @@ namespace AmazonS3Commander.S3
             if (cache.ContainsKey(key)) return cache[key];
 
             var accountInfo = accountManager.GetAccountInfo(accountName);
-            cache[key] = new ThreeSharpS3Service(accountInfo.AccessKey, accountInfo.SecretKey);
+            cache[key] = new LitS3Service(accountInfo.AccessKey, accountInfo.SecretKey);
             return cache[key];
         }
     }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD4B9C54-0F60-4AC8-984F-C83BF68B1CB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -35,6 +35,10 @@
     <Reference Include="Affirma.ThreeSharp, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Ref\Affirma.ThreeSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LitS3, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Ref\LitS3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -82,6 +86,7 @@
     <Compile Include="S3\Bucket.cs" />
     <Compile Include="S3\Entry.cs" />
     <Compile Include="S3\IS3Service.cs" />
+    <Compile Include="S3\LitS3Service.cs" />
     <Compile Include="S3\S3Bucket.cs" />
     <Compile Include="S3\S3Entry.cs" />
     <Compile Include="S3\S3File.cs" />

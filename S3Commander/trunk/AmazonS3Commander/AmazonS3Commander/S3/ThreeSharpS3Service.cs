@@ -37,13 +37,7 @@ namespace AmazonS3Commander.S3
                     .Root
                     .Element(GetXName("Buckets"))
                     .Elements()
-                    .Select(e =>
-                    {
-                        return new S3Bucket(GetElementValue(e, "Name"))
-                        {
-                            CreationDate = DateTime.Parse(GetElementValue(e, "CreationDate"))
-                        };
-                    });
+                    .Select(e => new S3Bucket(GetElementValue(e, "Name"), DateTime.Parse(GetElementValue(e, "CreationDate"))));
             }
         }
 
