@@ -4,6 +4,7 @@ using System.Linq;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
 using System;
+using TotalCommander.Plugin;
 
 namespace AmazonS3Commander.S3
 {
@@ -42,7 +43,7 @@ namespace AmazonS3Commander.S3
                 var localFile = new FileInfo(localName);
                 if (localFile.Exists && (copyFlags.Equals(CopyFlags.None) || copyFlags.Equals(CopyFlags.Move)))
                 {
-                    return ResumeAllowed ? FileOperationResult.ExistsResumeAllowed : FileOperationResult.Exists;
+                    return FileOperationResult.ExistsResumeAllowed;
                 }
                 if (copyFlags.IsSet(CopyFlags.Resume))
                 {
@@ -97,7 +98,17 @@ namespace AmazonS3Commander.S3
             return FileOperationResult.OK;
         }
 
-        public override ExecuteResult Open(TotalCommander.Plugin.TotalCommanderWindow window, ref string link)
+        public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
+        {
+            return base.Upload(localName, copyFlags);
+        }
+
+        public override bool CreateFolder(string name)
+        {
+            return true;
+        }
+
+        public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
         {
             return ExecuteResult.YourSelf;
         }

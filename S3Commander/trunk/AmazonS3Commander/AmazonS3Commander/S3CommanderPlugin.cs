@@ -16,7 +16,7 @@ namespace AmazonS3Commander
 
         public override BackgroundFlags BackgroundSupport
         {
-            get { return BackgroundFlags.Download | BackgroundFlags.Upload; }
+            get { return BackgroundFlags.Download | BackgroundFlags.Upload | BackgroundFlags.AskUser; }
         }
 
 
