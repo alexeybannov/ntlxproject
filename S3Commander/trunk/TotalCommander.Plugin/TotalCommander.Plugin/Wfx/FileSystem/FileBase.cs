@@ -73,12 +73,17 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
             return FileOperationResult.Default;
         }
 
+        public virtual bool DeleteFile()
+        {
+            return false;
+        }
+
         public virtual bool CreateFolder(string name)
         {
             return false;
         }
 
-        public virtual bool Delete()
+        public virtual bool DeleteFolder()
         {
             return false;
         }

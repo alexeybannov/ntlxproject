@@ -41,7 +41,7 @@ namespace AmazonS3Commander.Accounts
             return ExecuteResult.OK;
         }
 
-        public override bool Delete()
+        public override bool DeleteFolder()
         {
             return accountManager.Remove(Context.CurrentAccount);
         }

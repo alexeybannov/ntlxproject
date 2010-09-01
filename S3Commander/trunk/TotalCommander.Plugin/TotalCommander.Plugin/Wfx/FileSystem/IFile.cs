@@ -43,9 +43,11 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         FileOperationResult Upload(string localName, CopyFlags copyFlags);
 
+        bool DeleteFile();
+
         bool CreateFolder(string name);
 
-        bool Delete();
+        bool DeleteFolder();
 
 
         CustomIconResult GetIcon(ref string cache, CustomIconFlag extractIconFlag, ref Icon icon);

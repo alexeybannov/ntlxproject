@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using LitS3;
+using System;
 
 namespace AmazonS3Commander.S3
 {
@@ -15,7 +16,8 @@ namespace AmazonS3Commander.S3
             client = new S3Service()
             {
                 AccessKeyID = accessKey,
-                SecretAccessKey = secretKey
+                SecretAccessKey = secretKey,
+                UseSsl = false
             };
         }
 
@@ -43,6 +45,16 @@ namespace AmazonS3Commander.S3
         public Stream GetObjectStream(string bucketName, string key, long from)
         {
             return client.GetObjectStream(bucketName, key, from);
+        }
+
+        public void AddObject(string bucketName, string key, long bytes, Action<Stream> action)
+        {
+            client.AddObject(bucketName, key, bytes, action);
+        }
+
+        public void DeleteObject(string bucketName, string key)
+        {
+            client.DeleteObject(bucketName, key);
         }
     }
 }

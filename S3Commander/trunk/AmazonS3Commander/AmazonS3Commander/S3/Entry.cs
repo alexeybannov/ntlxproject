@@ -5,6 +5,7 @@ using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
 using System;
 using TotalCommander.Plugin;
+using System.Threading;
 
 namespace AmazonS3Commander.S3
 {
@@ -61,7 +62,7 @@ namespace AmazonS3Commander.S3
 
             try
             {
-                SetProgress(localName, offset, info.Size);
+                SetProgress(key, localName, offset, info.Size);
 
                 //download
                 using (var stream = Context.S3Service.GetObjectStream(bucket, key, offset))
@@ -76,7 +77,7 @@ namespace AmazonS3Commander.S3
 
                         file.Write(buffer, 0, readed);
 
-                        if (SetProgress(localName, total += readed, info.Size) == false)
+                        if (SetProgress(key, localName, total += readed, info.Size) == false)
                         {
                             return FileOperationResult.UserAbort;
                         }
@@ -85,10 +86,10 @@ namespace AmazonS3Commander.S3
 
                 if (copyFlags.IsSet(CopyFlags.Move))
                 {
-                    if (!Delete()) return FileOperationResult.WriteError;
+                    if (!DeleteFile()) return FileOperationResult.WriteError;
                 }
 
-                SetProgress(localName, 100, 100);
+                SetProgress(localName, key, 100, 100);
             }
             catch
             {
@@ -100,12 +101,105 @@ namespace AmazonS3Commander.S3
 
         public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
         {
-            return base.Upload(localName, copyFlags);
+            var aborted = false;
+            try
+            {
+                var localFile = new FileInfo(localName);
+                if (!localFile.Exists)
+                {
+                    return FileOperationResult.NotFound;
+                }
+                var length = localFile.Length;
+
+                SetProgress(localName, key, 0, length);
+
+                Context.S3Service.AddObject(
+                    bucket,
+                    key,
+                    localFile.Length,
+                    stream =>
+                    {
+                        using (var file = localFile.OpenRead())
+                        {
+                            var buffer = new byte[1024 * 4];
+                            var total = 0;
+                            while (true)
+                            {
+                                var readed = file.Read(buffer, 0, buffer.Length);
+                                if (readed <= 0) break;
+
+                                stream.Write(buffer, 0, readed);
+
+                                if (SetProgress(localName, key, total += readed, length) == false)
+                                {
+                                    aborted = true;
+                                    throw new OperationCanceledException();
+                                }
+                            }
+                        }
+                    }
+                );
+
+                if (copyFlags.IsSet(CopyFlags.Move))
+                {
+                    localFile.Delete();
+                }
+
+                SetProgress(localName, key, 100, 100);
+            }
+            catch
+            {
+                if (aborted)
+                {
+                    return FileOperationResult.UserAbort;
+                }
+                return FileOperationResult.WriteError;
+            }
+
+            return FileOperationResult.OK;
         }
 
         public override bool CreateFolder(string name)
         {
-            return true;
+            try
+            {
+                Context.S3Service.AddObject(
+                    bucket, 
+                    (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/", 
+                    0, 
+                    stream => { });
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public override bool DeleteFile()
+        {
+            try
+            {
+                Context.S3Service.DeleteObject(bucket, key);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public override bool DeleteFolder()
+        {
+            try
+            {
+                Context.S3Service.DeleteObject(bucket, key + "/");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
@@ -126,10 +220,10 @@ namespace AmazonS3Commander.S3
             return new FindData(entry.Name, FileAttributes.Directory);
         }
 
-        private bool SetProgress(string localName, long offset, long length)
+        private bool SetProgress(string source, string target, long offset, long length)
         {
             var percent = length != 0 ? (int)(offset * 100 / length) : 100;
-            return Context.Progress.SetProgress(key, localName, percent);
+            return Context.Progress.SetProgress(source, target, percent);
         }
     }
 }

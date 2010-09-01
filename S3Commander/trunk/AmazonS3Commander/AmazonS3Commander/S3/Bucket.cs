@@ -16,14 +16,25 @@ namespace AmazonS3Commander.S3
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return new Entry(bucketName, string.Empty)
-                .Initialize(Context)
+            return CreateEntry()
                 .GetFiles();
+        }
+
+        public override bool CreateFolder(string name)
+        {
+            return CreateEntry()
+                .CreateFolder(name);
         }
 
         protected override Icon GetIcon()
         {
             return Icons.Bucket;
+        }
+
+        private S3CommanderFile CreateEntry()
+        {
+            return new Entry(bucketName, string.Empty)
+                .Initialize(Context);
         }
     }
 }

@@ -125,7 +125,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public bool FileRemove(string remoteName)
         {
-            return ResolvePath(remoteName).Delete();
+            return ResolvePath(remoteName).DeleteFile();
         }
 
 
@@ -142,7 +142,7 @@ namespace TotalCommander.Plugin.Wfx.FileSystem
 
         public bool DirectoryRemove(string remoteName)
         {
-            return FileRemove(remoteName);
+            return ResolvePath(remoteName).DeleteFolder();
         }
 
 
