@@ -101,6 +101,18 @@ namespace AmazonS3Commander.S3
 
         public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
         {
+            try
+            {
+                if (copyFlags.IsSet(CopyFlags.ExistsSameCase) && !copyFlags.IsSet(CopyFlags.Overwrite))
+                {
+                    return FileOperationResult.Exists;
+                }
+            }
+            catch
+            {
+                return FileOperationResult.ReadError;
+            }
+
             var aborted = false;
             try
             {
@@ -121,7 +133,7 @@ namespace AmazonS3Commander.S3
                     {
                         using (var file = localFile.OpenRead())
                         {
-                            var buffer = new byte[1024 * 4];
+                            var buffer = new byte[1024];
                             var total = 0;
                             while (true)
                             {
@@ -164,9 +176,9 @@ namespace AmazonS3Commander.S3
             try
             {
                 Context.S3Service.AddObject(
-                    bucket, 
-                    (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/", 
-                    0, 
+                    bucket,
+                    (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
+                    0,
                     stream => { });
                 return true;
             }

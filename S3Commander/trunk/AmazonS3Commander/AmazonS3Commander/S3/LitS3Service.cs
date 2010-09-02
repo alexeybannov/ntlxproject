@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using LitS3;
 using System;
+using System.Net;
 
 namespace AmazonS3Commander.S3
 {
@@ -13,6 +14,7 @@ namespace AmazonS3Commander.S3
 
         public LitS3Service(string accessKey, string secretKey)
         {
+            ServicePointManager.DefaultConnectionLimit = 100;
             client = new S3Service()
             {
                 AccessKeyID = accessKey,
@@ -55,6 +57,11 @@ namespace AmazonS3Commander.S3
         public void DeleteObject(string bucketName, string key)
         {
             client.DeleteObject(bucketName, key);
+        }
+
+        public bool ObjectExists(string bucketName, string key)
+        {
+            return client.ObjectExists(bucketName, key);
         }
     }
 }

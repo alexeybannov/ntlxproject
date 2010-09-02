@@ -15,5 +15,7 @@ namespace AmazonS3Commander.S3
         void AddObject(string bucketName, string key, long bytes, Action<Stream> action);
 
         void DeleteObject(string bucketName, string key);
+
+        bool ObjectExists(string bucketName, string key);
     }
 }
