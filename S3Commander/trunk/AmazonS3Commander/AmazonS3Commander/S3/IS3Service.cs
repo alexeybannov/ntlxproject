@@ -12,7 +12,7 @@ namespace AmazonS3Commander.S3
 
         Stream GetObjectStream(string bucketName, string key, long from);
 
-        void AddObject(string bucketName, string key, long bytes, Action<Stream> action);
+        void AddObject(string bucketName, string key, long bytes, string contentType, Action<Stream> action);
 
         void DeleteObject(string bucketName, string key);
 

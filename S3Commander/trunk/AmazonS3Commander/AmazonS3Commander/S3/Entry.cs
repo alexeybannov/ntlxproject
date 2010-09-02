@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TotalCommander.Plugin.Wfx;
-using TotalCommander.Plugin.Wfx.FileSystem;
-using System;
 using TotalCommander.Plugin;
-using System.Threading;
+using TotalCommander.Plugin.Wfx;
 
 namespace AmazonS3Commander.S3
 {
@@ -129,6 +127,7 @@ namespace AmazonS3Commander.S3
                     bucket,
                     key,
                     localFile.Length,
+                    MimeMapping.GetMimeMapping(localName),
                     stream =>
                     {
                         using (var file = localFile.OpenRead())
@@ -179,6 +178,7 @@ namespace AmazonS3Commander.S3
                     bucket,
                     (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
                     0,
+                    null,
                     stream => { });
                 return true;
             }

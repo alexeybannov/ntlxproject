@@ -49,9 +49,9 @@ namespace AmazonS3Commander.S3
             return client.GetObjectStream(bucketName, key, from);
         }
 
-        public void AddObject(string bucketName, string key, long bytes, Action<Stream> action)
+        public void AddObject(string bucketName, string key, long bytes, string contentType, Action<Stream> action)
         {
-            client.AddObject(bucketName, key, bytes, action);
+            client.AddObject(bucketName, key, bytes, contentType, default(CannedAcl), action);
         }
 
         public void DeleteObject(string bucketName, string key)
