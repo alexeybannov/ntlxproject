@@ -53,8 +53,9 @@ namespace AmazonS3Commander.S3
                     localFile.Delete();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Context.Log.Error(ex);
                 return FileOperationResult.WriteError;
             }
 
@@ -82,15 +83,11 @@ namespace AmazonS3Commander.S3
                     }
                 }
 
-                if (copyFlags.IsSet(CopyFlags.Move))
-                {
-                    if (!DeleteFile()) return FileOperationResult.WriteError;
-                }
-
                 SetProgress(localName, key, 100, 100);
             }
-            catch
+            catch (Exception ex)
             {
+                Context.Log.Error(ex);
                 return FileOperationResult.ReadError;
             }
 
@@ -99,16 +96,9 @@ namespace AmazonS3Commander.S3
 
         public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
         {
-            try
+            if (copyFlags.IsSet(CopyFlags.ExistsSameCase) && !copyFlags.IsSet(CopyFlags.Overwrite))
             {
-                if (copyFlags.IsSet(CopyFlags.ExistsSameCase) && !copyFlags.IsSet(CopyFlags.Overwrite))
-                {
-                    return FileOperationResult.Exists;
-                }
-            }
-            catch
-            {
-                return FileOperationResult.ReadError;
+                return FileOperationResult.Exists;
             }
 
             var aborted = false;
@@ -151,20 +141,12 @@ namespace AmazonS3Commander.S3
                     }
                 );
 
-                if (copyFlags.IsSet(CopyFlags.Move))
-                {
-                    localFile.Delete();
-                }
-
                 SetProgress(localName, key, 100, 100);
             }
-            catch
+            catch (Exception ex)
             {
-                if (aborted)
-                {
-                    return FileOperationResult.UserAbort;
-                }
-                return FileOperationResult.WriteError;
+                Context.Log.Error(ex);
+                return aborted ? FileOperationResult.UserAbort : FileOperationResult.WriteError;
             }
 
             return FileOperationResult.OK;
@@ -172,46 +154,25 @@ namespace AmazonS3Commander.S3
 
         public override bool CreateFolder(string name)
         {
-            try
-            {
-                Context.S3Service.AddObject(
-                    bucket,
-                    (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
-                    0,
-                    null,
-                    stream => { });
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            Context.S3Service.AddObject(
+                bucket,
+                (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
+                0,
+                null,
+                stream => { });
+            return true;
         }
 
         public override bool DeleteFile()
         {
-            try
-            {
-                Context.S3Service.DeleteObject(bucket, key);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            Context.S3Service.DeleteObject(bucket, key);
+            return true;
         }
 
         public override bool DeleteFolder()
         {
-            try
-            {
-                Context.S3Service.DeleteObject(bucket, key + "/");
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            Context.S3Service.DeleteObject(bucket, key + "/");
+            return true;
         }
 
         public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
@@ -226,7 +187,7 @@ namespace AmazonS3Commander.S3
             {
                 return new FindData(file.Name, file.Size)
                 {
-                    LastWriteTime = file.CreationDate
+                    LastWriteTime = file.LastModified
                 };
             }
             return new FindData(entry.Name, FileAttributes.Directory);

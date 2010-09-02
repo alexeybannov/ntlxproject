@@ -4,7 +4,7 @@ namespace AmazonS3Commander.S3
 {
     class S3File : S3Entry
     {
-        public DateTime CreationDate
+        public DateTime LastModified
         {
             get;
             set;
@@ -17,10 +17,11 @@ namespace AmazonS3Commander.S3
         }
 
 
-        public S3File(string name)
+        public S3File(string name, long size, DateTime lastModified)
             : base(name)
         {
-
+            Size = size;
+            LastModified = lastModified;
         }
     }
 }

@@ -11,12 +11,6 @@ namespace AmazonS3Commander.S3
         }
 
 
-        public S3Bucket(string name)
-            : this(name, DateTime.MinValue)
-        {
-
-        }
-
         public S3Bucket(string name, DateTime creationDate)
             : base(name)
         {

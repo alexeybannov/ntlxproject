@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using AmazonS3Commander.Accounts;
 using AmazonS3Commander.Configuration;
+using AmazonS3Commander.Logger;
 using AmazonS3Commander.Properties;
 using AmazonS3Commander.S3;
 using TotalCommander.Plugin.Wfx;
@@ -19,12 +19,15 @@ namespace AmazonS3Commander
 
         private readonly S3ServiceProvider s3ServiceProvider;
 
+        private readonly ILog log;
+
 
         public S3CommanderFileSystem(FileSystemContext context)
         {
             fileSystemContext = context;
             accountManager = new AccountManager();
             s3ServiceProvider = new S3ServiceProvider(accountManager);
+            log = new Logger.Log();
         }
 
 
@@ -75,7 +78,7 @@ namespace AmazonS3Commander
 
             if (file != null)
             {
-                file.Initialize(new S3CommanderContext(fileSystemContext, s3ServiceProvider, accountName));
+                file.Initialize(new S3CommanderContext(fileSystemContext, log, s3ServiceProvider, accountName));
             }
             return file;
         }
@@ -92,14 +95,14 @@ namespace AmazonS3Commander
         public override bool CreateFolder(string name)
         {
             return new NewAccount(accountManager)
-                .Initialize(new S3CommanderContext(fileSystemContext))
+                .Initialize(new S3CommanderContext(fileSystemContext, log))
                 .CreateFolder(name);
         }
 
 
         public void OperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
         {
-            Debug.WriteLine(string.Format("Operation {0} for directory '{1}' {2}", operation, remoteDir, origin.ToString().ToLower()));
+            log.Trace("Operation {0} for directory '{1}' {2}", operation, remoteDir, origin.ToString().ToLower());
             S3CommanderContext.ProcessOperationInfo(remoteDir, origin, operation);
         }
 

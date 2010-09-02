@@ -2,6 +2,7 @@
 using AmazonS3Commander.S3;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
+using AmazonS3Commander.Logger;
 
 namespace AmazonS3Commander
 {
@@ -28,9 +29,10 @@ namespace AmazonS3Commander
             get { return context.Progress; }
         }
 
-        public Log Log
+        public ILog Log
         {
-            get { return context.Log; }
+            get;
+            private set;
         }
 
         public Request Request
@@ -65,15 +67,16 @@ namespace AmazonS3Commander
         }
 
 
-        public S3CommanderContext(FileSystemContext context)
-            : this(context, null, null)
+        public S3CommanderContext(FileSystemContext context, ILog log)
+            : this(context, log, null, null)
         {
 
         }
 
-        public S3CommanderContext(FileSystemContext context, S3ServiceProvider provider, string accountName)
+        public S3CommanderContext(FileSystemContext context, ILog log, S3ServiceProvider provider, string accountName)
         {
             this.context = context;
+            this.Log = log;
             this.provider = provider;
             CurrentAccount = accountName;
         }

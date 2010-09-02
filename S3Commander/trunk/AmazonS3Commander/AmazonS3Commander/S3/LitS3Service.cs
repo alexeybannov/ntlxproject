@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LitS3;
-using System;
 using System.Net;
+using LitS3;
 
 namespace AmazonS3Commander.S3
 {
@@ -39,7 +39,7 @@ namespace AmazonS3Commander.S3
                 {
                     var f = o as ObjectEntry;
                     return f != null ?
-                        (S3Entry)new S3File(f.Name) { Size = f.Size, CreationDate = f.LastModified } :
+                        (S3Entry)new S3File(f.Name, f.Size, f.LastModified) :
                         (S3Entry)new S3Folder(o.Name);
                 });
         }
