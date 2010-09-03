@@ -4,7 +4,7 @@ namespace AmazonS3Commander.Configuration
 {
     class ConfigurationFile : S3CommanderFile
     {
-        protected override Icon GetIcon()
+        public override Icon GetIcon()
         {
             return Icons.Settings;
         }        

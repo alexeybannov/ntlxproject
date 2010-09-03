@@ -50,7 +50,7 @@ namespace AmazonS3Commander.Accounts
             }
         }
 
-        protected override Icon GetIcon()
+        public override Icon GetIcon()
         {
             return Icons.NewAccount;
         }

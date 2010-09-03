@@ -13,13 +13,7 @@ namespace AmazonS3Commander.S3
 
         private readonly string key;
 
-
-        public override bool ResumeAllowed
-        {
-            get { return true; }
-        }
-
-
+        
         public Entry(string bucket, string key)
         {
             this.bucket = bucket;
@@ -28,7 +22,7 @@ namespace AmazonS3Commander.S3
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return Context.S3Service
+            return S3Service
                 .GetObjects(bucket, !string.IsNullOrEmpty(key) ? key + "/" : "")
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
@@ -64,7 +58,7 @@ namespace AmazonS3Commander.S3
                 SetProgress(key, localName, offset, info.Size);
 
                 //download
-                using (var stream = Context.S3Service.GetObjectStream(bucket, key, offset))
+                using (var stream = S3Service.GetObjectStream(bucket, key, offset))
                 using (var file = new FileStream(localName, FileMode.Append))
                 {
                     var buffer = new byte[1024 * 4];
@@ -113,7 +107,7 @@ namespace AmazonS3Commander.S3
 
                 SetProgress(localName, key, 0, length);
 
-                Context.S3Service.AddObject(
+                S3Service.AddObject(
                     bucket,
                     key,
                     localFile.Length,
@@ -154,7 +148,7 @@ namespace AmazonS3Commander.S3
 
         public override bool CreateFolder(string name)
         {
-            Context.S3Service.AddObject(
+            S3Service.AddObject(
                 bucket,
                 (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
                 0,
@@ -165,13 +159,13 @@ namespace AmazonS3Commander.S3
 
         public override bool DeleteFile()
         {
-            Context.S3Service.DeleteObject(bucket, key);
+            S3Service.DeleteObject(bucket, key);
             return true;
         }
 
         public override bool DeleteFolder()
         {
-            Context.S3Service.DeleteObject(bucket, key + "/");
+            S3Service.DeleteObject(bucket, key + "/");
             return true;
         }
 

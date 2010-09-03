@@ -26,7 +26,7 @@ namespace AmazonS3Commander.S3
                 .CreateFolder(name);
         }
 
-        protected override Icon GetIcon()
+        public override Icon GetIcon()
         {
             return Icons.Bucket;
         }

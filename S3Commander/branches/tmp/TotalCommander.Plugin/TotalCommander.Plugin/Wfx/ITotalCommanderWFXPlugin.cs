@@ -1112,6 +1112,6 @@ namespace TotalCommander.Plugin.Wfx
         /// Called when an exception occurs.
         /// </summary>
         /// <param name="error">The error.</param>
-        void OnError(Exception error);
+        void UnhandledError(Exception error);
     }
 }
