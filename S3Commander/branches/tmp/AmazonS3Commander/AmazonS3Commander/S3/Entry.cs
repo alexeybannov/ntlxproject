@@ -9,21 +9,24 @@ namespace AmazonS3Commander.S3
 {
     class Entry : S3CommanderFile
     {
-        private readonly string bucket;
+        private readonly string bucketName;
 
         private readonly string key;
 
-        
-        public Entry(string bucket, string key)
+
+        public Entry(string bucketName, string key)
         {
-            this.bucket = bucket;
+            if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException("bucketName");
+            if (key == null) throw new ArgumentNullException("key");
+
+            this.bucketName = bucketName;
             this.key = key;
         }
 
         public override IEnumerator<FindData> GetFiles()
         {
             return S3Service
-                .GetObjects(bucket, !string.IsNullOrEmpty(key) ? key + "/" : "")
+                .GetObjects(bucketName, !string.IsNullOrEmpty(key) ? key + "/" : "")
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
         }
@@ -58,7 +61,7 @@ namespace AmazonS3Commander.S3
                 SetProgress(key, localName, offset, info.Size);
 
                 //download
-                using (var stream = S3Service.GetObjectStream(bucket, key, offset))
+                using (var stream = S3Service.GetObjectStream(bucketName, key, offset))
                 using (var file = new FileStream(localName, FileMode.Append))
                 {
                     var buffer = new byte[1024 * 4];
@@ -78,14 +81,14 @@ namespace AmazonS3Commander.S3
                 }
 
                 SetProgress(localName, key, 100, 100);
+
+                return FileOperationResult.OK;
             }
             catch (Exception ex)
             {
                 Context.Log.Error(ex);
                 return FileOperationResult.ReadError;
             }
-
-            return FileOperationResult.OK;
         }
 
         public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
@@ -108,7 +111,7 @@ namespace AmazonS3Commander.S3
                 SetProgress(localName, key, 0, length);
 
                 S3Service.AddObject(
-                    bucket,
+                    bucketName,
                     key,
                     localFile.Length,
                     MimeMapping.GetMimeMapping(localName),
@@ -136,20 +139,22 @@ namespace AmazonS3Commander.S3
                 );
 
                 SetProgress(localName, key, 100, 100);
+
+                return FileOperationResult.OK;
             }
             catch (Exception ex)
             {
                 Context.Log.Error(ex);
                 return aborted ? FileOperationResult.UserAbort : FileOperationResult.WriteError;
             }
-
-            return FileOperationResult.OK;
         }
 
         public override bool CreateFolder(string name)
         {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name", "Folder name can not be null.");
+
             S3Service.AddObject(
-                bucket,
+                bucketName,
                 (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
                 0,
                 null,
@@ -159,13 +164,13 @@ namespace AmazonS3Commander.S3
 
         public override bool DeleteFile()
         {
-            S3Service.DeleteObject(bucket, key);
+            S3Service.DeleteObject(bucketName, key);
             return true;
         }
 
         public override bool DeleteFolder()
         {
-            S3Service.DeleteObject(bucket, key + "/");
+            S3Service.DeleteObject(bucketName, key + "/");
             return true;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,9 @@ namespace AmazonS3Commander.Accounts
 
         public Account(AccountManager accountManager, string accountName)
         {
+            if (accountManager == null) throw new ArgumentNullException("accountManager");
+            if (string.IsNullOrEmpty(accountName)) throw new ArgumentNullException("accountName");
+
             this.accountManager = accountManager;
             this.accountName = accountName;
         }

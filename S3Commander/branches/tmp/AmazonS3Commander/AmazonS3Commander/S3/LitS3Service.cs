@@ -41,7 +41,8 @@ namespace AmazonS3Commander.S3
                     return f != null ?
                         (S3Entry)new S3File(f.Name, f.Size, f.LastModified) :
                         (S3Entry)new S3Folder(o.Name);
-                });
+                })
+                .Where(e => !string.IsNullOrEmpty(e.Name));
         }
 
         public Stream GetObjectStream(string bucketName, string key, long from)

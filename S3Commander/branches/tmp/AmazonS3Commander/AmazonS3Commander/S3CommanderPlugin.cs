@@ -7,6 +7,7 @@ using AmazonS3Commander.Logger;
 using AmazonS3Commander.Properties;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
+using LitS3;
 
 namespace AmazonS3Commander
 {
@@ -126,7 +127,15 @@ namespace AmazonS3Commander
         public override void OnError(Exception error)
         {
             log.Error(error);
-            MessageBox.Show(error.ToString(), PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (error is S3Exception)
+            {
+                var s3error = (S3Exception)error;
+                MessageBox.Show(error.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show(error.ToString(), PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 

@@ -16,14 +16,11 @@ namespace AmazonS3Commander
 
         private readonly S3ServiceProvider s3ServiceProvider;
 
-        private readonly ILog log;
-
 
         public S3CommanderRoot(string workDirectory)
         {
             accountManager = new AccountManager(workDirectory);
             s3ServiceProvider = new S3ServiceProvider(accountManager);
-            log = new Logger.Log(workDirectory);
         }
 
 

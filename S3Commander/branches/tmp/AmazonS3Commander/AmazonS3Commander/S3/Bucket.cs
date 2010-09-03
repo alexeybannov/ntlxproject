@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using TotalCommander.Plugin.Wfx;
 
@@ -11,6 +12,8 @@ namespace AmazonS3Commander.S3
 
         public Bucket(string bucketName)
         {
+            if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException("bucketName");
+
             this.bucketName = bucketName;
         }
 
