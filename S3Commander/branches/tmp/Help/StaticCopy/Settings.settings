@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="StaticCopy" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="extensions" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">.png|.jpeg|.jpg|.gif|.css|.js|.ico|.swf</Value>
+    </Setting>
+    <Setting Name="acesskey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">AKIAIOG356ZKCYWVO6NA</Value>
+    </Setting>
+    <Setting Name="secretkey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">zNv2e6nIHa1tMCR5VKTK+S+ErwUPhXoY2xAsrzEw</Value>
+    </Setting>
+    <Setting Name="subdir" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="keepcasing" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="bucket" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">static.teamlab.com</Value>
+    </Setting>
+    <Setting Name="dir" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">d:\ASC_Amazon\web\virgin studio\ASC.Web.Studio\</Value>
+    </Setting>
+    <Setting Name="version" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">studio/1.1/</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
