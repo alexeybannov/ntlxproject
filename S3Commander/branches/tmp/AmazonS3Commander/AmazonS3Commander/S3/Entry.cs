@@ -33,18 +33,18 @@ namespace AmazonS3Commander.S3
             var offset = 0L;
             try
             {
-                var localFile = new FileInfo(localName);
-                if (localFile.Exists && (copyFlags.Equals(CopyFlags.None) || copyFlags.Equals(CopyFlags.Move)))
+                var file = new FileInfo(localName);
+                if (file.Exists && (copyFlags.Equals(CopyFlags.None) || copyFlags.Equals(CopyFlags.Move)))
                 {
                     return FileOperationResult.ExistsResumeAllowed;
                 }
                 if (copyFlags.IsSet(CopyFlags.Resume))
                 {
-                    offset = localFile.Length;
+                    offset = file.Length;
                 }
                 if (copyFlags.IsSet(CopyFlags.Overwrite))
                 {
-                    localFile.Delete();
+                    file.Delete();
                 }
             }
             catch (Exception ex)

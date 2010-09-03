@@ -34,7 +34,7 @@ namespace AmazonS3Commander.S3
         private S3CommanderFile CreateEntry()
         {
             return new Entry(bucketName, string.Empty)
-                .Initialize(Context);
+                .Initialize(Context, S3Service);
         }
     }
 }

@@ -408,7 +408,7 @@ namespace TotalCommander.Plugin.Wfx
             {
                 if (Plugin != null)
                 {
-                    Plugin.UnhandledError(ex);
+                    Plugin.OnError(ex);
                 }
             }
             catch { }

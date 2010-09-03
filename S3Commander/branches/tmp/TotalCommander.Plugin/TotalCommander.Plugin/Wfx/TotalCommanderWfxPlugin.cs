@@ -192,17 +192,10 @@ namespace TotalCommander.Plugin.Wfx
         {
             return ri.IsDirectory ?
                 DirectoryRename(oldName, newName, overwrite, ri) :
-                move ?
-                FileMove(oldName, newName, overwrite, ri) :
-                FileCopy(oldName, newName, overwrite, ri);
+                FileCopy(oldName, newName, overwrite, move, ri);
         }
 
-        public virtual FileOperationResult FileMove(string source, string target, bool overwrite, RemoteInfo ri)
-        {
-            return FileOperationResult.Default;
-        }
-
-        public virtual FileOperationResult FileCopy(string source, string target, bool overwrite, RemoteInfo ri)
+        public virtual FileOperationResult FileCopy(string source, string target, bool overwrite, bool move, RemoteInfo ri)
         {
             return FileOperationResult.Default;
         }
@@ -290,7 +283,7 @@ namespace TotalCommander.Plugin.Wfx
 
         }
 
-        public virtual void UnhandledError(Exception error)
+        public virtual void OnError(Exception error)
         {
 
         }

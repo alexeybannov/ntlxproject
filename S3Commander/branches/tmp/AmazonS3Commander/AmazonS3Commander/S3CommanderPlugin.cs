@@ -34,11 +34,16 @@ namespace AmazonS3Commander
         public override void Initialize()
         {
             var workDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), PluginName);
-            if (!Directory.Exists(workDirectory)) Directory.CreateDirectory(workDirectory);
+            if (!Directory.Exists(workDirectory))
+            {
+                Directory.CreateDirectory(workDirectory);
+            }
 
             log = new Logger.Log(workDirectory);
             context = new S3CommanderContext(this, log);
-            root = new S3CommanderRoot(workDirectory);
+
+            root = (S3CommanderRoot)new S3CommanderRoot(workDirectory)
+                .Initialize(context);
         }
 
 
@@ -57,37 +62,23 @@ namespace AmazonS3Commander
 
         public override ExecuteResult ExecuteOpen(TotalCommanderWindow window, ref string remoteName)
         {
-            return base.ExecuteOpen(window, ref remoteName);
+            return ResolvePath(remoteName).Open(window, ref remoteName);
         }
 
         public override ExecuteResult ExecuteProperties(TotalCommanderWindow window, ref string remoteName)
         {
-            return base.ExecuteProperties(window, ref remoteName);
+            return ResolvePath(remoteName).Properties(window, ref remoteName);
         }
 
 
-        public override FileOperationResult FileCopy(string source, string target, bool overwrite, RemoteInfo ri)
+        public override FileOperationResult FileCopy(string source, string target, bool overwrite, bool move, RemoteInfo ri)
         {
-            return base.FileCopy(source, target, overwrite, ri);
-        }
-
-        public override FileOperationResult FileMove(string source, string target, bool overwrite, RemoteInfo ri)
-        {
-            return base.FileMove(source, target, overwrite, ri);
-        }
-
-        /*public override FileOperationResult FileCopy(string oldName, string newName, bool move, bool overwrite, RemoteInfo ri)
-        {
-            var oldFile = ResolvePath(oldName);
-            var newFile = ResolvePath(newName);
-
-            if (!overwrite && newFile.Exists)
+            if (!overwrite)
             {
-                return newFile.ResumeAllowed ? FileOperationResult.ExistsResumeAllowed : FileOperationResult.Exists;
+                return FileOperationResult.Exists;
             }
-
-            return move ? oldFile.MoveTo(newFile, ri) : oldFile.CopyTo(newFile, ri);
-        }*/
+            return ResolvePath(source).CopyTo(ResolvePath(target), move, ri);
+        }
 
         public override FileOperationResult FileGet(string remoteName, ref string localName, CopyFlags copyFlags, RemoteInfo ri)
         {
@@ -108,12 +99,10 @@ namespace AmazonS3Commander
         public override bool DirectoryCreate(string path)
         {
             if (string.IsNullOrEmpty(path)) return false;
-            var pos = path.TrimEnd('\\').LastIndexOf('\\');
-            if (0 <= pos)
-            {
-                return ResolvePath(path.Substring(0, pos)).CreateFolder(path.Substring(pos + 1));
-            }
-            return false;
+
+            path = path.TrimEnd('\\');
+            return ResolvePath(Path.GetDirectoryName(path))
+                .CreateFolder(Path.GetFileName(path));
         }
 
         public override bool DirectoryRemove(string remoteName)
@@ -134,7 +123,7 @@ namespace AmazonS3Commander
             S3CommanderContext.ProcessOperationInfo(remoteName, origin, operation);
         }
 
-        public override void UnhandledError(Exception error)
+        public override void OnError(Exception error)
         {
             log.Error(error);
             MessageBox.Show(error.ToString(), PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);

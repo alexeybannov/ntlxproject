@@ -49,6 +49,9 @@ namespace AmazonS3Commander
 
         public S3CommanderContext(TotalCommanderWfxPlugin plugin, ILog log)
         {
+            if (plugin == null) throw new ArgumentNullException("plugin");
+            if (log == null) throw new ArgumentNullException("log");
+            
             this.plugin = plugin;
             this.Log = log;
         }

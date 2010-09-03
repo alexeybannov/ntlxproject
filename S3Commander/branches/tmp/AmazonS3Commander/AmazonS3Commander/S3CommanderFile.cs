@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using AmazonS3Commander.S3;
 using TotalCommander.Plugin;
@@ -18,15 +19,23 @@ namespace AmazonS3Commander
 
         public S3CommanderContext Context
         {
-            get { return context; }
+            get
+            {
+                if (context == null) throw new InvalidOperationException("Context not initialized.");
+                return context;
+            }
         }
 
         public IS3Service S3Service
         {
-            get { return s3Service; }
+            get
+            {
+                if (s3Service == null) throw new InvalidOperationException("S3Service not initialized.");
+                return s3Service;
+            }
         }
 
-        
+
         protected S3CommanderFile()
         {
         }
@@ -38,12 +47,14 @@ namespace AmazonS3Commander
 
         public S3CommanderFile Initialize(S3CommanderContext context, IS3Service s3Service)
         {
+            if (context == null) throw new ArgumentNullException("context");
+            
             this.context = context;
             this.s3Service = s3Service;
             return this;
         }
 
-        
+
         public virtual IEnumerator<FindData> GetFiles()
         {
             return null;
@@ -71,12 +82,7 @@ namespace AmazonS3Commander
         }
 
 
-        public virtual FileOperationResult CopyTo(S3CommanderFile dest, RemoteInfo info)
-        {
-            return FileOperationResult.Default;
-        }
-
-        public virtual FileOperationResult MoveTo(S3CommanderFile dest, RemoteInfo info)
+        public virtual FileOperationResult CopyTo(S3CommanderFile dest, bool move, RemoteInfo info)
         {
             return FileOperationResult.Default;
         }
