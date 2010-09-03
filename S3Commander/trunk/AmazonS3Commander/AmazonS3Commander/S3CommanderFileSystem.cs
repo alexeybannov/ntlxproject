@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AmazonS3Commander.Accounts;
 using AmazonS3Commander.Configuration;
@@ -24,10 +25,13 @@ namespace AmazonS3Commander
 
         public S3CommanderFileSystem(FileSystemContext context)
         {
+            var workDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Resources.ProductName);
+            if (!Directory.Exists(workDirectory)) Directory.CreateDirectory(workDirectory);
+
             fileSystemContext = context;
-            accountManager = new AccountManager();
+            accountManager = new AccountManager(workDirectory);
             s3ServiceProvider = new S3ServiceProvider(accountManager);
-            log = new Logger.Log();
+            log = new Logger.Log(workDirectory);
         }
 
 
@@ -102,7 +106,7 @@ namespace AmazonS3Commander
 
         public void OperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
         {
-            log.Trace("Operation {0} for directory '{1}' {2}", operation, remoteDir, origin.ToString().ToLower());
+            log.Trace("Command '{0}' for '{1}' {2}", operation, remoteDir, origin.ToString().ToLower());
             S3CommanderContext.ProcessOperationInfo(remoteDir, origin, operation);
         }
 

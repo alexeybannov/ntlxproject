@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wfx.FileSystem;
+using System.Diagnostics;
 
 namespace AmazonS3Commander
 {
@@ -27,6 +28,7 @@ namespace AmazonS3Commander
 
         public override void OnError(Exception error)
         {
+            Trace.TraceError(error.ToString());
             MessageBox.Show(error.ToString(), PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }

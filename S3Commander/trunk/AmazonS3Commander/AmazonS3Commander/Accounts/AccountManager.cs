@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AmazonS3Commander.Properties;
 using TotalCommander.Plugin.Wfx;
 
 namespace AmazonS3Commander.Accounts
@@ -17,13 +15,9 @@ namespace AmazonS3Commander.Accounts
         private const string EXT = ".s3a";
 
 
-        public AccountManager()
+        public AccountManager(string path)
         {
-            path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Resources.ProductName);
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+            this.path = path;
         }
 
 

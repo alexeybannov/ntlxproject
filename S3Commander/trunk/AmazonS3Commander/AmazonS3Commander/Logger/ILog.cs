@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AmazonS3Commander.Logger
 {
@@ -10,6 +7,9 @@ namespace AmazonS3Commander.Logger
         void Error(Exception error);
 
         void Error(string format, params object[] args);
+
+
+        void Trace(string message);
 
         void Trace(string format, params object[] args);
     }
