@@ -42,7 +42,7 @@ namespace AmazonS3Commander.S3
                         (S3Entry)new S3File(f.Name, f.Size, f.LastModified) :
                         (S3Entry)new S3Folder(o.Name);
                 })
-                .Where(e => !string.IsNullOrEmpty(e.Name));
+                .Where(e => !string.IsNullOrEmpty(e.Key));
         }
 
         public Stream GetObjectStream(string bucketName, string key, long from)

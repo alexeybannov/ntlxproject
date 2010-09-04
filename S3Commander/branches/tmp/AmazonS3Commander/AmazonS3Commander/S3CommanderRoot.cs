@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AmazonS3Commander.Accounts;
 using AmazonS3Commander.Configuration;
-using AmazonS3Commander.Logger;
 using AmazonS3Commander.Properties;
 using AmazonS3Commander.S3;
 using TotalCommander.Plugin.Wfx;
@@ -26,7 +25,9 @@ namespace AmazonS3Commander
 
         public S3CommanderFile ResolvePath(string path)
         {
-            if (path == null) return null;
+            S3CommanderFile file = null;
+
+            if (path == null) return file;
 
             var parts = path.TrimEnd('\\').Split('\\');
             var depth = parts.Length - 1;
@@ -37,9 +38,7 @@ namespace AmazonS3Commander
                 return this;
             }
 
-            if (parts[depth] == "..") return null;
-
-            S3CommanderFile file = null;
+            if (parts[depth] == "..") return file;
 
             //accounts
             var accountName = parts[1];
@@ -63,7 +62,7 @@ namespace AmazonS3Commander
             {
                 file = new Bucket(parts[2]);
             }
-            //amazon s3 folders or file
+            //amazon s3 folder or file
             else if (3 <= depth)
             {
                 file = new Entry(parts[2], string.Join("/", parts, 3, depth - 2));
@@ -79,6 +78,8 @@ namespace AmazonS3Commander
 
         public override IEnumerator<FindData> GetFiles()
         {
+            if (Context.CurrentOperation != StatusOperation.List) return EmptyFindDataEnumerator;
+
             return accountManager
                 .GetAccounts()
                 .Union(new[] { new FindData(Resources.NewAccount), new FindData(Resources.Settings) })

@@ -312,7 +312,7 @@ namespace TotalCommander.Plugin.Wfx
             {
                 Icon icon = null;
                 var nameRef = Win32.PtrToStringAnsi(remoteName);
-                result = Plugin.GetCustomIcon(ref nameRef, (CustomIconFlag)extractFlags, out icon);
+                result = Plugin.GetCustomIcon(ref nameRef, (CustomIconFlags)extractFlags, out icon);
                 if (icon != null) iconHandle = icon.Handle;
                 Win32.WriteStringAnsi(remoteName, nameRef);
             }

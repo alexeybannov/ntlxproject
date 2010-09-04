@@ -13,6 +13,11 @@ namespace AmazonS3Commander.S3
 
         private readonly string key;
 
+        private string FolderKey
+        {
+            get { return key != string.Empty ? key + "/" : key; }
+        }
+
 
         public Entry(string bucketName, string key)
         {
@@ -26,7 +31,7 @@ namespace AmazonS3Commander.S3
         public override IEnumerator<FindData> GetFiles()
         {
             return S3Service
-                .GetObjects(bucketName, !string.IsNullOrEmpty(key) ? key + "/" : "")
+                .GetObjects(bucketName, FolderKey)
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
         }
@@ -155,22 +160,22 @@ namespace AmazonS3Commander.S3
 
             S3Service.AddObject(
                 bucketName,
-                (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
+                FolderKey + name + "/",
                 0,
                 null,
                 stream => { });
             return true;
         }
 
-        public override bool DeleteFile()
+        public override bool DeleteFolder()
         {
-            S3Service.DeleteObject(bucketName, key);
+            S3Service.DeleteObject(bucketName, FolderKey);
             return true;
         }
 
-        public override bool DeleteFolder()
+        public override bool DeleteFile()
         {
-            S3Service.DeleteObject(bucketName, key + "/");
+            S3Service.DeleteObject(bucketName, key);
             return true;
         }
 
@@ -181,15 +186,18 @@ namespace AmazonS3Commander.S3
 
         private FindData ToFindData(S3Entry entry)
         {
+            var index = entry.Key.TrimEnd('/').LastIndexOf('/');
+            var name = 0 <= index ? entry.Key.Substring(index + 1) : entry.Key;
+
             var file = entry as S3File;
             if (file != null)
             {
-                return new FindData(file.Name, file.Size)
+                return new FindData(name, file.Size)
                 {
                     LastWriteTime = file.LastModified
                 };
             }
-            return new FindData(entry.Name, FileAttributes.Directory);
+            return new FindData(name, FileAttributes.Directory);
         }
 
         private bool SetProgress(string source, string target, long offset, long length)

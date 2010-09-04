@@ -50,7 +50,7 @@
     <Compile Include="Wfx\Password.cs" />
     <Compile Include="Wfx\WfxDispatcher.cs" />
     <Compile Include="Wfx\PreviewBitmapResult.cs" />
-    <Compile Include="Wfx\CustomIconFlag.cs" />
+    <Compile Include="Wfx\CustomIconFlags.cs" />
     <Compile Include="Wfx\CustomIconResult.cs" />
     <Compile Include="Wfx\StatusOperation.cs" />
     <Compile Include="Wfx\StatusOrigin.cs" />

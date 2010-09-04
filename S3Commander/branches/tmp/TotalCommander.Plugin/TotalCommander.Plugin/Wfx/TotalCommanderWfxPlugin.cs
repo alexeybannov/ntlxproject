@@ -72,7 +72,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <summary>
         /// Suggested location+name of the ini file where the plugin could store its data.
         /// </summary>
-        public string IniFilePath
+        public string PluginIniFile
         {
             get;
             private set;
@@ -227,7 +227,7 @@ namespace TotalCommander.Plugin.Wfx
         }
 
 
-        public virtual CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon)
+        public virtual CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlags extractIconFlag, out Icon icon)
         {
             icon = null;
             return CustomIconResult.UseDefault;
@@ -254,7 +254,7 @@ namespace TotalCommander.Plugin.Wfx
         void ITotalCommanderWfxPlugin.SetDefaultParams(DefaultParam defaultParam)
         {
             PluginInterfaceVersion = defaultParam.PluginInterfaceVersion;
-            IniFilePath = defaultParam.DefaultIniFileName;
+            PluginIniFile = defaultParam.DefaultIniFileName;
         }
 
         public virtual bool SetFileAttributes(string remoteName, FileAttributes attributes)

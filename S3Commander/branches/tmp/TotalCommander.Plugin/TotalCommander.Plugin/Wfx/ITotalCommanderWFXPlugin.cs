@@ -720,8 +720,8 @@ namespace TotalCommander.Plugin.Wfx
         /// The icon handle must still be returned in <paramref name="icon"/>!</param>
         /// <param name="extractIconFlag">
         /// Flags for the extract operation. A combination of the following:<br />
-        /// <see cref="CustomIconFlag.Small"/>: Requests the small 16x16 icon<br />
-        /// <see cref="CustomIconFlag.Background"/>: The function is called from the background thread (see note below).
+        /// <see cref="CustomIconFlags.Small"/>: Requests the small 16x16 icon<br />
+        /// <see cref="CustomIconFlags.Background"/>: The function is called from the background thread (see note below).
         /// </param>
         /// <param name="icon">
         /// Here you need to return the icon.
@@ -745,7 +745,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </item>
         /// <item>
         /// <term><see cref="CustomIconResult.Delayed"/></term>
-        /// <description>This return value is only valid if <see cref="CustomIconFlag.Background"/> was NOT set. 
+        /// <description>This return value is only valid if <see cref="CustomIconFlags.Background"/> was NOT set. 
         /// It tells the calling app to show a default icon, and request the true icon in a background thread. 
         /// See note below.</description>
         /// </item>
@@ -759,9 +759,9 @@ namespace TotalCommander.Plugin.Wfx
         /// e.g. EXE icons. In the fsplugin sample plugin, the drive icons are returned immediately 
         /// (because they are stored in the plugin itself), but the EXE icons are loaded with a delay. 
         /// If the user turns off background loading of icons, the function will be called 
-        /// in the foreground with the <see cref="CustomIconFlag.Background"/> flag.
+        /// in the foreground with the <see cref="CustomIconFlags.Background"/> flag.
         /// </remarks>
-        CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon);
+        CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlags extractIconFlag, out Icon icon);
 
         /// <summary>
         /// <see cref="ITotalCommanderWfxPlugin.GetPreviewBitmap"/> is called when a file/directory is displayed in thumbnail view. 

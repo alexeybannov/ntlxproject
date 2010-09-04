@@ -4,7 +4,7 @@ namespace AmazonS3Commander.S3
 {
     class S3Entry
     {
-        public string Name
+        public string Key
         {
             get;
             private set;
@@ -14,14 +14,13 @@ namespace AmazonS3Commander.S3
         {
             if (key == null) throw new ArgumentNullException("key");
 
-            var index = key.TrimEnd('/').LastIndexOf('/');
-            Name = 0 <= index ? key.Substring(index + 1) : key;
+            Key = key;
         }
 
 
         public override string ToString()
         {
-            return Name;
+            return Key;
         }
     }
 }

@@ -11,13 +11,15 @@ namespace AmazonS3Commander
     {
         public static readonly S3CommanderFile Empty = new S3CommanderFile();
 
+        protected static readonly IEnumerator<FindData> EmptyFindDataEnumerator = new List<FindData>().GetEnumerator();
+
 
         private S3CommanderContext context;
 
         private IS3Service s3Service;
 
 
-        public S3CommanderContext Context
+        protected S3CommanderContext Context
         {
             get
             {
@@ -26,7 +28,7 @@ namespace AmazonS3Commander
             }
         }
 
-        public IS3Service S3Service
+        protected IS3Service S3Service
         {
             get
             {
@@ -71,21 +73,6 @@ namespace AmazonS3Commander
             return ExecuteResult.Default;
         }
 
-        public virtual ExecuteResult ChangeMode(TotalCommanderWindow window, string mode, ref string link)
-        {
-            return ExecuteResult.Default;
-        }
-
-        public virtual ExecuteResult Command(TotalCommanderWindow window, string command, ref string link)
-        {
-            return ExecuteResult.Default;
-        }
-
-
-        public virtual FileOperationResult CopyTo(S3CommanderFile dest, bool move, RemoteInfo info)
-        {
-            return FileOperationResult.Default;
-        }
 
         public virtual FileOperationResult Download(string localName, CopyFlags copyFlags, RemoteInfo info)
         {
@@ -93,6 +80,11 @@ namespace AmazonS3Commander
         }
 
         public virtual FileOperationResult Upload(string localName, CopyFlags copyFlags)
+        {
+            return FileOperationResult.Default;
+        }
+
+        public virtual FileOperationResult CopyTo(S3CommanderFile dest, bool move, RemoteInfo info)
         {
             return FileOperationResult.Default;
         }

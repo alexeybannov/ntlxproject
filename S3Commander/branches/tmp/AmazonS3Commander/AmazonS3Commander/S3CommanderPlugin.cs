@@ -43,8 +43,8 @@ namespace AmazonS3Commander
             log = new Logger.Log(workDirectory);
             context = new S3CommanderContext(this, log);
 
-            root = (S3CommanderRoot)new S3CommanderRoot(workDirectory)
-                .Initialize(context);
+            root = new S3CommanderRoot(workDirectory);
+            root.Initialize(context);
         }
 
 
@@ -74,7 +74,7 @@ namespace AmazonS3Commander
 
         public override FileOperationResult FileCopy(string source, string target, bool overwrite, bool move, RemoteInfo ri)
         {
-            if (!overwrite)
+            if (overwrite == false)
             {
                 return FileOperationResult.Exists;
             }
@@ -112,7 +112,7 @@ namespace AmazonS3Commander
         }
 
 
-        public override CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon)
+        public override CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlags extractIconFlag, out Icon icon)
         {
             icon = ResolvePath(remoteName).GetIcon();
             return icon != null ? CustomIconResult.Extracted : CustomIconResult.UseDefault;

@@ -6,7 +6,7 @@ namespace AmazonS3Commander.S3
         public S3Folder(string name)
             : base(name)
         {
-        
+
         }
     }
 }

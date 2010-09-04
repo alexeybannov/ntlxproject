@@ -23,7 +23,7 @@ namespace TotalCommander.Plugin.Wfx
         ExtractedDestroy,
 
         /// <summary>
-        /// This return value is only valid if <see cref="CustomIconFlag.Background"/> was NOT set. 
+        /// This return value is only valid if <see cref="CustomIconFlags.Background"/> was NOT set. 
         /// It tells the calling app to show a default icon, and request the true icon in a background thread.
         /// </summary>
         Delayed
