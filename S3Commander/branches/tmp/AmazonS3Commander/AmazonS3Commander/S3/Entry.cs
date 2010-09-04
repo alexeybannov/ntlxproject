@@ -38,132 +38,19 @@ namespace AmazonS3Commander.S3
 
         public override FileOperationResult Download(string localName, CopyFlags copyFlags, RemoteInfo info)
         {
-            var offset = 0L;
-            try
-            {
-                var file = new FileInfo(localName);
-                if (file.Exists && (copyFlags.Equals(CopyFlags.None) || copyFlags.Equals(CopyFlags.Move)))
-                {
-                    return FileOperationResult.ExistsResumeAllowed;
-                }
-                if (copyFlags.IsSet(CopyFlags.Resume))
-                {
-                    offset = file.Length;
-                }
-                if (copyFlags.IsSet(CopyFlags.Overwrite))
-                {
-                    file.Delete();
-                }
-            }
-            catch (Exception ex)
-            {
-                Context.Log.Error(ex);
-                return FileOperationResult.WriteError;
-            }
-
-            try
-            {
-                SetProgress(key, localName, offset, info.Size);
-
-                //download
-                using (var stream = S3Service.GetObjectStream(bucketName, key, offset))
-                using (var file = new FileStream(localName, FileMode.Append))
-                {
-                    var buffer = new byte[1024 * 4];
-                    var total = offset;
-                    while (true)
-                    {
-                        var readed = stream.Read(buffer, 0, buffer.Length);
-                        if (readed <= 0) break;
-
-                        file.Write(buffer, 0, readed);
-
-                        if (SetProgress(key, localName, total += readed, info.Size) == false)
-                        {
-                            return FileOperationResult.UserAbort;
-                        }
-                    }
-                }
-
-                SetProgress(localName, key, 100, 100);
-
-                return FileOperationResult.OK;
-            }
-            catch (Exception ex)
-            {
-                Context.Log.Error(ex);
-                return FileOperationResult.ReadError;
-            }
+            return GetTransfer().Download(localName, copyFlags, info);
         }
 
         public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
         {
-            if (copyFlags.IsSet(CopyFlags.ExistsSameCase) && !copyFlags.IsSet(CopyFlags.Overwrite))
-            {
-                return FileOperationResult.Exists;
-            }
-
-            var aborted = false;
-            try
-            {
-                var localFile = new FileInfo(localName);
-                if (!localFile.Exists)
-                {
-                    return FileOperationResult.NotFound;
-                }
-                var length = localFile.Length;
-
-                SetProgress(localName, key, 0, length);
-
-                S3Service.AddObject(
-                    bucketName,
-                    key,
-                    localFile.Length,
-                    MimeMapping.GetMimeMapping(localName),
-                    stream =>
-                    {
-                        using (var file = localFile.OpenRead())
-                        {
-                            var buffer = new byte[1024];
-                            var total = 0;
-                            while (true)
-                            {
-                                var readed = file.Read(buffer, 0, buffer.Length);
-                                if (readed <= 0) break;
-
-                                stream.Write(buffer, 0, readed);
-
-                                if (SetProgress(localName, key, total += readed, length) == false)
-                                {
-                                    aborted = true;
-                                    throw new OperationCanceledException();
-                                }
-                            }
-                        }
-                    }
-                );
-
-                SetProgress(localName, key, 100, 100);
-
-                return FileOperationResult.OK;
-            }
-            catch (Exception ex)
-            {
-                Context.Log.Error(ex);
-                return aborted ? FileOperationResult.UserAbort : FileOperationResult.WriteError;
-            }
+            return GetTransfer().Upload(localName, copyFlags);
         }
 
         public override bool CreateFolder(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name", "Folder name can not be null.");
 
-            S3Service.AddObject(
-                bucketName,
-                FolderKey + name + "/",
-                0,
-                null,
-                stream => { });
+            S3Service.AddObject(bucketName, FolderKey + name + "/", 0, null, stream => { });
             return true;
         }
 
@@ -184,6 +71,7 @@ namespace AmazonS3Commander.S3
             return ExecuteResult.YourSelf;
         }
 
+
         private FindData ToFindData(S3Entry entry)
         {
             var index = entry.Key.TrimEnd('/').LastIndexOf('/');
@@ -198,6 +86,14 @@ namespace AmazonS3Commander.S3
                 };
             }
             return new FindData(name, FileAttributes.Directory);
+        }
+
+        private S3Transfer GetTransfer()
+        {
+            var transfer = new S3Transfer(S3Service, bucketName, key);
+            transfer.Error += error => Context.Log.Error(error);
+            transfer.Progress += SetProgress;
+            return transfer;
         }
 
         private bool SetProgress(string source, string target, long offset, long length)
