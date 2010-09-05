@@ -46,6 +46,38 @@ namespace AmazonS3Commander.S3
             return GetTransfer().Upload(localName, copyFlags);
         }
 
+        public override bool DeleteFile()
+        {
+            S3Service.DeleteObject(bucketName, key);
+            return true;
+        }
+
+        public override FileOperationResult CopyTo(S3CommanderFile dest, bool move, RemoteInfo info)
+        {
+            var entry = dest as Entry;
+            if (entry == null) return FileOperationResult.NotSupported;
+
+            try
+            {
+                var source = bucketName + "/" + key;
+                var target = entry.bucketName + "/" + entry.key;
+
+                SetProgress(source, target, 0, 100);
+                S3Service.CopyObject(bucketName, key, entry.bucketName, entry.key);
+                SetProgress(source, target, 50, 100);
+
+                if (move) DeleteFile();
+                SetProgress(source, target, 100, 100);
+
+                return FileOperationResult.OK;
+            }
+            catch (Exception ex)
+            {
+                Context.Log.Error(ex);
+                return FileOperationResult.WriteError;
+            }
+        }
+
         public override bool CreateFolder(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name", "Folder name can not be null.");
@@ -57,12 +89,6 @@ namespace AmazonS3Commander.S3
         public override bool DeleteFolder()
         {
             S3Service.DeleteObject(bucketName, FolderKey);
-            return true;
-        }
-
-        public override bool DeleteFile()
-        {
-            S3Service.DeleteObject(bucketName, key);
             return true;
         }
 

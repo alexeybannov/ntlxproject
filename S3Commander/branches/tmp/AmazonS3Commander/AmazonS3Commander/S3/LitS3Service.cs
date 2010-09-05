@@ -60,9 +60,9 @@ namespace AmazonS3Commander.S3
             client.DeleteObject(bucketName, key);
         }
 
-        public bool ObjectExists(string bucketName, string key)
+        public void CopyObject(string sourceBucketName, string sourceKey, string destBucketName, string destKey)
         {
-            return client.ObjectExists(bucketName, key);
+            client.CopyObject(sourceBucketName, sourceKey, destBucketName, destKey);
         }
     }
 }
