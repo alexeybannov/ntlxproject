@@ -28,12 +28,18 @@ namespace AmazonS3Commander.Accounts
 
         public override IEnumerator<FindData> GetFiles()
         {
-            if (Context.CurrentOperation != StatusOperation.List) return EmptyFindDataEnumerator;
-            
-            return S3Service
-                .GetBuckets()
-                .Select(b => new FindData(b.Key, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
-                .GetEnumerator();
+            if (Context.CurrentOperation == StatusOperation.List)
+            {
+                return S3Service
+                    .GetBuckets()
+                    .Select(b => new FindData(b.Key, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
+                    .GetEnumerator();
+            }
+            if (Context.CurrentOperation == StatusOperation.Delete)
+            {
+                return EmptyFindDataEnumerator;
+            }
+            return null;
         }
 
         public override ExecuteResult Properties(TotalCommanderWindow window, ref string link)

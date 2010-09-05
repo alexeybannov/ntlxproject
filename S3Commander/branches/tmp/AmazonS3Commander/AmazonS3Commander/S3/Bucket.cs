@@ -19,8 +19,12 @@ namespace AmazonS3Commander.S3
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return CreateEntry()
-                .GetFiles();
+            if (Context.CurrentOperation == StatusOperation.List)
+            {
+                return CreateEntry()
+                    .GetFiles();
+            }
+            return EmptyFindDataEnumerator;
         }
 
         public override bool CreateFolder(string name)
