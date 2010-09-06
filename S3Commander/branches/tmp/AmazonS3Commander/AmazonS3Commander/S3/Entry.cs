@@ -52,22 +52,27 @@ namespace AmazonS3Commander.S3
             return true;
         }
 
-        public override FileOperationResult CopyTo(S3CommanderFile dest, bool move, RemoteInfo info)
+        public override FileOperationResult CopyTo(S3CommanderFile dest, bool overwrite, bool move, RemoteInfo info)
         {
             var entry = dest as Entry;
             if (entry == null) return FileOperationResult.NotSupported;
 
             try
             {
+                if (!overwrite && S3Service.ObjectExists(entry.bucketName, entry.key))
+                {
+                    return FileOperationResult.Exists;
+                }
+
                 var source = bucketName + "/" + key;
                 var target = entry.bucketName + "/" + entry.key;
 
-                SetProgress(source, target, 0, 100);
+                if (SetProgress(source, target, 0, 100) == false) return FileOperationResult.UserAbort;
                 S3Service.CopyObject(bucketName, key, entry.bucketName, entry.key);
-                SetProgress(source, target, 50, 100);
+                if (SetProgress(source, target, 50, 100) == false) return FileOperationResult.UserAbort;
 
                 if (move) DeleteFile();
-                SetProgress(source, target, 100, 100);
+                if (SetProgress(source, target, 100, 100) == false) return FileOperationResult.UserAbort;
 
                 return FileOperationResult.OK;
             }

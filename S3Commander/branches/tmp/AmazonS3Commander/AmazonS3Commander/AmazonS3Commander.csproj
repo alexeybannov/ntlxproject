@@ -56,7 +56,7 @@
     <Compile Include="Accounts\AccountManager.cs" />
     <Compile Include="Accounts\NewAccount.cs" />
     <Compile Include="Logger\ILog.cs" />
-    <Compile Include="Logger\Log.cs" />
+    <Compile Include="Logger\TraceLogger.cs" />
     <Compile Include="S3CommanderFile.cs" />
     <Compile Include="S3CommanderRoot.cs" />
     <Compile Include="S3CommanderPlugin.cs" />

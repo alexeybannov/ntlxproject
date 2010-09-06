@@ -84,7 +84,7 @@ namespace AmazonS3Commander
             return FileOperationResult.Default;
         }
 
-        public virtual FileOperationResult CopyTo(S3CommanderFile dest, bool move, RemoteInfo info)
+        public virtual FileOperationResult CopyTo(S3CommanderFile dest, bool overwrite, bool move, RemoteInfo info)
         {
             return FileOperationResult.Default;
         }
