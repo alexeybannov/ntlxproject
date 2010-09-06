@@ -1,7 +1,0 @@
-http://www.blong.com/Conferences/BorConUK2002/Interop1/Win32AndDotNetInterop.htm#InversePInvoke
-
-.data VT_01 = int32[2]
-.vtfixup [2] int32 fromunmanaged at VT_01
-
-.vtentry 1:1
-  .export [1] as DoSomething

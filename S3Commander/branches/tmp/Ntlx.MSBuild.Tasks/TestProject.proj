@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
-  <UsingTask TaskName="Ntlx.MSBuild.Tasks.DllExport" AssemblyFile="bin\Debug\Ntlx.MSBuild.Tasks.dll"/>
-
-  <Target Name="Build">
-    <DllExport Assembly="bin\Debug\Ntlx.MSBuild.Tasks.dll" OutputType="Library"/>
-  </Target>
-</Project>
