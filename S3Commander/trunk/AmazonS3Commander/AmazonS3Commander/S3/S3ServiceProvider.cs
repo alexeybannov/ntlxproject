@@ -18,8 +18,9 @@ namespace AmazonS3Commander.S3
 
         public IS3Service GetS3Service(string accountName)
         {
-            var key = accountName.ToLowerInvariant();
+            if (string.IsNullOrEmpty(accountName)) return null;
 
+            var key = accountName.ToLowerInvariant();
             if (cache.ContainsKey(key)) return cache[key];
 
             var accountInfo = accountManager.GetAccountInfo(accountName);

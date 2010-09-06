@@ -26,11 +26,6 @@ namespace AmazonS3Commander.S3
             return EmptyFindDataEnumerator;
         }
 
-        public override bool CreateFolder(string name)
-        {
-            return CreateEntry().CreateFolder(name);
-        }
-
         public override Icon GetIcon()
         {
             return Icons.Bucket;

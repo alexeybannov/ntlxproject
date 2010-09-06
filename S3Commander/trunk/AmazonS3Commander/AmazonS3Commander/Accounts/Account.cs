@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using AmazonS3Commander.Properties;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 
@@ -19,7 +20,7 @@ namespace AmazonS3Commander.Accounts
         public Account(AccountManager accountManager, string accountName)
         {
             if (accountManager == null) throw new ArgumentNullException("accountManager");
-            if (string.IsNullOrEmpty(accountName)) throw new ArgumentNullException("accountName");
+            if (accountName == null) throw new ArgumentNullException("accountName");
 
             this.accountManager = accountManager;
             this.accountName = accountName;
@@ -54,9 +55,32 @@ namespace AmazonS3Commander.Accounts
             return ExecuteResult.OK;
         }
 
+        public override bool CreateFolder()
+        {
+            using (var form = new AccountForm(accountName))
+            {
+                if (form.ShowDialog() != DialogResult.OK)
+                {
+                    return false;
+                }
+                if (form.AccountName.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase) ||
+                    form.AccountName.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return false;
+                }
+                if (accountManager.Exists(form.AccountName) &&
+                    Context.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
+                {
+                    return false;
+                }
+                accountManager.Save(form.AccountName, form.AccountInfo);
+                return true;
+            }
+        }
+
         public override bool DeleteFolder()
         {
-            return accountManager.Remove(accountName);
+            return accountManager.Delete(accountName);
         }
 
         public override Icon GetIcon()

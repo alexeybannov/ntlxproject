@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
-using AmazonS3Commander.Properties;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 
@@ -22,34 +20,12 @@ namespace AmazonS3Commander.Accounts
         {
             if (window == null) throw new ArgumentNullException("window");
 
-            if (CreateFolder(string.Empty))
+            var newAccount = new Account(accountManager, string.Empty).Initialize(Context);
+            if (newAccount.CreateFolder())
             {
                 window.Refresh();
             }
             return ExecuteResult.OK;
-        }
-
-        public override bool CreateFolder(string name)
-        {
-            using (var form = new AccountForm(name))
-            {
-                if (form.ShowDialog() != DialogResult.OK)
-                {
-                    return false;
-                }
-                if (form.AccountName.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase) ||
-                    form.AccountName.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return false;
-                }
-                if (accountManager.Exists(form.AccountName) &&
-                    Context.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
-                {
-                    return false;
-                }
-                accountManager.Save(form.AccountName, form.AccountInfo);
-                return true;
-            }
         }
 
         public override Icon GetIcon()

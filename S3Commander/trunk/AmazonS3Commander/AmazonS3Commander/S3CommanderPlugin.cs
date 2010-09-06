@@ -105,11 +105,7 @@ namespace AmazonS3Commander
         public override bool DirectoryCreate(string path)
         {
             Trace("DirectoryCreate(path = \"{0}\")", path);
-            if (string.IsNullOrEmpty(path)) return false;
-
-            path = path.TrimEnd('\\');
-            return ResolvePath(Path.GetDirectoryName(path))
-                .CreateFolder(Path.GetFileName(path));
+            return ResolvePath(path).CreateFolder();
         }
 
         public override bool DirectoryRemove(string remoteName)
@@ -152,7 +148,7 @@ namespace AmazonS3Commander
         }
 
         [Conditional("DEBUG")]
-        private void Trace(string format, params object [] args)
+        private void Trace(string format, params object[] args)
         {
             log.Info(format, args);
         }

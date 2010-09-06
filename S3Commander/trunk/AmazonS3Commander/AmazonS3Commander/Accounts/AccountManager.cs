@@ -47,12 +47,7 @@ namespace AmazonS3Commander.Accounts
             return File.Exists(GetPath(name));
         }
 
-        public void Move(string oldName, string newName)
-        {
-            File.Move(GetPath(oldName), GetPath(newName));
-        }
-
-        public bool Remove(string name)
+        public bool Delete(string name)
         {
             var path = GetPath(name);
             if (File.Exists(path))

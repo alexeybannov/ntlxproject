@@ -83,11 +83,11 @@ namespace AmazonS3Commander.S3
             }
         }
 
-        public override bool CreateFolder(string name)
+        public override bool CreateFolder()
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name", "Folder name can not be null.");
+            if (string.IsNullOrEmpty(FolderKey)) throw new ArgumentNullException("name", "Folder name can not be null.");
 
-            S3Service.AddObject(bucketName, FolderKey + name + "/", 0, null, stream => { });
+            S3Service.AddObject(bucketName, FolderKey, 0, null, stream => { });
             return true;
         }
 

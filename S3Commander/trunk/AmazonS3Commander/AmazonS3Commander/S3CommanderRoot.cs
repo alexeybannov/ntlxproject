@@ -38,6 +38,7 @@ namespace AmazonS3Commander
                 return this;
             }
 
+            //parent directory
             if (parts[depth] == "..") return file;
 
             //accounts
@@ -52,7 +53,7 @@ namespace AmazonS3Commander
                 {
                     file = new NewAccount(accountManager);
                 }
-                else if (accountManager.Exists(accountName))
+                else
                 {
                     file = new Account(accountManager, accountName);
                 }
@@ -63,15 +64,12 @@ namespace AmazonS3Commander
                 file = new Bucket(parts[2]);
             }
             //amazon s3 folder or file
-            else if (3 <= depth)
+            else
             {
                 file = new Entry(parts[2], string.Join("/", parts, 3, depth - 2));
             }
 
-            if (file != null)
-            {
-                file.Initialize(Context, s3ServiceProvider.GetS3Service(accountName));
-            }
+            file.Initialize(Context, s3ServiceProvider.GetS3Service(accountName));
             return file;
         }
 
@@ -84,13 +82,6 @@ namespace AmazonS3Commander
                 .GetAccounts()
                 .Union(new[] { new FindData(Resources.NewAccount), new FindData(Resources.Settings) })
                 .GetEnumerator();
-        }
-
-        public override bool CreateFolder(string name)
-        {
-            return new NewAccount(accountManager)
-                .Initialize(Context)
-                .CreateFolder(name);
         }
     }
 }

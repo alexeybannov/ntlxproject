@@ -94,7 +94,7 @@ namespace AmazonS3Commander
             return false;
         }
 
-        public virtual bool CreateFolder(string name)
+        public virtual bool CreateFolder()
         {
             return false;
         }
