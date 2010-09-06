@@ -8,6 +8,11 @@ namespace AmazonS3Commander.S3
     {
         IEnumerable<S3Bucket> GetBuckets();
 
+        void CreateBucket(string bucketName, string location);
+
+        void DeleteBucket(string bucketName);
+
+
         IEnumerable<S3Entry> GetObjects(string bucketName, string prefix);
 
         Stream GetObjectStream(string bucketName, string key, long from);

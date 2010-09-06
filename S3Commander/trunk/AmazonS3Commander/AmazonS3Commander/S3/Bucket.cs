@@ -21,20 +21,28 @@ namespace AmazonS3Commander.S3
         {
             if (Context.CurrentOperation == StatusOperation.List)
             {
-                return CreateEntry().GetFiles();
+                return new Entry(bucketName, string.Empty)
+                    .Initialize(Context, S3Service)
+                    .GetFiles();
             }
             return EmptyFindDataEnumerator;
+        }
+
+        public override bool CreateFolder()
+        {
+            S3Service.CreateBucket(bucketName, null);
+            return true;
+        }
+
+        public override bool DeleteFolder()
+        {
+            S3Service.DeleteBucket(bucketName);
+            return true;
         }
 
         public override Icon GetIcon()
         {
             return Icons.Bucket;
-        }
-
-        private S3CommanderFile CreateEntry()
-        {
-            return new Entry(bucketName, string.Empty)
-                .Initialize(Context, S3Service);
         }
     }
 }
