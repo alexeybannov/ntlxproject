@@ -17,8 +17,8 @@ namespace AmazonS3Commander.S3
         }
 
 
-        public S3File(string name, long size, DateTime lastModified)
-            : base(name)
+        public S3File(string key, long size, DateTime lastModified)
+            : base(key)
         {
             Size = size;
             LastModified = lastModified;

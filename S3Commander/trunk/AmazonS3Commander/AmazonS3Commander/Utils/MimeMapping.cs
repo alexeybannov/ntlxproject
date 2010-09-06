@@ -4,13 +4,15 @@ using System.IO;
 
 namespace AmazonS3Commander
 {
+    /// <summary>
+    /// <a href="http://reference.sitepoint.com/html/mime-types-full">MIME Types - Complete List</a>
+    /// </summary>
     static class MimeMapping
     {
         private static Hashtable map = new Hashtable(1000, StringComparer.CurrentCultureIgnoreCase);
 
         static MimeMapping()
         {
-            //Copy-pasted from http://reference.sitepoint.com/html/mime-types-full
             AddMimeMapping(".3dm", "x-world/x-3dmf");
             AddMimeMapping(".3dmf", "x-world/x-3dmf");
             AddMimeMapping(".a", "application/octet-stream");

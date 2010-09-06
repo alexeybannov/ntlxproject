@@ -88,7 +88,6 @@ namespace AmazonS3Commander.S3
                 return FileOperationResult.Exists;
             }
 
-            var overwrite = copyFlags.IsSet(CopyFlags.Overwrite);
             var aborted = false;
             try
             {
@@ -100,11 +99,6 @@ namespace AmazonS3Commander.S3
                 var length = localFile.Length;
 
                 if (Progress != null) Progress(localName, key, 0, length);
-
-                if (overwrite)
-                {
-                    //TODO: restore exists metadata, headers and acls
-                }
 
                 service.AddObject(
                     bucketName,

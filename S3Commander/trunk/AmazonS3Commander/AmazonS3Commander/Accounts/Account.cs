@@ -32,7 +32,7 @@ namespace AmazonS3Commander.Accounts
             {
                 return S3Service
                     .GetBuckets()
-                    .Select(b => new FindData(b.Key, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
+                    .Select(b => new FindData(b.Key, FileAttributes.Directory, b.CreationDate))
                     .GetEnumerator();
             }
             if (Context.CurrentOperation == StatusOperation.Delete)

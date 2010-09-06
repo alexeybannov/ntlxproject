@@ -143,11 +143,35 @@ namespace TotalCommander.Plugin.Wfx
         /// Initializes a new instance of the <see cref="FindData"/> class.
         /// </summary>
         /// <param name="fileName">Local file name relative to the directory (without the path).</param>
+        /// <param name="fileSize">The size, in bytes, of the file.</param>
+        /// <param name="lastWriteTime">Time stamp shown in the Total Commander file list, and copied with files.</param>
+        public FindData(string fileName, long fileSize, DateTime lastWriteTime)
+            : this(fileName, fileSize)
+        {
+            LastWriteTime = lastWriteTime;
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindData"/> class.
+        /// </summary>
+        /// <param name="fileName">Local file name relative to the directory (without the path).</param>
         /// <param name="attributes">File attributes.</param>
         public FindData(string fileName, FileAttributes attributes)
             : this(fileName)
         {
             Attributes = attributes;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindData"/> class.
+        /// </summary>
+        /// <param name="fileName">Local file name relative to the directory (without the path).</param>
+        /// <param name="attributes">File attributes.</param>
+        /// <param name="lastWriteTime">Time stamp shown in the Total Commander file list, and copied with files.</param>
+        public FindData(string fileName, FileAttributes attributes, DateTime lastWriteTime)
+            : this(fileName, attributes)
+        {
+            LastWriteTime = lastWriteTime;
         }
 
 

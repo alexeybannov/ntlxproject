@@ -21,16 +21,14 @@ namespace AmazonS3Commander.S3
         {
             if (Context.CurrentOperation == StatusOperation.List)
             {
-                return CreateEntry()
-                    .GetFiles();
+                return CreateEntry().GetFiles();
             }
             return EmptyFindDataEnumerator;
         }
 
         public override bool CreateFolder(string name)
         {
-            return CreateEntry()
-                .CreateFolder(name);
+            return CreateEntry().CreateFolder(name);
         }
 
         public override Icon GetIcon()

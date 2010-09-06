@@ -28,13 +28,7 @@ namespace AmazonS3Commander.Accounts
         {
             return Directory
                 .GetFiles(path, "*" + EXT)
-                .Select(file =>
-                {
-                    return new FindData(Path.GetFileNameWithoutExtension(file), FileAttributes.Directory)
-                    {
-                        LastWriteTime = File.GetLastWriteTime(file)
-                    };
-                });
+                .Select(file => new FindData(Path.GetFileNameWithoutExtension(file), FileAttributes.Directory, File.GetLastWriteTime(file)));
         }
 
         public AccountInfo GetAccountInfo(string name)

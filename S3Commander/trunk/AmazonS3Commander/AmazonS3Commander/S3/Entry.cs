@@ -109,14 +109,9 @@ namespace AmazonS3Commander.S3
             var name = 0 <= index ? entry.Key.Substring(index + 1) : entry.Key;
 
             var file = entry as S3File;
-            if (file != null)
-            {
-                return new FindData(name, file.Size)
-                {
-                    LastWriteTime = file.LastModified
-                };
-            }
-            return new FindData(name, FileAttributes.Directory);
+            return file != null ?
+                new FindData(name, file.Size, file.LastModified) :
+                new FindData(name, FileAttributes.Directory);
         }
 
         private S3Transfer GetTransfer()
