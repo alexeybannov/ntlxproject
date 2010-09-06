@@ -129,17 +129,10 @@ namespace LitS3
         /// </summary>
         /// <param name="bucketName">The name of the bucket, which will be checked against
         /// the BucketNameChecking.Strict requirements.</param>
-        public void CreateBucket(string bucketName)
+        /// <param name="location">Bucket location.</param>
+        public void CreateBucket(string bucketName, string location)
         {
-            new CreateBucketRequest(this, bucketName, false).GetResponse().Close();
-        }
-
-        /// <summary>
-        /// Creates a bucket in the Amazon Europe storage location.
-        /// </summary>
-        public void CreateBucketInEurope(string bucketName)
-        {
-            new CreateBucketRequest(this, bucketName, true).GetResponse().Close();
+            new CreateBucketRequest(this, bucketName, location).GetResponse().Close();
         }
 
         /// <summary>
@@ -192,12 +185,12 @@ namespace LitS3
         /// <summary>
         /// Queries S3 to determine whether the given bucket resides in the Europe location.
         /// </summary>
-        public bool IsBucketInEurope(string bucketName)
+        public string GetBucketLocation(string bucketName)
         {
             var request = new GetBucketLocationRequest(this, bucketName);
 
             using (GetBucketLocationResponse response = request.GetResponse())
-                return response.IsEurope;
+                return response.Location;
         }
 
         /// <summary>

@@ -10,26 +10,26 @@ namespace LitS3
     /// </summary>
     public class CreateBucketRequest : S3Request<CreateBucketResponse>
     {
-        const string EuropeConstraint = 
-            "<CreateBucketConfiguration><LocationConstraint>EU</LocationConstraint></CreateBucketConfiguration>";
+        private string locationConstraint;
 
         /// <param name="createInEurope">
         /// True if you want to request that Amazon create this bucket in the Europe location. Otherwise,
         /// false to let Amazon decide.
         /// </param>
-        public CreateBucketRequest(S3Service service, string bucketName, bool createInEurope)
-            : base (service, "PUT", bucketName, null, null)
+        public CreateBucketRequest(S3Service service, string bucketName, string location)
+            : base(service, "PUT", bucketName, null, null)
         {
-            if (createInEurope)
-                WebRequest.ContentLength = EuropeConstraint.Length;
+            if (!string.IsNullOrEmpty(location))
+            {
+                locationConstraint = string.Format("<CreateBucketConfiguration><LocationConstraint>{0}</LocationConstraint></CreateBucketConfiguration>", location);
+                WebRequest.ContentLength = locationConstraint.Length;
+            }
         }
 
-        bool EuropeRequested { get { return WebRequest.ContentLength > 0; } }
-
-        void WriteEuropeConstraint(Stream stream)
+        void WriteConstraint(Stream stream)
         {
             var writer = new StreamWriter(stream, Encoding.ASCII);
-            writer.Write(EuropeConstraint);
+            writer.Write(locationConstraint);
             writer.Flush();
         }
 
@@ -37,10 +37,11 @@ namespace LitS3
         {
             AuthorizeIfNecessary(); // authorize before getting the request stream!
 
-            // create in europe?
-            if (EuropeRequested)
+            if (!string.IsNullOrEmpty(locationConstraint))
+            {
                 using (Stream stream = WebRequest.GetRequestStream())
-                    WriteEuropeConstraint(stream);
+                    WriteConstraint(stream);
+            }
 
             return base.GetResponse();
         }
