@@ -1,43 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using AmazonS3Commander.Accounts;
 using AmazonS3Commander.Configuration;
-using AmazonS3Commander.Logger;
 using AmazonS3Commander.Properties;
 using AmazonS3Commander.S3;
 using TotalCommander.Plugin.Wfx;
-using TotalCommander.Plugin.Wfx.FileSystem;
 
 namespace AmazonS3Commander
 {
-    class S3CommanderFileSystem : FileBase, IFileSystem
+    class S3CommanderRoot : S3CommanderFile
     {
-        private readonly FileSystemContext fileSystemContext;
-
         private readonly AccountManager accountManager;
 
         private readonly S3ServiceProvider s3ServiceProvider;
 
-        private readonly ILog log;
 
-
-        public S3CommanderFileSystem(FileSystemContext context)
+        public S3CommanderRoot(string workDirectory)
         {
-            var workDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Resources.ProductName);
-            if (!Directory.Exists(workDirectory)) Directory.CreateDirectory(workDirectory);
-
-            fileSystemContext = context;
             accountManager = new AccountManager(workDirectory);
             s3ServiceProvider = new S3ServiceProvider(accountManager);
-            log = new Logger.Log(workDirectory);
         }
 
 
-        public IFile ResolvePath(string path)
+        public S3CommanderFile ResolvePath(string path)
         {
-            if (path == null) return null;
+            S3CommanderFile file = null;
+
+            if (path == null) return file;
 
             var parts = path.TrimEnd('\\').Split('\\');
             var depth = parts.Length - 1;
@@ -48,9 +38,7 @@ namespace AmazonS3Commander
                 return this;
             }
 
-            if (parts[depth] == "..") return null;
-
-            S3CommanderFile file = null;
+            if (parts[depth] == "..") return file;
 
             //accounts
             var accountName = parts[1];
@@ -66,7 +54,7 @@ namespace AmazonS3Commander
                 }
                 else if (accountManager.Exists(accountName))
                 {
-                    file = new Account(accountManager);
+                    file = new Account(accountManager, accountName);
                 }
             }
             //buckets
@@ -74,7 +62,7 @@ namespace AmazonS3Commander
             {
                 file = new Bucket(parts[2]);
             }
-            //amazon s3 folders or file
+            //amazon s3 folder or file
             else if (3 <= depth)
             {
                 file = new Entry(parts[2], string.Join("/", parts, 3, depth - 2));
@@ -82,7 +70,7 @@ namespace AmazonS3Commander
 
             if (file != null)
             {
-                file.Initialize(new S3CommanderContext(fileSystemContext, log, s3ServiceProvider, accountName));
+                file.Initialize(Context, s3ServiceProvider.GetS3Service(accountName));
             }
             return file;
         }
@@ -90,6 +78,8 @@ namespace AmazonS3Commander
 
         public override IEnumerator<FindData> GetFiles()
         {
+            if (Context.CurrentOperation != StatusOperation.List) return EmptyFindDataEnumerator;
+
             return accountManager
                 .GetAccounts()
                 .Union(new[] { new FindData(Resources.NewAccount), new FindData(Resources.Settings) })
@@ -99,20 +89,8 @@ namespace AmazonS3Commander
         public override bool CreateFolder(string name)
         {
             return new NewAccount(accountManager)
-                .Initialize(new S3CommanderContext(fileSystemContext, log))
+                .Initialize(Context)
                 .CreateFolder(name);
-        }
-
-
-        public void OperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
-        {
-            log.Trace("Command '{0}' for '{1}' {2}", operation, remoteDir, origin.ToString().ToLower());
-            S3CommanderContext.ProcessOperationInfo(remoteDir, origin, operation);
-        }
-
-        public bool Disconnect(string root)
-        {
-            return false;
         }
     }
 }

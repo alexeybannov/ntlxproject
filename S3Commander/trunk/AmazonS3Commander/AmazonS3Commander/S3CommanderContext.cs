@@ -1,8 +1,6 @@
 ﻿using System;
-using AmazonS3Commander.S3;
-using TotalCommander.Plugin.Wfx;
-using TotalCommander.Plugin.Wfx.FileSystem;
 using AmazonS3Commander.Logger;
+using TotalCommander.Plugin.Wfx;
 
 namespace AmazonS3Commander
 {
@@ -14,19 +12,17 @@ namespace AmazonS3Commander
         [ThreadStatic]
         private static StatusOperation currentOperation = StatusOperation.None;
 
-        private readonly FileSystemContext context;
-
-        private readonly S3ServiceProvider provider;
+        private TotalCommanderWfxPlugin plugin;
 
 
         public string PluginName
         {
-            get { return context.PluginName; }
+            get { return plugin.PluginName; }
         }
 
         public Progress Progress
         {
-            get { return context.Progress; }
+            get { return plugin.Progress; }
         }
 
         public ILog Log
@@ -37,12 +33,7 @@ namespace AmazonS3Commander
 
         public Request Request
         {
-            get { return context.Request; }
-        }
-
-        public Password Password
-        {
-            get { return context.Password; }
+            get { return plugin.Request; }
         }
 
         public string CurrentDirectory
@@ -55,32 +46,15 @@ namespace AmazonS3Commander
             get { return currentOperation; }
         }
 
-        public string CurrentAccount
+
+        public S3CommanderContext(TotalCommanderWfxPlugin plugin, ILog log)
         {
-            get;
-            private set;
-        }
-
-        public IS3Service S3Service
-        {
-            get { return provider.GetS3Service(CurrentAccount); }
-        }
-
-
-        public S3CommanderContext(FileSystemContext context, ILog log)
-            : this(context, log, null, null)
-        {
-
-        }
-
-        public S3CommanderContext(FileSystemContext context, ILog log, S3ServiceProvider provider, string accountName)
-        {
-            this.context = context;
+            if (plugin == null) throw new ArgumentNullException("plugin");
+            if (log == null) throw new ArgumentNullException("log");
+            
+            this.plugin = plugin;
             this.Log = log;
-            this.provider = provider;
-            CurrentAccount = accountName;
         }
-
 
         public static void ProcessOperationInfo(string remoteDir, StatusOrigin origin, StatusOperation operation)
         {

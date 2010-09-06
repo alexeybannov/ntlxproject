@@ -422,7 +422,7 @@ namespace TotalCommander.Plugin.Wfx
         /// </param>
         /// <param name="text">Override the default text.</param>
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
-        public bool GetString(ref string returned, string text)
+        public bool GetOther(ref string returned, string text)
         {
             return GetRequest(RequestType.Other, text, null, ref returned);
         }
@@ -437,7 +437,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <param name="text">Override the default text.</param>
         /// <param name="caption">Custom title for the dialog box.</param>
         /// <returns>Returns <strong>true</strong> if the user clicked OK or Yes, <strong>false</strong> otherwise.</returns>
-        public bool GetString(ref string returned, string text, string caption)
+        public bool GetOther(ref string returned, string text, string caption)
         {
             return GetRequest(RequestType.Other, text, caption, ref returned);
         }

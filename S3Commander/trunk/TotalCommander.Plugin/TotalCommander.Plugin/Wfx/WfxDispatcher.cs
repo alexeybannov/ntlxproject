@@ -34,7 +34,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return 0;
         }
@@ -65,7 +65,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return handle;
         }
@@ -88,7 +88,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return false;
         }
@@ -109,7 +109,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return 0;
         }
@@ -122,7 +122,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
         }
 
@@ -134,7 +134,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return null;
         }
@@ -153,7 +153,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return (int)result;
         }
@@ -169,7 +169,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return (int)result;
         }
@@ -185,7 +185,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return (int)result;
         }
@@ -199,7 +199,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return (int)result;
         }
@@ -213,7 +213,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -227,7 +227,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -241,7 +241,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -255,7 +255,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -274,7 +274,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -288,7 +288,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -301,7 +301,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
         }
 
@@ -312,13 +312,13 @@ namespace TotalCommander.Plugin.Wfx
             {
                 Icon icon = null;
                 var nameRef = Win32.PtrToStringAnsi(remoteName);
-                result = Plugin.GetCustomIcon(ref nameRef, (CustomIconFlag)extractFlags, out icon);
+                result = Plugin.GetCustomIcon(ref nameRef, (CustomIconFlags)extractFlags, out icon);
                 if (icon != null) iconHandle = icon.Handle;
                 Win32.WriteStringAnsi(remoteName, nameRef);
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return (int)result;
         }
@@ -336,7 +336,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return (int)result;
         }
@@ -349,7 +349,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
         }
 
@@ -362,7 +362,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -382,7 +382,7 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
@@ -396,13 +396,13 @@ namespace TotalCommander.Plugin.Wfx
             }
             catch (Exception ex)
             {
-                ProcessError(ex);
+                UnhandledError(ex);
             }
             return result;
         }
 
 
-        private static void ProcessError(Exception ex)
+        private static void UnhandledError(Exception ex)
         {
             try
             {

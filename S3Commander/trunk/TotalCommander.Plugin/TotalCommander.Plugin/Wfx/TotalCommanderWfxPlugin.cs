@@ -72,7 +72,7 @@ namespace TotalCommander.Plugin.Wfx
         /// <summary>
         /// Suggested location+name of the ini file where the plugin could store its data.
         /// </summary>
-        public string IniFilePath
+        public string PluginIniFile
         {
             get;
             private set;
@@ -192,17 +192,10 @@ namespace TotalCommander.Plugin.Wfx
         {
             return ri.IsDirectory ?
                 DirectoryRename(oldName, newName, overwrite, ri) :
-                move ?
-                FileMove(oldName, newName, overwrite, ri) :
-                FileCopy(oldName, newName, overwrite, ri);
+                FileCopy(oldName, newName, overwrite, move, ri);
         }
 
-        public virtual FileOperationResult FileMove(string source, string target, bool overwrite, RemoteInfo ri)
-        {
-            return FileOperationResult.Default;
-        }
-
-        public virtual FileOperationResult FileCopy(string source, string target, bool overwrite, RemoteInfo ri)
+        public virtual FileOperationResult FileCopy(string source, string target, bool overwrite, bool move, RemoteInfo ri)
         {
             return FileOperationResult.Default;
         }
@@ -234,7 +227,7 @@ namespace TotalCommander.Plugin.Wfx
         }
 
 
-        public virtual CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlag extractIconFlag, out Icon icon)
+        public virtual CustomIconResult GetCustomIcon(ref string remoteName, CustomIconFlags extractIconFlag, out Icon icon)
         {
             icon = null;
             return CustomIconResult.UseDefault;
@@ -261,7 +254,7 @@ namespace TotalCommander.Plugin.Wfx
         void ITotalCommanderWfxPlugin.SetDefaultParams(DefaultParam defaultParam)
         {
             PluginInterfaceVersion = defaultParam.PluginInterfaceVersion;
-            IniFilePath = defaultParam.DefaultIniFileName;
+            PluginIniFile = defaultParam.DefaultIniFileName;
         }
 
         public virtual bool SetFileAttributes(string remoteName, FileAttributes attributes)

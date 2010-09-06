@@ -70,7 +70,7 @@ namespace TotalCommander.Plugin.Sample.Wfx
         {
             var username = "Nikolay";
             remoteName = "\\Work";
-            var r = Request.GetString(ref username, "Hello, World!");
+            var r = Request.GetOther(ref username, "Hello, World!");
             return ExecuteResult.SymLink;
         }
 

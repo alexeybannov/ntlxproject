@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -12,25 +13,37 @@ namespace AmazonS3Commander.Accounts
     {
         private readonly AccountManager accountManager;
 
+        private readonly string accountName;
 
-        public Account(AccountManager accountManager)
+
+        public Account(AccountManager accountManager, string accountName)
         {
+            if (accountManager == null) throw new ArgumentNullException("accountManager");
+            if (string.IsNullOrEmpty(accountName)) throw new ArgumentNullException("accountName");
+
             this.accountManager = accountManager;
+            this.accountName = accountName;
         }
 
 
         public override IEnumerator<FindData> GetFiles()
         {
-            if (Context.CurrentOperation != StatusOperation.List) return new List<FindData>().GetEnumerator();
-            return Context.S3Service
-                .GetBuckets()
-                .Select(b => new FindData(b.Name, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
-                .GetEnumerator();
+            if (Context.CurrentOperation == StatusOperation.List)
+            {
+                return S3Service
+                    .GetBuckets()
+                    .Select(b => new FindData(b.Key, FileAttributes.Directory) { LastWriteTime = b.CreationDate })
+                    .GetEnumerator();
+            }
+            if (Context.CurrentOperation == StatusOperation.Delete)
+            {
+                return EmptyFindDataEnumerator;
+            }
+            return null;
         }
 
         public override ExecuteResult Properties(TotalCommanderWindow window, ref string link)
         {
-            var accountName = Context.CurrentAccount;
             using (var form = new AccountForm(accountName, accountManager.GetAccountInfo(accountName)))
             {
                 if (form.ShowDialog() == DialogResult.OK && accountManager.Exists(accountName))
@@ -43,10 +56,10 @@ namespace AmazonS3Commander.Accounts
 
         public override bool DeleteFolder()
         {
-            return accountManager.Remove(Context.CurrentAccount);
+            return accountManager.Remove(accountName);
         }
 
-        protected override Icon GetIcon()
+        public override Icon GetIcon()
         {
             return Icons.Account;
         }

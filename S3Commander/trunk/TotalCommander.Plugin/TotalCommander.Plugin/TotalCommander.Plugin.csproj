@@ -47,16 +47,10 @@
     <Compile Include="TotalCommanderWindow.cs" />
     <Compile Include="Utils\DateTimeUtil.cs" />
     <Compile Include="Wfx\BackgroundFlags.cs" />
-    <Compile Include="Wfx\FileSystem\FileBase.cs" />
-    <Compile Include="Wfx\FileSystem\FileOperationException.cs" />
-    <Compile Include="Wfx\FileSystem\TotalCommanderFileSystemPlugin.cs" />
-    <Compile Include="Wfx\FileSystem\FileSystemContext.cs" />
-    <Compile Include="Wfx\FileSystem\IFile.cs" />
-    <Compile Include="Wfx\FileSystem\IFileSystem.cs" />
     <Compile Include="Wfx\Password.cs" />
     <Compile Include="Wfx\WfxDispatcher.cs" />
     <Compile Include="Wfx\PreviewBitmapResult.cs" />
-    <Compile Include="Wfx\CustomIconFlag.cs" />
+    <Compile Include="Wfx\CustomIconFlags.cs" />
     <Compile Include="Wfx\CustomIconResult.cs" />
     <Compile Include="Wfx\StatusOperation.cs" />
     <Compile Include="Wfx\StatusOrigin.cs" />

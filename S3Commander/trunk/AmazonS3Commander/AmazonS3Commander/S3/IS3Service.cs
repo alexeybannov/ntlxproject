@@ -17,5 +17,7 @@ namespace AmazonS3Commander.S3
         void DeleteObject(string bucketName, string key);
 
         bool ObjectExists(string bucketName, string key);
+
+        void CopyObject(string sourceBucketName, string sourceKey, string destBucketName, string destKey);
     }
 }

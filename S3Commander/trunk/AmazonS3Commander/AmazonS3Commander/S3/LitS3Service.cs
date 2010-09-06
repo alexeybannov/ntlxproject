@@ -41,7 +41,8 @@ namespace AmazonS3Commander.S3
                     return f != null ?
                         (S3Entry)new S3File(f.Name, f.Size, f.LastModified) :
                         (S3Entry)new S3Folder(o.Name);
-                });
+                })
+                .Where(e => !string.IsNullOrEmpty(e.Key));
         }
 
         public Stream GetObjectStream(string bucketName, string key, long from)
@@ -62,6 +63,11 @@ namespace AmazonS3Commander.S3
         public bool ObjectExists(string bucketName, string key)
         {
             return client.ObjectExists(bucketName, key);
+        }
+
+        public void CopyObject(string sourceBucketName, string sourceKey, string destBucketName, string destKey)
+        {
+            client.CopyObject(sourceBucketName, sourceKey, destBucketName, destKey);
         }
     }
 }

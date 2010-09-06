@@ -20,6 +20,8 @@ namespace AmazonS3Commander.Accounts
 
         public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
         {
+            if (window == null) throw new ArgumentNullException("window");
+
             if (CreateFolder(string.Empty))
             {
                 window.Refresh();
@@ -50,7 +52,7 @@ namespace AmazonS3Commander.Accounts
             }
         }
 
-        protected override Icon GetIcon()
+        public override Icon GetIcon()
         {
             return Icons.NewAccount;
         }

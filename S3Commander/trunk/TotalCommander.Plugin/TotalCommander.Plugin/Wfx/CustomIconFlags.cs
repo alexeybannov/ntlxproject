@@ -7,13 +7,8 @@ namespace TotalCommander.Plugin.Wfx
     /// </summary>
     /// <seealso cref="ITotalCommanderWfxPlugin.GetCustomIcon"/>
     [Flags]
-    public enum CustomIconFlag
+    public enum CustomIconFlags
 	{
-        /// <summary>
-        /// Requests the large 48x48 icon.
-        /// </summary>
-        Large = 0,
-
         /// <summary>
         /// Requests the small 16x16 icon.
         /// </summary>

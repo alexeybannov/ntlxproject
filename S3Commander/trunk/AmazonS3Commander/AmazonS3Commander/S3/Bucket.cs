@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using TotalCommander.Plugin.Wfx;
 
@@ -11,13 +12,19 @@ namespace AmazonS3Commander.S3
 
         public Bucket(string bucketName)
         {
+            if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException("bucketName");
+
             this.bucketName = bucketName;
         }
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return CreateEntry()
-                .GetFiles();
+            if (Context.CurrentOperation == StatusOperation.List)
+            {
+                return CreateEntry()
+                    .GetFiles();
+            }
+            return EmptyFindDataEnumerator;
         }
 
         public override bool CreateFolder(string name)
@@ -26,7 +33,7 @@ namespace AmazonS3Commander.S3
                 .CreateFolder(name);
         }
 
-        protected override Icon GetIcon()
+        public override Icon GetIcon()
         {
             return Icons.Bucket;
         }
@@ -34,7 +41,7 @@ namespace AmazonS3Commander.S3
         private S3CommanderFile CreateEntry()
         {
             return new Entry(bucketName, string.Empty)
-                .Initialize(Context);
+                .Initialize(Context, S3Service);
         }
     }
 }

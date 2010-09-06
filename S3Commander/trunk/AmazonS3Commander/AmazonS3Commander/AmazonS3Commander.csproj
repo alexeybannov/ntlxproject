@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD4B9C54-0F60-4AC8-984F-C83BF68B1CB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,9 +56,9 @@
     <Compile Include="Accounts\AccountManager.cs" />
     <Compile Include="Accounts\NewAccount.cs" />
     <Compile Include="Logger\ILog.cs" />
-    <Compile Include="Logger\Log.cs" />
+    <Compile Include="Logger\TraceLogger.cs" />
     <Compile Include="S3CommanderFile.cs" />
-    <Compile Include="S3CommanderFileSystem.cs" />
+    <Compile Include="S3CommanderRoot.cs" />
     <Compile Include="S3CommanderPlugin.cs" />
     <Compile Include="Configuration\ConfigurationFile.cs" />
     <Compile Include="Controls\TextBoxEx.cs">
@@ -87,6 +87,7 @@
     <Compile Include="S3\S3Folder.cs" />
     <None Include="S3\ThreeSharpS3Service.cs" />
     <Compile Include="S3\S3ServiceProvider.cs" />
+    <Compile Include="S3\S3Transfer.cs" />
     <Compile Include="Utils\EnumExt.cs" />
     <Compile Include="Utils\MimeMapping.cs" />
   </ItemGroup>

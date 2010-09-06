@@ -9,169 +9,91 @@ namespace AmazonS3Commander.S3
 {
     class Entry : S3CommanderFile
     {
-        private readonly string bucket;
+        private readonly string bucketName;
 
         private readonly string key;
 
-
-        public override bool ResumeAllowed
+        private string FolderKey
         {
-            get { return true; }
+            get { return key != string.Empty ? key + "/" : key; }
         }
 
 
-        public Entry(string bucket, string key)
+        public Entry(string bucketName, string key)
         {
-            this.bucket = bucket;
+            if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException("bucketName");
+            if (key == null) throw new ArgumentNullException("key");
+
+            this.bucketName = bucketName;
             this.key = key;
         }
 
         public override IEnumerator<FindData> GetFiles()
         {
-            return Context.S3Service
-                .GetObjects(bucket, !string.IsNullOrEmpty(key) ? key + "/" : "")
+            return S3Service
+                .GetObjects(bucketName, FolderKey)
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
         }
 
         public override FileOperationResult Download(string localName, CopyFlags copyFlags, RemoteInfo info)
         {
-            var offset = 0L;
+            return GetTransfer().Download(localName, copyFlags, info);
+        }
+
+        public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
+        {
+            return GetTransfer().Upload(localName, copyFlags);
+        }
+
+        public override bool DeleteFile()
+        {
+            S3Service.DeleteObject(bucketName, key);
+            return true;
+        }
+
+        public override FileOperationResult CopyTo(S3CommanderFile dest, bool overwrite, bool move, RemoteInfo info)
+        {
+            var entry = dest as Entry;
+            if (entry == null) return FileOperationResult.NotSupported;
+
             try
             {
-                var localFile = new FileInfo(localName);
-                if (localFile.Exists && (copyFlags.Equals(CopyFlags.None) || copyFlags.Equals(CopyFlags.Move)))
+                if (!overwrite && S3Service.ObjectExists(entry.bucketName, entry.key))
                 {
-                    return FileOperationResult.ExistsResumeAllowed;
+                    return FileOperationResult.Exists;
                 }
-                if (copyFlags.IsSet(CopyFlags.Resume))
-                {
-                    offset = localFile.Length;
-                }
-                if (copyFlags.IsSet(CopyFlags.Overwrite))
-                {
-                    localFile.Delete();
-                }
+
+                var source = bucketName + "/" + key;
+                var target = entry.bucketName + "/" + entry.key;
+
+                if (SetProgress(source, target, 0, 100) == false) return FileOperationResult.UserAbort;
+                S3Service.CopyObject(bucketName, key, entry.bucketName, entry.key);
+                if (SetProgress(source, target, 50, 100) == false) return FileOperationResult.UserAbort;
+
+                if (move) DeleteFile();
+                if (SetProgress(source, target, 100, 100) == false) return FileOperationResult.UserAbort;
+
+                return FileOperationResult.OK;
             }
             catch (Exception ex)
             {
                 Context.Log.Error(ex);
                 return FileOperationResult.WriteError;
             }
-
-            try
-            {
-                SetProgress(key, localName, offset, info.Size);
-
-                //download
-                using (var stream = Context.S3Service.GetObjectStream(bucket, key, offset))
-                using (var file = new FileStream(localName, FileMode.Append))
-                {
-                    var buffer = new byte[1024 * 4];
-                    var total = offset;
-                    while (true)
-                    {
-                        var readed = stream.Read(buffer, 0, buffer.Length);
-                        if (readed <= 0) break;
-
-                        file.Write(buffer, 0, readed);
-
-                        if (SetProgress(key, localName, total += readed, info.Size) == false)
-                        {
-                            return FileOperationResult.UserAbort;
-                        }
-                    }
-                }
-
-                SetProgress(localName, key, 100, 100);
-            }
-            catch (Exception ex)
-            {
-                Context.Log.Error(ex);
-                return FileOperationResult.ReadError;
-            }
-
-            return FileOperationResult.OK;
-        }
-
-        public override FileOperationResult Upload(string localName, CopyFlags copyFlags)
-        {
-            if (copyFlags.IsSet(CopyFlags.ExistsSameCase) && !copyFlags.IsSet(CopyFlags.Overwrite))
-            {
-                return FileOperationResult.Exists;
-            }
-
-            var aborted = false;
-            try
-            {
-                var localFile = new FileInfo(localName);
-                if (!localFile.Exists)
-                {
-                    return FileOperationResult.NotFound;
-                }
-                var length = localFile.Length;
-
-                SetProgress(localName, key, 0, length);
-
-                Context.S3Service.AddObject(
-                    bucket,
-                    key,
-                    localFile.Length,
-                    MimeMapping.GetMimeMapping(localName),
-                    stream =>
-                    {
-                        using (var file = localFile.OpenRead())
-                        {
-                            var buffer = new byte[1024];
-                            var total = 0;
-                            while (true)
-                            {
-                                var readed = file.Read(buffer, 0, buffer.Length);
-                                if (readed <= 0) break;
-
-                                stream.Write(buffer, 0, readed);
-
-                                if (SetProgress(localName, key, total += readed, length) == false)
-                                {
-                                    aborted = true;
-                                    throw new OperationCanceledException();
-                                }
-                            }
-                        }
-                    }
-                );
-
-                SetProgress(localName, key, 100, 100);
-            }
-            catch (Exception ex)
-            {
-                Context.Log.Error(ex);
-                return aborted ? FileOperationResult.UserAbort : FileOperationResult.WriteError;
-            }
-
-            return FileOperationResult.OK;
         }
 
         public override bool CreateFolder(string name)
         {
-            Context.S3Service.AddObject(
-                bucket,
-                (!string.IsNullOrEmpty(key) ? key + "/" : "") + name + "/",
-                0,
-                null,
-                stream => { });
-            return true;
-        }
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name", "Folder name can not be null.");
 
-        public override bool DeleteFile()
-        {
-            Context.S3Service.DeleteObject(bucket, key);
+            S3Service.AddObject(bucketName, FolderKey + name + "/", 0, null, stream => { });
             return true;
         }
 
         public override bool DeleteFolder()
         {
-            Context.S3Service.DeleteObject(bucket, key + "/");
+            S3Service.DeleteObject(bucketName, FolderKey);
             return true;
         }
 
@@ -180,17 +102,29 @@ namespace AmazonS3Commander.S3
             return ExecuteResult.YourSelf;
         }
 
+
         private FindData ToFindData(S3Entry entry)
         {
+            var index = entry.Key.TrimEnd('/').LastIndexOf('/');
+            var name = 0 <= index ? entry.Key.Substring(index + 1) : entry.Key;
+
             var file = entry as S3File;
             if (file != null)
             {
-                return new FindData(file.Name, file.Size)
+                return new FindData(name, file.Size)
                 {
                     LastWriteTime = file.LastModified
                 };
             }
-            return new FindData(entry.Name, FileAttributes.Directory);
+            return new FindData(name, FileAttributes.Directory);
+        }
+
+        private S3Transfer GetTransfer()
+        {
+            var transfer = new S3Transfer(S3Service, bucketName, key);
+            transfer.Error += error => Context.Log.Error(error);
+            transfer.Progress += SetProgress;
+            return transfer;
         }
 
         private bool SetProgress(string source, string target, long offset, long length)
