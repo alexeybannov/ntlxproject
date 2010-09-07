@@ -42,18 +42,17 @@ namespace AmazonS3Commander.S3
         }
 
 
-        public IEnumerable<S3Entry> GetObjects(string bucketName, string prefix)
+        public IEnumerable<S3Entry> GetObjects(string bucketName, string prefix, string delimiter)
         {
             return client
-                .ListAllObjects(bucketName, prefix)
+                .ListAllObjects(bucketName, prefix, delimiter)
                 .Select(o =>
                 {
                     var f = o as ObjectEntry;
                     return f != null ?
                         (S3Entry)new S3File(f.Name, f.Size, f.LastModified) :
                         (S3Entry)new S3Folder(o.Name);
-                })
-                .Where(e => !string.IsNullOrEmpty(e.Key));
+                });
         }
 
         public Stream GetObjectStream(string bucketName, string key, long from)

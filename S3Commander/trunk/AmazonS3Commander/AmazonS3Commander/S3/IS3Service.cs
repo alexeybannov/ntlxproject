@@ -13,7 +13,7 @@ namespace AmazonS3Commander.S3
         void DeleteBucket(string bucketName);
 
 
-        IEnumerable<S3Entry> GetObjects(string bucketName, string prefix);
+        IEnumerable<S3Entry> GetObjects(string bucketName, string prefix, string delimiter);
 
         Stream GetObjectStream(string bucketName, string key, long from);
 

@@ -30,8 +30,18 @@ namespace AmazonS3Commander.S3
 
         public override IEnumerator<FindData> GetFiles()
         {
+            if (Context.CurrentOperation == StatusOperation.CalculateSize ||
+                Context.CurrentOperation == StatusOperation.Delete)
+            {
+                return S3Service
+                    .GetObjects(bucketName, FolderKey, "")
+                    .Where(o => o is S3Entry)
+                    .Select(o => ToFindData(o))
+                    .GetEnumerator();
+            }
             return S3Service
-                .GetObjects(bucketName, FolderKey)
+                .GetObjects(bucketName, FolderKey, "/")
+                .Where(o => !string.IsNullOrEmpty(o.Key))
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
         }
@@ -105,13 +115,10 @@ namespace AmazonS3Commander.S3
 
         private FindData ToFindData(S3Entry entry)
         {
-            var index = entry.Key.TrimEnd('/').LastIndexOf('/');
-            var name = 0 <= index ? entry.Key.Substring(index + 1) : entry.Key;
-
             var file = entry as S3File;
             return file != null ?
-                new FindData(name, file.Size, file.LastModified) :
-                new FindData(name, FileAttributes.Directory);
+                new FindData(entry.Key, file.Size, file.LastModified) :
+                new FindData(entry.Key, FileAttributes.Directory);
         }
 
         private S3Transfer GetTransfer()
