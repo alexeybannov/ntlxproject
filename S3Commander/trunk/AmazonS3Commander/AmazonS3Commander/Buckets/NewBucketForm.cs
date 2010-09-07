@@ -5,12 +5,18 @@ using AmazonS3Commander.S3;
 
 namespace AmazonS3Commander.Buckets
 {
-    public partial class NewBucketForm : Form
+    partial class NewBucketForm : Form
     {
         [Browsable(false)]
         public string BucketName
         {
             get { return textBoxBucketName.Text; }
+        }
+
+        [Browsable(false)]
+        public S3BucketLocation BucketLocation
+        {
+            get { return comboBoxLocation.SelectedItem as S3BucketLocation; }
         }
 
 

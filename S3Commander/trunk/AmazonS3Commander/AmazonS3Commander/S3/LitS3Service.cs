@@ -19,7 +19,8 @@ namespace AmazonS3Commander.S3
             {
                 AccessKeyID = accessKey,
                 SecretAccessKey = secretKey,
-                UseSsl = false
+                UseSsl = false,
+                UseSubdomains = true
             };
         }
 

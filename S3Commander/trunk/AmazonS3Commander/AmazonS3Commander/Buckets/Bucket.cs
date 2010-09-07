@@ -37,7 +37,7 @@ namespace AmazonS3Commander.Buckets
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    S3Service.CreateBucket(bucketName, null);
+                    S3Service.CreateBucket(form.BucketName, form.BucketLocation);
                     return true;
                 }
             }
