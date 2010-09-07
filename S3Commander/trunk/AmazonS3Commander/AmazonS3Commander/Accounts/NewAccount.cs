@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using AmazonS3Commander.Resources;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 

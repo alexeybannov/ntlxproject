@@ -31,9 +31,9 @@ namespace AmazonS3Commander.S3
                 .Select(b => new S3Bucket(b.Name, b.CreationDate));
         }
 
-        public void CreateBucket(string bucketName, string location)
+        public void CreateBucket(string bucketName, S3BucketLocation location)
         {
-            client.CreateBucket(bucketName, location);
+            client.CreateBucket(bucketName, (location ?? S3BucketLocation.Default).Code);
         }
 
         public void DeleteBucket(string bucketName)

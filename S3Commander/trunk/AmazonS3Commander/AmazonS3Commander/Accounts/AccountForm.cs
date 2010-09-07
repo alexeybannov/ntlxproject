@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
-using AmazonS3Commander.Properties;
+using AmazonS3Commander.Resources;
 
 namespace AmazonS3Commander.Accounts
 {
@@ -32,8 +32,8 @@ namespace AmazonS3Commander.Accounts
         public AccountForm(string name)
             : this()
         {
-            Icon = Resources.NewAccountIcon;
-            Text = Resources.NewAccount;
+            Icon = RS.NewAccountIcon;
+            Text = RS.NewAccount;
 
             textBox1.Text = name ?? string.Empty;
             textBox1.SelectionStart = textBox1.TextLength;
@@ -44,8 +44,8 @@ namespace AmazonS3Commander.Accounts
         {
             if (info == null) throw new ArgumentNullException("info");
 
-            Icon = Resources.AccountIcon;
-            Text = Resources.EditAccount;
+            Icon = RS.AccountIcon;
+            Text = RS.EditAccount;
 
             textBox1.Text = name ?? string.Empty;
             textBox2.Text = info.AccessKey ?? string.Empty;

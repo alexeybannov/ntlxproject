@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AmazonS3Commander.S3;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 
-namespace AmazonS3Commander.S3
+namespace AmazonS3Commander.Files
 {
     class Entry : S3CommanderFile
     {

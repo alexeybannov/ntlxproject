@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using AmazonS3Commander.Properties;
+using AmazonS3Commander.Resources;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 
@@ -63,13 +63,13 @@ namespace AmazonS3Commander.Accounts
                 {
                     return false;
                 }
-                if (form.AccountName.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase) ||
-                    form.AccountName.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase))
+                if (form.AccountName.Equals(RS.NewAccount, StringComparison.InvariantCultureIgnoreCase) ||
+                    form.AccountName.Equals(RS.Settings, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return false;
                 }
                 if (accountManager.Exists(form.AccountName) &&
-                    Context.Request.MessageBox(string.Format(Resources.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
+                    Context.Request.MessageBox(string.Format(RS.ReplaceAccount, form.AccountName), MessageBoxButtons.YesNo) == false)
                 {
                     return false;
                 }

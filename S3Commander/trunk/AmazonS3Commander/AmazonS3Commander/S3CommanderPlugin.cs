@@ -5,7 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using AmazonS3Commander.Logger;
-using AmazonS3Commander.Properties;
+using AmazonS3Commander.Resources;
 using LitS3;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
@@ -24,7 +24,7 @@ namespace AmazonS3Commander
 
         public override string PluginName
         {
-            get { return Resources.ProductName; }
+            get { return RS.ProductName; }
         }
 
         public override BackgroundFlags BackgroundSupport

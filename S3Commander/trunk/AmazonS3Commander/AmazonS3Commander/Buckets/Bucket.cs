@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
+using AmazonS3Commander.Files;
+using AmazonS3Commander.Resources;
 using TotalCommander.Plugin.Wfx;
 
-namespace AmazonS3Commander.S3
+namespace AmazonS3Commander.Buckets
 {
     class Bucket : S3CommanderFile
     {
@@ -30,8 +33,15 @@ namespace AmazonS3Commander.S3
 
         public override bool CreateFolder()
         {
-            S3Service.CreateBucket(bucketName, null);
-            return true;
+            using (var form = new NewBucketForm(bucketName))
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    S3Service.CreateBucket(bucketName, null);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override bool DeleteFolder()

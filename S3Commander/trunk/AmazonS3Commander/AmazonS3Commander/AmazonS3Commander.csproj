@@ -55,6 +55,12 @@
     <Compile Include="Accounts\AccountInfo.cs" />
     <Compile Include="Accounts\AccountManager.cs" />
     <Compile Include="Accounts\NewAccount.cs" />
+    <Compile Include="Buckets\NewBucketForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Buckets\NewBucketForm.Designer.cs">
+      <DependentUpon>NewBucketForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logger\ILog.cs" />
     <Compile Include="Logger\TraceLogger.cs" />
     <Compile Include="S3CommanderFile.cs" />
@@ -66,22 +72,23 @@
     </Compile>
     <Compile Include="S3CommanderContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.ru.Designer.cs">
-      <DependentUpon>Resources.ru.resx</DependentUpon>
+    <Compile Include="Resources\RS.ru.Designer.cs">
+      <DependentUpon>RS.ru.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Resources\RS.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>RS.resx</DependentUpon>
     </Compile>
-    <Compile Include="Icons.cs" />
-    <Compile Include="S3\Bucket.cs" />
-    <Compile Include="S3\Entry.cs" />
+    <Compile Include="Resources\Icons.cs" />
+    <Compile Include="Buckets\Bucket.cs" />
+    <Compile Include="Files\Entry.cs" />
     <Compile Include="S3\IS3Service.cs" />
     <Compile Include="S3\LitS3Service.cs" />
     <Compile Include="S3\S3Bucket.cs" />
+    <Compile Include="S3\S3BucketLocation.cs" />
     <Compile Include="S3\S3Entry.cs" />
     <Compile Include="S3\S3File.cs" />
     <Compile Include="S3\S3Folder.cs" />
@@ -110,14 +117,17 @@
       <DependentUpon>AccountForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.ru.resx">
+    <EmbeddedResource Include="Buckets\NewBucketForm.resx">
+      <DependentUpon>NewBucketForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\RS.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.ru.Designer.cs</LastGenOutput>
+      <LastGenOutput>RS.ru.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="Resources\RS.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>RS.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

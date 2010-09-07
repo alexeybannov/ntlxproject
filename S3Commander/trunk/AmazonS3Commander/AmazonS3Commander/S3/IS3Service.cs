@@ -8,7 +8,7 @@ namespace AmazonS3Commander.S3
     {
         IEnumerable<S3Bucket> GetBuckets();
 
-        void CreateBucket(string bucketName, string location);
+        void CreateBucket(string bucketName, S3BucketLocation location);
 
         void DeleteBucket(string bucketName);
 

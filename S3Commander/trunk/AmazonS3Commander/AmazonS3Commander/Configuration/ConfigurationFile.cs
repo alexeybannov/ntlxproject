@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using AmazonS3Commander.Resources;
 
 namespace AmazonS3Commander.Configuration
 {

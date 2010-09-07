@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using AmazonS3Commander.Accounts;
+using AmazonS3Commander.Buckets;
 using AmazonS3Commander.Configuration;
-using AmazonS3Commander.Properties;
+using AmazonS3Commander.Files;
+using AmazonS3Commander.Resources;
 using AmazonS3Commander.S3;
 using TotalCommander.Plugin.Wfx;
 
@@ -45,11 +47,11 @@ namespace AmazonS3Commander
             var accountName = parts[1];
             if (depth == 1)
             {
-                if (accountName.Equals(Resources.Settings, StringComparison.InvariantCultureIgnoreCase))
+                if (accountName.Equals(RS.Settings, StringComparison.InvariantCultureIgnoreCase))
                 {
                     file = new ConfigurationFile();
                 }
-                else if (accountName.Equals(Resources.NewAccount, StringComparison.InvariantCultureIgnoreCase))
+                else if (accountName.Equals(RS.NewAccount, StringComparison.InvariantCultureIgnoreCase))
                 {
                     file = new NewAccount(accountManager);
                 }
@@ -80,7 +82,7 @@ namespace AmazonS3Commander
 
             return accountManager
                 .GetAccounts()
-                .Union(new[] { new FindData(Resources.NewAccount), new FindData(Resources.Settings) })
+                .Union(new[] { new FindData(RS.NewAccount), new FindData(RS.Settings) })
                 .GetEnumerator();
         }
     }
