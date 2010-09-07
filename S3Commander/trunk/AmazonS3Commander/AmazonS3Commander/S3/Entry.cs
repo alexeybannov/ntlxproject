@@ -31,7 +31,8 @@ namespace AmazonS3Commander.S3
         public override IEnumerator<FindData> GetFiles()
         {
             if (Context.CurrentOperation == StatusOperation.CalculateSize ||
-                Context.CurrentOperation == StatusOperation.Delete)
+                Context.CurrentOperation == StatusOperation.Delete ||
+                Context.CurrentOperation == StatusOperation.RenameMoveMulti)
             {
                 return S3Service
                     .GetObjects(bucketName, FolderKey, "")
@@ -79,9 +80,12 @@ namespace AmazonS3Commander.S3
 
                 if (SetProgress(source, target, 0, 100) == false) return FileOperationResult.UserAbort;
                 S3Service.CopyObject(bucketName, key, entry.bucketName, entry.key);
-                if (SetProgress(source, target, 50, 100) == false) return FileOperationResult.UserAbort;
 
-                if (move) DeleteFile();
+                if (move)
+                {
+                    if (SetProgress(source, target, 50, 100) == false) return FileOperationResult.UserAbort;
+                    DeleteFile();
+                }
                 if (SetProgress(source, target, 100, 100) == false) return FileOperationResult.UserAbort;
 
                 return FileOperationResult.OK;
