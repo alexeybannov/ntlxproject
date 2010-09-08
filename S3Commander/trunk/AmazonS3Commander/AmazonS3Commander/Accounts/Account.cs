@@ -34,6 +34,7 @@ namespace AmazonS3Commander.Accounts
                 return S3Service
                     .GetBuckets()
                     .Select(b => new FindData(b.Key, FileAttributes.Directory, b.CreationDate))
+                    .Union(new[] { new FindData(RS.NewBucket) })
                     .GetEnumerator();
             }
             if (Context.CurrentOperation == StatusOperation.Delete)
@@ -63,8 +64,8 @@ namespace AmazonS3Commander.Accounts
                 {
                     return false;
                 }
-                if (form.AccountName.Equals(RS.NewAccount, StringComparison.InvariantCultureIgnoreCase) ||
-                    form.AccountName.Equals(RS.Settings, StringComparison.InvariantCultureIgnoreCase))
+                if (form.AccountName.Equals(RS.NewAccount, StringComparison.CurrentCultureIgnoreCase) ||
+                    form.AccountName.Equals(RS.Settings, StringComparison.CurrentCultureIgnoreCase))
                 {
                     return false;
                 }

@@ -4,25 +4,16 @@ using AmazonS3Commander.Resources;
 using TotalCommander.Plugin;
 using TotalCommander.Plugin.Wfx;
 
-namespace AmazonS3Commander.Accounts
+namespace AmazonS3Commander.Buckets
 {
-    class NewAccount : S3CommanderFile
+    class NewBucket : S3CommanderFile
     {
-        private readonly AccountManager accountManager;
-
-
-        public NewAccount(AccountManager accountManager)
-        {
-            this.accountManager = accountManager;
-        }
-
-
         public override ExecuteResult Open(TotalCommanderWindow window, ref string link)
         {
             if (window == null) throw new ArgumentNullException("window");
 
-            var account = new Account(accountManager, string.Empty).Initialize(Context);
-            if (account.CreateFolder())
+            var bucket = new Bucket(string.Empty).Initialize(Context, S3Service);
+            if (bucket.CreateFolder())
             {
                 window.Refresh();
             }

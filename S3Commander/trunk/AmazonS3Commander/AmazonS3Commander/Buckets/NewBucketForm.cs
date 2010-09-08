@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using AmazonS3Commander.S3;
+using AmazonS3Commander.Resources;
 
 namespace AmazonS3Commander.Buckets
 {
@@ -23,6 +24,8 @@ namespace AmazonS3Commander.Buckets
         public NewBucketForm(string bucketName)
         {
             InitializeComponent();
+
+            Icon = Icons.NewAccount;
             textBoxBucketName.Text = bucketName;
             comboBoxLocation.DataSource = S3BucketLocation.GetAvailableLocations();
             comboBoxLocation.SelectedItem = S3BucketLocation.Default;

@@ -15,7 +15,7 @@ namespace AmazonS3Commander.Buckets
 
         public Bucket(string bucketName)
         {
-            if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException("bucketName");
+            if (bucketName == null) throw new ArgumentNullException("bucketName");
 
             this.bucketName = bucketName;
         }
@@ -35,13 +35,18 @@ namespace AmazonS3Commander.Buckets
         {
             using (var form = new NewBucketForm(bucketName))
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog() != DialogResult.OK)
                 {
-                    S3Service.CreateBucket(form.BucketName, form.BucketLocation);
-                    return true;
+                    return false;
                 }
+                if (RS.NewBucket.Equals(form.BucketName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return false;
+                }
+
+                S3Service.CreateBucket(form.BucketName, form.BucketLocation);
+                return true;
             }
-            return false;
         }
 
         public override bool DeleteFolder()

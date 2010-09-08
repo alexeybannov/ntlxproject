@@ -43,15 +43,17 @@ namespace AmazonS3Commander
             //parent directory
             if (parts[depth] == "..") return file;
 
-            //accounts
             var accountName = parts[1];
+            var bucketName = 1 < depth ? parts[depth] : null;
+
+            //accounts            
             if (depth == 1)
             {
-                if (accountName.Equals(RS.Settings, StringComparison.InvariantCultureIgnoreCase))
+                if (RS.Settings.Equals(accountName, StringComparison.CurrentCultureIgnoreCase))
                 {
                     file = new ConfigurationFile();
                 }
-                else if (accountName.Equals(RS.NewAccount, StringComparison.InvariantCultureIgnoreCase))
+                else if (RS.NewAccount.Equals(accountName, StringComparison.CurrentCultureIgnoreCase))
                 {
                     file = new NewAccount(accountManager);
                 }
@@ -63,12 +65,19 @@ namespace AmazonS3Commander
             //buckets
             else if (depth == 2)
             {
-                file = new Bucket(parts[2]);
+                if (RS.NewBucket.Equals(bucketName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    file = new NewBucket();
+                }
+                else
+                {
+                    file = new Bucket(bucketName);
+                }
             }
             //amazon s3 folder or file
             else
             {
-                file = new Entry(parts[2], string.Join("/", parts, 3, depth - 2));
+                file = new Entry(bucketName, string.Join("/", parts, 3, depth - 2));
             }
 
             file.Initialize(Context, s3ServiceProvider.GetS3Service(accountName));
