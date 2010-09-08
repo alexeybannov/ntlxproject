@@ -39,21 +39,13 @@ namespace LitS3
         internal string ToQueryString()
         {
             var builder = new StringBuilder();
-            var sep = '?';
 
-            if (!string.IsNullOrEmpty(Prefix))
-            { builder.Append(sep).Append("prefix=").Append(HttpUtility.UrlEncode(Prefix)); sep = '&'; }
+            if (!string.IsNullOrEmpty(Prefix)) builder.AppendFormat("prefix={0}&", HttpUtility.UrlEncode(Prefix));
+            if (!string.IsNullOrEmpty(Marker)) builder.AppendFormat("marker={0}&", HttpUtility.UrlEncode(Marker));
+            if (!string.IsNullOrEmpty(Delimiter)) builder.AppendFormat("delimiter={0}&", HttpUtility.UrlEncode(Delimiter));
+            if (MaxKeys.HasValue) builder.AppendFormat("max-keys={0}&", MaxKeys.Value);
 
-            if (!string.IsNullOrEmpty(Marker))
-            { builder.Append(sep).Append("marker=").Append(HttpUtility.UrlEncode(Marker)); sep = '&'; }
-
-            if (!string.IsNullOrEmpty(Delimiter))
-            { builder.Append(sep).Append("delimiter=").Append(HttpUtility.UrlEncode(Delimiter)); sep = '&'; }
-
-            if (MaxKeys.HasValue)
-            { builder.Append(sep).Append("max-keys=").Append(MaxKeys.Value); sep = '&'; }
-
-            return builder.ToString();
+            return builder.ToString().TrimEnd('&');
         }
     }
 
@@ -97,7 +89,7 @@ namespace LitS3
             // this is optional
             if (Reader.Name == "Delimiter")
                 this.Delimiter = Reader.ReadElementContentAsString("Delimiter", "");
-            
+
             this.IsTruncated = Reader.ReadElementContentAsBoolean("IsTruncated", "");
         }
 
@@ -125,7 +117,7 @@ namespace LitS3
         /// Gets the delimiter specified in the original request.
         /// </summary>
         public string Delimiter { get; private set; }
-        
+
         /// <summary>
         /// Gets whether the list of itmes was truncated by the server because too many matched
         /// or the number of items found was greater than the maximum keys specified in the request.

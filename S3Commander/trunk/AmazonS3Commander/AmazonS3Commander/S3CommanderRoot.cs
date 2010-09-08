@@ -44,7 +44,7 @@ namespace AmazonS3Commander
             if (parts[depth] == "..") return file;
 
             var accountName = parts[1];
-            var bucketName = 1 < depth ? parts[depth] : null;
+            var bucketName = 2 <= depth ? parts[2] : null;
 
             //accounts            
             if (depth == 1)

@@ -28,40 +28,27 @@ namespace LitS3
 
         HttpWebRequest CreateWebRequest(string method, string objectKey, string queryString)
         {
-            var uriString = new StringBuilder(Service.UseSsl ? "https://" : "http://");
+            var uriBuilder = new UriBuilder();
 
-            if (bucketName != null && Service.UseSubdomains)
-                uriString.Append(bucketName).Append('.');
+            uriBuilder.Scheme = Service.UseSsl ? Uri.UriSchemeHttps : Uri.UriSchemeHttp;
 
-            uriString.Append(Service.Host);
+            uriBuilder.Host = Service.Host;
+            if (Service.UseSubdomains && bucketName != null) uriBuilder.Host = bucketName + "." + uriBuilder.Host;
 
-            if (Service.CustomPort != 0)
-                uriString.Append(':').Append(Service.CustomPort);
+            if (Service.CustomPort != 0) uriBuilder.Port = Service.CustomPort;
 
-            uriString.Append('/');
+            if (!Service.UseSubdomains && bucketName != null) uriBuilder.Path += bucketName + "/";
+            if (objectKey != null) uriBuilder.Path += Uri.EscapeDataString(objectKey);
+            if (queryString != null) uriBuilder.Query = queryString;
 
-            if (bucketName != null && !Service.UseSubdomains)
-                uriString.Append(bucketName).Append('/');
-
-            // EscapeDataString allows you to use basically any key for an object, including
-            // keys with tricky URI characters like "+".
-            if (objectKey != null)
-                uriString.Append(Uri.EscapeDataString(objectKey));
-
-            if (queryString != null)
-                uriString.Append(queryString);
-
-            var uri = new Uri(uriString.ToString());
-
-            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(uri);
+            var request = (HttpWebRequest)System.Net.WebRequest.Create(uriBuilder.Uri);
             request.Method = method;
             request.AllowWriteStreamBuffering = true; // AddObject will make this false
             request.AllowAutoRedirect = true;
-
             // S3 will never "timeout" a request. However, network delays may still cause a
             // timeout according to WebRequest's ReadWriteTimeout property, which you can modify.
             request.Timeout = int.MaxValue;
-            
+
             return request;
         }
 
@@ -140,7 +127,7 @@ namespace LitS3
             // S3 sent us an <Error> message.
             if (exception.Status == WebExceptionStatus.ProtocolError &&
                 exception.Response.ContentType == "application/xml" &&
-                (exception.Response.ContentLength > 0 || 
+                (exception.Response.ContentLength > 0 ||
                  exception.Response.Headers[HttpResponseHeader.TransferEncoding] == "chunked"))
             {
                 var wrapped = S3Exception.FromWebException(exception);
