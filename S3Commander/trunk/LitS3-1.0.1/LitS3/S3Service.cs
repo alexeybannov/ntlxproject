@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Collections.Specialized;
 
 namespace LitS3
 {
@@ -179,6 +180,17 @@ namespace LitS3
                     return false;
                 else
                     throw;
+            }
+        }
+
+        /// <summary>
+        /// The HEAD operation retrieves metadata from an object without returning the object itself.
+        /// </summary>
+        public WebHeaderCollection HeadObject(string bucketName, string key)
+        {
+            using (var response = new GetObjectRequest(this, bucketName, key, true).GetResponse())
+            {
+                return response.WebResponse.Headers;
             }
         }
 
@@ -365,7 +377,7 @@ namespace LitS3
         public string GetAuthorizedUrl(string bucketName, string key, DateTime expires)
         {
             string authorization = authorizer.AuthorizeQueryString(bucketName, key, expires);
-            
+
             var uriString = new StringBuilder(GetUrl(bucketName, key))
                 .Append("?AWSAccessKeyId=").Append(AccessKeyID)
                 .Append("&Expires=").Append(expires.SecondsSinceEpoch())
@@ -409,7 +421,7 @@ namespace LitS3
         /// <summary>
         /// Adds an object to S3 by reading the specified amount of data from the given stream.
         /// </summary>
-        public void AddObject(Stream inputStream, long bytes, string bucketName, string key, 
+        public void AddObject(Stream inputStream, long bytes, string bucketName, string key,
             string contentType, CannedAcl acl)
         {
             AddObject(bucketName, key, bytes, contentType, acl, stream =>
@@ -508,7 +520,7 @@ namespace LitS3
         /// <summary>
         /// Copies an object from one bucket to another.
         /// </summary>
-        public void CopyObject(string sourceBucketName, string sourceKey, 
+        public void CopyObject(string sourceBucketName, string sourceKey,
             string destBucketName, string destKey)
         {
             var request = new CopyObjectRequest(this, sourceBucketName, sourceKey,
@@ -545,7 +557,7 @@ namespace LitS3
         /// Gets a data stream for an existing object in S3. It is your responsibility to close
         /// the Stream when you are finished.
         /// </summary>
-        public Stream GetObjectStream(string bucketName, string key, 
+        public Stream GetObjectStream(string bucketName, string key,
             out long contentLength, out string contentType)
         {
             var request = new GetObjectRequest(this, bucketName, key);
@@ -581,7 +593,7 @@ namespace LitS3
         /// <summary>
         /// Gets an existing object in S3 and copies its data to the given Stream.
         /// </summary>
-        public void GetObject(string bucketName, string key, Stream outputStream, 
+        public void GetObject(string bucketName, string key, Stream outputStream,
             out long contentLength, out string contentType)
         {
             using (Stream objectStream = GetObjectStream(bucketName, key, out contentLength, out contentType))
@@ -649,7 +661,7 @@ namespace LitS3
         static void CopyStream(Stream source, Stream dest, long length, Action<long> progressCallback)
         {
             var buffer = new byte[8192];
-        
+
             if (progressCallback != null)
                 progressCallback(0);
 
@@ -664,8 +676,8 @@ namespace LitS3
                     throw new Exception("Unexpected end of stream while copying.");
 
                 totalBytesRead += bytesRead;
-                
-                if (progressCallback != null) 
+
+                if (progressCallback != null)
                     progressCallback(totalBytesRead);
             }
         }
@@ -675,7 +687,7 @@ namespace LitS3
         {
             return handler != null
                  ? bytes => handler(this, new S3ProgressEventArgs(bucketName, key, bytes, length))
-                 : (Action<long>) null;
+                 : (Action<long>)null;
         }
 
         #endregion

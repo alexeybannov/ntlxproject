@@ -19,7 +19,7 @@ namespace AmazonS3Commander
         private IS3Service s3Service;
 
 
-        protected S3CommanderContext Context
+        public S3CommanderContext Context
         {
             get
             {
@@ -28,7 +28,7 @@ namespace AmazonS3Commander
             }
         }
 
-        protected IS3Service S3Service
+        public IS3Service S3Service
         {
             get
             {

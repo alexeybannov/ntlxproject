@@ -80,5 +80,10 @@ namespace AmazonS3Commander.S3
         {
             client.CopyObject(sourceBucketName, sourceKey, destBucketName, destKey);
         }
+
+        public WebHeaderCollection HeadObject(string bucketName, string key)
+        {
+            return client.HeadObject(bucketName, key);
+        }
     }
 }

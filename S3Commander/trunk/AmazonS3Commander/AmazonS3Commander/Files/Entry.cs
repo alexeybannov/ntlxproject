@@ -10,21 +10,24 @@ namespace AmazonS3Commander.Files
 {
     class Entry : S3CommanderFile
     {
+        private readonly string bucketName;
+
+        private readonly string key;
+
+        
         public string BucketName
         {
-            get;
-            private set;
+            get { return bucketName; }
         }
 
         public string Key
         {
-            get;
-            private set;
+            get { return key; }
         }
 
         private string FolderKey
         {
-            get { return Key != string.Empty ? Key + "/" : Key; }
+            get { return key != string.Empty ? key + "/" : key; }
         }
 
 
@@ -33,8 +36,8 @@ namespace AmazonS3Commander.Files
             if (string.IsNullOrEmpty(bucketName)) throw new ArgumentNullException("bucketName");
             if (key == null) throw new ArgumentNullException("key");
 
-            this.BucketName = bucketName;
-            this.Key = key;
+            this.bucketName = bucketName;
+            this.key = key;
         }
 
         public override IEnumerator<FindData> GetFiles()
@@ -44,13 +47,13 @@ namespace AmazonS3Commander.Files
                 Context.CurrentOperation == StatusOperation.RenameMoveMulti)
             {
                 return S3Service
-                    .GetObjects(BucketName, FolderKey, "")
+                    .GetObjects(bucketName, FolderKey, "")
                     .Where(o => o is S3Entry)
                     .Select(o => ToFindData(o))
                     .GetEnumerator();
             }
             return S3Service
-                .GetObjects(BucketName, FolderKey, "/")
+                .GetObjects(bucketName, FolderKey, "/")
                 .Where(o => !string.IsNullOrEmpty(o.Key))
                 .Select(o => ToFindData(o))
                 .GetEnumerator();
@@ -68,7 +71,7 @@ namespace AmazonS3Commander.Files
 
         public override bool DeleteFile()
         {
-            S3Service.DeleteObject(BucketName, Key);
+            S3Service.DeleteObject(bucketName, key);
             return true;
         }
 
@@ -79,16 +82,16 @@ namespace AmazonS3Commander.Files
 
             try
             {
-                if (!overwrite && S3Service.ObjectExists(entry.BucketName, entry.Key))
+                if (!overwrite && S3Service.ObjectExists(entry.bucketName, entry.key))
                 {
                     return FileOperationResult.Exists;
                 }
 
-                var source = BucketName + "/" + Key;
-                var target = entry.BucketName + "/" + entry.Key;
+                var source = bucketName + "/" + key;
+                var target = entry.bucketName + "/" + entry.key;
 
                 if (SetProgress(source, target, 0, 100) == false) return FileOperationResult.UserAbort;
-                S3Service.CopyObject(BucketName, Key, entry.BucketName, entry.Key);
+                S3Service.CopyObject(bucketName, key, entry.bucketName, entry.key);
 
                 if (move)
                 {
@@ -110,13 +113,13 @@ namespace AmazonS3Commander.Files
         {
             if (string.IsNullOrEmpty(FolderKey)) throw new ArgumentNullException("name", "Folder name can not be null.");
 
-            S3Service.AddObject(BucketName, FolderKey, 0, null, stream => { });
+            S3Service.AddObject(bucketName, FolderKey, 0, null, stream => { });
             return true;
         }
 
         public override bool DeleteFolder()
         {
-            S3Service.DeleteObject(BucketName, FolderKey);
+            S3Service.DeleteObject(bucketName, FolderKey);
             return true;
         }
 
@@ -145,7 +148,7 @@ namespace AmazonS3Commander.Files
 
         private S3Transfer GetTransfer()
         {
-            var transfer = new S3Transfer(S3Service, BucketName, Key);
+            var transfer = new S3Transfer(S3Service, bucketName, key);
             transfer.Error += error => Context.Log.Error(error);
             transfer.Progress += SetProgress;
             return transfer;

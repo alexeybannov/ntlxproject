@@ -32,13 +32,18 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonApply = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabControlProperties = new System.Windows.Forms.TabControl();
+            this.tabPageGeneral = new System.Windows.Forms.TabPage();
+            this.propertyGridFile = new System.Windows.Forms.PropertyGrid();
+            this.tabPageSecurity = new System.Windows.Forms.TabPage();
+            this.tabPageHeaders = new System.Windows.Forms.TabPage();
+            this.listViewHeaders = new System.Windows.Forms.ListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.panel1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tabControlProperties.SuspendLayout();
+            this.tabPageGeneral.SuspendLayout();
+            this.tabPageHeaders.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -77,6 +82,7 @@
             // buttonApply
             // 
             this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonApply.Enabled = false;
             this.buttonApply.Location = new System.Drawing.Point(273, 6);
             this.buttonApply.Name = "buttonApply";
             this.buttonApply.Size = new System.Drawing.Size(75, 23);
@@ -84,46 +90,85 @@
             this.buttonApply.Text = "&Apply";
             this.buttonApply.UseVisualStyleBackColor = true;
             // 
-            // tabControl1
+            // tabControlProperties
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(360, 361);
-            this.tabControl1.TabIndex = 0;
+            this.tabControlProperties.Controls.Add(this.tabPageGeneral);
+            this.tabControlProperties.Controls.Add(this.tabPageSecurity);
+            this.tabControlProperties.Controls.Add(this.tabPageHeaders);
+            this.tabControlProperties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlProperties.Location = new System.Drawing.Point(0, 0);
+            this.tabControlProperties.Name = "tabControlProperties";
+            this.tabControlProperties.SelectedIndex = 0;
+            this.tabControlProperties.Size = new System.Drawing.Size(360, 361);
+            this.tabControlProperties.TabIndex = 0;
             // 
-            // tabPage1
+            // tabPageGeneral
             // 
-            this.tabPage1.Controls.Add(this.propertyGrid1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(352, 335);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "General";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPageGeneral.Controls.Add(this.propertyGridFile);
+            this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
+            this.tabPageGeneral.Name = "tabPageGeneral";
+            this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageGeneral.Size = new System.Drawing.Size(352, 335);
+            this.tabPageGeneral.TabIndex = 0;
+            this.tabPageGeneral.Text = "General";
+            this.tabPageGeneral.UseVisualStyleBackColor = true;
             // 
-            // propertyGrid1
+            // propertyGridFile
             // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(346, 329);
-            this.propertyGrid1.TabIndex = 0;
-            this.propertyGrid1.ToolbarVisible = false;
+            this.propertyGridFile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGridFile.Location = new System.Drawing.Point(3, 3);
+            this.propertyGridFile.Name = "propertyGridFile";
+            this.propertyGridFile.Size = new System.Drawing.Size(346, 329);
+            this.propertyGridFile.TabIndex = 0;
+            this.propertyGridFile.ToolbarVisible = false;
             // 
-            // tabPage2
+            // tabPageSecurity
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(432, 399);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Security";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabPageSecurity.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSecurity.Name = "tabPageSecurity";
+            this.tabPageSecurity.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageSecurity.Size = new System.Drawing.Size(352, 335);
+            this.tabPageSecurity.TabIndex = 1;
+            this.tabPageSecurity.Text = "Security";
+            this.tabPageSecurity.UseVisualStyleBackColor = true;
+            // 
+            // tabPageHeaders
+            // 
+            this.tabPageHeaders.Controls.Add(this.listViewHeaders);
+            this.tabPageHeaders.Location = new System.Drawing.Point(4, 22);
+            this.tabPageHeaders.Name = "tabPageHeaders";
+            this.tabPageHeaders.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageHeaders.Size = new System.Drawing.Size(352, 335);
+            this.tabPageHeaders.TabIndex = 2;
+            this.tabPageHeaders.Text = "HTTP Headers";
+            this.tabPageHeaders.UseVisualStyleBackColor = true;
+            // 
+            // listViewHeaders
+            // 
+            this.listViewHeaders.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.listViewHeaders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewHeaders.FullRowSelect = true;
+            this.listViewHeaders.GridLines = true;
+            this.listViewHeaders.HideSelection = false;
+            this.listViewHeaders.Location = new System.Drawing.Point(3, 3);
+            this.listViewHeaders.MultiSelect = false;
+            this.listViewHeaders.Name = "listViewHeaders";
+            this.listViewHeaders.Size = new System.Drawing.Size(346, 329);
+            this.listViewHeaders.TabIndex = 0;
+            this.listViewHeaders.UseCompatibleStateImageBehavior = false;
+            this.listViewHeaders.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Header";
+            this.columnHeader1.Width = 150;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Value";
+            this.columnHeader2.Width = 170;
             // 
             // EntryForm
             // 
@@ -132,7 +177,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(360, 402);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabControlProperties);
             this.Controls.Add(this.panel1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -142,8 +187,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "EntryForm";
             this.panel1.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.tabControlProperties.ResumeLayout(false);
+            this.tabPageGeneral.ResumeLayout(false);
+            this.tabPageHeaders.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -151,12 +197,16 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabControl tabControlProperties;
+        private System.Windows.Forms.TabPage tabPageGeneral;
+        private System.Windows.Forms.TabPage tabPageSecurity;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonApply;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.PropertyGrid propertyGridFile;
+        private System.Windows.Forms.TabPage tabPageHeaders;
+        private System.Windows.Forms.ListView listViewHeaders;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
     }
 }
