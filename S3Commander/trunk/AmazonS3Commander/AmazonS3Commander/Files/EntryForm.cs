@@ -23,6 +23,7 @@ namespace AmazonS3Commander.Files
             Text = 0 < index ? key.Substring(index + 1) : key;
 
             ThreadPool.QueueUserWorkItem(GetEntryInfoAsync, new WorkItemParam(entry, OnAsyncComplete));
+            ThreadPool.QueueUserWorkItem(GetACLAsync, new WorkItemParam(entry, OnAsyncComplete));
         }
 
 
@@ -75,8 +76,6 @@ namespace AmazonS3Commander.Files
                         var item = new ListViewItem(new[] { header, headers[header] });
                         listViewHeaders.Items.Add(item);
                     }
-
-                    ThreadPool.QueueUserWorkItem(GetACLAsync, new WorkItemParam(entry, OnAsyncComplete));
                 }
                 else if (state is Exception)
                 {

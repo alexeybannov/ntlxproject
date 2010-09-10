@@ -118,6 +118,7 @@
             this.propertyGridFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGridFile.Location = new System.Drawing.Point(3, 3);
             this.propertyGridFile.Name = "propertyGridFile";
+            this.propertyGridFile.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
             this.propertyGridFile.Size = new System.Drawing.Size(346, 329);
             this.propertyGridFile.TabIndex = 0;
             this.propertyGridFile.ToolbarVisible = false;
