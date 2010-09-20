@@ -12,7 +12,7 @@ namespace AmazonS3Commander.Files
         private long size;
 
 
-        [Category("General"), DisplayName("Name")]
+        [DisplayName("Name")]
         [Description("The name of the selected object")]
         public string Name
         {
@@ -20,7 +20,7 @@ namespace AmazonS3Commander.Files
             private set;
         }
 
-        [Category("General"), DisplayName("Bucket Name")]
+        [DisplayName("Bucket Name")]
         [Description("The name of the bucket this file belongs to")]
         public string BucketName
         {
@@ -28,7 +28,7 @@ namespace AmazonS3Commander.Files
             private set;
         }
 
-        [Category("General"), DisplayName("Object Key")]
+        [DisplayName("Object Key")]
         [Description("The path to the selected file inside the bucket")]
         public string Key
         {
@@ -36,21 +36,21 @@ namespace AmazonS3Commander.Files
             private set;
         }
 
-        [Category("General"), DisplayName("Last Modified")]
+        [DisplayName("Last Modified")]
         [Description("The day that the file was last changed")]
         public DateTime LastModified
         {
             get { return lastModified; }
         }
 
-        [Category("General"), DisplayName("Size")]
+        [DisplayName("Size")]
         [Description("The file of the selected file")]
         public long Size
         {
             get { return size; }
         }
 
-        [Category("General"), DisplayName("Content Type")]
+        [DisplayName("Content Type")]
         [Description("The MIME type of the selected file")]
         public string ContentType
         {
@@ -58,7 +58,7 @@ namespace AmazonS3Commander.Files
             private set;
         }
 
-        [Category("General"), DisplayName("Etag")]
+        [DisplayName("Etag")]
         [Description("The etag header of the selected file")]
         public string Etag
         {

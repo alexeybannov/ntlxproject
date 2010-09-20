@@ -25,7 +25,7 @@ namespace AmazonS3Commander.Files
             get { return key; }
         }
 
-        private string FolderKey
+        public string FolderKey
         {
             get { return key != string.Empty ? key + "/" : key; }
         }

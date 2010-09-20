@@ -151,11 +151,11 @@
             this.columnHeader2});
             this.listViewHeaders.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewHeaders.FullRowSelect = true;
-            this.listViewHeaders.GridLines = true;
             this.listViewHeaders.HideSelection = false;
             this.listViewHeaders.Location = new System.Drawing.Point(3, 3);
             this.listViewHeaders.MultiSelect = false;
             this.listViewHeaders.Name = "listViewHeaders";
+            this.listViewHeaders.ShowGroups = false;
             this.listViewHeaders.Size = new System.Drawing.Size(346, 329);
             this.listViewHeaders.TabIndex = 0;
             this.listViewHeaders.UseCompatibleStateImageBehavior = false;
@@ -169,7 +169,7 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Value";
-            this.columnHeader2.Width = 170;
+            this.columnHeader2.Width = 190;
             // 
             // EntryForm
             // 
