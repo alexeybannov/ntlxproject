@@ -26,7 +26,8 @@ namespace AmazonS3Commander.Files
             var index = key.TrimEnd('/').LastIndexOf('/');
             Text = 0 < index ? key.Substring(index + 1) : key;
 
-            propertyGridFile.SelectedObject = new DataGridRetrieve();
+            propertyGridFile.SelectedObject = new EntryInfo();
+            listViewHeaders.Items.Add("Retrieving data...");
 
             ThreadPool.QueueUserWorkItem(IsEntryFolderAsync, new WorkItemParam(entry, OnAsyncComplete));
         }
@@ -67,6 +68,7 @@ namespace AmazonS3Commander.Files
             var param = (WorkItemParam)state;
             try
             {
+                Thread.Sleep(3000);
                 var entry = (Entry)param.State;
                 var headers = entry.S3Service.HeadObject(entry.BucketName, folder ? entry.FolderKey : entry.Key);
                 param.OnComplete(headers);
@@ -105,6 +107,7 @@ namespace AmazonS3Commander.Files
                 if (state is bool)
                 {
                     folder = (bool)state;
+                    checkBoxSubfolders.Visible = checkBoxSubfolders.Checked = folder;
                     ThreadPool.QueueUserWorkItem(GetEntryInfoAsync, new WorkItemParam(entry, OnAsyncComplete));
                     ThreadPool.QueueUserWorkItem(GetACLAsync, new WorkItemParam(entry, OnAsyncComplete));
                 }
@@ -112,6 +115,8 @@ namespace AmazonS3Commander.Files
                 {
                     var headers = (WebHeaderCollection)state;
                     propertyGridFile.SelectedObject = new EntryInfo(entry.BucketName, entry.Key, headers);
+
+                    listViewHeaders.Items.Clear();
                     foreach (string header in headers)
                     {
                         var item = new ListViewItem(new[] { header, headers[header] });
@@ -144,16 +149,6 @@ namespace AmazonS3Commander.Files
             {
                 State = state;
                 OnComplete = onComplete;
-            }
-        }
-
-        private class DataGridRetrieve
-        {
-            [DisplayName("Retrieving data...")]
-            public string Retrieve
-            {
-                get;
-                private set;
             }
         }
 

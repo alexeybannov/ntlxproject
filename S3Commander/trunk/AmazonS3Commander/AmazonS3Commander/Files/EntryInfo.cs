@@ -67,6 +67,15 @@ namespace AmazonS3Commander.Files
         }
 
 
+        public EntryInfo()
+        {
+            BucketName = "Retrieving data...";
+            ContentType = "Retrieving data...";
+            Etag = "Retrieving data...";
+            Key = "Retrieving data..."; ;
+            Name = "Retrieving data...";
+        }
+
         public EntryInfo(string bucketName, string key, WebHeaderCollection headers)
         {
             var index = key.TrimEnd('/').LastIndexOf('/');
