@@ -14,10 +14,19 @@ namespace AmazonS3Commander.Files
 
         private readonly string key;
 
-        
+
         public string BucketName
         {
             get { return bucketName; }
+        }
+
+        public string Name
+        {
+            get
+            {
+                var index = key.TrimEnd('/').LastIndexOf('/');
+                return 0 < index ? key.Substring(index + 1) : key;
+            }
         }
 
         public string Key

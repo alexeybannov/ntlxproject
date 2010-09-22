@@ -1,9 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
-using System.IO;
-using System.ComponentModel;
 
 namespace AmazonS3Commander.Files
 {
@@ -22,9 +22,7 @@ namespace AmazonS3Commander.Files
 
             InitializeComponent();
 
-            var key = entry.Key ?? string.Empty;
-            var index = key.TrimEnd('/').LastIndexOf('/');
-            Text = 0 < index ? key.Substring(index + 1) : key;
+            Text = entry.Name;
 
             propertyGridFile.SelectedObject = new EntryInfo();
             listViewHeaders.Items.Add("Retrieving data...");
@@ -114,7 +112,7 @@ namespace AmazonS3Commander.Files
                 else if (state is WebHeaderCollection)
                 {
                     var headers = (WebHeaderCollection)state;
-                    propertyGridFile.SelectedObject = new EntryInfo(entry.BucketName, entry.Key, headers);
+                    propertyGridFile.SelectedObject = new EntryInfo(entry.BucketName, entry.Name, entry.Key, headers);
 
                     listViewHeaders.Items.Clear();
                     foreach (string header in headers)

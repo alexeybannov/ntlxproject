@@ -76,12 +76,10 @@ namespace AmazonS3Commander.Files
             Name = "Retrieving data...";
         }
 
-        public EntryInfo(string bucketName, string key, WebHeaderCollection headers)
+        public EntryInfo(string bucketName, string name, string key, WebHeaderCollection headers)
         {
-            var index = key.TrimEnd('/').LastIndexOf('/');
-            Name = 0 < index ? key.Substring(index + 1) : key;
-
             BucketName = bucketName;
+            Name = name;
             Key = key;
 
             DateTime.TryParse(headers[HttpResponseHeader.LastModified], out lastModified);
