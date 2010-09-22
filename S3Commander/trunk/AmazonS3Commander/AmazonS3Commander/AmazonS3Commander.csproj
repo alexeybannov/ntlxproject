@@ -69,8 +69,14 @@
       <DependentUpon>EntryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Files\EntryInfo.cs" />
+    <Compile Include="Files\HttpHeaderProvider.cs" />
     <Compile Include="Logger\ILog.cs" />
     <Compile Include="Logger\TraceLogger.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="S3CommanderFile.cs" />
     <Compile Include="S3CommanderRoot.cs" />
     <Compile Include="S3CommanderPlugin.cs" />
@@ -130,6 +136,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Files\EntryForm.resx">
       <DependentUpon>EntryForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\RS.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntryForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.checkBoxSubfolders = new System.Windows.Forms.CheckBox();
@@ -38,6 +39,10 @@
             this.propertyGridFile = new System.Windows.Forms.PropertyGrid();
             this.tabPageSecurity = new System.Windows.Forms.TabPage();
             this.tabPageHeaders = new System.Windows.Forms.TabPage();
+            this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
+            this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.listViewHeaders = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
@@ -45,6 +50,8 @@
             this.tabControlProperties.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.tabPageHeaders.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
+            this.bindingNavigator1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -138,6 +145,7 @@
             // tabPageHeaders
             // 
             this.tabPageHeaders.Controls.Add(this.listViewHeaders);
+            this.tabPageHeaders.Controls.Add(this.bindingNavigator1);
             this.tabPageHeaders.Location = new System.Drawing.Point(4, 22);
             this.tabPageHeaders.Name = "tabPageHeaders";
             this.tabPageHeaders.Padding = new System.Windows.Forms.Padding(3);
@@ -145,6 +153,55 @@
             this.tabPageHeaders.TabIndex = 2;
             this.tabPageHeaders.Text = "HTTP Headers";
             this.tabPageHeaders.UseVisualStyleBackColor = true;
+            // 
+            // bindingNavigator1
+            // 
+            this.bindingNavigator1.AddNewItem = this.bindingNavigatorAddNewItem;
+            this.bindingNavigator1.CountItem = null;
+            this.bindingNavigator1.DeleteItem = this.bindingNavigatorDeleteItem;
+            this.bindingNavigator1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.bindingNavigator1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bindingNavigatorAddNewItem,
+            this.toolStripButton1,
+            this.bindingNavigatorDeleteItem});
+            this.bindingNavigator1.Location = new System.Drawing.Point(3, 3);
+            this.bindingNavigator1.MoveFirstItem = null;
+            this.bindingNavigator1.MoveLastItem = null;
+            this.bindingNavigator1.MoveNextItem = null;
+            this.bindingNavigator1.MovePreviousItem = null;
+            this.bindingNavigator1.Name = "bindingNavigator1";
+            this.bindingNavigator1.PositionItem = null;
+            this.bindingNavigator1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.bindingNavigator1.Size = new System.Drawing.Size(397, 25);
+            this.bindingNavigator1.TabIndex = 1;
+            this.bindingNavigator1.Text = "bindingNavigator1";
+            // 
+            // bindingNavigatorAddNewItem
+            // 
+            this.bindingNavigatorAddNewItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
+            this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
+            this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
+            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorAddNewItem.Text = "Add new";
+            // 
+            // bindingNavigatorDeleteItem
+            // 
+            this.bindingNavigatorDeleteItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
+            this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
+            this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
+            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorDeleteItem.Text = "Delete";
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "toolStripButton1";
             // 
             // listViewHeaders
             // 
@@ -154,12 +211,12 @@
             this.listViewHeaders.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewHeaders.FullRowSelect = true;
             this.listViewHeaders.HideSelection = false;
-            this.listViewHeaders.Location = new System.Drawing.Point(3, 3);
+            this.listViewHeaders.Location = new System.Drawing.Point(3, 28);
             this.listViewHeaders.MultiSelect = false;
             this.listViewHeaders.Name = "listViewHeaders";
             this.listViewHeaders.ShowGroups = false;
-            this.listViewHeaders.Size = new System.Drawing.Size(397, 369);
-            this.listViewHeaders.TabIndex = 0;
+            this.listViewHeaders.Size = new System.Drawing.Size(397, 344);
+            this.listViewHeaders.TabIndex = 2;
             this.listViewHeaders.UseCompatibleStateImageBehavior = false;
             this.listViewHeaders.View = System.Windows.Forms.View.Details;
             // 
@@ -195,6 +252,10 @@
             this.tabControlProperties.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageHeaders.ResumeLayout(false);
+            this.tabPageHeaders.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
+            this.bindingNavigator1.ResumeLayout(false);
+            this.bindingNavigator1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -209,9 +270,13 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.PropertyGrid propertyGridFile;
         private System.Windows.Forms.TabPage tabPageHeaders;
+        private System.Windows.Forms.CheckBox checkBoxSubfolders;
+        private System.Windows.Forms.BindingNavigator bindingNavigator1;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorDeleteItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ListView listViewHeaders;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.CheckBox checkBoxSubfolders;
     }
 }
