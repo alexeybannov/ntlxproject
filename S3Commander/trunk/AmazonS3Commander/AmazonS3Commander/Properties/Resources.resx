@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,24 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        AAABAAEAEBAAAAEAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAAAAAAEgAAABIAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8dXNOS0tUT01U
-        T01UT01WUU1TUExST0tST0xST0tRTktUTkYAAAAAAAAAAAAAAADZz8j////7/f/7/f////b///b///b/
-        +ez/8OH/6tX/6tJUTkYAAAAAAAAAAAAAAADSyMH////Er6LEr6L/+/nEr6LEr6LEr6LEr6LEr6L93stU
-        TkYAAAAAAAAAAAAAAADSyMH////7/f/7/f///vz9+vj79O/77ub66d744tL/4tBUTkYAAAAAAAAAAAAA
-        AADTycL////Er6LEr6L///7Er6LEr6LEr6LEr6LEr6L/5dZUTkYAAAAAAAAAAAAAAADRx8D////7/f/7
-        /f/////+/v3++/j99vL88Oj88Oj/6dxUTkYAAAAAAAAAAAAAAADRyMH////7/f/7/f/////////+/vyw
-        raxBXHLj2dP/7eNUTkYAAAAAAAAAAAAAAADRyMH////i6eledYTf5OX////Cys5KYXAuqdYLEBtdXGCk
-        nZYAAAAAAACTtpkcZinfnX3xyrePpKyG0+VLYXCnkolKYXBhwd5XTVkf0P8VJzMQBwoCIS5PVmVZeFsY
-        jDLfnX3/xaTlybmPpKyD4fZLYXB6zeJSYGdo7f9BPVAyst8dmcgVk8QUYo5AZlEplz/fnX3fnX3fnX3a
-        uqqPpKx/4/lThJVo7f8wOk9p2/ZY0vNAw+0xu+oRqOxQkIwynkEAAAAAAAAAAAAAAADn6+1Xa4Bo7f9Y
-        mK5u6/9y4flq3fdWz/JLx+0iuvpfoqZBrFMAAAAAAAAAAAAAAADCyNCw6/pbbX9u6/9u6/9u6/9y4vpn
-        1/RUvdxRcotpnImFzIUAAAAAAAAAAAAAAACjrLiVuMTU2d2BprWAl6OAlqB6j5lzhZNccYC/yM2a06Rw
-        wX0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAA8AAAAP
-        AAAADwAAAA8AAAAPAAAADwAAAA8AAAAMAAAAAAAAAAAAAAAAAADwAAAA8AAAAPAAAAD//wAA
-</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="mail_new" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mail_new.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

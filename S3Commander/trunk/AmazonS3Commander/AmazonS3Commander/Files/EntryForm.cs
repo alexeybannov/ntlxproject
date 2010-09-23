@@ -25,7 +25,6 @@ namespace AmazonS3Commander.Files
             Text = entry.Name;
 
             propertyGridFile.SelectedObject = new EntryInfo();
-            listViewHeaders.Items.Add("Retrieving data...");
 
             ThreadPool.QueueUserWorkItem(IsEntryFolderAsync, new WorkItemParam(entry, OnAsyncComplete));
         }
@@ -66,7 +65,6 @@ namespace AmazonS3Commander.Files
             var param = (WorkItemParam)state;
             try
             {
-                Thread.Sleep(3000);
                 var entry = (Entry)param.State;
                 var headers = entry.S3Service.HeadObject(entry.BucketName, folder ? entry.FolderKey : entry.Key);
                 param.OnComplete(headers);
@@ -113,13 +111,7 @@ namespace AmazonS3Commander.Files
                 {
                     var headers = (WebHeaderCollection)state;
                     propertyGridFile.SelectedObject = new EntryInfo(entry.BucketName, entry.Name, entry.Key, headers);
-
-                    listViewHeaders.Items.Clear();
-                    foreach (string header in headers)
-                    {
-                        var item = new ListViewItem(new[] { header, headers[header] });
-                        listViewHeaders.Items.Add(item);
-                    }
+                    httpHeadersEditor.SetHttpHeaders(headers);
                 }
                 else if (state is Exception)
                 {
