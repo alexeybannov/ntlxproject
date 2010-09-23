@@ -68,7 +68,15 @@ namespace AmazonS3Commander.Files
             return headers.Keys.ToArray();
         }
 
-        public static bool Editable(string header)
+        public static string[] GetEditableHeaders()
+        {
+            return headers
+                .Where(p => p.Value)
+                .Select(p => p.Key)
+                .ToArray();
+        }
+
+        public static bool IsEditable(string header)
         {
             if (string.IsNullOrEmpty(header))
             {

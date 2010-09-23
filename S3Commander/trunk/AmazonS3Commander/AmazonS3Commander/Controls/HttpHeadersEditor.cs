@@ -29,7 +29,32 @@ namespace AmazonS3Commander.Controls
             if (0 < listView.SelectedItems.Count)
             {
                 var header = listView.SelectedItems[0].Text;
-                buttonEdit.Enabled = buttonRemove.Enabled = HttpHeaderProvider.Editable(header);
+                buttonEdit.Enabled = buttonRemove.Enabled = HttpHeaderProvider.IsEditable(header);
+            }
+        }
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            using (var headerForm = new HttpHeaderForm())
+            {
+                if (headerForm.ShowDialog() == DialogResult.OK)
+                {
+
+                }
+            }
+        }
+
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            if (listViewHeaders.SelectedItems.Count == 0) return;
+
+            var item = listViewHeaders.SelectedItems[0];
+            using (var headerForm = new HttpHeaderForm(item.Text, item.SubItems[1].Text))
+            {
+                if (headerForm.ShowDialog() == DialogResult.OK)
+                {
+
+                }
             }
         }
     }
