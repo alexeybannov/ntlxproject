@@ -59,12 +59,5 @@ namespace AmazonS3Commander.Properties {
                 resourceCulture = value;
             }
         }
-        
-        internal static System.Drawing.Bitmap mail_new {
-            get {
-                object obj = ResourceManager.GetObject("mail_new", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

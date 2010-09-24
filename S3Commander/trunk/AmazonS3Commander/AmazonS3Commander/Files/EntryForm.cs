@@ -156,5 +156,10 @@ namespace AmazonS3Commander.Files
                 Message = error.Message;
             }
         }
+
+        private void httpHeadersEditor_HttpHeadersChanged(object sender, EventArgs e)
+        {
+            buttonOK.Enabled = true;
+        }
     }
 }

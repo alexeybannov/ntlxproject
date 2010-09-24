@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.IO;
 
@@ -870,6 +871,16 @@ namespace AmazonS3Commander
         {
             var ext = Path.GetExtension(fileName);
             return (string)(map.ContainsKey(ext) ? map[ext] : map[".*"]);
+        }
+
+        public static string[] GetMimeTypes()
+        {
+            return map
+                .Values
+                .Cast<string>()
+                .Distinct()
+                .OrderBy(t => t)
+                .ToArray();
         }
     }
 }

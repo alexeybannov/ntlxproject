@@ -1,27 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Windows.Forms;
-using AmazonS3Commander.Files;
+using AmazonS3Commander.Resources;
+using AmazonS3Commander.Utils;
 
 namespace AmazonS3Commander.Controls
 {
     partial class HttpHeadersEditor : UserControl
     {
+        [Browsable(true)]
+        public event EventHandler HttpHeadersChanged;
+
         public HttpHeadersEditor()
         {
             InitializeComponent();
         }
 
 
+        public IDictionary<string, string> GetHttpHeaders()
+        {
+            var headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            foreach (ListViewItem item in listViewHeaders.Items) headers.Add(item.SubItems[0].Text, item.SubItems[1].Text);
+            return headers;
+        }
+
         public void SetHttpHeaders(WebHeaderCollection headers)
         {
-            listViewHeaders.Items.Clear();
-            foreach (string header in headers)
+            listViewHeaders.BeginUpdate();
+            try
             {
-                var item = new ListViewItem(new[] { header, headers[header] });
-                listViewHeaders.Items.Add(item);
+                listViewHeaders.Items.Clear();
+                foreach (string header in headers)
+                {
+                    listViewHeaders.Items.Add(new ListViewItem(new[] { header, headers[header] }));
+                }
+            }
+            finally
+            {
+                listViewHeaders.EndUpdate();
             }
         }
+
 
         private void SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -35,12 +56,20 @@ namespace AmazonS3Commander.Controls
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            using (var headerForm = new HttpHeaderForm())
+            var headers = GetHttpHeaders();
+            using (var form = new HttpHeaderForm(headers.Keys))
             {
-                if (headerForm.ShowDialog() == DialogResult.OK)
-                {
+                if (form.ShowDialog() != DialogResult.OK) return;
 
+                if (headers.ContainsKey(form.HttpHeader))
+                {
+                    MessageBox.Show("This http header already exists.", RS.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
+
+                var item = new ListViewItem(new[] { form.HttpHeader, form.HttpHeaderValue });
+                listViewHeaders.Items.Add(item);
+                OnHttpHeadersChanged();
             }
         }
 
@@ -49,13 +78,38 @@ namespace AmazonS3Commander.Controls
             if (listViewHeaders.SelectedItems.Count == 0) return;
 
             var item = listViewHeaders.SelectedItems[0];
-            using (var headerForm = new HttpHeaderForm(item.Text, item.SubItems[1].Text))
-            {
-                if (headerForm.ShowDialog() == DialogResult.OK)
-                {
+            var header = item.SubItems[0].Text;
+            var oldValue = item.SubItems[1].Text;
 
+            using (var form = new HttpHeaderForm(header, oldValue))
+            {
+                if (form.ShowDialog() != DialogResult.OK) return;
+
+                var newValue = form.HttpHeaderValue;
+                if (oldValue != newValue)
+                {
+                    item.SubItems[1].Text = newValue;
+                    OnHttpHeadersChanged();
                 }
             }
+        }
+
+        private void buttonRemove_Click(object sender, EventArgs e)
+        {
+            if (listViewHeaders.SelectedItems.Count == 0) return;
+
+            var item = listViewHeaders.SelectedItems[0];
+
+            if (MessageBox.Show("Do you really want to delete the selected http header " + item.Text, RS.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                listViewHeaders.Items.Remove(item);
+            }
+        }
+
+
+        private void OnHttpHeadersChanged()
+        {
+            if (HttpHeadersChanged != null) HttpHeadersChanged(this, EventArgs.Empty);
         }
     }
 }

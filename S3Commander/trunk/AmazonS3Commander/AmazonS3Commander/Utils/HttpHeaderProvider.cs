@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AmazonS3Commander.Files
+namespace AmazonS3Commander.Utils
 {
     static class HttpHeaderProvider
     {
@@ -89,6 +89,15 @@ namespace AmazonS3Commander.Files
             return
                 !header.StartsWith("x-amz-", StringComparison.InvariantCultureIgnoreCase) ||
                 header.StartsWith("x-amz-meta-", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static string[] GetHeaderValues(string header)
+        {
+            if ("Content-Type".Equals(header, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return MimeMapping.GetMimeTypes();
+            }
+            return new string[0];
         }
     }
 }
