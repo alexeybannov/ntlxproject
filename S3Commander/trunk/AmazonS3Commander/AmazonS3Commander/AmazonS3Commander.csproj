@@ -196,10 +196,10 @@
     <None Include="Resources\mail_new.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\user.bmp" />
+    <Content Include="Resources\user.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\groups.bmp" />
+    <Content Include="Resources\groups.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
