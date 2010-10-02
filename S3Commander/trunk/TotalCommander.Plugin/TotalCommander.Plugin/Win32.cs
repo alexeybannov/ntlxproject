@@ -19,6 +19,7 @@ namespace TotalCommander.Plugin
         [DllImport("user32")]
         public static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
+        
         public static string PtrToStringAnsi(IntPtr ptr)
         {
             return ptr != IntPtr.Zero ? Marshal.PtrToStringAnsi(ptr) : string.Empty;
