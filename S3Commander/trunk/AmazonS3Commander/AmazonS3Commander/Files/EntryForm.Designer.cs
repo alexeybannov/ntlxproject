@@ -110,7 +110,7 @@
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
             this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGeneral.Size = new System.Drawing.Size(481, 367);
+            this.tabPageGeneral.Size = new System.Drawing.Size(471, 367);
             this.tabPageGeneral.TabIndex = 1;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
@@ -121,7 +121,7 @@
             this.propertyGridFile.Location = new System.Drawing.Point(3, 3);
             this.propertyGridFile.Name = "propertyGridFile";
             this.propertyGridFile.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-            this.propertyGridFile.Size = new System.Drawing.Size(475, 361);
+            this.propertyGridFile.Size = new System.Drawing.Size(465, 361);
             this.propertyGridFile.TabIndex = 1;
             this.propertyGridFile.ToolbarVisible = false;
             // 
@@ -143,6 +143,7 @@
             this.securityEditor1.Name = "securityEditor1";
             this.securityEditor1.Size = new System.Drawing.Size(465, 361);
             this.securityEditor1.TabIndex = 0;
+            this.securityEditor1.ACLChanged += new System.EventHandler(this.httpHeadersEditor_HttpHeadersChanged);
             // 
             // tabPageHeaders
             // 
@@ -150,7 +151,7 @@
             this.tabPageHeaders.Location = new System.Drawing.Point(4, 22);
             this.tabPageHeaders.Name = "tabPageHeaders";
             this.tabPageHeaders.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageHeaders.Size = new System.Drawing.Size(481, 367);
+            this.tabPageHeaders.Size = new System.Drawing.Size(471, 367);
             this.tabPageHeaders.TabIndex = 1;
             this.tabPageHeaders.Text = "HTTP Headers";
             this.tabPageHeaders.UseVisualStyleBackColor = true;
@@ -160,7 +161,7 @@
             this.httpHeadersEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.httpHeadersEditor.Location = new System.Drawing.Point(3, 3);
             this.httpHeadersEditor.Name = "httpHeadersEditor";
-            this.httpHeadersEditor.Size = new System.Drawing.Size(475, 361);
+            this.httpHeadersEditor.Size = new System.Drawing.Size(465, 361);
             this.httpHeadersEditor.TabIndex = 0;
             this.httpHeadersEditor.HttpHeadersChanged += new System.EventHandler(this.httpHeadersEditor_HttpHeadersChanged);
             // 

@@ -61,6 +61,7 @@
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "&Remove";
             this.buttonRemove.UseVisualStyleBackColor = true;
+            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
             // 
             // buttonAdd
             // 
@@ -70,6 +71,7 @@
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add";
             this.buttonAdd.UseVisualStyleBackColor = true;
+            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
             // dataGridViewACL
             // 
@@ -126,7 +128,6 @@
             // 
             this.Column3.HeaderText = "Read";
             this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
             this.Column3.Width = 65;
             // 
             // Column4
