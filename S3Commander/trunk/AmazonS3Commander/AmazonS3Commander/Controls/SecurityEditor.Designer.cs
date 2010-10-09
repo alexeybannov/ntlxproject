@@ -100,7 +100,10 @@
             this.dataGridViewACL.ShowEditingIcon = false;
             this.dataGridViewACL.Size = new System.Drawing.Size(465, 297);
             this.dataGridViewACL.TabIndex = 1;
-            this.dataGridViewACL.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewACL_CellValueChanged);
+            this.dataGridViewACL.VirtualMode = true;
+            this.dataGridViewACL.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridViewACL_CellValueNeeded);
+            this.dataGridViewACL.CellValuePushed += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridViewACL_CellValuePushed);
+            this.dataGridViewACL.SelectionChanged += new System.EventHandler(this.dataGridViewACL_SelectionChanged);
             // 
             // dataGridViewImageColumn1
             // 

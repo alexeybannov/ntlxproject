@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Net;
 using System.Windows.Forms;
 using AmazonS3Commander.Resources;
@@ -22,7 +23,10 @@ namespace AmazonS3Commander.Controls
         public IDictionary<string, string> GetHttpHeaders()
         {
             var headers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-            foreach (ListViewItem item in listViewHeaders.Items) headers.Add(item.SubItems[0].Text, item.SubItems[1].Text);
+            foreach (ListViewItem item in listViewHeaders.Items)
+            {
+                headers.Add(item.SubItems[0].Text, item.SubItems[1].Text);
+            }
             return headers;
         }
 
@@ -34,7 +38,9 @@ namespace AmazonS3Commander.Controls
                 listViewHeaders.Items.Clear();
                 foreach (string header in headers)
                 {
-                    listViewHeaders.Items.Add(new ListViewItem(new[] { header, headers[header] }));
+                    var foreColor = Color.FromKnownColor(HttpHeaderProvider.IsEditable(header) ? KnownColor.WindowText : KnownColor.InactiveCaption);
+                    var item = new ListViewItem(new[] { header, headers[header] }, -1, foreColor, listViewHeaders.BackColor, null);
+                    listViewHeaders.Items.Add(item);
                 }
             }
             finally

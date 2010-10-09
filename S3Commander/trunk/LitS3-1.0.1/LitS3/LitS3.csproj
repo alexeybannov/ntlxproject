@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C564E026-D515-4E8B-ADED-36087E89443E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessControl.cs" />
+    <Compile Include="ACL.cs" />
     <Compile Include="AddObject.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bucket.cs" />

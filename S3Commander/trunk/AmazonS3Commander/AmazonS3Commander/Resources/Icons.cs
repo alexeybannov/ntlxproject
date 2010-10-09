@@ -11,5 +11,9 @@ namespace AmazonS3Commander.Resources
         public static readonly Icon Settings = RS.SettingsIcon;
 
         public static readonly Icon Bucket = RS.BucketIcon;
+
+        public static readonly Bitmap User = RS.UserIcon;
+
+        public static readonly Bitmap Group = RS.GroupsIcon;
     }
 }
