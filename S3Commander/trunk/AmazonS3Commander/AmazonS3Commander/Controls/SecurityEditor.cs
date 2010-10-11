@@ -18,7 +18,7 @@ namespace AmazonS3Commander.Controls
         public SecurityEditor()
         {
             InitializeComponent();
-            dataGridViewACL.CurrentCellDirtyStateChanged += dataGridViewACL_CurrentCellDirtyStateChanged;
+            dataGridViewACL.CurrentCellDirtyStateChanged += CurrentCellDirtyStateChanged;
 
             Column2.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             Column3.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -43,7 +43,7 @@ namespace AmazonS3Commander.Controls
             if (ACLChanged != null) ACLChanged(this, EventArgs.Empty);
         }
 
-        private void dataGridViewACL_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace AmazonS3Commander.Controls
                             return;
                         }
                     }
-                    accessControlList.SetGrant(grantee, Permission.None);
+                    accessControlList.AddGrant(grantee, Permission.Default);
                     SetACL(accessControlList);
                     dataGridViewACL.Rows[dataGridViewACL.RowCount - 1].Selected = true;
                     OnACLChanged();
@@ -80,12 +80,14 @@ namespace AmazonS3Commander.Controls
 
         private void buttonRemove_Click(object sender, EventArgs e)
         {
-            if (dataGridViewACL.CurrentRow != null || dataGridViewACL.CurrentRow.Index <= 2)
+            var selectedRow = 0 < dataGridViewACL.SelectedRows.Count ? dataGridViewACL.SelectedRows[0] : null;
+            if (selectedRow != null && 2 < selectedRow.Index)
             {
-                var question = string.Format("Do you really want to delete {0} from ACL?", dataGridViewACL.CurrentRow.Cells[1].Value);
+                var grantee = (Grantee)selectedRow.Cells[1].Value;
+                var question = string.Format("Do you really want to delete {0} from ACL?", grantee);
                 if (MessageBox.Show(question, RS.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    accessControlList.Grants.Remove((Grantee)dataGridViewACL.CurrentRow.Cells[1].Value);
+                    accessControlList.RemoveGrant(grantee);
                     SetACL(accessControlList);
                     OnACLChanged();
                 }
@@ -94,38 +96,31 @@ namespace AmazonS3Commander.Controls
 
         private void dataGridViewACL_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            var grant = accessControlList.Grants.ElementAtOrDefault(e.RowIndex);
-            var grantee = grant.Key;
-            var permission = grant.Value;
-            if (grantee == null) return;
-
+            var grant = accessControlList.Grants[e.RowIndex];
             switch (e.ColumnIndex)
             {
-                case 0: e.Value = grantee.GranteeType == GranteeType.User ? Icons.User : Icons.Group;
+                case 0: e.Value = grant.Grantee.GranteeType == GranteeType.User ? Icons.User : Icons.Group;
                     break;
-                case 1: e.Value = grantee;
+                case 1: e.Value = grant.Grantee;
                     break;
-                case 2: e.Value = (permission & Permission.FullControl) == Permission.FullControl;
+                case 2: e.Value = (grant.Permission & Permission.FullControl) == Permission.FullControl;
                     break;
-                case 3: e.Value = (permission & Permission.Read) == Permission.Read;
+                case 3: e.Value = (grant.Permission & Permission.Read) == Permission.Read;
                     break;
-                case 4: e.Value = (permission & Permission.Write) == Permission.Write;
+                case 4: e.Value = (grant.Permission & Permission.Write) == Permission.Write;
                     break;
-                case 5: e.Value = (permission & Permission.ReadAcp) == Permission.ReadAcp;
+                case 5: e.Value = (grant.Permission & Permission.ReadAcp) == Permission.ReadAcp;
                     break;
-                case 6: e.Value = (permission & Permission.WriteAcp) == Permission.WriteAcp;
+                case 6: e.Value = (grant.Permission & Permission.WriteAcp) == Permission.WriteAcp;
                     break;
             }
         }
 
         private void dataGridViewACL_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
         {
-            var grant = accessControlList.Grants.ElementAtOrDefault(e.RowIndex);
-            var grantee = grant.Key;
-            if (e.ColumnIndex < 2 || grantee == null) return;
-
-            var set = true.Equals(e.Value);
+            var grant = accessControlList.Grants[e.RowIndex];
             var permission = Permission.None;
+            var set = true.Equals(e.Value);
             switch (e.ColumnIndex)
             {
                 case 2: permission = Permission.FullControl;
@@ -141,11 +136,11 @@ namespace AmazonS3Commander.Controls
                     break;
             }
 
-            if (set) accessControlList.AddGrant(grantee, permission);
+            if (set) grant.AddPermission(permission);
             else
             {
-                if (e.ColumnIndex != 2) accessControlList.RemoveGrant(grantee, Permission.FullControl);
-                accessControlList.RemoveGrant(grantee, permission);
+                if (e.ColumnIndex != 2) grant.RemovePermission(Permission.FullControl);
+                grant.RemovePermission(permission);
             }
             dataGridViewACL.Refresh();
         }

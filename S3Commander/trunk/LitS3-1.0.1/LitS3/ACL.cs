@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace LitS3
 {
     public class AccessControlList
     {
+        private List<Grant> grants = new List<Grant>();
+
+
         public Owner Owner
         {
             get;
             private set;
         }
 
-        public IDictionary<Grantee, Permission> Grants
+        public IList<Grant> Grants
         {
-            get;
-            private set;
+            get { return grants.AsReadOnly(); }
         }
 
 
@@ -23,30 +26,29 @@ namespace LitS3
             if (owner == null) throw new ArgumentNullException("owner");
 
             Owner = owner;
-            Grants = new Dictionary<Grantee, Permission>();
 
-            SetGrant(new Grantee(GranteeType.User, Owner.Id, Owner.ToString()), Permission.None);
-            SetGrant(new Grantee(GranteeType.Group, "http://acs.amazonaws.com/groups/global/AuthenticatedUsers", "Authenticated Users"), Permission.None);
-            SetGrant(new Grantee(GranteeType.Group, "http://acs.amazonaws.com/groups/global/AllUsers", "Anonimous"), Permission.None);
-        }
-
-
-        public void SetGrant(Grantee grantee, Permission permission)
-        {
-            if (grantee == null) throw new ArgumentNullException("grantee");
-            Grants[grantee] = permission;
+            AddGrant(new Grantee(GranteeType.User, Owner.Id, Owner.ToString()), Permission.None);
+            AddGrant(new Grantee(GranteeType.Group, "http://acs.amazonaws.com/groups/global/AuthenticatedUsers", "Authenticated Users"), Permission.None);
+            AddGrant(new Grantee(GranteeType.Group, "http://acs.amazonaws.com/groups/global/AllUsers", "Anonimous"), Permission.None);
         }
 
         public void AddGrant(Grantee grantee, Permission permission)
         {
-            if (grantee == null) throw new ArgumentNullException("grantee");
-            Grants[grantee] |= permission;
+            if (FindGrant(grantee) != null)
+            {
+                throw new ArgumentException(string.Format("Grantee {0} exists.", grantee));
+            }
+            grants.Add(new Grant(grantee, permission));
         }
 
-        public void RemoveGrant(Grantee grantee, Permission permission)
+        public Grant FindGrant(Grantee grantee)
         {
-            if (grantee == null) throw new ArgumentNullException("grantee");
-            Grants[grantee] ^= permission;
+            return grants.Find(g => grantee.Equals(g.Grantee));
+        }
+
+        public void RemoveGrant(Grantee grantee)
+        {
+            grants.RemoveAll(g => grantee.Equals(g.Grantee));
         }
     }
 
@@ -89,6 +91,42 @@ namespace LitS3
         public override string ToString()
         {
             return string.Format("{0} (Owner)", DisplayName ?? Id);
+        }
+    }
+
+
+    [DebuggerDisplay("Grantee = {Grantee}, Permission = {Permission}")]
+    public class Grant
+    {
+        public Grantee Grantee
+        {
+            get;
+            private set;
+        }
+
+        public Permission Permission
+        {
+            get;
+            private set;
+        }
+
+        public Grant(Grantee grantee, Permission permission)
+        {
+            Grantee = grantee;
+            Permission = permission;
+        }
+
+        public void AddPermission(Permission permission)
+        {
+            Permission |= permission;
+        }
+
+        public void RemovePermission(Permission permission)
+        {
+            if ((Permission & permission) == permission)
+            {
+                Permission ^= permission;
+            }
         }
     }
 
@@ -163,6 +201,7 @@ namespace LitS3
         Write = 2,
         ReadAcp = 4,
         WriteAcp = 8,
-        FullControl = 16
+        FullControl = 16,
+        Default = None
     }
 }
