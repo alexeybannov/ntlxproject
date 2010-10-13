@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using LitS3;
 
 namespace AmazonS3Commander.Files
 {
@@ -36,22 +37,7 @@ namespace AmazonS3Commander.Files
             try
             {
                 var entry = (Entry)param.State;
-                var folder = false;
-                if (entry.S3Service.ObjectExists(entry.BucketName, entry.Key))
-                {
-                    folder = false;
-                }
-                else
-                {
-                    if (entry.S3Service.ObjectExists(entry.BucketName, entry.FolderKey))
-                    {
-                        folder = true;
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException("File not found.", entry.Key);
-                    }
-                }
+                var folder = !entry.S3Service.ObjectExists(entry.BucketName, entry.Key);
                 param.OnComplete(folder);
             }
             catch (Exception error)
@@ -66,7 +52,8 @@ namespace AmazonS3Commander.Files
             try
             {
                 var entry = (Entry)param.State;
-                var headers = entry.S3Service.HeadObject(entry.BucketName, folder ? entry.FolderKey : entry.Key);
+                if (folder) throw new NotImplementedException();
+                var headers = entry.S3Service.HeadObject(entry.BucketName, entry.Key);
                 param.OnComplete(headers);
             }
             catch (Exception error)
@@ -81,8 +68,9 @@ namespace AmazonS3Commander.Files
             try
             {
                 var entry = (Entry)param.State;
+                if (folder) throw new NotImplementedException();
                 //get acl
-                param.OnComplete(null);
+                param.OnComplete(new AccessControlList(new Owner("amazon", "key")));
             }
             catch (Exception error)
             {
@@ -115,7 +103,13 @@ namespace AmazonS3Commander.Files
                 }
                 else if (state is Exception)
                 {
-                    propertyGridFile.SelectedObject = new DataGridError((Exception)state);
+                    var error = (Exception)state;
+                    
+                    propertyGridFile.SelectedObject = new DataGridError(error);
+                    var headers = new WebHeaderCollection();
+                    headers.Add("Error", error.Message);
+                    httpHeadersEditor.SetHttpHeaders(headers);
+                    httpHeadersEditor.Enabled = false;
                 }
             }
         }

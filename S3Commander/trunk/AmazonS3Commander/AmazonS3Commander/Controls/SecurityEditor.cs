@@ -25,8 +25,6 @@ namespace AmazonS3Commander.Controls
             Column4.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             Column5.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             Column6.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            SetACL(new AccessControlList(new Owner("amazon", "aaaa")));
         }
 
         public void SetACL(AccessControlList accessControlList)
