@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F784B8FF-2BB7-4E34-A5E7-CF259BCDD4D9}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -52,7 +52,9 @@
     <Compile Include="Candles.cs" />
     <Compile Include="CandlesStatus.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="ClientCurrency.cs" />
     <Compile Include="ClientLimits.cs" />
+    <Compile Include="ClientType.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandConnect.cs" />
     <Compile Include="Commands\CommandDisconnect.cs" />
@@ -64,6 +66,9 @@
     <Compile Include="Commands\CommandCancelOrder.cs" />
     <Compile Include="Commands\CommandGetServerTimeDifference.cs" />
     <Compile Include="Commands\CommandChangePassword.cs" />
+    <Compile Include="Commands\CommandGetFortsPosition.cs" />
+    <Compile Include="Commands\CommandGetClientLimits.cs" />
+    <Compile Include="Commands\CommandMakeOrDown.cs" />
     <Compile Include="FortsCollateral.cs" />
     <Compile Include="FortsMoney.cs" />
     <Compile Include="FortsPosition.cs" />
@@ -74,6 +79,7 @@
     <Compile Include="NewOrder.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Orders.cs" />
+    <Compile Include="OrderStatus.cs" />
     <Compile Include="OrderType.cs" />
     <Compile Include="OrderUnfilledType.cs" />
     <Compile Include="Overnight.cs" />
@@ -98,12 +104,14 @@
     <Compile Include="Securities.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="SecPosition.cs" />
+    <Compile Include="SecurityType.cs" />
     <Compile Include="ServerStatus.cs" />
     <Compile Include="SpotLimit.cs" />
     <Compile Include="Tick.cs" />
     <Compile Include="Ticks.cs" />
     <Compile Include="Trade.cs" />
     <Compile Include="Trades.cs" />
+    <Compile Include="TradingStatus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

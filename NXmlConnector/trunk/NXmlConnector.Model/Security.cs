@@ -5,7 +5,7 @@ namespace NXmlConnector.Model
     public class Security
     {
         [XmlAttribute("secid")]
-        public string Id
+        public int Id
         {
             get;
             set;
@@ -26,7 +26,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("market")]
-        public string Market
+        public int Market
         {
             get;
             set;
@@ -47,14 +47,14 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("minstep")]
-        public string MinStep
+        public double MinStep
         {
             get;
             set;
         }
 
         [XmlElement("lotsize")]
-        public string LotSize
+        public int LotSize
         {
             get;
             set;
@@ -68,7 +68,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("sectype")]
-        public string SecType
+        public SecurityType SecurityType
         {
             get;
             set;
@@ -77,7 +77,7 @@ namespace NXmlConnector.Model
 
         public override string ToString()
         {
-            return ShoryName + " - " + Code;
+            return ShoryName;
         }
 
         public override bool Equals(object obj)

@@ -6,7 +6,7 @@ namespace NXmlConnector.Model
     public class Ticks
     {
         [XmlElement("tick")]
-        public Tick[] TicksArray
+        public Tick Tick
         {
             get;
             set;

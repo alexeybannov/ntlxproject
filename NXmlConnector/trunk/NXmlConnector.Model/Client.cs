@@ -20,14 +20,14 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("type")]
-        public string Type
+        public ClientType ClientType
         {
             get;
             set;
         }
 
         [XmlElement("currency")]
-        public string Currency
+        public ClientCurrency Currency
         {
             get;
             set;
@@ -48,21 +48,21 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("ml_restrict")]
-        public string Restrict
+        public double Restrict
         {
             get;
             set;
         }
 
         [XmlElement("ml_call")]
-        public string Call
+        public double Call
         {
             get;
             set;
         }
 
         [XmlElement("ml_close")]
-        public string Close
+        public double Close
         {
             get;
             set;

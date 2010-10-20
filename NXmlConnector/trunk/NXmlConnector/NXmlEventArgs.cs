@@ -108,4 +108,60 @@ namespace NXmlConnector
             Order = order;
         }
     }
+
+    public class TickEventArgs : EventArgs
+    {
+        public Tick Tick
+        {
+            get;
+            private set;
+        }
+
+        public TickEventArgs(Tick tick)
+        {
+            Tick = tick;
+        }
+    }
+
+    public class AllTradesEventArgs : EventArgs
+    {
+        public List<AllTrade> AllTrades
+        {
+            get;
+            private set;
+        }
+
+        public AllTradesEventArgs(AllTrade[] allTrades)
+        {
+            AllTrades = new List<AllTrade>(allTrades ?? new AllTrade[0]);
+        }
+    }
+
+    public class QuotationsEventArgs : EventArgs
+    {
+        public List<Quotation> Quotations
+        {
+            get;
+            private set;
+        }
+
+        public QuotationsEventArgs(Quotation[] quotations)
+        {
+            Quotations = new List<Quotation>(quotations ?? new Quotation[0]);
+        }
+    }
+
+    public class QuotesEventArgs : EventArgs
+    {
+        public List<Quote> Quotes
+        {
+            get;
+            private set;
+        }
+
+        public QuotesEventArgs(Quote[] quotes)
+        {
+            Quotes = new List<Quote>(quotes ?? new Quote[0]);
+        }
+    }
 }

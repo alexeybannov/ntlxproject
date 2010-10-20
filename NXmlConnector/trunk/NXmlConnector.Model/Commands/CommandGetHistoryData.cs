@@ -4,7 +4,7 @@ namespace NXmlConnector.Model.Commands
 {
     class CommandGetHistoryData : Command
     {
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;

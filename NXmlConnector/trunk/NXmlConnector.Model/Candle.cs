@@ -14,42 +14,42 @@ namespace NXmlConnector.Model
         }
 
         [XmlAttribute("open")]
-        public string Open
+        public double Open
         {
             get;
             set;
         }
 
         [XmlAttribute("high")]
-        public string High
+        public double High
         {
             get;
             set;
         }
 
         [XmlAttribute("low")]
-        public string Low
+        public double Low
         {
             get;
             set;
         }
 
         [XmlAttribute("close")]
-        public string Close
+        public double Close
         {
             get;
             set;
         }
 
         [XmlAttribute("volume")]
-        public string Volume
+        public int Volume
         {
             get;
             set;
         }
 
         [XmlAttribute("oi")]
-        public int OI
+        public double OI
         {
             get;
             set;

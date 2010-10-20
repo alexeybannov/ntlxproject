@@ -3,7 +3,7 @@ namespace NXmlConnector.Model
 {
     public enum OrderType
     {
-        Buy,
-        Cell
+        B,
+        S
     }
 }

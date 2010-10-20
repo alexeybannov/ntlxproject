@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using NXmlConnector.Model;
@@ -26,7 +25,6 @@ namespace NXmlConnector
         private string notesFileName;
 
         private List<CandleKind> candleKinds;
-
 
 
         public bool IsConnected
@@ -83,9 +81,9 @@ namespace NXmlConnector
             }
         }
 
-        public IList<CandleKind> CandleKinds
+        public List<CandleKind> CandleKinds
         {
-            get { return candleKinds.AsReadOnly(); }
+            get { return new List<CandleKind>(candleKinds); }
         }
 
         public Client ClientInfo
@@ -122,6 +120,10 @@ namespace NXmlConnector
             parser.RegisterCallback<Candles>(OnCandles);
             parser.RegisterCallback<Client>(OnClient);
             parser.RegisterCallback<Orders>(OnOrders);
+            parser.RegisterCallback<Ticks>(OnTicks);
+            parser.RegisterCallback<AllTrades>(OnAllTrades);
+            parser.RegisterCallback<Quotations>(OnQuotations);
+            parser.RegisterCallback<Quotes>(OnQuotes);
         }
 
 
@@ -193,7 +195,7 @@ namespace NXmlConnector
             SendCommand(new CommandGetSecurities());
         }
 
-        public void GetHistoryData(string securityId, int period, int count, bool reset)
+        public void GetHistoryData(int securityId, int period, int count, bool reset)
         {
             var command = new CommandGetHistoryData()
             {
@@ -205,54 +207,81 @@ namespace NXmlConnector
             SendCommand(command);
         }
 
-        public void Subscribe(IEnumerable<string> securityIds)
+        public void GetFortsPosition()
+        {
+            GetFortsPosition(null);
+        }
+
+        public void GetFortsPosition(string client)
+        {
+            SendCommand(new CommandGetFortsPosition(client));
+        }
+
+        public void GetClientLimits()
+        {
+            GetClientLimits(null);
+        }
+
+        public void GetClientLimits(string client)
+        {
+            SendCommand(new CommandGetClientLimits(client));
+        }
+
+        public void Subscribe(params string[] securityIds)
         {
             SendCommand(CommandSetSubscription.Subscribe(securityIds, securityIds, securityIds));
         }
 
-        public void Unsubscribe(IEnumerable<string> securityIds)
+        public void MakeOrDownOrder(int transactionId)
+        {
+            SendCommand(new CommandMakeOrDown(transactionId));
+        }
+
+        public void Subscribe(IEnumerable<string> alltradesSecurityIds, IEnumerable<string> quotationsSecurityIds, IEnumerable<string> quotesSecurityIds)
+        {
+            SendCommand(CommandSetSubscription.Subscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
+        }
+
+        public void Unsubscribe(params string[] securityIds)
         {
             SendCommand(CommandSetSubscription.Unsubscribe(securityIds, securityIds, securityIds));
         }
 
-        public void SubscribeOnTrades(IEnumerable<string> securityIds)
+        public void Unsubscribe(IEnumerable<string> alltradesSecurityIds, IEnumerable<string> quotationsSecurityIds, IEnumerable<string> quotesSecurityIds)
         {
-            SendCommand(CommandSetSubscription.Subscribe(securityIds, null, null));
+            SendCommand(CommandSetSubscription.Unsubscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
         }
 
-        public void SubscribeOnQuotations(IEnumerable<string> securityIds)
+        public void SubscribeTicks(int securityId, int tradeNo)
         {
-            SendCommand(CommandSetSubscription.Subscribe(null, securityIds, null));
+            SubscribeTicks(securityId, tradeNo, false);
         }
 
-        public void SubscribeOnQuotes(IEnumerable<string> securityIds)
+        public void SubscribeTicks(int securityId, int tradeNo, bool filter)
         {
-            SendCommand(CommandSetSubscription.Subscribe(null, null, securityIds));
+            SubscribeTicks(new[] { securityId }, new[] { tradeNo }, filter);
         }
 
-        public void UnsubscribeFromTrades(IEnumerable<string> securityIds)
+        public void SubscribeTicks(int[] securityIds, int[] tradeNos, bool filter)
         {
-            SendCommand(CommandSetSubscription.Unsubscribe(securityIds, null, null));
+            if (securityIds.Length != tradeNos.Length) throw new ArgumentException("Не соответствуют размеры массивов securityIds и tradeNos.");
+            SendCommand(new CommandSubscribeTicks(securityIds, tradeNos, filter));
         }
 
-        public void UnsubscribeFromQuotations(IEnumerable<string> securityIds)
+        public void UnsubscribeTicks()
         {
-            SendCommand(CommandSetSubscription.Unsubscribe(null, securityIds, null));
-        }
-
-        public void UnsubscribeFromQuotes(IEnumerable<string> securityIds)
-        {
-            SendCommand(CommandSetSubscription.Unsubscribe(null, null, securityIds));
+            SendCommand(new CommandSubscribeTicks());
         }
 
         public int NewOrder(NewOrder newOrder)
         {
             if (newOrder == null) throw new ArgumentNullException("newOrder");
 
-            return SendCommand(new CommandNewOrder(newOrder, ClientInfo != null ? ClientInfo.Id : null)).TransactionId;
+            if (string.IsNullOrEmpty(newOrder.ClientId)) newOrder.ClientId = ClientInfo.Id;
+            return SendCommand(new CommandNewOrder(newOrder)).TransactionId;
         }
 
-        public void NewOrder(int transactionId)
+        public void CancelOrder(int transactionId)
         {
             SendCommand(new CommandCancelOrder(transactionId));
         }
@@ -269,15 +298,24 @@ namespace NXmlConnector
 
         public event EventHandler<CandlesEventArgs> RecieveCandles;
 
-        public event EventHandler<ClientEventArgs> RecieveClientInfo;
+        public event EventHandler<ClientEventArgs> RecieveClient;
 
         public event EventHandler<OrderEventArgs> RecieveOrder;
+
+        public event EventHandler<TickEventArgs> RecieveTick;
+
+        public event EventHandler<AllTradesEventArgs> RecieveAllTrades;
+
+        public event EventHandler<QuotationsEventArgs> RecieveQuotations;
+
+        public event EventHandler<QuotesEventArgs> RecieveQuotes;
 
         public event EventHandler<ErrorEventArgs> InternalError;
 
 
         private void OnConnect()
         {
+            IsConnected = true;
             ServerTimeDifference = TimeSpan.FromSeconds(SendCommand(new CommandGetServerTimeDifference()).Difference);
 
             var ev = Connected;
@@ -286,12 +324,14 @@ namespace NXmlConnector
 
         private void OnConnectionError(Exception error)
         {
+            IsConnected = false;
             var ev = ConnectionError;
             if (ev != null) ev(this, new ErrorEventArgs(error));
         }
 
         private void OnDisconnect()
         {
+            IsConnected = false;
             var ev = Disconnected;
             if (ev != null) ev(this, EventArgs.Empty);
         }
@@ -301,17 +341,14 @@ namespace NXmlConnector
             IsConnecting = false;
             if (status.Status == "true")
             {
-                IsConnected = true;
                 OnConnect();
             }
             else if (status.Status == "false")
             {
-                IsConnected = false;
                 OnDisconnect();
             }
             else if (status.Status == "error")
             {
-                IsConnected = false;
                 OnConnectionError(new NXmlConnectorException(status.ErrorText));
             }
             else
@@ -357,7 +394,7 @@ namespace NXmlConnector
         private void OnClient(Client client)
         {
             ClientInfo = client;
-            var ev = RecieveClientInfo;
+            var ev = RecieveClient;
             if (ev != null) ev(this, new ClientEventArgs(client));
         }
 
@@ -366,6 +403,31 @@ namespace NXmlConnector
             var ev = RecieveOrder;
             if (ev != null) ev(this, new OrderEventArgs(orders.Order));
         }
+
+        private void OnTicks(Ticks ticks)
+        {
+            var ev = RecieveTick;
+            if (ev != null) ev(this, new TickEventArgs(ticks.Tick));
+        }
+
+        private void OnAllTrades(AllTrades allTrades)
+        {
+            var ev = RecieveAllTrades;
+            if (ev != null) ev(this, new AllTradesEventArgs(allTrades.TradesArray));
+        }
+
+        private void OnQuotations(Quotations quotations)
+        {
+            var ev = RecieveQuotations;
+            if (ev != null) ev(this, new QuotationsEventArgs(quotations.QuotationsArray));
+        }
+
+        private void OnQuotes(Quotes quotes)
+        {
+            var ev = RecieveQuotes;
+            if (ev != null) ev(this, new QuotesEventArgs(quotes.QuotesArray));
+        }
+
 
         private Result SendCommand(Command command)
         {

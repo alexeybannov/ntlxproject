@@ -6,14 +6,14 @@ namespace NXmlConnector.Model
     public class Tick
     {
         [XmlElement("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;
         }
 
         [XmlElement("tradeno")]
-        public string TradeNo
+        public int TradeNo
         {
             get;
             set;
@@ -27,7 +27,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("price")]
-        public string Price
+        public double Price
         {
             get;
             set;
@@ -41,14 +41,14 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("period")]
-        public string Period
+        public TradingStatus Period
         {
             get;
             set;
         }
 
         [XmlElement("buysell")]
-        public string BuySell
+        public OrderType BuySell
         {
             get;
             set;

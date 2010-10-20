@@ -12,14 +12,16 @@ namespace NXmlConnector.Model
             return DateTime.ParseExact(datetime, DATE_FORMAT, null);
         }
 
-        public static string ToString(OrderType orderType)
-        {
-            return orderType == OrderType.Buy ? "B" : "S";
-        }
-
         public static string ToString(DateTime datetime)
         {
             return datetime.ToString(DATE_FORMAT);
+        }
+
+        public static bool ToBoolean(string value)
+        {
+            var result = true;
+            if (bool.TryParse(value, out result)) return result;
+            return value == "yes";
         }
     }
 }

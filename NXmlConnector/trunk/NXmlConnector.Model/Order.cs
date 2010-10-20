@@ -6,28 +6,28 @@ namespace NXmlConnector.Model
     public class Order
     {
         [XmlAttribute("transactionid")]
-        public string TransactionId
+        public int TransactionId
         {
             get;
             set;
         }
 
         [XmlElement("orderno")]
-        public string OrderNo
+        public int OrderNo
         {
             get;
             set;
         }
 
         [XmlElement("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;
         }
 
         [XmlElement("board")]
-        public string Board
+        public int Board
         {
             get;
             set;
@@ -41,14 +41,14 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("status")]
-        public string Status
+        public OrderStatus Status
         {
             get;
             set;
         }
 
         [XmlElement("buysell")]
-        public string BuySell
+        public OrderType BuySell
         {
             get;
             set;
@@ -76,7 +76,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("value")]
-        public string Value
+        public int Value
         {
             get;
             set;
@@ -97,28 +97,28 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("balance")]
-        public string Balance
+        public double Balance
         {
             get;
             set;
         }
 
         [XmlElement("price")]
-        public string Price
+        public double Price
         {
             get;
             set;
         }
 
         [XmlElement("quantity")]
-        public string Quantity
+        public int Quantity
         {
             get;
             set;
         }
 
         [XmlElement("yield")]
-        public string Yield
+        public double Yield
         {
             get;
             set;
@@ -139,7 +139,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("conditionvalue")]
-        public string ConditionValue
+        public double ConditionValue
         {
             get;
             set;
@@ -160,7 +160,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("maxcomission")]
-        public string MaxComission
+        public double MaxComission
         {
             get;
             set;

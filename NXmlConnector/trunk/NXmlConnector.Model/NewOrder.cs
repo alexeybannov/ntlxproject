@@ -3,7 +3,13 @@ namespace NXmlConnector.Model
 {
     public class NewOrder
     {
-        public string SecurityId
+        public string ClientId
+        {
+            get;
+            set;
+        }
+
+        public int SecurityId
         {
             get;
             set;
@@ -66,11 +72,20 @@ namespace NXmlConnector.Model
             NoSplit = false;
         }
 
-        public NewOrder(string securityId, OrderType orderType)
+        public NewOrder(int securityId, OrderType orderType, int quantity)
             : this()
         {
             SecurityId = securityId;
             OrderType = orderType;
+            Quantity = quantity;
+            ByMarket = true;
+        }
+
+        public NewOrder(int securityId, OrderType orderType, int quantity, double price)
+            : this(securityId, orderType, quantity)
+        {
+            ByMarket = false;
+            Price = price;
         }
     }
 }
