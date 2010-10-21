@@ -330,17 +330,24 @@ namespace NXmlConnector
         private void OnConnect()
         {
             IsConnected = true;
-            ServerTimeDifference = TimeSpan.FromSeconds(SendCommand(new CommandGetServerTimeDifference()).Difference);
+            try
+            {
+                ServerTimeDifference = TimeSpan.FromSeconds(SendCommand(new CommandGetServerTimeDifference()).Difference);
+            }
+            catch (Exception ex)
+            {
+                OnError(ex);
+            }
 
             var ev = Connected;
             if (ev != null) ev(this, EventArgs.Empty);
         }
 
-        private void OnConnectionError(Exception error)
+        private void OnConnectionError(string errorText)
         {
             IsConnected = false;
             var ev = ConnectionError;
-            if (ev != null) ev(this, new ErrorEventArgs(error));
+            if (ev != null) ev(this, new ErrorEventArgs(new NXmlConnectorException(errorText)));
         }
 
         private void OnDisconnect()
@@ -363,7 +370,7 @@ namespace NXmlConnector
             }
             else if (status.Status == "error")
             {
-                OnConnectionError(new NXmlConnectorException(status.ErrorText));
+                OnConnectionError(status.ErrorText);
             }
             else
             {
@@ -385,7 +392,7 @@ namespace NXmlConnector
         private void OnCandles(Candles candles)
         {
             var ev = RecieveCandles;
-            if (ev != null) ev(this, new CandlesEventArgs(candles.SecurityId, candles.Period, candles.Status, candles.CandlesArray));
+            if (ev != null) ev(this, new CandlesEventArgs(candles));
         }
 
         private void OnSecurities(Securities securities)
@@ -463,13 +470,17 @@ namespace NXmlConnector
         private Result SendCommand(Command command)
         {
             var commandStr = command.ToString();
+            Debug.WriteLine(string.Format("Send command: {0}", commandStr));
+
             var resultStr = NXmlConnector.SendCommand(commandStr);
+            
+            Debug.WriteLine(string.Format("Result: {0}", resultStr));            
             var result = (Result)NXmlDeserializer.Deserialize(typeof(Result), resultStr);
 
-            Debug.WriteLine(string.Format("Send command: {0}", commandStr));
-            Debug.WriteLine(string.Format("Result: {0}", resultStr));
-
-            if (!result.Success) throw new NXmlConnectorException(result.ErrorText);
+            if (!result.Success)
+            {
+                throw new NXmlConnectorException(result.ErrorText);
+            }
             return result;
         }
 

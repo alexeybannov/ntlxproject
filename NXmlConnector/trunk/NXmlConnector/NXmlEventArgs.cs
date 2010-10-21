@@ -72,12 +72,12 @@ namespace NXmlConnector
             private set;
         }
 
-        public CandlesEventArgs(string securityId, int period, CandlesStatus status, Candle[] candles)
+        public CandlesEventArgs(Candles candles)
         {
-            SecurityId = securityId;
-            Period = period;
-            Status = status;
-            Candles = new List<Candle>(candles ?? new Candle[0]);
+            SecurityId = candles.SecurityId;
+            Period = candles.Period;
+            Status = candles.Status;
+            Candles = new List<Candle>(candles.CandlesArray ?? new Candle[0]);
         }
     }
 
