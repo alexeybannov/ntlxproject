@@ -9,6 +9,8 @@ namespace NXmlConnector.Model
 
         public static DateTime ToDateTime(string datetime)
         {
+            if (string.IsNullOrEmpty(datetime) || datetime == "0") return default(DateTime);
+            if (datetime == "till_canceled") return DateTime.MaxValue;
             return DateTime.ParseExact(datetime, DATE_FORMAT, null);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using NXmlConnector.Model;
 
 namespace NXmlConnector.Tests
 {
@@ -45,13 +46,15 @@ namespace NXmlConnector.Tests
                 wait.WaitOne();
                 wait.Reset();
 
-                //var transId = client.NewOrder(new NewOrder(4, OrderType.Buy, 100));
+                var transId = client.NewOrder(new NewOrder(4, OrderType.B, 100));
                 //client.CancelOrder(transId);
                 //client.MakeOrDownOrder(transId);
 
-                client.GetHistoryData(4, client.CandleKinds[0].Id, 20, false);
-                client.GetHistoryData(4, client.CandleKinds[0].Id, 10, false);
-
+                if (0 < client.CandleKinds.Count)
+                {
+                    client.GetHistoryData(4, client.CandleKinds[0].Id, 20, false);
+                    client.GetHistoryData(4, client.CandleKinds[0].Id, 10, false);
+                }
                 client.SubscribeTicks(4, 0);
                 
                 client.GetFortsPosition();

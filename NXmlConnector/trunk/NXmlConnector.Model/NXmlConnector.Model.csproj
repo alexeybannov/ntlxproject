@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F784B8FF-2BB7-4E34-A5E7-CF259BCDD4D9}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -78,6 +78,7 @@
     <Compile Include="MoneyPosition.cs" />
     <Compile Include="NewOrder.cs" />
     <Compile Include="Order.cs" />
+    <Compile Include="OrderCondition.cs" />
     <Compile Include="Orders.cs" />
     <Compile Include="OrderStatus.cs" />
     <Compile Include="OrderType.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Trade.cs" />
     <Compile Include="Trades.cs" />
     <Compile Include="TradingStatus.cs" />
+    <Compile Include="YesNo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

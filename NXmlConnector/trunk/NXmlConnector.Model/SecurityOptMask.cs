@@ -5,44 +5,44 @@ namespace NXmlConnector.Model
     public class SecurityOptMask
     {
         [XmlAttribute("usecredit")]
-        public string useCredit;
+        public YesNo useCredit;
 
         [XmlAttribute("bymarket")]
-        public string byMarket;
+        public YesNo byMarket;
 
         [XmlAttribute("nosplit")]
-        public string noSplit;
+        public YesNo noSplit;
 
         [XmlAttribute("immorcancel")]
-        public string immOrCancel;
+        public YesNo immOrCancel;
 
         [XmlAttribute("cancelbalance")]
-        public string cancelBalance;
+        public YesNo cancelBalance;
 
 
         public bool UseCredit
         {
-            get { return NXmlConverter.ToBoolean(useCredit); }
+            get { return useCredit == YesNo.yes; }
         }
 
         public bool ByMarket
         {
-            get { return NXmlConverter.ToBoolean(byMarket); }
+            get { return byMarket == YesNo.yes; }
         }
 
         public bool NoSplit
         {
-            get { return NXmlConverter.ToBoolean(noSplit); }
+            get { return noSplit == YesNo.yes; }
         }
 
         public bool ImmOrCancel
         {
-            get { return NXmlConverter.ToBoolean(immOrCancel); }
+            get { return immOrCancel == YesNo.yes; }
         }
 
         public bool CancelBalance
         {
-            get { return NXmlConverter.ToBoolean(cancelBalance); }
+            get { return cancelBalance == YesNo.yes; }
         }
     }
 }

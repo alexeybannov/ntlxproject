@@ -3,6 +3,34 @@ using System.Xml.Serialization;
 
 namespace NXmlConnector.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <example>
+    /// <orders>
+    /// <order transactionid=\"20971\">
+    /// <orderno>938001980</orderno>
+    /// <secid>4</secid>
+    /// <board>EQBR</board>
+    /// <client>virt/0011</client>
+    /// <status>matched</status>
+    /// <buysell>B</buysell>
+    /// <time>21.10.2010 15:26:27</time>
+    /// <brokerref></brokerref>
+    /// <value>202757</value>
+    /// <accruedint>0.000</accruedint>
+    /// <settlecode>T0</settlecode>
+    /// <balance>0</balance>
+    /// <price>0</price>
+    /// <quantity>100</quantity>
+    /// <yield>0.00</yield>
+    /// <withdrawtime>0</withdrawtime>
+    /// <condition>None</condition>
+    /// <maxcomission>0</maxcomission>
+    /// <result></result>
+    /// </order>
+    /// </orders>
+    /// </example>
     public class Order
     {
         [XmlAttribute("transactionid")]
@@ -27,7 +55,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("board")]
-        public int Board
+        public string Board
         {
             get;
             set;
@@ -55,17 +83,19 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("time")]
-        public string Time
+        public string time;
+
+        public DateTime Time
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(time); }
         }
 
         [XmlElement("accepttime")]
-        public string AcceptTime
+        public string acceptTime;
+
+        public DateTime AcceptTime
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(acceptTime); }
         }
 
         [XmlElement("brokerref")]
@@ -76,14 +106,14 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("value")]
-        public int Value
+        public double Value
         {
             get;
             set;
         }
 
         [XmlElement("accruedint")]
-        public string AccruedInt
+        public double AccruedInt
         {
             get;
             set;
@@ -125,14 +155,15 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("withdrawtime")]
-        public string WithDrawTime
+        public string withDrawTime;
+
+        public DateTime WithDrawTime
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(withDrawTime); }
         }
 
         [XmlElement("condition")]
-        public string Condition
+        public OrderCondition Condition
         {
             get;
             set;

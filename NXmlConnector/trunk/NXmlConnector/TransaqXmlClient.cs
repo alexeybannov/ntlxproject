@@ -101,7 +101,7 @@ namespace NXmlConnector
 
         private TransaqXmlClient()
         {
-            NXmlConnector.NewData += NewData;
+            NXmlConnector.NewData += OnNewData;
 
             IsConnected = false;
             IsConnecting = false;
@@ -438,7 +438,7 @@ namespace NXmlConnector
             return result;
         }
 
-        private void NewData(string data)
+        private void OnNewData(string data)
         {
             try
             {
