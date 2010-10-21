@@ -6,28 +6,28 @@ namespace NXmlConnector.Model
     public class Quotation
     {
         [XmlAttribute("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;
         }
 
         [XmlElement("accruedintvalue")]
-        public string AccruedIntValue
+        public double AccruedIntValue
         {
             get;
             set;
         }
 
         [XmlElement("open")]
-        public string Open
+        public double Open
         {
             get;
             set;
         }
 
         [XmlElement("waprice")]
-        public string Waprice
+        public double Waprice
         {
             get;
             set;
@@ -55,14 +55,14 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("bid")]
-        public string Bid
+        public double Bid
         {
             get;
             set;
         }
 
         [XmlElement("offer")]
-        public string Offer
+        public double Offer
         {
             get;
             set;
@@ -104,7 +104,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("last")]
-        public string Last
+        public double Last
         {
             get;
             set;
@@ -125,105 +125,98 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("change")]
-        public string Change
+        public double Change
         {
             get;
             set;
         }
 
         [XmlElement("priceminusprevwaprice")]
-        public string PriceMinusPrevWaprice
+        public double PriceMinusPrevWaprice
         {
             get;
             set;
         }
 
         [XmlElement("valtoday")]
-        public int ValToDay
+        public double ValToDay
         {
             get;
             set;
         }
 
         [XmlElement("yield")]
-        public string Yield
+        public double Yield
         {
             get;
             set;
         }
 
         [XmlElement("yieldatwaprice")]
-        public string YielDatWaprice
+        public double YielDatWaprice
         {
             get;
             set;
         }
 
         [XmlElement("marketpricetoday")]
-        public string MarketPriceToday
+        public double MarketPriceToday
         {
             get;
             set;
         }
 
         [XmlElement("highbid")]
-        public string HighBid
+        public double HighBid
         {
             get;
             set;
         }
 
         [XmlElement("lowoffer")]
-        public string LowOffer
-        {
-            get;
-            set;
-        }
-
-        [XmlElement("sectype")]
-        public string SecType
+        public double LowOffer
         {
             get;
             set;
         }
 
         [XmlElement("high")]
-        public string High
+        public double High
         {
             get;
             set;
         }
 
         [XmlElement("low")]
-        public string Low
+        public double Low
         {
             get;
             set;
         }
 
         [XmlElement("closeprice")]
-        public string ClosePrice
+        public double ClosePrice
         {
             get;
             set;
         }
 
         [XmlElement("closeyield")]
-        public string CloseYield
+        public double CloseYield
         {
             get;
             set;
         }
 
         [XmlElement("status")]
-        public string Status
+        public QuotationStatus Status
         {
             get;
             set;
         }
 
         [XmlElement("tradingstatus")]
-        public string TradingStatus
+        public TradingStatus TradingStatus
         {
             get;
             set;

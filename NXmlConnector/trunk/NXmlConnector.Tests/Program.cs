@@ -13,6 +13,7 @@ namespace NXmlConnector.Tests
             var client = TransaqXmlClient.GetTransaqXmlClient();
             try
             {
+                client.LogLevel = LogLevel.Trace;
                 client.InternalError += (s, e) => Console.WriteLine("Error: " + e.Error.Message);
                 client.Connected += (s, e) =>
                 {
@@ -32,21 +33,24 @@ namespace NXmlConnector.Tests
                     wait.Set();
                 };
                 client.RecieveMarkets += (s, e) => e.Markets.ForEach(m => Console.WriteLine("Market: " + m));
-                client.RecieveCandles += (s, e) => e.Candles.ForEach(c => Console.WriteLine("Candle: " + c));
-                client.RecieveSecurities += (s, e) => e.Securities.ForEach(sec => Console.WriteLine("Security: " + sec));
+                client.RecieveCandles += (s, e) => Console.WriteLine("Candle: " + e.Candles.Count + " rows");
+                client.RecieveSecurities += (s, e) => Console.WriteLine("Securities: " + e.Securities.Count + " rows");
                 client.RecieveClient += (s, e) => Console.WriteLine("ClientInfo: " + e.ClientInfo);
-                client.RecieveOrder += (s, e) => Console.WriteLine("Order: " + e.Order.TransactionId);
+                client.RecieveOrders += (s, e) => Console.WriteLine("Orders: " + e.Orders.Count + " rows");
                 client.RecieveTick += (s, e) => Console.WriteLine("Tick: " + e.Tick.Price);
 
-                client.RecieveAllTrades += (s, e) => Console.WriteLine("RecieveAllTrades: " + e.AllTrades.Count);
-                client.RecieveQuotations += (s, e) => Console.WriteLine("RecieveQuotations: " + e.Quotations.Count);
-                client.RecieveQuotes += (s, e) => Console.WriteLine("RecieveQuotes: " + e.Quotes.Count);
+                client.RecieveAllTrades += (s, e) => Console.WriteLine("RecieveAllTrades: " + e.AllTrades.Count + " rows");
+                client.RecieveQuotations += (s, e) => Console.WriteLine("RecieveQuotations: " + e.Quotations.Count + " rows");
+                client.RecieveQuotes += (s, e) => Console.WriteLine("RecieveQuotes: " + e.Quotes.Count + " rows");
+
+                client.RecieveTrades += (s, e) => Console.WriteLine("RecieveTrades: " + e.Trades.Count + " rows");
+                client.RecievePositions += (s, e) => Console.WriteLine("RecievePositions: ok");
 
                 client.Connect("195.128.78.60", 3939, "TCONN0011", "E6CNxe");
                 wait.WaitOne();
                 wait.Reset();
 
-                var transId = client.NewOrder(new NewOrder(4, OrderType.B, 100));
+                //var transId = client.NewOrder(new NewOrder(4, OrderType.B, 100));
                 //client.CancelOrder(transId);
                 //client.MakeOrDownOrder(transId);
 
@@ -55,10 +59,12 @@ namespace NXmlConnector.Tests
                     client.GetHistoryData(4, client.CandleKinds[0].Id, 20, false);
                     client.GetHistoryData(4, client.CandleKinds[0].Id, 10, false);
                 }
-                client.SubscribeTicks(4, 0);
-                
+                //client.SubscribeTicks(4, 0);
+
+                client.Subscribe(4);
+
                 client.GetFortsPosition();
-                client.GetClientLimits();
+                //client.GetClientLimits();
             }
             catch (Exception ex)
             {

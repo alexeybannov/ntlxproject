@@ -4,6 +4,7 @@ using System.IO;
 using NXmlConnector.Model;
 using NXmlConnector.Model.Commands;
 using NXmlConnector.Properties;
+using System.Diagnostics;
 
 namespace NXmlConnector
 {
@@ -98,6 +99,12 @@ namespace NXmlConnector
             private set;
         }
 
+        public bool Overnight
+        {
+            get;
+            private set;
+        }
+
 
         private TransaqXmlClient()
         {
@@ -124,6 +131,9 @@ namespace NXmlConnector
             parser.RegisterCallback<AllTrades>(OnAllTrades);
             parser.RegisterCallback<Quotations>(OnQuotations);
             parser.RegisterCallback<Quotes>(OnQuotes);
+            parser.RegisterCallback<Overnight>(OnOvernight);
+            parser.RegisterCallback<Trades>(OnTrades);
+            parser.RegisterCallback<Positions>(OnPositions);
         }
 
 
@@ -224,12 +234,7 @@ namespace NXmlConnector
 
         public void GetClientLimits(string client)
         {
-            SendCommand(new CommandGetClientLimits(client));
-        }
-
-        public void Subscribe(params string[] securityIds)
-        {
-            SendCommand(CommandSetSubscription.Subscribe(securityIds, securityIds, securityIds));
+            SendCommand(new CommandGetClientLimits(client ?? (ClientInfo != null ? ClientInfo.Id : null)));
         }
 
         public void MakeOrDownOrder(int transactionId)
@@ -237,17 +242,22 @@ namespace NXmlConnector
             SendCommand(new CommandMakeOrDown(transactionId));
         }
 
-        public void Subscribe(IEnumerable<string> alltradesSecurityIds, IEnumerable<string> quotationsSecurityIds, IEnumerable<string> quotesSecurityIds)
+        public void Subscribe(params int[] securityIds)
+        {
+            SendCommand(CommandSetSubscription.Subscribe(securityIds, securityIds, securityIds));
+        }
+
+        public void Subscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
         {
             SendCommand(CommandSetSubscription.Subscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
         }
 
-        public void Unsubscribe(params string[] securityIds)
+        public void Unsubscribe(params int[] securityIds)
         {
             SendCommand(CommandSetSubscription.Unsubscribe(securityIds, securityIds, securityIds));
         }
 
-        public void Unsubscribe(IEnumerable<string> alltradesSecurityIds, IEnumerable<string> quotationsSecurityIds, IEnumerable<string> quotesSecurityIds)
+        public void Unsubscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
         {
             SendCommand(CommandSetSubscription.Unsubscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
         }
@@ -300,7 +310,7 @@ namespace NXmlConnector
 
         public event EventHandler<ClientEventArgs> RecieveClient;
 
-        public event EventHandler<OrderEventArgs> RecieveOrder;
+        public event EventHandler<OrdersEventArgs> RecieveOrders;
 
         public event EventHandler<TickEventArgs> RecieveTick;
 
@@ -309,6 +319,10 @@ namespace NXmlConnector
         public event EventHandler<QuotationsEventArgs> RecieveQuotations;
 
         public event EventHandler<QuotesEventArgs> RecieveQuotes;
+
+        public event EventHandler<TradesEventArgs> RecieveTrades;
+
+        public event EventHandler<PositionsEventArgs> RecievePositions;
 
         public event EventHandler<ErrorEventArgs> InternalError;
 
@@ -400,8 +414,8 @@ namespace NXmlConnector
 
         private void OnOrders(Orders orders)
         {
-            var ev = RecieveOrder;
-            if (ev != null) ev(this, new OrderEventArgs(orders.Order));
+            var ev = RecieveOrders;
+            if (ev != null) ev(this, new OrdersEventArgs(orders.OrderArray));
         }
 
         private void OnTicks(Ticks ticks)
@@ -428,12 +442,33 @@ namespace NXmlConnector
             if (ev != null) ev(this, new QuotesEventArgs(quotes.QuotesArray));
         }
 
+        private void OnOvernight(Overnight overnight)
+        {
+            Overnight = overnight.Status;
+        }
+
+        private void OnTrades(Trades trades)
+        {
+            var ev = RecieveTrades;
+            if (ev != null) ev(this, new TradesEventArgs(trades.TradesArray));
+        }
+
+        private void OnPositions(Positions positions)
+        {
+            var ev = RecievePositions;
+            if (ev != null) ev(this, new PositionsEventArgs(positions));
+        }
+
 
         private Result SendCommand(Command command)
         {
             var commandStr = command.ToString();
             var resultStr = NXmlConnector.SendCommand(commandStr);
             var result = (Result)NXmlDeserializer.Deserialize(typeof(Result), resultStr);
+
+            Debug.WriteLine(string.Format("Send command: {0}", commandStr));
+            Debug.WriteLine(string.Format("Result: {0}", resultStr));
+
             if (!result.Success) throw new NXmlConnectorException(result.ErrorText);
             return result;
         }
@@ -442,6 +477,7 @@ namespace NXmlConnector
         {
             try
             {
+                Debug.WriteLine(string.Format("Recieve data: {0}", data));
                 parser.Parse(data);
             }
             catch (Exception ex)

@@ -95,17 +95,17 @@ namespace NXmlConnector
         }
     }
 
-    public class OrderEventArgs : EventArgs
+    public class OrdersEventArgs : EventArgs
     {
-        public Order Order
+        public List<Order> Orders
         {
             get;
             private set;
         }
 
-        public OrderEventArgs(Order order)
+        public OrdersEventArgs(Order[] orders)
         {
-            Order = order;
+            Orders = new List<Order>(orders ?? new Order[0]);
         }
     }
 
@@ -162,6 +162,69 @@ namespace NXmlConnector
         public QuotesEventArgs(Quote[] quotes)
         {
             Quotes = new List<Quote>(quotes ?? new Quote[0]);
+        }
+    }
+
+    public class TradesEventArgs : EventArgs
+    {
+        public List<Trade> Trades
+        {
+            get;
+            private set;
+        }
+
+        public TradesEventArgs(Trade[] trades)
+        {
+            Trades = new List<Trade>(trades ?? new Trade[0]);
+        }
+    }
+
+    public class PositionsEventArgs : EventArgs
+    {
+        public List<MoneyPosition> MoneyPositions
+        {
+            get;
+            private set;
+        }
+
+        public List<SecurityPosition> SecurityPositions
+        {
+            get;
+            private set;
+        }
+
+        public List<FortsPosition> FortsPositions
+        {
+            get;
+            private set;
+        }
+
+        public List<FortsMoney> FortsMoney
+        {
+            get;
+            private set;
+        }
+
+        public List<FortsCollateral> FortsCollaterals
+        {
+            get;
+            private set;
+        }
+
+        public List<SpotLimit> SpotLimits
+        {
+            get;
+            private set;
+        }
+
+        public PositionsEventArgs(Positions positions)
+        {
+            MoneyPositions = new List<MoneyPosition>(positions.MoneyPositions ?? new MoneyPosition[0]);
+            SecurityPositions = new List<SecurityPosition>(positions.SecurityPositions ?? new SecurityPosition[0]);
+            FortsPositions = new List<FortsPosition>(positions.FortsPositions ?? new FortsPosition[0]);
+            FortsMoney = new List<FortsMoney>(positions.FortsMoney ?? new FortsMoney[0]);
+            FortsCollaterals = new List<FortsCollateral>(positions.FortsCollaterals ?? new FortsCollateral[0]);
+            SpotLimits = new List<SpotLimit>(positions.SpotLimits ?? new SpotLimit[0]);
         }
     }
 }

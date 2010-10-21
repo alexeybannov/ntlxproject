@@ -6,19 +6,19 @@ namespace NXmlConnector.Model.Commands
 {
     class CommandSetSubscription : Command
     {
-        public string[] AllTrades
+        public int[] AllTrades
         {
             get;
             set;
         }
 
-        public string[] Quotations
+        public int[] Quotations
         {
             get;
             set;
         }
 
-        public string[] Quotes
+        public int[] Quotes
         {
             get;
             set;
@@ -31,7 +31,7 @@ namespace NXmlConnector.Model.Commands
         }
 
 
-        public static CommandSetSubscription Subscribe(IEnumerable<string> trades, IEnumerable<string> quotations, IEnumerable<string> quotes)
+        public static CommandSetSubscription Subscribe(IEnumerable<int> trades, IEnumerable<int> quotations, IEnumerable<int> quotes)
         {
             var command = new CommandSetSubscription();
             if (trades != null) command.AllTrades = trades.ToArray();
@@ -40,7 +40,7 @@ namespace NXmlConnector.Model.Commands
             return command;
         }
 
-        public static CommandSetSubscription Unsubscribe(IEnumerable<string> trades, IEnumerable<string> quotations, IEnumerable<string> quotes)
+        public static CommandSetSubscription Unsubscribe(IEnumerable<int> trades, IEnumerable<int> quotations, IEnumerable<int> quotes)
         {
             var command = Subscribe(trades, quotations, quotes);
             command.Id = "unsubscribe";
@@ -53,9 +53,9 @@ namespace NXmlConnector.Model.Commands
             {
                 var trades = new XElement("alltrades");
                 command.Add(trades);
-                foreach (var secid in AllTrades)
+                foreach (var id in AllTrades)
                 {
-                    trades.Add(new XElement("secid", secid));
+                    trades.Add(new XElement("secid", id));
                 }
             }
 
@@ -63,9 +63,9 @@ namespace NXmlConnector.Model.Commands
             {
                 var quotations = new XElement("quotations");
                 command.Add(quotations);
-                foreach (var secid in Quotations)
+                foreach (var id in Quotations)
                 {
-                    quotations.Add(new XElement("secid", secid));
+                    quotations.Add(new XElement("secid", id));
                 }
             }
 
@@ -73,9 +73,9 @@ namespace NXmlConnector.Model.Commands
             {
                 var quotes = new XElement("quotes");
                 command.Add(quotes);
-                foreach (var secid in Quotes)
+                foreach (var id in Quotes)
                 {
-                    quotes.Add(new XElement("secid", secid));
+                    quotes.Add(new XElement("secid", id));
                 }
             }
         }

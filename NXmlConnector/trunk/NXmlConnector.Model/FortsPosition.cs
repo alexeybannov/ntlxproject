@@ -5,7 +5,7 @@ namespace NXmlConnector.Model
     public class FortsPosition
     {
         [XmlElement("secid")]
-        public string Id
+        public int SecurityId
         {
             get;
             set;
@@ -19,49 +19,49 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("startnet")]
-        public string StartNet
+        public double StartNet
         {
             get;
             set;
         }
 
         [XmlElement("saldoin")]
-        public string SaldoIn
+        public double SaldoIn
         {
             get;
             set;
         }
 
         [XmlElement("openbuys")]
-        public string OpenBuys
+        public double OpenBuys
         {
             get;
             set;
         }
 
         [XmlElement("opensells")]
-        public string OpenSells
+        public double OpenSells
         {
             get;
             set;
         }
 
         [XmlElement("totalnet")]
-        public string TotalNet
+        public double TotalNet
         {
             get;
             set;
         }
 
         [XmlElement("todaybuy")]
-        public string TodayBuy
+        public double TodayBuy
         {
             get;
             set;
         }
 
         [XmlElement("todaysell")]
-        public string TodaySell
+        public double TodaySell
         {
             get;
             set;

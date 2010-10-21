@@ -5,35 +5,35 @@ namespace NXmlConnector.Model
     public class Quote
     {
         [XmlAttribute("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;
         }
 
         [XmlElement("price")]
-        public string Price
+        public double Price
         {
             get;
             set;
         }
 
         [XmlElement("yield")]
-        public string Yield
+        public double Yield
         {
             get;
             set;
         }
 
         [XmlElement("buy")]
-        public string Buy
+        public double Buy
         {
             get;
             set;
         }
 
         [XmlElement("sell")]
-        public string Sell
+        public double Sell
         {
             get;
             set;

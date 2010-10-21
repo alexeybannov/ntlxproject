@@ -26,49 +26,49 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("saldoin")]
-        public string SaldoIn
+        public double SaldoIn
         {
             get;
             set;
         }
 
         [XmlElement("bought")]
-        public string Bought
+        public double Bought
         {
             get;
             set;
         }
 
         [XmlElement("sold")]
-        public string Sold
+        public double Sold
         {
             get;
             set;
         }
 
         [XmlElement("saldo")]
-        public string Saldo
+        public double Saldo
         {
             get;
             set;
         }
 
         [XmlElement("ordbuy")]
-        public string OrdBuy
+        public double OrdBuy
         {
             get;
             set;
         }
 
         [XmlElement("ordbuycond")]
-        public string OrdBuyCond
+        public double OrdBuyCondition
         {
             get;
             set;
         }
 
         [XmlElement("comission")]
-        public string Comission
+        public double Comission
         {
             get;
             set;

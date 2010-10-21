@@ -6,7 +6,7 @@ namespace NXmlConnector.Model
     public class Orders
     {
         [XmlElement("order")]
-        public Order Order
+        public Order[] OrderArray
         {
             get;
             set;

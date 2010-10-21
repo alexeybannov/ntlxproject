@@ -3,7 +3,7 @@ namespace NXmlConnector.Model
 {
     public enum OrderCondition
     {
-        Node,
+        None,
         Bid,
         BidOrLast,
         Ask,

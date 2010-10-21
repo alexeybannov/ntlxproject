@@ -13,7 +13,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("sec_position")]
-        public SecPosition[] SecPositions
+        public SecurityPosition[] SecurityPositions
         {
             get;
             set;
@@ -27,7 +27,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("forts_money")]
-        public FortsMoney[] FortsMoneys
+        public FortsMoney[] FortsMoney
         {
             get;
             set;

@@ -2,10 +2,10 @@
 
 namespace NXmlConnector.Model
 {
-    public class SecPosition
+    public class SecurityPosition
     {
         [XmlElement("secid")]
-        public string Id
+        public int Id
         {
             get;
             set;
@@ -25,50 +25,50 @@ namespace NXmlConnector.Model
             set;
         }
 
+        [XmlElement("saldo")]
+        public int Saldo
+        {
+            get;
+            set;
+        }
+
         [XmlElement("saldoin")]
-        public string SaldoIn
+        public int SaldoIn
         {
             get;
             set;
         }
 
         [XmlElement("saldomin")]
-        public string SaldoMin
+        public int SaldoMin
         {
             get;
             set;
         }
 
         [XmlElement("bought")]
-        public string Bought
+        public int Bought
         {
             get;
             set;
         }
 
         [XmlElement("sold")]
-        public string Sold
-        {
-            get;
-            set;
-        }
-
-        [XmlElement("saldo")]
-        public string Saldo
+        public int Sold
         {
             get;
             set;
         }
 
         [XmlElement("ordbuy")]
-        public string OrdBuy
+        public int OrdBuy
         {
             get;
             set;
         }
 
         [XmlElement("ordsell")]
-        public string OrdSell
+        public int OrdSell
         {
             get;
             set;

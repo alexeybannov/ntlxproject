@@ -6,21 +6,21 @@ namespace NXmlConnector.Model
     public class Trade
     {
         [XmlElement("secid")]
-        public string SecId
+        public int SecurityId
         {
             get;
             set;
         }
 
         [XmlElement("tradeno")]
-        public string TradeNo
+        public int TradeNo
         {
             get;
             set;
         }
 
         [XmlElement("orderno")]
-        public string OrderNo
+        public int OrderNo
         {
             get;
             set;
@@ -41,17 +41,18 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("buysell")]
-        public string BuySell
+        public OrderType BuySell
         {
             get;
             set;
         }
 
         [XmlElement("time")]
-        public string Time
+        public string time;
+
+        public DateTime Time
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(time); }
         }
 
         [XmlElement("brokerref")]
@@ -62,49 +63,49 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("value")]
-        public string Value
+        public double Value
         {
             get;
             set;
         }
 
         [XmlElement("comission")]
-        public string Comission
+        public double Comission
         {
             get;
             set;
         }
 
         [XmlElement("price")]
-        public string Price
+        public double Price
         {
             get;
             set;
         }
 
         [XmlElement("quantity")]
-        public string Quantity
+        public int Quantity
         {
             get;
             set;
         }
 
         [XmlElement("yield")]
-        public string Yield
+        public double Yield
         {
             get;
             set;
         }
 
         [XmlElement("accruedint")]
-        public string AccruedInt
+        public double AccruedInt
         {
             get;
             set;
         }
 
         [XmlElement("tradetype")]
-        public string TradeType
+        public TradeType TradeType
         {
             get;
             set;
