@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace NXmlConnector.Model
+namespace NXmlConnector
 {
-    public static class NXmlDeserializer
+    static class NXmlDeserializer
     {
         private static readonly Dictionary<string, XmlSerializer> serializers = new Dictionary<string, XmlSerializer>();
 
@@ -31,7 +31,7 @@ namespace NXmlConnector.Model
                     var serializerType = Type.GetType(typeName, false);
                     if (serializerType != null)
                     {
-                        serializers[typeName] = (XmlSerializer)Activator.CreateInstance(serializerType);
+                        serializers[typeName] = ((XmlSerializer)Activator.CreateInstance(serializerType));
                     }
                     else
                     {

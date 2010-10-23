@@ -67,7 +67,7 @@ namespace NXmlConnector.Model
         public NewOrder()
         {
             Unfilled = OrderUnfilledType.PutInQueue;
-            ByMarket = false;
+            ByMarket = true;
             UseCredit = false;
             NoSplit = false;
         }
@@ -78,7 +78,6 @@ namespace NXmlConnector.Model
             SecurityId = securityId;
             OrderType = orderType;
             Quantity = quantity;
-            ByMarket = true;
         }
 
         public NewOrder(int securityId, OrderType orderType, int quantity, double price)

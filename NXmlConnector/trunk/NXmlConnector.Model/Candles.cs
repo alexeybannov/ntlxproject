@@ -6,7 +6,7 @@ namespace NXmlConnector.Model
     public class Candles
     {
         [XmlAttribute("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;
@@ -20,11 +20,10 @@ namespace NXmlConnector.Model
         }
 
         [XmlAttribute("status")]
-        public int status;
-
-        public CandlesStatus Status
+        public int Status
         {
-            get { return (CandlesStatus)status; }
+            get;
+            set;
         }
 
         [XmlElement("candle")]

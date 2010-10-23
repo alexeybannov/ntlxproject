@@ -8,11 +8,26 @@ namespace NXmlConnector
 {
     static class NXmlConnector
     {
-        private static bool started = false;
+        private const string EXPORT_DLL = "txmlconnector.dll";
 
-        private static ConnectorCallBack callback;
+        [DllImport(EXPORT_DLL, CallingConvention = CallingConvention.Winapi)]
+        private static extern IntPtr SendCommand(IntPtr ptr);
+
+        [DllImport(EXPORT_DLL, CallingConvention = CallingConvention.Winapi)]
+        private static extern bool FreeMemory(IntPtr ptr);
+
+        [DllImport(EXPORT_DLL, CallingConvention = CallingConvention.Winapi)]
+        private static extern bool SetCallback([MarshalAs(UnmanagedType.FunctionPtr)]TXmlConnectorCallBack callback);
+
+        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+        private delegate void TXmlConnectorCallBack(IntPtr ptr);
+        
+        
+        private readonly static TXmlConnectorCallBack callback = new TXmlConnectorCallBack(CallBack);
 
         private readonly static Encoding utf8 = Encoding.UTF8;
+
+        private static bool started = false;
 
 
         public static string SendCommand(string command)
@@ -40,48 +55,23 @@ namespace NXmlConnector
         {
             if (!started)
             {
-                lock (typeof(NXmlConnector))
+                lock (callback)
                 {
                     if (!started)
                     {
-                        callback = new ConnectorCallBack(CallBack);
-                        if (SetCallback(callback))
-                        {
-                            started = true;
-                        }
-                        else
-                        {
-                            throw new NXmlConnectorException(Resources.CanNotSetCallback);
-                        }
+                        started = SetCallback(callback);
+                        if (!started) throw new NXmlConnectorException(Resources.CanNotSetCallback);
                     }
                 }
             }
         }
 
-        private static void CallBack(IntPtr pData)
+        private static void CallBack(IntPtr ptr)
         {
-            var data = PtrToString(pData);
-
-            var newData = NewData;
-            if (newData != null)
-            {
-                newData(data);
-            }
+            var data = PtrToString(ptr);
+            var ev = NewData;
+            if (ev != null) ev(data);
         }
-
-
-        [DllImport("txmlconnector.dll", CallingConvention = CallingConvention.Winapi)]
-        private static extern IntPtr SendCommand(IntPtr pData);
-
-        [DllImport("txmlconnector.dll", CallingConvention = CallingConvention.Winapi)]
-        private static extern bool FreeMemory(IntPtr pData);
-
-        [DllImport("txmlconnector.dll", CallingConvention = CallingConvention.Winapi)]
-        private static extern bool SetCallback([MarshalAs(UnmanagedType.FunctionPtr)]ConnectorCallBack pCallback);
-
-        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-        private delegate void ConnectorCallBack(IntPtr pData);
-
 
         private static string PtrToString(IntPtr ptr)
         {
@@ -93,7 +83,7 @@ namespace NXmlConnector
                 {
                     var b = Marshal.ReadByte(ptr, offset);
                     if (b == 0 || offset == int.MaxValue) break;
-                    
+
                     buffer.WriteByte(b);
                     offset++;
                 }

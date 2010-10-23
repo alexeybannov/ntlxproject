@@ -6,6 +6,6 @@ namespace NXmlConnector.Model
         EndOfData,
         EndOfRequest,
         Continue,
-        DataNotAvailabe,
+        NotAvailabe,
     }
 }

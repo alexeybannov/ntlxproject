@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using NXmlConnector.Model;
 using NXmlConnector.Model.Commands;
 using NXmlConnector.Properties;
-using System.Diagnostics;
 
 namespace NXmlConnector
 {
@@ -26,6 +26,12 @@ namespace NXmlConnector
         private string notesFileName;
 
         private List<CandleKind> candleKinds;
+
+        private Dictionary<int, Security> securities;
+
+        private Dictionary<string, Client> clients;
+
+        private Dictionary<int, Market> markets;
 
 
         public bool IsConnected
@@ -82,17 +88,6 @@ namespace NXmlConnector
             }
         }
 
-        public List<CandleKind> CandleKinds
-        {
-            get { return new List<CandleKind>(candleKinds); }
-        }
-
-        public Client ClientInfo
-        {
-            get;
-            private set;
-        }
-
         public TimeSpan ServerTimeDifference
         {
             get;
@@ -103,6 +98,26 @@ namespace NXmlConnector
         {
             get;
             private set;
+        }
+
+        public List<CandleKind> CandleKinds
+        {
+            get { return new List<CandleKind>(candleKinds); }
+        }
+
+        public List<Market> Markets
+        {
+            get { return new List<Market>(markets.Values); }
+        }
+
+        public List<Security> Securities
+        {
+            get { return new List<Security>(securities.Values); }
+        }
+
+        public List<Client> Clients
+        {
+            get { return new List<Client>(clients.Values); }
         }
 
 
@@ -117,6 +132,9 @@ namespace NXmlConnector
             LogLevel = LogLevel.None;
             LogsDirectory = AppDomain.CurrentDomain.BaseDirectory;
             candleKinds = new List<CandleKind>();
+            securities = new Dictionary<int, Security>();
+            clients = new Dictionary<string, Client>();
+            markets = new Dictionary<int, Market>();
 
             parser = new NXmlParser();
             parser.RegisterCallback<ServerStatus>(OnServerStatus);
@@ -234,7 +252,8 @@ namespace NXmlConnector
 
         public void GetClientLimits(string client)
         {
-            SendCommand(new CommandGetClientLimits(client ?? (ClientInfo != null ? ClientInfo.Id : null)));
+            Client info = null;
+            SendCommand(new CommandGetClientLimits(client ?? (info != null ? info.Id : null)));
         }
 
         public void MakeOrDownOrder(int transactionId)
@@ -287,7 +306,7 @@ namespace NXmlConnector
         {
             if (newOrder == null) throw new ArgumentNullException("newOrder");
 
-            if (string.IsNullOrEmpty(newOrder.ClientId)) newOrder.ClientId = ClientInfo.Id;
+            if (string.IsNullOrEmpty(newOrder.ClientId) && GetDefaultClientInfo() != null) newOrder.ClientId = GetDefaultClientInfo().Id;
             return SendCommand(new CommandNewOrder(newOrder)).TransactionId;
         }
 
@@ -327,8 +346,15 @@ namespace NXmlConnector
         public event EventHandler<ErrorEventArgs> InternalError;
 
 
+        private Client GetDefaultClientInfo()
+        {
+            return Clients.Count == 1 ? Clients[0] : null;
+        }
+        
         private void OnConnect()
         {
+            if (IsConnected) return;
+
             IsConnected = true;
             try
             {
@@ -352,6 +378,8 @@ namespace NXmlConnector
 
         private void OnDisconnect()
         {
+            if (!IsConnected) return;
+
             IsConnected = false;
             var ev = Disconnected;
             if (ev != null) ev(this, EventArgs.Empty);
@@ -380,11 +408,20 @@ namespace NXmlConnector
 
         private void OnCandleKinds(CandleKinds kinds)
         {
+            this.candleKinds.Clear();
             this.candleKinds.AddRange(kinds.Kinds ?? new CandleKind[0]);
         }
 
         private void OnMarkets(Markets markets)
         {
+            if (markets.MarketsArray != null)
+            {
+                foreach (var market in markets.MarketsArray)
+                {
+                    this.markets[market.Id] = market;
+                }
+            }
+
             var ev = RecieveMarkets;
             if (ev != null) ev(this, new MarketsEventArgs(markets.MarketsArray));
         }
@@ -397,6 +434,13 @@ namespace NXmlConnector
 
         private void OnSecurities(Securities securities)
         {
+            if (securities.SecuritiesArray != null)
+            {
+                foreach (var security in securities.SecuritiesArray)
+                {
+                    this.securities[security.Id] = security;
+                }
+            }
             var ev = RecieveSecurities;
             if (ev != null) ev(this, new SecuritiesEventArgs(securities.SecuritiesArray));
         }
@@ -414,7 +458,9 @@ namespace NXmlConnector
 
         private void OnClient(Client client)
         {
-            ClientInfo = client;
+            if (client.Remove) clients.Remove(client.Id);
+            else clients[client.Id] = client;
+
             var ev = RecieveClient;
             if (ev != null) ev(this, new ClientEventArgs(client));
         }
@@ -473,8 +519,8 @@ namespace NXmlConnector
             Debug.WriteLine(string.Format("Send command: {0}", commandStr));
 
             var resultStr = NXmlConnector.SendCommand(commandStr);
-            
-            Debug.WriteLine(string.Format("Result: {0}", resultStr));            
+
+            Debug.WriteLine(string.Format("Result: {0}", resultStr));
             var result = (Result)NXmlDeserializer.Deserialize(typeof(Result), resultStr);
 
             if (!result.Success)

@@ -6,7 +6,6 @@ namespace NXmlConnector.Model
     {
         public const string DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
 
-
         public static DateTime ToDateTime(string datetime)
         {
             if (string.IsNullOrEmpty(datetime) || datetime == "0") return default(DateTime);

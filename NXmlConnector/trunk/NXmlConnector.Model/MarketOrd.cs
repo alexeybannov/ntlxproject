@@ -6,17 +6,18 @@ namespace NXmlConnector.Model
     public class MarketOrd
     {
         [XmlAttribute("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;
         }
 
         [XmlAttribute("permit")]
-        public string Permit
+        public YesNo permit;
+
+        public bool Permit
         {
-            get;
-            set;
+            get { return permit == YesNo.yes; }
         }
     }
 }

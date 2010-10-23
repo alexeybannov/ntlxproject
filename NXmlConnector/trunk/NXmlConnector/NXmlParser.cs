@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace NXmlConnector.Model
+namespace NXmlConnector
 {
-    public class NXmlParser
+    class NXmlParser
     {
         private Dictionary<string, KeyValuePair<Type, Delegate>> actions = new Dictionary<string, KeyValuePair<Type, Delegate>>();
 

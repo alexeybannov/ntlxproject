@@ -48,7 +48,7 @@ namespace NXmlConnector
 
     public class CandlesEventArgs : EventArgs
     {
-        public string SecurityId
+        public int SecurityId
         {
             get;
             private set;
@@ -76,7 +76,7 @@ namespace NXmlConnector
         {
             SecurityId = candles.SecurityId;
             Period = candles.Period;
-            Status = candles.Status;
+            Status = (CandlesStatus)candles.Status;
             Candles = new List<Candle>(candles.CandlesArray ?? new Candle[0]);
         }
     }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F784B8FF-2BB7-4E34-A5E7-CF259BCDD4D9}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -94,13 +94,11 @@
     <Compile Include="SecurityOptMask.cs" />
     <Compile Include="ProxyType.cs" />
     <Compile Include="LogLevel.cs" />
-    <Compile Include="NXmlParser.cs" />
     <Compile Include="Commands\CommandSetSubscription.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="Market.cs" />
     <Compile Include="Markets.cs" />
     <Compile Include="NXmlConverter.cs" />
-    <Compile Include="NXmlDeserializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proxy.cs" />
     <Compile Include="Result.cs" />

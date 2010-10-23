@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5640171D-88A5-42CB-A05F-BCC8995E19ED}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -45,7 +45,9 @@
   <ItemGroup>
     <Compile Include="NXmlConnector.cs" />
     <Compile Include="NXmlConnectorException.cs" />
+    <Compile Include="NXmlDeserializer.cs" />
     <Compile Include="NXmlEventArgs.cs" />
+    <Compile Include="NXmlParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -72,6 +74,9 @@
       <Project>{F784B8FF-2BB7-4E34-A5E7-CF259BCDD4D9}</Project>
       <Name>NXmlConnector.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
