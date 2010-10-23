@@ -6,10 +6,11 @@ namespace NXmlConnector.Model
     public class Candle
     {
         [XmlAttribute("date")]
+        public string date;
+
         public DateTime Date
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(date); }
         }
 
         [XmlAttribute("open")]

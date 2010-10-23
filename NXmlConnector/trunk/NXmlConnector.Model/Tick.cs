@@ -20,10 +20,11 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("tradetime")]
-        public string TradeTime
+        public string tradeTime;
+
+        public DateTime TradeTime
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(tradeTime); }
         }
 
         [XmlElement("price")]

@@ -152,6 +152,7 @@ namespace NXmlConnector
             parser.RegisterCallback<Overnight>(OnOvernight);
             parser.RegisterCallback<Trades>(OnTrades);
             parser.RegisterCallback<Positions>(OnPositions);
+            parser.RegisterCallback<MarketOrd>(OnMarketOrd);
         }
 
 
@@ -244,18 +245,27 @@ namespace NXmlConnector
         {
             SendCommand(new CommandGetFortsPosition(client));
         }
-
+        /*
         public void GetClientLimits()
         {
-            GetClientLimits(null);
+            GetClientLimits(GetDefaultClientId());
         }
 
         public void GetClientLimits(string client)
         {
-            Client info = null;
-            SendCommand(new CommandGetClientLimits(client ?? (info != null ? info.Id : null)));
+            SendCommand(new CommandGetClientLimits(client));
         }
 
+        public void GetLeverageControl(params int[] securityIds)
+        {
+            SendCommand(new CommandGetLeverageControl(GetDefaultClientId(), securityIds));
+        }
+
+        public void GetLeverageControl(string client, params int[] securityIds)
+        {
+            SendCommand(new CommandGetLeverageControl(client, securityIds));
+        }
+*/
         public void MakeOrDownOrder(int transactionId)
         {
             SendCommand(new CommandMakeOrDown(transactionId));
@@ -302,12 +312,12 @@ namespace NXmlConnector
             SendCommand(new CommandSubscribeTicks());
         }
 
-        public int NewOrder(NewOrder newOrder)
+        public int NewOrder(NewOrder order)
         {
-            if (newOrder == null) throw new ArgumentNullException("newOrder");
+            if (order == null) throw new ArgumentNullException("order");
 
-            if (string.IsNullOrEmpty(newOrder.ClientId) && GetDefaultClientInfo() != null) newOrder.ClientId = GetDefaultClientInfo().Id;
-            return SendCommand(new CommandNewOrder(newOrder)).TransactionId;
+            if (string.IsNullOrEmpty(order.ClientId)) order.ClientId = GetDefaultClientId();
+            return SendCommand(new CommandNewOrder(order)).TransactionId;
         }
 
         public void CancelOrder(int transactionId)
@@ -331,7 +341,7 @@ namespace NXmlConnector
 
         public event EventHandler<OrdersEventArgs> RecieveOrders;
 
-        public event EventHandler<TickEventArgs> RecieveTick;
+        public event EventHandler<TicksEventArgs> RecieveTicks;
 
         public event EventHandler<AllTradesEventArgs> RecieveAllTrades;
 
@@ -343,12 +353,14 @@ namespace NXmlConnector
 
         public event EventHandler<PositionsEventArgs> RecievePositions;
 
+        public event EventHandler<SecurityEventArgs> ChangeSecurityPermit;
+
         public event EventHandler<ErrorEventArgs> InternalError;
 
 
-        private Client GetDefaultClientInfo()
+        private string GetDefaultClientId()
         {
-            return Clients.Count == 1 ? Clients[0] : null;
+            return Clients.Count == 1 ? Clients[0].Id : null;
         }
         
         private void OnConnect()
@@ -473,8 +485,8 @@ namespace NXmlConnector
 
         private void OnTicks(Ticks ticks)
         {
-            var ev = RecieveTick;
-            if (ev != null) ev(this, new TickEventArgs(ticks.Tick));
+            var ev = RecieveTicks;
+            if (ev != null) ev(this, new TicksEventArgs(ticks.TickArray));
         }
 
         private void OnAllTrades(AllTrades allTrades)
@@ -510,6 +522,17 @@ namespace NXmlConnector
         {
             var ev = RecievePositions;
             if (ev != null) ev(this, new PositionsEventArgs(positions));
+        }
+
+        private void OnMarketOrd(MarketOrd marketOrd)
+        {
+            Security security = null;
+            if (securities.TryGetValue(marketOrd.SecurityId, out security))
+            {
+                security.Permit = marketOrd.permit == YesNo.yes;
+                var ev = ChangeSecurityPermit;
+                if (ev != null) ev(this, new SecurityEventArgs(security));
+            }
         }
 
 

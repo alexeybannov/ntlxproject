@@ -32,6 +32,20 @@ namespace NXmlConnector
         }
     }
 
+    public class SecurityEventArgs : EventArgs
+    {
+        public Security Security
+        {
+            get;
+            private set;
+        }
+
+        public SecurityEventArgs(Security security)
+        {
+            Security = security;
+        }
+    }
+
     public class MarketsEventArgs : EventArgs
     {
         public List<Market> Markets
@@ -109,17 +123,17 @@ namespace NXmlConnector
         }
     }
 
-    public class TickEventArgs : EventArgs
+    public class TicksEventArgs : EventArgs
     {
-        public Tick Tick
+        public List<Tick> Ticks
         {
             get;
             private set;
         }
 
-        public TickEventArgs(Tick tick)
+        public TicksEventArgs(Tick[] ticks)
         {
-            Tick = tick;
+            Ticks = new List<Tick>(ticks ?? new Tick[0]);
         }
     }
 

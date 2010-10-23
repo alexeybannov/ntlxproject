@@ -26,14 +26,14 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("buy")]
-        public double Buy
+        public int Buy
         {
             get;
             set;
         }
 
         [XmlElement("sell")]
-        public double Sell
+        public int Sell
         {
             get;
             set;

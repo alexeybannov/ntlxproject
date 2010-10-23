@@ -118,10 +118,11 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("time")]
-        public string Time
+        public string time;
+
+        public DateTime Time
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(time); }
         }
 
         [XmlElement("change")]

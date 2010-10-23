@@ -6,24 +6,25 @@ namespace NXmlConnector.Model
     public class AllTrade
     {
         [XmlAttribute("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;
         }
 
         [XmlElement("tradeno")]
-        public string TradeNo
+        public int TradeNo
         {
             get;
             set;
         }
 
         [XmlElement("time")]
-        public string Time
+        public string time;
+
+        public DateTime Time
         {
-            get;
-            set;
+            get { return NXmlConverter.ToDateTime(time); }
         }
 
         [XmlElement("board")]
@@ -34,7 +35,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("price")]
-        public string Price
+        public double Price
         {
             get;
             set;
@@ -48,14 +49,21 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("buysell")]
-        public string BuySell
+        public OrderType BuySell
         {
             get;
             set;
         }
 
         [XmlElement("period")]
-        public string Period
+        public TradingStatus Period
+        {
+            get;
+            set;
+        }
+
+        [XmlElement("openinterest")]
+        public string OpenInterest
         {
             get;
             set;

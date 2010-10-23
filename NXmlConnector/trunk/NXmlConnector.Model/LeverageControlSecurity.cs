@@ -5,7 +5,7 @@ namespace NXmlConnector.Model
     public class LeverageControlSecurity
     {
         [XmlAttribute("secid")]
-        public string SecurityId
+        public int SecurityId
         {
             get;
             set;

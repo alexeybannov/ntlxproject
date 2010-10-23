@@ -14,10 +14,5 @@ namespace NXmlConnector.Model
 
         [XmlAttribute("permit")]
         public YesNo permit;
-
-        public bool Permit
-        {
-            get { return permit == YesNo.yes; }
-        }
     }
 }

@@ -1,1 +1,7 @@
 ﻿проверить придет ли статус status_shange при обыве соединения
+
+get_client_limits
+get_leverage_control
+
+newstoporder
+cancelstoporder

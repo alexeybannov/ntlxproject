@@ -3,34 +3,6 @@ using System.Xml.Serialization;
 
 namespace NXmlConnector.Model
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <example>
-    /// <orders>
-    /// <order transactionid=\"20971\">
-    /// <orderno>938001980</orderno>
-    /// <secid>4</secid>
-    /// <board>EQBR</board>
-    /// <client>virt/0011</client>
-    /// <status>matched</status>
-    /// <buysell>B</buysell>
-    /// <time>21.10.2010 15:26:27</time>
-    /// <brokerref></brokerref>
-    /// <value>202757</value>
-    /// <accruedint>0.000</accruedint>
-    /// <settlecode>T0</settlecode>
-    /// <balance>0</balance>
-    /// <price>0</price>
-    /// <quantity>100</quantity>
-    /// <yield>0.00</yield>
-    /// <withdrawtime>0</withdrawtime>
-    /// <condition>None</condition>
-    /// <maxcomission>0</maxcomission>
-    /// <result></result>
-    /// </order>
-    /// </orders>
-    /// </example>
     public class Order
     {
         [XmlAttribute("transactionid")]

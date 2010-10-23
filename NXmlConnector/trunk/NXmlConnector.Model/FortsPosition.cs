@@ -103,7 +103,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("netto")]
-        public string Netto
+        public string NetTo
         {
             get;
             set;

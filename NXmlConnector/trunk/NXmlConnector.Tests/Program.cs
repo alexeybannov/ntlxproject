@@ -37,7 +37,7 @@ namespace NXmlConnector.Tests
                 client.RecieveSecurities += (s, e) => Console.WriteLine("Securities: " + e.Securities.Count + " rows");
                 client.RecieveClient += (s, e) => Console.WriteLine("ClientInfo: " + e.ClientInfo);
                 client.RecieveOrders += (s, e) => Console.WriteLine("Orders: " + e.Orders.Count + " rows");
-                client.RecieveTick += (s, e) => Console.WriteLine("Tick: " + e.Tick.Price);
+                client.RecieveTicks += (s, e) => Console.WriteLine("Tick: " + e.Ticks.Count + " rows");
 
                 client.RecieveAllTrades += (s, e) => Console.WriteLine("RecieveAllTrades: " + e.AllTrades.Count + " rows");
                 client.RecieveQuotations += (s, e) => Console.WriteLine("RecieveQuotations: " + e.Quotations.Count + " rows");
@@ -63,7 +63,7 @@ namespace NXmlConnector.Tests
 
                 client.Subscribe(4);
 
-                client.GetFortsPosition();
+                //client.GetFortsPosition();
                 //client.GetClientLimits();
             }
             catch (Exception ex)
