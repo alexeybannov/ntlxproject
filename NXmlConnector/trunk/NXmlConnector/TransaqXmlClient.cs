@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -32,6 +33,8 @@ namespace NXmlConnector
         private Dictionary<string, Client> clients;
 
         private Dictionary<int, Market> markets;
+
+        private List<int> subscriptions;
 
 
         public bool IsConnected
@@ -120,6 +123,11 @@ namespace NXmlConnector
             get { return new List<Client>(clients.Values); }
         }
 
+        public List<Security> Subscriptions
+        {
+            get { return subscriptions.Select(s => GetSecurity(s)).Where(s => s != null).ToList(); }
+        }
+
 
         private TransaqXmlClient()
         {
@@ -135,6 +143,7 @@ namespace NXmlConnector
             securities = new Dictionary<int, Security>();
             clients = new Dictionary<string, Client>();
             markets = new Dictionary<int, Market>();
+            subscriptions = new List<int>();
 
             parser = new NXmlParser();
             parser.RegisterCallback<ServerStatus>(OnServerStatus);
@@ -214,9 +223,19 @@ namespace NXmlConnector
             SendCommand(new CommandChangePassword(oldPassword, newPassword));
         }
 
+        public Market GetMarket(int id)
+        {
+            return markets.ContainsKey(id) ? markets[id] : null;
+        }
+
         public void GetMarkets()
         {
             SendCommand(new CommandGetMarkets());
+        }
+
+        public Security GetSecurity(int id)
+        {
+            return securities.ContainsKey(id) ? securities[id] : null;
         }
 
         public void GetSecurities()
@@ -265,6 +284,14 @@ namespace NXmlConnector
         {
             SendCommand(new CommandGetLeverageControl(client, securityIds));
         }
+        public void Subscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
+        {
+            SendCommand(CommandSetSubscription.Subscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
+        }
+        public void Unsubscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
+        {
+            SendCommand(CommandSetSubscription.Unsubscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
+        }
 */
         public void MakeOrDownOrder(int transactionId)
         {
@@ -273,22 +300,20 @@ namespace NXmlConnector
 
         public void Subscribe(params int[] securityIds)
         {
+            foreach (var id in securityIds)
+            {
+                if (!subscriptions.Contains(id)) subscriptions.Add(id);
+            }
             SendCommand(CommandSetSubscription.Subscribe(securityIds, securityIds, securityIds));
-        }
-
-        public void Subscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
-        {
-            SendCommand(CommandSetSubscription.Subscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
         }
 
         public void Unsubscribe(params int[] securityIds)
         {
+            foreach (var id in securityIds)
+            {
+                if (subscriptions.Contains(id)) subscriptions.Remove(id);
+            }
             SendCommand(CommandSetSubscription.Unsubscribe(securityIds, securityIds, securityIds));
-        }
-
-        public void Unsubscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
-        {
-            SendCommand(CommandSetSubscription.Unsubscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
         }
 
         public void SubscribeTicks(int securityId, int tradeNo)
@@ -357,12 +382,14 @@ namespace NXmlConnector
 
         public event EventHandler<ErrorEventArgs> InternalError;
 
+        public event EventHandler<LogEventArgs> Logging;
+
 
         private string GetDefaultClientId()
         {
             return Clients.Count == 1 ? Clients[0].Id : null;
         }
-        
+
         private void OnConnect()
         {
             if (IsConnected) return;
@@ -535,15 +562,21 @@ namespace NXmlConnector
             }
         }
 
+        private void OnLogging(string data)
+        {
+            var ev = Logging;
+            if (ev != null) ev(this, new LogEventArgs(data));
+        }
+
 
         private Result SendCommand(Command command)
         {
             var commandStr = command.ToString();
-            Debug.WriteLine(string.Format("Send command: {0}", commandStr));
+            OnLogging(commandStr);
 
             var resultStr = NXmlConnector.SendCommand(commandStr);
 
-            Debug.WriteLine(string.Format("Result: {0}", resultStr));
+            OnLogging(resultStr);
             var result = (Result)NXmlDeserializer.Deserialize(typeof(Result), resultStr);
 
             if (!result.Success)
@@ -557,7 +590,7 @@ namespace NXmlConnector
         {
             try
             {
-                Debug.WriteLine(string.Format("Recieve data: {0}", data));
+                OnLogging(data);
                 parser.Parse(data);
             }
             catch (Exception ex)

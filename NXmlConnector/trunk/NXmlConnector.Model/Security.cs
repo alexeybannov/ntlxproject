@@ -33,7 +33,7 @@ namespace NXmlConnector.Model
         }
 
         [XmlElement("shortname")]
-        public string ShoryName
+        public string Name
         {
             get;
             set;
@@ -89,7 +89,7 @@ namespace NXmlConnector.Model
 
         public override string ToString()
         {
-            return ShoryName;
+            return Name;
         }
 
         public override bool Equals(object obj)

@@ -18,6 +18,20 @@ namespace NXmlConnector
         }
     }
 
+    public class LogEventArgs : EventArgs
+    {
+        public string Data
+        {
+            get;
+            private set;
+        }
+
+        public LogEventArgs(string data)
+        {
+            Data = data;
+        }
+    }
+
     public class SecuritiesEventArgs : EventArgs
     {
         public List<Security> Securities
