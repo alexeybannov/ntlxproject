@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPageLog = new System.Windows.Forms.TabPage();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -46,12 +47,6 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageSecurities = new System.Windows.Forms.TabPage();
             this.dataGridViewSecurities = new System.Windows.Forms.DataGridView();
-            this.SecSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.SecCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecMarket = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.comboBoxKind = new System.Windows.Forms.ComboBox();
@@ -62,6 +57,21 @@
             this.buttonHistory = new System.Windows.Forms.Button();
             this.buttonUnsubscribe = new System.Windows.Forms.Button();
             this.buttonSubscribe = new System.Windows.Forms.Button();
+            this.tabPageData = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.listViewHistory = new System.Windows.Forms.ListView();
+            this.columnHeaderHisName = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderHisCount = new System.Windows.Forms.ColumnHeader();
+            this.SecSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.SecCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecMarket = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.label9 = new System.Windows.Forms.Label();
+            this.columnHeaderQuSec = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.tabPageLog.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
@@ -70,6 +80,7 @@
             this.tabPageSecurities.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSecurities)).BeginInit();
             this.panel2.SuspendLayout();
+            this.tabPageData.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPageLog
@@ -238,11 +249,12 @@
             this.tabControl.Controls.Add(this.tabPageSettings);
             this.tabControl.Controls.Add(this.tabPageLog);
             this.tabControl.Controls.Add(this.tabPageSecurities);
+            this.tabControl.Controls.Add(this.tabPageData);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(770, 470);
+            this.tabControl.Size = new System.Drawing.Size(797, 487);
             this.tabControl.TabIndex = 0;
             // 
             // tabPageSecurities
@@ -252,7 +264,7 @@
             this.tabPageSecurities.Location = new System.Drawing.Point(4, 22);
             this.tabPageSecurities.Name = "tabPageSecurities";
             this.tabPageSecurities.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSecurities.Size = new System.Drawing.Size(762, 444);
+            this.tabPageSecurities.Size = new System.Drawing.Size(789, 461);
             this.tabPageSecurities.TabIndex = 2;
             this.tabPageSecurities.Text = "Инструменты";
             this.tabPageSecurities.UseVisualStyleBackColor = true;
@@ -261,7 +273,9 @@
             // 
             this.dataGridViewSecurities.AllowUserToAddRows = false;
             this.dataGridViewSecurities.AllowUserToDeleteRows = false;
+            this.dataGridViewSecurities.AllowUserToResizeRows = false;
             this.dataGridViewSecurities.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.dataGridViewSecurities.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dataGridViewSecurities.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewSecurities.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.SecSelect,
@@ -274,47 +288,9 @@
             this.dataGridViewSecurities.Location = new System.Drawing.Point(3, 3);
             this.dataGridViewSecurities.Name = "dataGridViewSecurities";
             this.dataGridViewSecurities.RowHeadersVisible = false;
-            this.dataGridViewSecurities.Size = new System.Drawing.Size(756, 356);
+            this.dataGridViewSecurities.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridViewSecurities.Size = new System.Drawing.Size(783, 373);
             this.dataGridViewSecurities.TabIndex = 2;
-            // 
-            // SecSelect
-            // 
-            this.SecSelect.HeaderText = "";
-            this.SecSelect.Name = "SecSelect";
-            this.SecSelect.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SecSelect.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.SecSelect.Width = 30;
-            // 
-            // SecCode
-            // 
-            this.SecCode.HeaderText = "Код";
-            this.SecCode.Name = "SecCode";
-            this.SecCode.ReadOnly = true;
-            // 
-            // SecName
-            // 
-            this.SecName.HeaderText = "Название";
-            this.SecName.Name = "SecName";
-            this.SecName.ReadOnly = true;
-            this.SecName.Width = 300;
-            // 
-            // SecType
-            // 
-            this.SecType.HeaderText = "Тип";
-            this.SecType.Name = "SecType";
-            this.SecType.ReadOnly = true;
-            // 
-            // SecMarket
-            // 
-            this.SecMarket.HeaderText = "Рынок";
-            this.SecMarket.Name = "SecMarket";
-            this.SecMarket.ReadOnly = true;
-            // 
-            // SecId
-            // 
-            this.SecId.HeaderText = "Идентификатор";
-            this.SecId.Name = "SecId";
-            this.SecId.ReadOnly = true;
             // 
             // panel2
             // 
@@ -328,9 +304,9 @@
             this.panel2.Controls.Add(this.buttonUnsubscribe);
             this.panel2.Controls.Add(this.buttonSubscribe);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(3, 359);
+            this.panel2.Location = new System.Drawing.Point(3, 376);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(756, 82);
+            this.panel2.Size = new System.Drawing.Size(783, 82);
             this.panel2.TabIndex = 1;
             // 
             // label7
@@ -417,11 +393,123 @@
             this.buttonSubscribe.UseVisualStyleBackColor = true;
             this.buttonSubscribe.Click += new System.EventHandler(this.buttonSubscribe_Click);
             // 
+            // tabPageData
+            // 
+            this.tabPageData.Controls.Add(this.label9);
+            this.tabPageData.Controls.Add(this.listView1);
+            this.tabPageData.Controls.Add(this.listViewHistory);
+            this.tabPageData.Controls.Add(this.label8);
+            this.tabPageData.Location = new System.Drawing.Point(4, 22);
+            this.tabPageData.Name = "tabPageData";
+            this.tabPageData.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageData.Size = new System.Drawing.Size(789, 461);
+            this.tabPageData.TabIndex = 3;
+            this.tabPageData.Text = "Данные";
+            this.tabPageData.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(8, 3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(123, 13);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Исторические данные:";
+            // 
+            // listViewHistory
+            // 
+            this.listViewHistory.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderHisName,
+            this.columnHeaderHisCount});
+            this.listViewHistory.Location = new System.Drawing.Point(6, 19);
+            this.listViewHistory.Name = "listViewHistory";
+            this.listViewHistory.Size = new System.Drawing.Size(278, 105);
+            this.listViewHistory.TabIndex = 1;
+            this.listViewHistory.UseCompatibleStateImageBehavior = false;
+            this.listViewHistory.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeaderHisName
+            // 
+            this.columnHeaderHisName.Text = "Инструмент";
+            this.columnHeaderHisName.Width = 150;
+            // 
+            // columnHeaderHisCount
+            // 
+            this.columnHeaderHisCount.Text = "Свечей";
+            this.columnHeaderHisCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.columnHeaderHisCount.Width = 100;
+            // 
+            // SecSelect
+            // 
+            this.SecSelect.HeaderText = "";
+            this.SecSelect.Name = "SecSelect";
+            this.SecSelect.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.SecSelect.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SecSelect.Width = 30;
+            // 
+            // SecCode
+            // 
+            this.SecCode.HeaderText = "Код";
+            this.SecCode.Name = "SecCode";
+            this.SecCode.ReadOnly = true;
+            this.SecCode.Width = 120;
+            // 
+            // SecName
+            // 
+            this.SecName.HeaderText = "Название";
+            this.SecName.Name = "SecName";
+            this.SecName.ReadOnly = true;
+            this.SecName.Width = 300;
+            // 
+            // SecType
+            // 
+            this.SecType.HeaderText = "Тип";
+            this.SecType.Name = "SecType";
+            this.SecType.ReadOnly = true;
+            // 
+            // SecMarket
+            // 
+            this.SecMarket.HeaderText = "Рынок";
+            this.SecMarket.Name = "SecMarket";
+            this.SecMarket.ReadOnly = true;
+            // 
+            // SecId
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.SecId.DefaultCellStyle = dataGridViewCellStyle2;
+            this.SecId.HeaderText = "Идентификатор";
+            this.SecId.Name = "SecId";
+            this.SecId.ReadOnly = true;
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderQuSec,
+            this.columnHeader1});
+            this.listView1.Location = new System.Drawing.Point(6, 153);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(356, 97);
+            this.listView1.TabIndex = 2;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(8, 137);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(35, 13);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "label9";
+            // 
+            // columnHeaderQuSec
+            // 
+            this.columnHeaderQuSec.Width = 150;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(770, 470);
+            this.ClientSize = new System.Drawing.Size(797, 487);
             this.Controls.Add(this.tabControl);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -437,6 +525,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSecurities)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.tabPageData.ResumeLayout(false);
+            this.tabPageData.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -461,12 +551,6 @@
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPageSecurities;
         private System.Windows.Forms.DataGridView dataGridViewSecurities;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn SecSelect;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SecCode;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SecName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SecType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SecMarket;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SecId;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button buttonHistory;
         private System.Windows.Forms.Button buttonUnsubscribe;
@@ -477,6 +561,21 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox comboBoxKind;
+        private System.Windows.Forms.TabPage tabPageData;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ListView listViewHistory;
+        private System.Windows.Forms.ColumnHeader columnHeaderHisName;
+        private System.Windows.Forms.ColumnHeader columnHeaderHisCount;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn SecSelect;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SecCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SecName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SecType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SecMarket;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SecId;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader columnHeaderQuSec;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
 
     }
 }

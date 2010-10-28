@@ -31,25 +31,25 @@ namespace NXmlConnector.Model.Commands
         }
 
 
-        public static CommandSetSubscription Subscribe(IEnumerable<int> trades, IEnumerable<int> quotations, IEnumerable<int> quotes)
+        public static CommandSetSubscription Subscribe(IEnumerable<int> ids, Subscription to)
         {
             var command = new CommandSetSubscription();
-            if (trades != null) command.AllTrades = trades.ToArray();
-            if (quotations != null) command.Quotations = quotations.ToArray();
-            if (quotes != null) command.Quotes = quotes.ToArray();
+            if ((to & Subscription.Trades) == Subscription.Trades) command.AllTrades = ids.ToArray();
+            if ((to & Subscription.Quotations) == Subscription.Quotations) command.Quotations = ids.ToArray();
+            if ((to & Subscription.Quotes) == Subscription.Quotes) command.Quotes = ids.ToArray();
             return command;
         }
 
-        public static CommandSetSubscription Unsubscribe(IEnumerable<int> trades, IEnumerable<int> quotations, IEnumerable<int> quotes)
+        public static CommandSetSubscription Unsubscribe(IEnumerable<int> ids, Subscription to)
         {
-            var command = Subscribe(trades, quotations, quotes);
+            var command = Subscribe(ids, to);
             command.Id = "unsubscribe";
             return command;
         }
 
         protected override void WriteElement(XElement command)
         {
-            if (AllTrades != null)
+            if (AllTrades != null && 0 < AllTrades.Count())
             {
                 var trades = new XElement("alltrades");
                 command.Add(trades);
@@ -59,7 +59,7 @@ namespace NXmlConnector.Model.Commands
                 }
             }
 
-            if (Quotations != null)
+            if (Quotations != null && 0 < Quotations.Count())
             {
                 var quotations = new XElement("quotations");
                 command.Add(quotations);
@@ -69,7 +69,7 @@ namespace NXmlConnector.Model.Commands
                 }
             }
 
-            if (Quotes != null)
+            if (Quotes != null && 0 < Quotes.Count())
             {
                 var quotes = new XElement("quotes");
                 command.Add(quotes);

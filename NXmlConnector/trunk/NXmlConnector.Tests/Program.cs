@@ -61,7 +61,7 @@ namespace NXmlConnector.Tests
                 }
                 //client.SubscribeTicks(4, 0);
 
-                client.Subscribe(4);
+                client.Subscribe(Subscription.All, 4);
 
                 //client.GetFortsPosition();
                 //client.GetClientLimits();

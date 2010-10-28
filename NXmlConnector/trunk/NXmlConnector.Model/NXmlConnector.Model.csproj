@@ -72,6 +72,7 @@
     <Compile Include="Commands\CommandGetLeverageControl.cs" />
     <Compile Include="NewCondOrder.cs" />
     <Compile Include="QuotationStatus.cs" />
+    <Compile Include="Subscription.cs" />
     <Compile Include="TradeType.cs" />
     <Compile Include="FortsCollateral.cs" />
     <Compile Include="FortsMoney.cs" />

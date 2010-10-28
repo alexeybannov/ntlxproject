@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -17,9 +18,11 @@ namespace Transaq2NinjaTrader
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
         }
-        
-        
+
+
         private TransaqXmlClient transaq;
+
+        private NinjaClient ninja;
 
         private SynchronizationContext ctx = new WindowsFormsSynchronizationContext();
 
@@ -29,6 +32,7 @@ namespace Transaq2NinjaTrader
         public MainForm()
         {
             InitializeComponent();
+            
             transaq = TransaqXmlClient.GetTransaqXmlClient();
             transaq.Connected += (s, e) => ctx.Post(transaq_Connected, e);
             transaq.ConnectionError += (s, e) => ctx.Post(transaq_ConnectionError, e);
@@ -37,9 +41,25 @@ namespace Transaq2NinjaTrader
             transaq.Logging += (s, e) => ctx.Post(transaq_Logging, e);
             transaq.RecieveSecurities += (s, e) => ctx.Post(transaq_RecieveSecurities, e);
             transaq.RecieveCandles += transaq_RecieveCandles;
+            transaq.RecieveQuotations += (s, e) => ctx.Post(transaq_RecieveQuotations, e);
+            
             dataGridViewSecurities.CurrentCellDirtyStateChanged += dataGridViewSecurities_CurrentCellDirtyStateChanged;
-            dateTimePickerHistoryStart.Value = DateTime.Now.AddDays(-1).Date.AddHours(9);
+            dateTimePickerHistoryStart.Value = DateTime.Now.Date.AddHours(9);
             dateTimePickerHistoryEnd.Value = DateTime.Now.Date.AddHours(18).AddMinutes(45);
+
+            ninja = new NinjaClient();
+        }
+
+        void transaq_RecieveQuotations(object state)
+        {
+            var e = (QuotationsEventArgs)state;
+            foreach (var q in e.Quotations)
+            {
+                var s = transaq.GetSecurity(q.SecurityId);
+                ninja.SendLast(s.Code, q.Last, q.Quantity);
+                ninja.SendBid(s.Code, q.Bid, q.NumBids);
+                ninja.SendAsk(s.Code, q.Offer, q.NumOffers);
+            }
         }
 
         void transaq_RecieveCandles(object sender, CandlesEventArgs e)
@@ -55,10 +75,9 @@ namespace Transaq2NinjaTrader
                 {
                     result.Add(c);
                 }
-                if (end < c.Date)
+                if (c.Date < start)
                 {
                     stop = true;
-                    break;
                 }
             }
             if (!stop && e.Status == CandlesStatus.EndOfRequest)
@@ -66,12 +85,32 @@ namespace Transaq2NinjaTrader
                 transaq.GetHistoryData(e.SecurityId, e.Period, 100, false);
             }
 
-            ctx.Post(OnRecieveCandles, result);
+            ctx.Post(OnRecieveCandles, new object[] { result, e.SecurityId });
         }
 
         void OnRecieveCandles(object state)
         {
+            var candles = (List<Candle>)((object[])state)[0];
+            var security = transaq.GetSecurity((int)((object[])state)[1]);
 
+            //send history to ninja
+            candles.ForEach(c => ninja.SendHistory(security.Code, c.Close, c.High, c.Low, c.Volume, c.Date));
+
+            ListViewItem item = null;
+            foreach (ListViewItem i in listViewHistory.Items)
+            {
+                if (security.Name.Equals(i.SubItems[0].Text))
+                {
+                    item = i;
+                    break;
+                }
+            }
+            if (item == null)
+            {
+                item = new ListViewItem(new[] { security.Name, "0" });
+                listViewHistory.Items.Add(item);
+            }
+            item.SubItems[1].Text = (candles.Count + int.Parse(item.SubItems[1].Text)).ToString();
         }
 
         void dataGridViewSecurities_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -195,12 +234,24 @@ namespace Transaq2NinjaTrader
 
         private void buttonSubscribe_Click(object sender, EventArgs e)
         {
-            transaq.Subscribe(GetChecked());
+            var selected = GetChecked();
+            transaq.Subscribe(Subscription.Quotations, selected);
+            foreach (var id in selected)
+            {
+                var row = FindSecurity(id);
+                row.DefaultCellStyle.BackColor = Color.Yellow;
+            }
         }
 
         private void buttonUnsubscribe_Click(object sender, EventArgs e)
         {
-            transaq.Unsubscribe(GetChecked());
+            var selected = GetChecked();
+            transaq.Unsubscribe(Subscription.Quotations, GetChecked());
+            foreach (var id in selected)
+            {
+                var row = FindSecurity(id);
+                row.DefaultCellStyle.BackColor = Color.Empty;
+            }
         }
 
         private int[] GetChecked()

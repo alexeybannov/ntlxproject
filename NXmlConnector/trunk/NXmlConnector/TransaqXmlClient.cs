@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using NXmlConnector.Model;
 using NXmlConnector.Model.Commands;
@@ -34,7 +32,7 @@ namespace NXmlConnector
 
         private Dictionary<int, Market> markets;
 
-        private List<int> subscriptions;
+        private Dictionary<int, Subscription> subscriptions;
 
 
         public bool IsConnected
@@ -123,11 +121,6 @@ namespace NXmlConnector
             get { return new List<Client>(clients.Values); }
         }
 
-        public List<Security> Subscriptions
-        {
-            get { return subscriptions.Select(s => GetSecurity(s)).Where(s => s != null).ToList(); }
-        }
-
 
         private TransaqXmlClient()
         {
@@ -143,7 +136,7 @@ namespace NXmlConnector
             securities = new Dictionary<int, Security>();
             clients = new Dictionary<string, Client>();
             markets = new Dictionary<int, Market>();
-            subscriptions = new List<int>();
+            subscriptions = new Dictionary<int, Subscription>();
 
             parser = new NXmlParser();
             parser.RegisterCallback<ServerStatus>(OnServerStatus);
@@ -284,36 +277,41 @@ namespace NXmlConnector
         {
             SendCommand(new CommandGetLeverageControl(client, securityIds));
         }
-        public void Subscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
-        {
-            SendCommand(CommandSetSubscription.Subscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
-        }
-        public void Unsubscribe(IEnumerable<int> alltradesSecurityIds, IEnumerable<int> quotationsSecurityIds, IEnumerable<int> quotesSecurityIds)
-        {
-            SendCommand(CommandSetSubscription.Unsubscribe(alltradesSecurityIds, quotationsSecurityIds, quotesSecurityIds));
-        }
 */
         public void MakeOrDownOrder(int transactionId)
         {
             SendCommand(new CommandMakeOrDown(transactionId));
         }
 
-        public void Subscribe(params int[] securityIds)
+        public void Subscribe(Subscription to, params int[] securityIds)
         {
             foreach (var id in securityIds)
             {
-                if (!subscriptions.Contains(id)) subscriptions.Add(id);
+                var subscription = subscriptions.ContainsKey(id) ? subscriptions[id] : Subscription.None;
+                subscriptions[id] = subscription | to;
+                if (subscriptions[id] == Subscription.None) subscriptions.Remove(id);
             }
-            SendCommand(CommandSetSubscription.Subscribe(securityIds, securityIds, securityIds));
+            SendCommand(CommandSetSubscription.Subscribe(securityIds, to));
         }
 
-        public void Unsubscribe(params int[] securityIds)
+        public void Unsubscribe(Subscription to, params int[] securityIds)
         {
             foreach (var id in securityIds)
             {
-                if (subscriptions.Contains(id)) subscriptions.Remove(id);
+                if (subscriptions.ContainsKey(id))
+                {
+                    subscriptions[id] &= to;
+                    if (subscriptions[id] == Subscription.None) subscriptions.Remove(id);
+                }
             }
-            SendCommand(CommandSetSubscription.Unsubscribe(securityIds, securityIds, securityIds));
+            SendCommand(CommandSetSubscription.Unsubscribe(securityIds, to));
+        }
+
+        public bool Subscribed(Subscription to, int securityId)
+        {
+            return subscriptions.ContainsKey(securityId) ?
+                (subscriptions[securityId] & to) == to :
+                false;
         }
 
         public void SubscribeTicks(int securityId, int tradeNo)
