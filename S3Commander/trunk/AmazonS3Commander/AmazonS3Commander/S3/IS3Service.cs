@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using LitS3;
 
 namespace AmazonS3Commander.S3
 {
@@ -27,5 +28,7 @@ namespace AmazonS3Commander.S3
         void CopyObject(string sourceBucketName, string sourceKey, string destBucketName, string destKey);
 
         WebHeaderCollection HeadObject(string bucketName, string key);
+
+        AccessControlList GetObjectAcl(string bucketName, string key);
     }
 }

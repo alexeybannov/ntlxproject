@@ -654,6 +654,14 @@ namespace LitS3
             return GetObjectString(bucketName, key, out contentType);
         }
 
+        public AccessControlList GetObjectAcl(string bucketName, string key)
+        {
+            using (var responce = new GetAclRequest(this, bucketName, key).GetResponse())
+            {
+                return responce.AccessControlList;
+            }
+        }
+
         #endregion
 
         #region CopyStream

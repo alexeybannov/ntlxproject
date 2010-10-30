@@ -19,14 +19,11 @@ namespace AmazonS3Commander.Files
         {
             if (entry == null) throw new ArgumentNullException("entry");
 
-            this.entry = entry;
-
             InitializeComponent();
 
+            this.entry = entry;
             Text = entry.Name;
-
             propertyGridFile.SelectedObject = new EntryInfo();
-
             ThreadPool.QueueUserWorkItem(IsEntryFolderAsync, new WorkItemParam(entry, OnAsyncComplete));
         }
 
@@ -69,8 +66,10 @@ namespace AmazonS3Commander.Files
             {
                 var entry = (Entry)param.State;
                 if (folder) throw new NotImplementedException();
-                //get acl
-                param.OnComplete(new AccessControlList(new Owner("amazon", "key")));
+
+                var acl = entry.S3Service.GetObjectAcl(entry.BucketName, entry.Key);
+
+                param.OnComplete(acl);
             }
             catch (Exception error)
             {

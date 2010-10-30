@@ -85,5 +85,10 @@ namespace AmazonS3Commander.S3
         {
             return client.HeadObject(bucketName, key);
         }
+
+        public AccessControlList GetObjectAcl(string bucketName, string key)
+        {
+            return client.GetObjectAcl(bucketName, key);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Xml;
 
 namespace LitS3
 {
@@ -9,7 +10,7 @@ namespace LitS3
         private List<Grant> grants = new List<Grant>();
 
 
-        public Owner Owner
+        public Identity Owner
         {
             get;
             private set;
@@ -21,7 +22,7 @@ namespace LitS3
         }
 
 
-        public AccessControlList(Owner owner)
+        public AccessControlList(Identity owner)
         {
             if (owner == null) throw new ArgumentNullException("owner");
 
@@ -31,6 +32,24 @@ namespace LitS3
             AddGrant(new Grantee(GranteeType.Group, "http://acs.amazonaws.com/groups/global/AuthenticatedUsers", "Authenticated Users"), Permission.None);
             AddGrant(new Grantee(GranteeType.Group, "http://acs.amazonaws.com/groups/global/AllUsers", "Anonimous"), Permission.None);
         }
+
+        internal AccessControlList(XmlReader reader)
+        {
+            if (reader.IsEmptyElement) throw new Exception("Expected a non-empty <AccessControlPolicy> element.");
+
+            reader.ReadStartElement("AccessControlPolicy");
+            if (reader.Name == "Owner") Owner = new Identity(reader);
+
+            reader.ReadStartElement("AccessControlList");
+            while (reader.Name == "Grant")
+            {
+                AddGrant(new Grantee(reader), ParsePemission(reader.ReadElementContentAsString()));
+            }
+
+            reader.ReadEndElement();
+            reader.ReadEndElement();
+        }
+
 
         public void AddGrant(Grantee grantee, Permission permission)
         {
@@ -50,47 +69,19 @@ namespace LitS3
         {
             grants.RemoveAll(g => grantee.Equals(g.Grantee));
         }
-    }
 
 
-    public class Owner
-    {
-        public string Id
+        private Permission ParsePemission(string permission)
         {
-            get;
-            private set;
-        }
-
-        public string DisplayName
-        {
-            get;
-            private set;
-        }
-
-
-        public Owner(string displayName, string id)
-        {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
-
-            Id = id;
-            DisplayName = displayName;
-        }
-
-
-        public override bool Equals(object obj)
-        {
-            var owner = obj as Owner;
-            return owner != null && owner.Id == Id;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} (Owner)", DisplayName ?? Id);
+            switch (permission)
+            {
+                case "FULL_CONTROL": return Permission.FullControl;
+                case "READ": return Permission.Read;
+                case "READ_ACP": return Permission.ReadAcp;
+                case "WRITE": return Permission.Write;
+                case "WRITE_ACP": return Permission.WriteAcp;
+                default: throw new ArgumentOutOfRangeException("Unknown permission: " + permission);
+            }
         }
     }
 
@@ -131,21 +122,9 @@ namespace LitS3
     }
 
 
-    public class Grantee
+    public class Grantee : Identity
     {
         public GranteeType GranteeType
-        {
-            get;
-            private set;
-        }
-
-        public string Id
-        {
-            get;
-            private set;
-        }
-
-        public string DisplayName
         {
             get;
             private set;
@@ -159,25 +138,38 @@ namespace LitS3
         }
 
         public Grantee(GranteeType granteeType, string id, string displayName)
+            : base(id, displayName)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
-
             GranteeType = granteeType;
-            Id = id;
-            DisplayName = displayName;
         }
 
-
-        public override bool Equals(object obj)
+        internal Grantee(XmlReader reader)
         {
-            var grantee = obj as Grantee;
-            return grantee != null && grantee.Id == Id;
+            reader.ReadStartElement();
+
+            var type = reader.GetAttribute("type", "xsi:type");
+            Id = reader.ReadElementContentAsString();
+            switch (type)
+            {
+                case "Group":
+                    GranteeType = GranteeType.Group;
+                    if (Id == "http://acs.amazonaws.com/groups/global/AuthenticatedUsers") DisplayName = "Authenticated Users";
+                    if (Id == "http://acs.amazonaws.com/groups/global/AllUsers") DisplayName = "Anonimous";
+                    break;
+
+                case "CanonicalUser":
+                    GranteeType = GranteeType.User;
+                    break;
+
+                case "EMail":
+                    GranteeType = GranteeType.User;
+                    break;
+            }
+            
+            DisplayName = reader.ReadElementContentAsString("DisplayName", "");
+            reader.ReadEndElement();
         }
 
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
 
         public override string ToString()
         {

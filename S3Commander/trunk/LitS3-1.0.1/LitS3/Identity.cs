@@ -6,10 +6,33 @@ namespace LitS3
     /// <summary>
     /// Represents an Amazon S3 user.
     /// </summary>
-    public sealed class Identity
+    public class Identity
     {
-        public string ID { get; private set; }
-        public string DisplayName { get; private set; }
+        public string Id
+        {
+            get;
+            protected set;
+        }
+
+        public string DisplayName
+        {
+            get;
+            protected set;
+        }
+
+
+        public Identity(string id, string displayName)
+        {
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
+
+            Id = id;
+            DisplayName = displayName;
+        }
+
+        protected Identity()
+        {
+
+        }
 
         internal Identity(XmlReader reader)
         {
@@ -22,9 +45,26 @@ namespace LitS3
             //     <DisplayName>webfile</DisplayName>
             // </Owner>
             reader.ReadStartElement("Owner");
-            this.ID = reader.ReadElementContentAsString("ID", "");
+            this.Id = reader.ReadElementContentAsString("ID", "");
             this.DisplayName = reader.ReadElementContentAsString("DisplayName", "");
             reader.ReadEndElement();
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            var identity = obj as Identity;
+            return identity != null && identity.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} (Owner)", DisplayName ?? Id);
         }
     }
 }

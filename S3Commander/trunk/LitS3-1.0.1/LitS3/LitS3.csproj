@@ -55,6 +55,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bucket.cs" />
     <Compile Include="BucketAccess.cs" />
+    <Compile Include="GetAcl.cs" />
     <Compile Include="CopyObject.cs" />
     <Compile Include="CreateBucket.cs" />
     <Compile Include="DeleteBucket.cs" />
