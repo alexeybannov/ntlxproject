@@ -6,7 +6,7 @@ namespace NXmlConnector.Model
     public class Quotes
     {
         [XmlElement("quote")]
-        public Quote[] QuotesArray
+        public _Quote[] QuotesArray
         {
             get;
             set;

@@ -6,7 +6,7 @@ namespace NXmlConnector.Model
     public class AllTrades
     {
         [XmlElement("trade")]
-        public AllTrade[] TradesArray
+        public _AllTrade[] TradesArray
         {
             get;
             set;

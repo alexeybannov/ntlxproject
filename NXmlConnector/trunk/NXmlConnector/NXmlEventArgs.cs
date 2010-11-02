@@ -46,7 +46,7 @@ namespace NXmlConnector
         }
     }
 
-    public class SecurityEventArgs : EventArgs
+    public class SecurityPermitChangedEventArgs : EventArgs
     {
         public Security Security
         {
@@ -54,9 +54,16 @@ namespace NXmlConnector
             private set;
         }
 
-        public SecurityEventArgs(Security security)
+        public bool Permit
+        {
+            get;
+            private set;
+        }
+
+        public SecurityPermitChangedEventArgs(Security security, bool permit)
         {
             Security = security;
+            Permit = permit;
         }
     }
 
@@ -74,7 +81,7 @@ namespace NXmlConnector
         }
     }
 
-    public class CandlesEventArgs : EventArgs
+    public class HistoryEventArgs : EventArgs
     {
         public int SecurityId
         {
@@ -100,7 +107,7 @@ namespace NXmlConnector
             private set;
         }
 
-        public CandlesEventArgs(Candles candles)
+        public HistoryEventArgs(Candles candles)
         {
             SecurityId = candles.SecurityId;
             Period = candles.Period;
@@ -159,9 +166,9 @@ namespace NXmlConnector
             private set;
         }
 
-        public AllTradesEventArgs(AllTrade[] allTrades)
+        public AllTradesEventArgs(IEnumerable<AllTrade> allTrades)
         {
-            AllTrades = new List<AllTrade>(allTrades ?? new AllTrade[0]);
+            AllTrades = new List<AllTrade>(allTrades);
         }
     }
 
@@ -173,9 +180,9 @@ namespace NXmlConnector
             private set;
         }
 
-        public QuotationsEventArgs(Quotation[] quotations)
+        public QuotationsEventArgs(IEnumerable<Quotation> quotations)
         {
-            Quotations = new List<Quotation>(quotations ?? new Quotation[0]);
+            Quotations = new List<Quotation>(quotations);
         }
     }
 
@@ -187,9 +194,9 @@ namespace NXmlConnector
             private set;
         }
 
-        public QuotesEventArgs(Quote[] quotes)
+        public QuotesEventArgs(IEnumerable<Quote> quotes)
         {
-            Quotes = new List<Quote>(quotes ?? new Quote[0]);
+            Quotes = new List<Quote>(quotes);
         }
     }
 

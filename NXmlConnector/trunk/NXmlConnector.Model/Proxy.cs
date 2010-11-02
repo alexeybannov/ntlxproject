@@ -10,7 +10,7 @@ namespace NXmlConnector.Model
             set;
         }
 
-        public string Address
+        public string Host
         {
             get;
             set;
@@ -39,10 +39,10 @@ namespace NXmlConnector.Model
         {
         }
 
-        public Proxy(ProxyType proxyType, string addrss, int port, string login, string passwoed)
+        public Proxy(ProxyType proxyType, string host, int port, string login, string passwoed)
         {
             ProxyType = proxyType;
-            Address = addrss;
+            Host = host;
             Port = port;
             Login = login;
             Password = passwoed;

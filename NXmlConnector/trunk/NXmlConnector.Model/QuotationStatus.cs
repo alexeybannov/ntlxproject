@@ -6,6 +6,8 @@ namespace NXmlConnector.Model
     /// </summary>
     public enum QuotationStatus
     {
+        Unknown,
+
         /// <summary>
         /// Операции разрешены.
         /// </summary>

@@ -18,7 +18,7 @@ namespace NXmlConnector.Tests
                 client.Connected += (s, e) =>
                 {
                     client.CandleKinds.ForEach(k => Console.WriteLine("Candle Kind: " + k.Name));
-                    Console.WriteLine("Server time difference: " + client.ServerTimeDifference);
+                    Console.WriteLine("Server time difference: " + client.TimeDifference);
                     Console.WriteLine("Connected");
                     wait.Set();
                 };
@@ -33,7 +33,7 @@ namespace NXmlConnector.Tests
                     wait.Set();
                 };
                 client.RecieveMarkets += (s, e) => e.Markets.ForEach(m => Console.WriteLine("Market: " + m));
-                client.RecieveCandles += (s, e) => Console.WriteLine("Candle: " + e.Candles.Count + " rows");
+                client.RecieveHistory += (s, e) => Console.WriteLine("Candle: " + e.Candles.Count + " rows");
                 client.RecieveSecurities += (s, e) => Console.WriteLine("Securities: " + e.Securities.Count + " rows");
                 client.RecieveClient += (s, e) => Console.WriteLine("ClientInfo: " + e.ClientInfo);
                 client.RecieveOrders += (s, e) => Console.WriteLine("Orders: " + e.Orders.Count + " rows");
@@ -63,7 +63,7 @@ namespace NXmlConnector.Tests
 
                 client.Subscribe(Subscription.All, 4);
 
-                //client.GetFortsPosition();
+                client.GetFortsPosition();
                 //client.GetClientLimits();
             }
             catch (Exception ex)

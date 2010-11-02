@@ -40,7 +40,7 @@ namespace Transaq2NinjaTrader
             transaq.InternalError += (s, e) => ctx.Post(transaq_Logging, e);
             transaq.Logging += (s, e) => ctx.Post(transaq_Logging, e);
             transaq.RecieveSecurities += (s, e) => ctx.Post(transaq_RecieveSecurities, e);
-            transaq.RecieveCandles += transaq_RecieveCandles;
+            transaq.RecieveHistory += transaq_RecieveCandles;
             transaq.RecieveQuotations += (s, e) => ctx.Post(transaq_RecieveQuotations, e);
             
             dataGridViewSecurities.CurrentCellDirtyStateChanged += dataGridViewSecurities_CurrentCellDirtyStateChanged;
@@ -62,7 +62,7 @@ namespace Transaq2NinjaTrader
             }
         }
 
-        void transaq_RecieveCandles(object sender, CandlesEventArgs e)
+        void transaq_RecieveCandles(object sender, HistoryEventArgs e)
         {
             var start = dateTimePickerHistoryStart.Value;
             var end = dateTimePickerHistoryEnd.Value;

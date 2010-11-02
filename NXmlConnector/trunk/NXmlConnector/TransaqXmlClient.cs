@@ -9,6 +9,8 @@ namespace NXmlConnector
 {
     public class TransaqXmlClient
     {
+        #region << Private Fielda >>
+
         private static object syncRoot = new object();
 
         private static TransaqXmlClient client;
@@ -34,6 +36,16 @@ namespace NXmlConnector
 
         private Dictionary<int, Subscription> subscriptions;
 
+        private Dictionary<int, Quotation> quotations;
+
+        private Dictionary<int, AllTrade> allTrades;
+
+        private Dictionary<int, Quote> quotes;
+
+        #endregion << Private Fielda >>
+
+
+        #region << Public Properties >>
 
         public bool IsConnected
         {
@@ -89,7 +101,7 @@ namespace NXmlConnector
             }
         }
 
-        public TimeSpan ServerTimeDifference
+        public TimeSpan TimeDifference
         {
             get;
             private set;
@@ -103,23 +115,25 @@ namespace NXmlConnector
 
         public List<CandleKind> CandleKinds
         {
-            get { return new List<CandleKind>(candleKinds); }
+            get { lock (candleKinds) return new List<CandleKind>(candleKinds); }
         }
 
         public List<Market> Markets
         {
-            get { return new List<Market>(markets.Values); }
+            get { lock (markets) return new List<Market>(markets.Values); }
         }
 
         public List<Security> Securities
         {
-            get { return new List<Security>(securities.Values); }
+            get { lock (securities) return new List<Security>(securities.Values); }
         }
 
         public List<Client> Clients
         {
-            get { return new List<Client>(clients.Values); }
+            get { lock (clients) return new List<Client>(clients.Values); }
         }
+
+        #endregion << Public Properties >>
 
 
         private TransaqXmlClient()
@@ -137,6 +151,9 @@ namespace NXmlConnector
             clients = new Dictionary<string, Client>();
             markets = new Dictionary<int, Market>();
             subscriptions = new Dictionary<int, Subscription>();
+            quotations = new Dictionary<int, Quotation>();
+            allTrades = new Dictionary<int, AllTrade>();
+            quotes = new Dictionary<int, Quote>();
 
             parser = new NXmlParser();
             parser.RegisterCallback<ServerStatus>(OnServerStatus);
@@ -157,6 +174,8 @@ namespace NXmlConnector
             parser.RegisterCallback<MarketOrd>(OnMarketOrd);
         }
 
+
+        #region << Public Methods >>
 
         public static TransaqXmlClient GetTransaqXmlClient()
         {
@@ -218,7 +237,7 @@ namespace NXmlConnector
 
         public Market GetMarket(int id)
         {
-            return markets.ContainsKey(id) ? markets[id] : null;
+            lock (markets) return markets.ContainsKey(id) ? markets[id] : null;
         }
 
         public void GetMarkets()
@@ -228,12 +247,17 @@ namespace NXmlConnector
 
         public Security GetSecurity(int id)
         {
-            return securities.ContainsKey(id) ? securities[id] : null;
+            lock (securities) return securities.ContainsKey(id) ? securities[id] : null;
         }
 
         public void GetSecurities()
         {
             SendCommand(new CommandGetSecurities());
+        }
+
+        public Client GetClient(string clientId)
+        {
+            lock (clients) return clients.ContainsKey(clientId) ? clients[clientId] : null;
         }
 
         public void GetHistoryData(int securityId, int period, int count, bool reset)
@@ -250,7 +274,7 @@ namespace NXmlConnector
 
         public void GetFortsPosition()
         {
-            GetFortsPosition(null);
+            GetFortsPosition(GetDefaultClientId());
         }
 
         public void GetFortsPosition(string client)
@@ -307,7 +331,7 @@ namespace NXmlConnector
             SendCommand(CommandSetSubscription.Unsubscribe(securityIds, to));
         }
 
-        public bool Subscribed(Subscription to, int securityId)
+        public bool IsSubscribed(Subscription to, int securityId)
         {
             return subscriptions.ContainsKey(securityId) ?
                 (subscriptions[securityId] & to) == to :
@@ -348,6 +372,11 @@ namespace NXmlConnector
             SendCommand(new CommandCancelOrder(transactionId));
         }
 
+        #endregion << Public Methods >>
+
+
+        #region << Public Events >>
+
         public event EventHandler Connected;
 
         public event EventHandler<ErrorEventArgs> ConnectionError;
@@ -358,7 +387,7 @@ namespace NXmlConnector
 
         public event EventHandler<MarketsEventArgs> RecieveMarkets;
 
-        public event EventHandler<CandlesEventArgs> RecieveCandles;
+        public event EventHandler<HistoryEventArgs> RecieveHistory;
 
         public event EventHandler<ClientEventArgs> RecieveClient;
 
@@ -376,16 +405,19 @@ namespace NXmlConnector
 
         public event EventHandler<PositionsEventArgs> RecievePositions;
 
-        public event EventHandler<SecurityEventArgs> ChangeSecurityPermit;
+        public event EventHandler<SecurityPermitChangedEventArgs> SecurityPermitChanged;
 
         public event EventHandler<ErrorEventArgs> InternalError;
 
         public event EventHandler<LogEventArgs> Logging;
 
+        #endregion << Public Events >>
+
 
         private string GetDefaultClientId()
         {
-            return Clients.Count == 1 ? Clients[0].Id : null;
+            var list = Clients;//thread safe
+            return list.Count == 1 ? list[0].Id : null;
         }
 
         private void OnConnect()
@@ -395,7 +427,7 @@ namespace NXmlConnector
             IsConnected = true;
             try
             {
-                ServerTimeDifference = TimeSpan.FromSeconds(SendCommand(new CommandGetServerTimeDifference()).Difference);
+                TimeDifference = TimeSpan.FromSeconds(SendCommand(new CommandGetServerTimeDifference()).Difference);
             }
             catch (Exception ex)
             {
@@ -445,17 +477,23 @@ namespace NXmlConnector
 
         private void OnCandleKinds(CandleKinds kinds)
         {
-            this.candleKinds.Clear();
-            this.candleKinds.AddRange(kinds.Kinds ?? new CandleKind[0]);
+            lock (candleKinds)
+            {
+                candleKinds.Clear();
+                candleKinds.AddRange(kinds.Kinds ?? new CandleKind[0]);
+            }
         }
 
         private void OnMarkets(Markets markets)
         {
             if (markets.MarketsArray != null)
             {
-                foreach (var market in markets.MarketsArray)
+                lock (this.markets)
                 {
-                    this.markets[market.Id] = market;
+                    foreach (var market in markets.MarketsArray)
+                    {
+                        this.markets[market.Id] = market;
+                    }
                 }
             }
 
@@ -465,17 +503,20 @@ namespace NXmlConnector
 
         private void OnCandles(Candles candles)
         {
-            var ev = RecieveCandles;
-            if (ev != null) ev(this, new CandlesEventArgs(candles));
+            var ev = RecieveHistory;
+            if (ev != null) ev(this, new HistoryEventArgs(candles));
         }
 
         private void OnSecurities(Securities securities)
         {
             if (securities.SecuritiesArray != null)
             {
-                foreach (var security in securities.SecuritiesArray)
+                lock (this.securities)
                 {
-                    this.securities[security.Id] = security;
+                    foreach (var security in securities.SecuritiesArray)
+                    {
+                        this.securities[security.Id] = security;
+                    }
                 }
             }
             var ev = RecieveSecurities;
@@ -495,9 +536,11 @@ namespace NXmlConnector
 
         private void OnClient(Client client)
         {
-            if (client.Remove) clients.Remove(client.Id);
-            else clients[client.Id] = client;
-
+            lock (clients)
+            {
+                if (client.Remove) clients.Remove(client.Id);
+                else clients[client.Id] = client;
+            }
             var ev = RecieveClient;
             if (ev != null) ev(this, new ClientEventArgs(client));
         }
@@ -516,20 +559,38 @@ namespace NXmlConnector
 
         private void OnAllTrades(AllTrades allTrades)
         {
+            foreach (var t in allTrades.TradesArray)
+            {
+                if (!this.allTrades.ContainsKey(t.SecurityId)) this.allTrades[t.SecurityId] = new AllTrade();
+                this.allTrades[t.SecurityId].Update(t);
+            }
+
             var ev = RecieveAllTrades;
-            if (ev != null) ev(this, new AllTradesEventArgs(allTrades.TradesArray));
+            if (ev != null) ev(this, new AllTradesEventArgs(this.allTrades.Values));
         }
 
         private void OnQuotations(Quotations quotations)
         {
+            foreach (var q in quotations.QuotationsArray)
+            {
+                if (!this.quotations.ContainsKey(q.SecurityId)) this.quotations[q.SecurityId] = new Quotation();
+                this.quotations[q.SecurityId].Update(q);
+            }
+
             var ev = RecieveQuotations;
-            if (ev != null) ev(this, new QuotationsEventArgs(quotations.QuotationsArray));
+            if (ev != null) ev(this, new QuotationsEventArgs(this.quotations.Values));
         }
 
         private void OnQuotes(Quotes quotes)
         {
+            foreach (var q in quotes.QuotesArray)
+            {
+                if (!this.quotes.ContainsKey(q.SecurityId)) this.quotes[q.SecurityId] = new Quote();
+                this.quotes[q.SecurityId].Update(q);
+            }
+
             var ev = RecieveQuotes;
-            if (ev != null) ev(this, new QuotesEventArgs(quotes.QuotesArray));
+            if (ev != null) ev(this, new QuotesEventArgs(this.quotes.Values));
         }
 
         private void OnOvernight(Overnight overnight)
@@ -551,12 +612,11 @@ namespace NXmlConnector
 
         private void OnMarketOrd(MarketOrd marketOrd)
         {
-            Security security = null;
-            if (securities.TryGetValue(marketOrd.SecurityId, out security))
+            var security = GetSecurity(marketOrd.SecurityId);
+            if (security != null)
             {
-                security.Permit = marketOrd.permit == YesNo.yes;
-                var ev = ChangeSecurityPermit;
-                if (ev != null) ev(this, new SecurityEventArgs(security));
+                var ev = SecurityPermitChanged;
+                if (ev != null) ev(this, new SecurityPermitChangedEventArgs(security, marketOrd.Permit));
             }
         }
 

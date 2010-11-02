@@ -74,18 +74,6 @@ namespace NXmlConnector.Model
             set;
         }
 
-        [XmlIgnore]
-        public bool Permit
-        {
-            get;
-            set;
-        }
-
-
-        public Security()
-        {
-            Permit = true;
-        }
 
         public override string ToString()
         {

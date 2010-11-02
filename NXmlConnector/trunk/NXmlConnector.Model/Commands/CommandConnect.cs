@@ -79,7 +79,7 @@ namespace NXmlConnector.Model.Commands
             {
                 command.Add(new XElement("proxy",
                     new XAttribute("type", Proxy.ProxyType == ProxyType.HttpConnect ? "HTTP-CONNECT" : Proxy.ProxyType.ToString().ToUpper()),
-                    new XAttribute("addr", Proxy.Address),
+                    new XAttribute("addr", Proxy.Host),
                     new XAttribute("port", Proxy.Port),
                     new XAttribute("login", Proxy.Login),
                     new XAttribute("password", Proxy.Password)));

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPageLog = new System.Windows.Forms.TabPage();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -47,6 +47,12 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageSecurities = new System.Windows.Forms.TabPage();
             this.dataGridViewSecurities = new System.Windows.Forms.DataGridView();
+            this.SecSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.SecCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecMarket = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SecId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.comboBoxKind = new System.Windows.Forms.ComboBox();
@@ -58,20 +64,14 @@
             this.buttonUnsubscribe = new System.Windows.Forms.Button();
             this.buttonSubscribe = new System.Windows.Forms.Button();
             this.tabPageData = new System.Windows.Forms.TabPage();
-            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.columnHeaderQuSec = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.listViewHistory = new System.Windows.Forms.ListView();
             this.columnHeaderHisName = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderHisCount = new System.Windows.Forms.ColumnHeader();
-            this.SecSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.SecCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecMarket = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SecId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.label9 = new System.Windows.Forms.Label();
-            this.columnHeaderQuSec = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.label8 = new System.Windows.Forms.Label();
             this.tabPageLog.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
@@ -90,7 +90,7 @@
             this.tabPageLog.Location = new System.Drawing.Point(4, 22);
             this.tabPageLog.Name = "tabPageLog";
             this.tabPageLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLog.Size = new System.Drawing.Size(762, 444);
+            this.tabPageLog.Size = new System.Drawing.Size(789, 461);
             this.tabPageLog.TabIndex = 1;
             this.tabPageLog.Text = "Лог";
             this.tabPageLog.UseVisualStyleBackColor = true;
@@ -100,7 +100,7 @@
             this.richTextBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxLog.Location = new System.Drawing.Point(3, 3);
             this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(756, 409);
+            this.richTextBoxLog.Size = new System.Drawing.Size(783, 426);
             this.richTextBoxLog.TabIndex = 1;
             this.richTextBoxLog.Text = "";
             // 
@@ -108,9 +108,9 @@
             // 
             this.panel1.Controls.Add(this.buttonClearLog);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 412);
+            this.panel1.Location = new System.Drawing.Point(3, 429);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(756, 29);
+            this.panel1.Size = new System.Drawing.Size(783, 29);
             this.panel1.TabIndex = 0;
             // 
             // buttonClearLog
@@ -138,7 +138,7 @@
             this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
             this.tabPageSettings.Name = "tabPageSettings";
             this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSettings.Size = new System.Drawing.Size(762, 444);
+            this.tabPageSettings.Size = new System.Drawing.Size(789, 461);
             this.tabPageSettings.TabIndex = 0;
             this.tabPageSettings.Text = "Настройки";
             this.tabPageSettings.UseVisualStyleBackColor = true;
@@ -292,6 +292,48 @@
             this.dataGridViewSecurities.Size = new System.Drawing.Size(783, 373);
             this.dataGridViewSecurities.TabIndex = 2;
             // 
+            // SecSelect
+            // 
+            this.SecSelect.HeaderText = "";
+            this.SecSelect.Name = "SecSelect";
+            this.SecSelect.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.SecSelect.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.SecSelect.Width = 30;
+            // 
+            // SecCode
+            // 
+            this.SecCode.HeaderText = "Код";
+            this.SecCode.Name = "SecCode";
+            this.SecCode.ReadOnly = true;
+            this.SecCode.Width = 120;
+            // 
+            // SecName
+            // 
+            this.SecName.HeaderText = "Название";
+            this.SecName.Name = "SecName";
+            this.SecName.ReadOnly = true;
+            this.SecName.Width = 300;
+            // 
+            // SecType
+            // 
+            this.SecType.HeaderText = "Тип";
+            this.SecType.Name = "SecType";
+            this.SecType.ReadOnly = true;
+            // 
+            // SecMarket
+            // 
+            this.SecMarket.HeaderText = "Рынок";
+            this.SecMarket.Name = "SecMarket";
+            this.SecMarket.ReadOnly = true;
+            // 
+            // SecId
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.SecId.DefaultCellStyle = dataGridViewCellStyle1;
+            this.SecId.HeaderText = "Идентификатор";
+            this.SecId.Name = "SecId";
+            this.SecId.ReadOnly = true;
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.label7);
@@ -407,14 +449,29 @@
             this.tabPageData.Text = "Данные";
             this.tabPageData.UseVisualStyleBackColor = true;
             // 
-            // label8
+            // label9
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(8, 3);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(123, 13);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "Исторические данные:";
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(8, 137);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(35, 13);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "label9";
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderQuSec,
+            this.columnHeader1});
+            this.listView1.Location = new System.Drawing.Point(6, 153);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(356, 97);
+            this.listView1.TabIndex = 2;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // columnHeaderQuSec
+            // 
+            this.columnHeaderQuSec.Width = 150;
             // 
             // listViewHistory
             // 
@@ -439,71 +496,14 @@
             this.columnHeaderHisCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.columnHeaderHisCount.Width = 100;
             // 
-            // SecSelect
+            // label8
             // 
-            this.SecSelect.HeaderText = "";
-            this.SecSelect.Name = "SecSelect";
-            this.SecSelect.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SecSelect.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.SecSelect.Width = 30;
-            // 
-            // SecCode
-            // 
-            this.SecCode.HeaderText = "Код";
-            this.SecCode.Name = "SecCode";
-            this.SecCode.ReadOnly = true;
-            this.SecCode.Width = 120;
-            // 
-            // SecName
-            // 
-            this.SecName.HeaderText = "Название";
-            this.SecName.Name = "SecName";
-            this.SecName.ReadOnly = true;
-            this.SecName.Width = 300;
-            // 
-            // SecType
-            // 
-            this.SecType.HeaderText = "Тип";
-            this.SecType.Name = "SecType";
-            this.SecType.ReadOnly = true;
-            // 
-            // SecMarket
-            // 
-            this.SecMarket.HeaderText = "Рынок";
-            this.SecMarket.Name = "SecMarket";
-            this.SecMarket.ReadOnly = true;
-            // 
-            // SecId
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.SecId.DefaultCellStyle = dataGridViewCellStyle2;
-            this.SecId.HeaderText = "Идентификатор";
-            this.SecId.Name = "SecId";
-            this.SecId.ReadOnly = true;
-            // 
-            // listView1
-            // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderQuSec,
-            this.columnHeader1});
-            this.listView1.Location = new System.Drawing.Point(6, 153);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(356, 97);
-            this.listView1.TabIndex = 2;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(8, 137);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(35, 13);
-            this.label9.TabIndex = 3;
-            this.label9.Text = "label9";
-            // 
-            // columnHeaderQuSec
-            // 
-            this.columnHeaderQuSec.Width = 150;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(8, 3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(53, 13);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "История:";
             // 
             // MainForm
             // 
