@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using System.Collections;
-using Microsoft.Build.Framework;
 
 namespace Ntlx.MSBuild.Tasks
 {
@@ -73,9 +69,75 @@ namespace Ntlx.MSBuild.Tasks
             set;
         }
 
+        public int Subsystem
+        {
+            get;
+            set;
+        }
+
+        public int Flags
+        {
+            get;
+            set;
+        }
+
+        public int Alignment
+        {
+            get;
+            set;
+        }
+
+        public int Base
+        {
+            get;
+            set;
+        }
+
+        public int Stack
+        {
+            get;
+            set;
+        }
+
+        public string MDV
+        {
+            get;
+            set;
+        }
+
+        public string MSV
+        {
+            get;
+            set;
+        }
+
+        public bool NoCorStub
+        {
+            get;
+            set;
+        }
+
+        public bool StripReloc
+        {
+            get;
+            set;
+        }
+
+        public string Platform
+        {
+            get;
+            set;
+        }
+
+        public ITaskItem Source
+        {
+            get;
+            set;
+        }
+
         protected override string ToolName
         {
-            get { return "ILAsm.exe"; }
+            get { return "ilasm.exe"; }
         }
 
         protected override string GenerateFullPathToTool()
@@ -85,36 +147,40 @@ namespace Ntlx.MSBuild.Tasks
 
         protected override string GenerateCommandLineCommands()
         {
-            CommandLineBuilder builder = new CommandLineBuilder();
-            /*
-            // We don't need the tool's logo information shown
+            var builder = new CommandLineBuilder();
+
             builder.AppendSwitch("/nologo");
+            builder.AppendSwitch("/quiet");
 
-            string targetType = Bag["TargetType"] as string;
-            // Be explicit with our switches
-            if (targetType != null)
-            {
-                if (String.Compare(targetType, "DLL", true) == 0)
-                {
-                    builder.AppendSwitch("/DLL");
-                }
-                else if (String.Compare(targetType, "EXE", true) == 0)
-                {
-                    builder.AppendSwitch("/EXE");
-                }
-                else
-                {
-                    Log.LogWarning("Invalid TargetType (valid values are DLL and EXE) specified: {0}", targetType);
-                }                
-            }
+            if (NoAutoInherit) builder.AppendSwitch("/noautoinherit");
+            if (CreatePdb) builder.AppendSwitch("/pdb");
+            if (Optimize) builder.AppendSwitch("/optimize");
+            if (Fold) builder.AppendSwitch("/fold");
+            if (NoCorStub) builder.AppendSwitch("/nocorstub");
+            if (StripReloc) builder.AppendSwitch("/stripreloc");
 
-            // Add the filename that we want the tool to process
-            builder.AppendFileNameIfNotNull(Bag["Source"] as ITaskItem);
+            if (string.Compare(OutputType, "library", true) == 0) builder.AppendSwitch("/dll");
+            if (string.Compare(OutputType, "exe", true) == 0 || string.Compare(OutputType, "winexe", true) == 0) builder.AppendSwitch("/exe");
+            if (Debug == string.Empty) builder.AppendSwitch("/debug");
+            else if (Debug != null) builder.AppendSwitch("/debug=" + Debug.ToLower());
+            if (Resource != null) builder.AppendSwitch("/resource=" + Resource);
+            if (Output != null) builder.AppendSwitch("/output=" + Output);
+            if (Key != null) builder.AppendSwitch("/key=" + Key);
+            if (Include != null) builder.AppendSwitch("/include=" + Include);
+            if (MDV != null) builder.AppendSwitch("/mdv=" + MDV);
+            if (MSV != null) builder.AppendSwitch("/msv=" + MSV);
+            if (string.Compare(Platform, "x64") == 0) builder.AppendSwitch("/x64");
+            if (string.Compare(Platform, "itanium") == 0) builder.AppendSwitch("/itanium");
 
-            // Log a High importance message stating the file that we are assembling
-            Log.LogMessage(MessageImportance.High, "Assembling {0}", Bag["Source"]);
-            */
-            // We have all of our switches added, return the commandline as a string
+            if (Subsystem != 0) builder.AppendSwitch("/subsystem=" + Subsystem);
+            if (Flags != 0) builder.AppendSwitch("/flags=" + Flags);
+            if (Alignment != 0) builder.AppendSwitch("/alignment=" + Alignment);
+            if (Base != 0) builder.AppendSwitch("/base=" + Base);
+            if (Stack != 0) builder.AppendSwitch("/stack=" + Stack);
+
+            builder.AppendFileNameIfNotNull(Source);
+
+            Log.LogMessage(MessageImportance.High, "Assembling {0}", Source);
             return builder.ToString();
         }
     }
