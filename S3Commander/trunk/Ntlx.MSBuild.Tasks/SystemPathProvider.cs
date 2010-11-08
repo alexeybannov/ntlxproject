@@ -19,7 +19,7 @@ namespace Ntlx.MSBuild.Tasks
 			get { return RuntimeEnvironment.GetRuntimeDirectory(); }
 		}
 
-		public static string MicrosoftSdkPath
+		public static string FrameworkSdkPath
 		{
 			get
 			{
@@ -30,6 +30,7 @@ namespace Ntlx.MSBuild.Tasks
 					{
 						var location = key.GetValue("CurrentInstallFolder");
 						if (location != null) sdkLocation = Path.Combine(location.ToString(), "Bin");
+                        key.Close();
 					}
 				}
 				return sdkLocation;

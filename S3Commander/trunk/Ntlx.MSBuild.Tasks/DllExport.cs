@@ -77,7 +77,7 @@ namespace Ntlx.MSBuild.Tasks
 
         private string ExecuteIldasm()
         {
-            var ildasm = Path.Combine(SystemPathProvider.MicrosoftSdkPath, "ildasm.exe");
+            var ildasm = Path.Combine(SystemPathProvider.FrameworkSdkPath, "ildasm.exe");
             var ilFile = Path.GetTempFileName();
             var args = new StringBuilder()
                 .AppendFormat("\"{0}\"", Assembly)

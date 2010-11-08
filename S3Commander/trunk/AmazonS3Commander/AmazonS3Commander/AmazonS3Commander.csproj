@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD4B9C54-0F60-4AC8-984F-C83BF68B1CB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -157,12 +157,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Buckets\NewBucketForm.resx">
       <DependentUpon>NewBucketForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SecurityAddForm.resx">
       <DependentUpon>SecurityAddForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SecurityEditor.resx">
       <DependentUpon>SecurityEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HttpHeaderForm.resx">
       <DependentUpon>HttpHeaderForm.cs</DependentUpon>
@@ -170,13 +172,16 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HttpHeadersEditor.resx">
       <DependentUpon>HttpHeadersEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Files\EntryForm.resx">
       <DependentUpon>EntryForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\RS.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>

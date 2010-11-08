@@ -5,16 +5,36 @@ namespace Ntlx.MSBuild.Tasks
 {
     public class ILAsm : ToolTask
     {
-        /// <summary>
-        /// Disable inheriting from System.Object by default.
-        /// </summary>
-        public bool NoAutoInherit
+        [Required]
+        public ITaskItem Source
+        {
+            get;
+            set;
+        }
+
+        public string Resource
+        {
+            get;
+            set;
+        }
+
+        [Output, Required]
+        public string Output
         {
             get;
             set;
         }
 
         public string OutputType
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// Disable inheriting from System.Object by default.
+        /// </summary>
+        public bool NoAutoInherit
         {
             get;
             set;
@@ -39,19 +59,6 @@ namespace Ntlx.MSBuild.Tasks
         }
 
         public bool Fold
-        {
-            get;
-            set;
-        }
-
-        public string Resource
-        {
-            get;
-            set;
-        }
-
-        [Output]
-        public string Output
         {
             get;
             set;
@@ -129,12 +136,6 @@ namespace Ntlx.MSBuild.Tasks
             set;
         }
 
-        public ITaskItem Source
-        {
-            get;
-            set;
-        }
-
         protected override string ToolName
         {
             get { return "ilasm.exe"; }
@@ -152,6 +153,12 @@ namespace Ntlx.MSBuild.Tasks
             builder.AppendSwitch("/nologo");
             builder.AppendSwitch("/quiet");
 
+            builder.AppendFileNameIfNotNull(Source);
+            if (Resource != null) builder.AppendSwitch("/resource=\"" + Resource + "\"");
+
+            if (Output != null) builder.AppendSwitch("/output=\"" + Output + "\"");
+            if (string.Compare(OutputType, "library", true) == 0) builder.AppendSwitch("/dll");
+
             if (NoAutoInherit) builder.AppendSwitch("/noautoinherit");
             if (CreatePdb) builder.AppendSwitch("/pdb");
             if (Optimize) builder.AppendSwitch("/optimize");
@@ -159,12 +166,8 @@ namespace Ntlx.MSBuild.Tasks
             if (NoCorStub) builder.AppendSwitch("/nocorstub");
             if (StripReloc) builder.AppendSwitch("/stripreloc");
 
-            if (string.Compare(OutputType, "library", true) == 0) builder.AppendSwitch("/dll");
-            if (string.Compare(OutputType, "exe", true) == 0 || string.Compare(OutputType, "winexe", true) == 0) builder.AppendSwitch("/exe");
             if (Debug == string.Empty) builder.AppendSwitch("/debug");
             else if (Debug != null) builder.AppendSwitch("/debug=" + Debug.ToLower());
-            if (Resource != null) builder.AppendSwitch("/resource=" + Resource);
-            if (Output != null) builder.AppendSwitch("/output=" + Output);
             if (Key != null) builder.AppendSwitch("/key=" + Key);
             if (Include != null) builder.AppendSwitch("/include=" + Include);
             if (MDV != null) builder.AppendSwitch("/mdv=" + MDV);
@@ -178,9 +181,7 @@ namespace Ntlx.MSBuild.Tasks
             if (Base != 0) builder.AppendSwitch("/base=" + Base);
             if (Stack != 0) builder.AppendSwitch("/stack=" + Stack);
 
-            builder.AppendFileNameIfNotNull(Source);
-
-            Log.LogMessage(MessageImportance.High, "Assembling {0}", Source);
+            Log.LogMessage(MessageImportance.High, "Assembling {0}...", Source);
             return builder.ToString();
         }
     }
