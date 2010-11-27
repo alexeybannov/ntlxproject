@@ -46,8 +46,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <UsingTask TaskName="Ntlx.MSBuild.Tasks.DllExport" AssemblyFile="..\..\Ref\Ntlx.MSBuild.Tasks.dll" />
-  <Target Name="AfterBuild">
-    <DllExport Assembly="$(TargetPath)" OutputType="$(OutputType)" />
-  </Target>
 </Project>
