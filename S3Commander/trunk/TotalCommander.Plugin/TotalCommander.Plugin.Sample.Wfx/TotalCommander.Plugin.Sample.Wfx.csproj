@@ -40,21 +40,18 @@
       <HintPath>..\..\Ref\NI.Vfs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="TotalCommander.Plugin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\TotalCommander.Plugin.dll</HintPath>
+    </Reference>
+    <Reference Include="TotalCommander.Plugin.Exports, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\TotalCommander.Plugin.Exports.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HelloWorldWfxPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TotalCommander.Plugin.Wfx\TotalCommander.Plugin.Wfx.csproj">
-      <Project>{A24CE8D3-DA5E-42DD-83D9-064F706CC01F}</Project>
-      <Name>TotalCommander.Plugin.Wfx</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TotalCommander.Plugin\TotalCommander.Plugin.csproj">
-      <Project>{5A4C0890-6532-4B1D-9A32-977ECB568A5E}</Project>
-      <Name>TotalCommander.Plugin</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Build\TotalCommander.Plugin.targets" />
