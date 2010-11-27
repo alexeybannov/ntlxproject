@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <BuildDir>..\Build\</BuildDir>
+  </PropertyGroup>
+  
+  <UsingTask TaskName="TotalCommander.Plugin.Tasks.DllExport" AssemblyFile="$(BuildDir)TotalCommander.Plugin.Tasks.dll"/>
+  <UsingTask TaskName="TotalCommander.Plugin.Tasks.ILDasm" AssemblyFile="$(BuildDir)TotalCommander.Plugin.Tasks.dll"/>
+  <UsingTask TaskName="TotalCommander.Plugin.Tasks.ILAsm" AssemblyFile="$(BuildDir)TotalCommander.Plugin.Tasks.dll"/>
+
+  <Target Name="Build">
+    <ILDasm Source="$(BuildDir)TotalCommander.Plugin.Tasks.dll" OutputIL="$(BuildDir)TotalCommander.Plugin.Tasks.il">
+      <Output TaskParameter="OutputIL" PropertyName="OutputIL"/>
+      <Output TaskParameter="OutputRes" PropertyName="OutputRes"/>
+    </ILDasm>
+    
+    <DllExport Source="$(OutputIL)" />
+    
+    <ILAsm Source="$(OutputIL)" Resource="$(OutputRes)" Output="$(BuildDir)TotalCommander.Plugin.Tasks2.dll" OutputType="Library" />
+  </Target>
+</Project>

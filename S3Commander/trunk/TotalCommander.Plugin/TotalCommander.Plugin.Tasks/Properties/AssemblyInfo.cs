@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Ntlx.MSBuild.Tasks")]
+[assembly: AssemblyTitle("TotalCommander.Plugin.Tasks")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Home")]
-[assembly: AssemblyProduct("Ntlx.MSBuild.Tasks")]
-[assembly: AssemblyCopyright("Copyright © Home 2010")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("TotalCommander.Plugin.Tasks")]
+[assembly: AssemblyCopyright("Copyright ©  2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("394c2d11-9f48-47a5-84a9-50c05c5b66a6")]
+[assembly: Guid("5764cd0c-3b35-4aca-aff2-2cbf144cdd8f")]
 
 // Version information for an assembly consists of the following four values:
 //

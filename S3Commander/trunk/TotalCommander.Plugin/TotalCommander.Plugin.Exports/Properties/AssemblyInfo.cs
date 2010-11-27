@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyProduct("TotalCommander.Plugin.Wfx")]
+[assembly: AssemblyProduct("TotalCommander.Plugin.Exports")]
 [assembly: AssemblyTitle("C# SDK for Total Commander Plugins.")]
 [assembly: AssemblyCopyright("© Ivanov Nikolay 2010")]
 

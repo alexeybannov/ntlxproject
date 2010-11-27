@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="TotalCommander.Plugin.Tasks.DllExport" AssemblyFile="TotalCommander.Plugin.Tasks.dll"/>
+  <UsingTask TaskName="TotalCommander.Plugin.Tasks.ILDasm" AssemblyFile="TotalCommander.Plugin.Tasks.dll"/>
+  <UsingTask TaskName="TotalCommander.Plugin.Tasks.ILAsm" AssemblyFile="TotalCommander.Plugin.Tasks.dll"/>
+
+  
+  <Target Name="GenerateExports">
+  
+    <CreateProperty Value="Wfx">
+      <Output PropertyName="PluginType" TaskParameter="Value"/>
+    </CreateProperty>
+
+    <ILDasm Source="$(TargetDir)TotalCommander.Plugin.Exports.dll" OutputIL="$(TargetDir)TotalCommander.Plugin.Exports.$(PluginType).il" Item="TotalCommander.Plugin.Exports.$(PluginType)">
+      <Output TaskParameter="OutputIL" PropertyName="OutputIL"/>
+      <Output TaskParameter="OutputRes" PropertyName="OutputRes"/>
+    </ILDasm>
+
+    <DllExport Source="$(OutputIL)" />
+
+    <ILAsm Source="$(OutputIL)" Resource="$(OutputRes)" Output="$(TargetDir)$(TargetName).$(PluginType)" OutputType="$(OutputType)" />
+  
+  </Target>
+
+</Project>

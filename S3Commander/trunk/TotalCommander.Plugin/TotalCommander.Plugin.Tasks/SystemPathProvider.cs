@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
-namespace Ntlx.MSBuild.Tasks
+namespace TotalCommander.Plugin.Tasks
 {
 	static class SystemPathProvider
 	{

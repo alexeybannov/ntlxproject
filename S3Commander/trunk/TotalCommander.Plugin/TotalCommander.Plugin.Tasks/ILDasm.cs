@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace Ntlx.MSBuild.Tasks
+namespace TotalCommander.Plugin.Tasks
 {
     public class ILDasm : ToolTask
     {

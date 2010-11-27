@@ -3,11 +3,12 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using TotalCommander.Plugin.Wfx;
 using FileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 
-namespace TotalCommander.Plugin.Wfx
+namespace TotalCommander.Plugin.Exports
 {
-    static class WfxExport
+    static class Wfx
     {
         private static ProgressProc progressProc;
         private static LogProc logProc;
@@ -15,7 +16,7 @@ namespace TotalCommander.Plugin.Wfx
         private static CryptProc cryptProc;
 
 
-        static WfxExport()
+        static Wfx()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
         }
