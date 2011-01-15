@@ -1,0 +1,1 @@
+namespace ASC.Runtime.Remoting.Channels.Tcp{    using System;    enum QueuedMessageState    {        NotSent,        Sent,        Received    }}

@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Module_Description" xml:space="preserve">
+    <value>Kernel module provides access to users, groups and permissions.</value>
+  </data>
+  <data name="Module_Name" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="ModulePart_Common_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ModulePart_Common_Name" xml:space="preserve">
+    <value>Module users common part</value>
+  </data>
+  <data name="ModulePart_Services_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ModulePart_Services_Name" xml:space="preserve">
+    <value>Users service</value>
+  </data>
+  <data name="ServiceDescription_UserManager" xml:space="preserve">
+    <value>Users service</value>
+  </data>
+  <data name="ServiceDescription_GroupManager" xml:space="preserve">
+    <value>Groups service</value>
+  </data>
+  <data name="ServiceDescription_AuthorizationManager" xml:space="preserve">
+    <value>Authorization service</value>
+  </data>
+  <data name="ServiceName_UserManager" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="ServiceName_GroupManager" xml:space="preserve">
+    <value>Groups</value>
+  </data>
+  <data name="ServiceName_AuthorizationManager" xml:space="preserve">
+    <value>AuthorizationManager</value>
+  </data>
+  <data name="UserNotFoundException_Message" xml:space="preserve">
+    <value>User {0} not found</value>
+  </data>
+  <data name="UserStaleException_Message" xml:space="preserve">
+    <value>User information is outdated</value>
+  </data>
+  <data name="GCNotFoundException_Message" xml:space="preserve">
+    <value>Category group {0} not found</value>
+  </data>
+  <data name="OODCException_Message" xml:space="preserve">
+    <value>Main groups category not found</value>
+  </data>
+  <data name="GroupNotFoundException_Message" xml:space="preserve">
+    <value>Group {0} not found</value>
+  </data>
+  <data name="UserAllreadyInGroupException_Message" xml:space="preserve">
+    <value>User {0} already in group {1}</value>
+  </data>
+  <data name="UserAllreadyInGroupException_Message_Logical" xml:space="preserve">
+    <value>Category groups "{0}" is a logical, so the user "{1}" can belong to only one, but he is already in group "{2}"</value>
+  </data>
+  <data name="GroupNotEmptyException_Message" xml:space="preserve">
+    <value>Group not empty</value>
+  </data>
+  <data name="AzCategoryNotFoundException_Message" xml:space="preserve">
+    <value>Category action {0} not found</value>
+  </data>
+  <data name="AzActionNotFoundException_Message" xml:space="preserve">
+    <value>Action {0} not found</value>
+  </data>
+  <data name="Action_EditUser_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Action_EditUser_Name" xml:space="preserve">
+    <value>Edit user information</value>
+  </data>
+  <data name="AuthCategory_GroupUsers_Description" xml:space="preserve">
+    <value>Users and groups category actions</value>
+  </data>
+  <data name="AuthCategory_GroupUsers_Name" xml:space="preserve">
+    <value>Users and groups</value>
+  </data>
+  <data name="Action_EditGroups_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Action_EditGroups_Name" xml:space="preserve">
+    <value>Edit categories and groups</value>
+  </data>
+  <data name="Action_EditAz_Description" xml:space="preserve">
+    <value>Edit permissions and roles</value>
+  </data>
+  <data name="Action_EditAz_Name" xml:space="preserve">
+    <value>Edit permissions</value>
+  </data>
+  <data name="AuthCategory_Az_Description" xml:space="preserve">
+    <value>Setting user privileges and roles</value>
+  </data>
+  <data name="AuthCategory_Az_Name" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="ServiceDescription_SubscriptionManager" xml:space="preserve">
+    <value>Subscription manager</value>
+  </data>
+  <data name="ServiceName_SubscriptionManager" xml:space="preserve">
+    <value>SubscriptionManager</value>
+  </data>
+  <data name="Action_AddRemoveUser_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Action_AddRemoveUser_Name" xml:space="preserve">
+    <value>Add/Remove user.</value>
+  </data>
+</root>

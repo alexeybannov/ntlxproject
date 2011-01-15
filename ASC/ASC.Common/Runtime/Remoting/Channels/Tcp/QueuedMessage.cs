@@ -1,0 +1,1 @@
+namespace ASC.Runtime.Remoting.Channels.Tcp{    using System;    using System.IO;    class QueuedMessage    {        public System.IO.MemoryStream MemoryStream;        public ASC.Runtime.Remoting.Channels.Tcp.QueuedMessageState QueuedMessageState = ASC.Runtime.Remoting.Channels.Tcp.QueuedMessageState.NotSent;    }}
