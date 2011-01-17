@@ -55,12 +55,12 @@ namespace ASC.Core.Data
             }
         }
 
-        protected void ExecBatch(Action<DbManager> batch)
+        protected void ExecAction(Action<DbManager> action)
         {
             using (var db = new DbManager(dbid))
             using (var tx = db.BeginTransaction())
             {
-                batch(db);
+                action(db);
                 tx.Commit();
             }
         }

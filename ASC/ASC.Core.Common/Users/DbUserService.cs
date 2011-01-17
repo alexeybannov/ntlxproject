@@ -20,11 +20,6 @@ namespace ASC.Core
         }
 
 
-        public List<User> GetUsers(int tenant)
-        {
-            return GetUsers(tenant, default(DateTime));
-        }
-
         public List<User> GetUsers(int tenant, DateTime from)
         {
             return ExecList(GetUserQuery(tenant, from))
@@ -93,11 +88,6 @@ namespace ASC.Core
         }
 
 
-        public List<Group> GetGroups(int tenant)
-        {
-            return GetGroups(tenant, default(DateTime));
-        }
-
         public List<Group> GetGroups(int tenant, DateTime from)
         {
             return ExecList(GetGroupQuery(tenant, from))
@@ -149,11 +139,6 @@ namespace ASC.Core
             ExecBatch(batch);
         }
 
-
-        public List<UserGroupRef> GetUserGroupRefs(int tenant)
-        {
-            return GetUserGroupRefs(tenant, default(DateTime));
-        }
 
         public List<UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
