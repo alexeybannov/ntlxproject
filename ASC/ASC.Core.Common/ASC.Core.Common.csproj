@@ -110,10 +110,11 @@
     <Compile Include="Context\SecurityContext.cs" />
     <Compile Include="Context\ClientImpl\ClientUserManager.cs" />
     <Compile Include="Data\DbBaseService.cs" />
+    <Compile Include="Users\CachedUserService.cs" />
+    <Compile Include="Users\IUserService.cs" />
     <Compile Include="Users\UserGroupRefType.cs" />
     <Compile Include="Users\DbUserService.cs" />
     <Compile Include="Users\Group.cs" />
-    <Compile Include="Contract\IUserService.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserGroupRef.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\CoreAddressResolver.cs" />

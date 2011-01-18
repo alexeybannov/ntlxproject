@@ -8,7 +8,7 @@ using ASC.Core.Data;
 
 namespace ASC.Core
 {
-    public class DbUserService : DbBaseService
+    public class DbUserService : DbBaseService, IUserService
     {
         private readonly string tenantColumn = "tenant";
 
@@ -20,7 +20,7 @@ namespace ASC.Core
         }
 
 
-        public List<User> GetUsers(int tenant, DateTime from)
+        public IEnumerable<User> GetUsers(int tenant, DateTime from)
         {
             return ExecList(GetUserQuery(tenant, from))
                 .ConvertAll(r => ToUser(r));
@@ -84,11 +84,12 @@ namespace ASC.Core
 
         public byte[] GetUserPhoto(int tenant, Guid id)
         {
-            return ExecScalar<byte[]>(new SqlQuery("core_userphoto").Select("photo").Where("userid", id.ToString()).Where(tenantColumn, tenant));
+            var photo = ExecScalar<byte[]>(new SqlQuery("core_userphoto").Select("photo").Where("userid", id.ToString()).Where(tenantColumn, tenant));
+            return photo ?? new byte[0];
         }
 
 
-        public List<Group> GetGroups(int tenant, DateTime from)
+        public IEnumerable<Group> GetGroups(int tenant, DateTime from)
         {
             return ExecList(GetGroupQuery(tenant, from))
                 .ConvertAll(r => ToGroup(r));
@@ -140,7 +141,7 @@ namespace ASC.Core
         }
 
 
-        public List<UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
+        public IEnumerable<UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
             return ExecList(GetUserGroupRefQuery(tenant, default(DateTime)))
                 .ConvertAll(r => ToUserGroupRef(r));
