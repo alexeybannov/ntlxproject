@@ -33,7 +33,13 @@ namespace ASC.Core
             get;
             set;
         }
-        
+
+        public DateTime ModifiedOn
+        {
+            get;
+            set;
+        }
+
 
         public override string ToString()
         {

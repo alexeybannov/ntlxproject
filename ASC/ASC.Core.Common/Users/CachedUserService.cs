@@ -6,9 +6,9 @@ using System.Web.Caching;
 
 namespace ASC.Core
 {
-    public class CachedUserService
+    public class CachedUserService : IUserService
     {
-        private DbUserService userService;
+        private IUserService userService;
         private Cache cache;
 
         private TimeSpan period = TimeSpan.FromSeconds(5);
@@ -22,7 +22,7 @@ namespace ASC.Core
         }
 
 
-        public IEnumerable<User> GetUsers(int tenant)
+        public IEnumerable<User> GetUsers(int tenant, DateTime from)
         {
             lock (cache)
             {

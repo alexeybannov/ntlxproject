@@ -100,6 +100,12 @@ namespace ASC.Core
             set;
         }
 
+        public DateTime ModifiedOn
+        {
+            get;
+            set;
+        }
+
 
         public override string ToString()
         {

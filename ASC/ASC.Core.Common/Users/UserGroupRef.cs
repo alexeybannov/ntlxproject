@@ -24,6 +24,12 @@ namespace ASC.Core
             set;
         }
 
+        public DateTime ModifiedOn
+        {
+            get;
+            set;
+        }
+        
         public UserGroupRefType RefType
         {
             get;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
+using System.Data;
 
 namespace ASC.Core.Data
 {
@@ -55,12 +56,12 @@ namespace ASC.Core.Data
             }
         }
 
-        protected void ExecAction(Action<DbManager> action)
+        protected void ExecAction(Action<DbManager, IDbTransaction> action)
         {
             using (var db = new DbManager(dbid))
             using (var tx = db.BeginTransaction())
             {
-                action(db);
+                action(db, tx);
                 tx.Commit();
             }
         }
