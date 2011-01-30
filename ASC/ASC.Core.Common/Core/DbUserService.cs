@@ -28,6 +28,12 @@ namespace ASC.Core
             return ExecList(q).ConvertAll(r => ToUser(r));
         }
 
+        public User GetUser(int tenant, Guid id)
+        {
+            var q = GetUserQuery(tenant, default(DateTime)).Where("id", id);
+            return ExecList(q).ConvertAll(r => ToUser(r)).SingleOrDefault();
+        }
+
         public User SaveUser(int tenant, User user)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -62,6 +68,7 @@ namespace ASC.Core
                         .InColumnValue("removed", user.Removed)
                         .InColumnValue("last_modified", DateTime.UtcNow)
                         .InColumnValue(tenantColumn, tenant);
+                    db.ExecuteNonQuery(i);
                 }
                 else
                 {
@@ -84,8 +91,13 @@ namespace ASC.Core
                         .Set("last_modified", DateTime.UtcNow)
                         .Where(tenantColumn, tenant)
                         .Where("id", user.Id.ToString());
+                    db.ExecuteNonQuery(i);
+
+                    if (user.Removed)
+                    {
+                        db.ExecuteNonQuery(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where("user_id", user.Id));
+                    }
                 }
-                db.ExecuteNonQuery(i);
             };
 
             ExecAction(a);
@@ -130,6 +142,12 @@ namespace ASC.Core
             return ExecList(q).ConvertAll(r => ToGroup(r));
         }
 
+        public Group GetGroup(int tenant, Guid id)
+        {
+            var q = GetGroupQuery(tenant, default(DateTime)).Where("id", id);
+            return ExecList(q).ConvertAll(r => ToGroup(r)).SingleOrDefault();
+        }
+
         public Group SaveGroup(int tenant, Group group)
         {
             if (group == null) throw new ArgumentNullException("user");
@@ -149,7 +167,8 @@ namespace ASC.Core
             {
                 var ids = CollectGroupChilds(tenant, group.Id.ToString());
                 batch.Add(Update("core_group", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(Exp.In("id", ids)));
-                batch.Add(SetDepartmentNullUpdate(tenant, ids));
+                batch.Add(UserDepartmentToNull(tenant, ids));
+                batch.Add(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(Exp.In("group_id", ids)));
             }
 
             ExecBatch(batch);
@@ -165,7 +184,7 @@ namespace ASC.Core
             batch.Add(Delete("core_acl", tenant).Where(Exp.In("subject", ids)));
             batch.Add(Delete("core_subscription", tenant).Where(Exp.In("recipient", ids)));
             batch.Add(Delete("core_subscriptionmethod", tenant).Where(Exp.In("recipient", ids)));
-            batch.Add(SetDepartmentNullUpdate(tenant, ids));
+            batch.Add(UserDepartmentToNull(tenant, ids));
             batch.Add(Delete("core_usergroup", tenant).Where(Exp.In("groupid", ids)));
             batch.Add(Delete("core_group", tenant).Where(Exp.In("id", ids)));
 
@@ -274,13 +293,12 @@ namespace ASC.Core
             return result.Distinct().ToList();
         }
 
-        private SqlUpdate SetDepartmentNullUpdate(int tenant, List<string> groups)
+        private SqlUpdate UserDepartmentToNull(int tenant, List<string> groups)
         {
-            var users = Query("core_usergroup", tenant).Select("userid").Where(Exp.In("groupid", groups));
-            return Update("core_user", tenant)
+            return Update("core_user u", tenant)
                 .Set("department", null)
                 .Set("last_modified", DateTime.UtcNow)
-                .Where(Exp.In("id", users));
+                .Where(Exp.In("id", Query("core_usergroup r", tenant).Select("userid").Where(Exp.In("groupid", groups))));
         }
 
 
@@ -306,22 +324,28 @@ namespace ASC.Core
 
         private SqlQuery Query(string table, int tenant)
         {
-            return new SqlQuery(table).Where(tenantColumn, tenant);
+            return new SqlQuery(table).Where(GetTenantColumnName(table), tenant);
         }
 
         private SqlUpdate Update(string table, int tenant)
         {
-            return new SqlUpdate(table).Where(tenantColumn, tenant);
+            return new SqlUpdate(table).Where(GetTenantColumnName(table), tenant);
         }
 
         private SqlInsert Insert(string table, int tenant)
         {
-            return new SqlInsert(table, true).InColumnValue(tenantColumn, tenant);
+            return new SqlInsert(table, true).InColumnValue(GetTenantColumnName(table), tenant);
         }
 
         private SqlDelete Delete(string table, int tenant)
         {
-            return new SqlDelete(table).Where(tenantColumn, tenant);
+            return new SqlDelete(table).Where(GetTenantColumnName(table), tenant);
+        }
+
+        private string GetTenantColumnName(string table)
+        {
+            var pos = table.LastIndexOf(' ');
+            return (0 < pos ? table.Substring(pos).Trim() + '.' : string.Empty) + tenantColumn;
         }
     }
 }

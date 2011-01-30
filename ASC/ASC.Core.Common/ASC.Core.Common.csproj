@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A51D0454-4AFA-46DE-89D4-B03D37E1816C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -109,14 +109,16 @@
     <Compile Include="Context\Lazy.cs" />
     <Compile Include="Context\SecurityContext.cs" />
     <Compile Include="Context\ClientImpl\ClientUserManager.cs" />
+    <Compile Include="Core\CacheHelper.cs" />
+    <Compile Include="Core\CacheItem.cs" />
     <Compile Include="Data\DbBaseService.cs" />
-    <Compile Include="Users\CachedUserService.cs" />
-    <Compile Include="Users\IUserService.cs" />
-    <Compile Include="Users\UserGroupRefType.cs" />
-    <Compile Include="Users\DbUserService.cs" />
-    <Compile Include="Users\Group.cs" />
-    <Compile Include="Users\User.cs" />
-    <Compile Include="Users\UserGroupRef.cs" />
+    <Compile Include="Core\CachedUserService.cs" />
+    <Compile Include="Core\IUserService.cs" />
+    <Compile Include="Core\UserGroupRefType.cs" />
+    <Compile Include="Core\DbUserService.cs" />
+    <Compile Include="Core\Group.cs" />
+    <Compile Include="Core\User.cs" />
+    <Compile Include="Core\UserGroupRef.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\CoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\FixedCoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\ICoreAddressResolver.cs" />

@@ -7,6 +7,8 @@ namespace ASC.Core
     {
         IEnumerable<User> GetUsers(int tenant, DateTime from);
 
+        User GetUser(int tenant, Guid id);
+
         User SaveUser(int tenant, User user);
 
         void RemoveUser(int tenant, Guid id);
@@ -17,6 +19,8 @@ namespace ASC.Core
 
 
         IEnumerable<Group> GetGroups(int tenant, DateTime from);
+
+        Group GetGroup(int tenant, Guid id);
 
         Group SaveGroup(int tenant, Group group);
 
