@@ -154,6 +154,7 @@ namespace ASC.Core
             if (group.Id == default(Guid)) group.Id = Guid.NewGuid();
 
             var batch = new List<ISqlInstruction>();
+
             var i = Insert("core_user", tenant)
                 .InColumnValue("id", group.Id.ToString())
                 .InColumnValue("name", group.Name)
@@ -161,8 +162,8 @@ namespace ASC.Core
                 .InColumnValue("categoryid", group.CategoryId.ToString())
                 .InColumnValue("removed", group.Removed)
                 .InColumnValue("last_modified", DateTime.UtcNow);
-
             batch.Add(i);
+
             if (group.Removed)
             {
                 var ids = CollectGroupChilds(tenant, group.Id.ToString());
