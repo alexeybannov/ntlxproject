@@ -7,17 +7,18 @@ namespace ASC.Core
 {
     class Crypto
     {
-        static byte[] GetSK1(bool rewrite) 
+        static byte[] GetSK1(bool rewrite)
         {
             return GetSK(rewrite.GetType().Name.Length);
         }
 
         static byte[] GetSK2(bool rewrite)
         {
-            return GetSK(rewrite.GetType().Name.Length*2);
+            return GetSK(rewrite.GetType().Name.Length * 2);
         }
 
-        static byte[] GetSK(int seed) {
+        static byte[] GetSK(int seed)
+        {
             var random = new Random(seed);
             var randomKey = new byte[32];
             for (int i = 0; i < randomKey.Length; i++)
@@ -99,6 +100,15 @@ namespace ASC.Core
             }
 
             return result;
+        }
+
+        public static string GeneratePassword(int length)
+        {
+            var noise = "1234567890mnbasdflkjqwerpoiqweyuvcxnzhdkqpsdk";
+            var random = new Random();
+            var pwd = string.Empty;
+            while (0 < length--) pwd += noise[random.Next(noise.Length)];
+            return pwd;
         }
     }
 }

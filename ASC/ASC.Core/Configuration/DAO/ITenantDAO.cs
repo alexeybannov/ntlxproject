@@ -21,13 +21,6 @@ namespace ASC.Core.Configuration.DAO
 		void RemoveTenant(int tenantId);
 
 
-		string SaveTenantInterim(TenantRegistrationInfo registrationInfo);
-
-		TenantRegistrationInfo GetTenantInterim(string tenantInterimKey);
-
-		void InitializeTemplateData(int tenant, Guid user, string[] sqlInstructions);
-
-
         List<TenantOwner> GetTenantOwners();
         
 		TenantOwner GetTenantOwner(Guid ownerId);

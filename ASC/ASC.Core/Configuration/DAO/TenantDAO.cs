@@ -97,29 +97,53 @@ namespace ASC.Core.Configuration.DAO
                 if (t.TenantId == -1)
                 {
                     CheckTenantAlias(dbManager, t.TenantAlias);
-                    t.TenantId = dbManager.ExecuteScalar<int>(
-                        new SqlInsert(table)
-                        .InColumns(columns)
-                        .Values(
-                            t.TenantId,
-                            t.TenantAlias,
-                            t.Language,
-                            t.TimeZone.Id,
-                            t.Name ?? t.TenantAlias,
-                            t.Tagline,
-                            t.Description,
-                            t.Keywords,
-                            t.Country,
-                            t.Address,
-                            t.GetTrustedDomains(),
-                            t.TrustedDomainsEnabled,
-                            t.OwnerId.ToString(),
-                            t.CreatedDateTime,
-                            t.MappedDomain,
-                            t.Status,
-                            t.StatusChangeDate)
-                        .Identity<int>(0, -1, true)
-                    );
+
+                    using (var tx = dbManager.BeginTransaction())
+                    {
+                        t.TenantId = dbManager.ExecuteScalar<int>(
+                            new SqlInsert(table)
+                            .InColumns(columns)
+                            .Values(
+                                t.TenantId,
+                                t.TenantAlias,
+                                t.Language,
+                                t.TimeZone.Id,
+                                t.Name ?? t.TenantAlias,
+                                t.Tagline,
+                                t.Description,
+                                t.Keywords,
+                                t.Country,
+                                t.Address,
+                                t.GetTrustedDomains(),
+                                t.TrustedDomainsEnabled,
+                                t.OwnerId.ToString(),
+                                t.CreatedDateTime,
+                                t.MappedDomain,
+                                t.Status,
+                                t.StatusChangeDate)
+                            .Identity<int>(0, -1, true)
+                        );
+
+                        dbManager.ExecuteNonQuery(
+                            new SqlInsert("core_acl")
+                            .InColumns("Ace", "Subject", "Action", "AceType", "Object", "Tenant")
+                            .Values(new SqlQuery("tenants_template_acl").Select("Ace", "Subject", "Action", "AceType", "Object", t.TenantId.ToString()))
+                        );
+
+                        dbManager.ExecuteNonQuery(
+                            new SqlInsert("core_subscription")
+                            .InColumns("Source", "Action", "Recipient", "Object", "Unsubscribed", "Tenant")
+                            .Values(new SqlQuery("tenants_template_subscription").Select("Source", "Action", "Recipient", "Object", "Unsubscribed", t.TenantId.ToString()))
+                        );
+
+                        dbManager.ExecuteNonQuery(
+                            new SqlInsert("core_subscriptionmethod")
+                            .InColumns("Source", "Action", "Recipient", "Sender", "Tenant")
+                            .Values(new SqlQuery("tenants_template_subscriptionmethod").Select("Source", "Action", "Recipient", "Sender", t.TenantId.ToString()))
+                        );
+
+                        tx.Commit();
+                    } 
                 }
                 else
                 {
@@ -308,102 +332,6 @@ namespace ASC.Core.Configuration.DAO
         }
 
 
-        /// <inheritdoc/>
-        public string SaveTenantInterim(TenantRegistrationInfo registrationInfo)
-        {
-            using (var dbManager = new DbManager(dbId))
-            using (var tx = dbManager.BeginTransaction())
-            {
-                ClearOldInterimTenants(dbManager);
-                CheckTenantAlias(dbManager, registrationInfo.Address);
-
-                var address = registrationInfo.Address.ToLowerInvariant();
-                var count = dbManager.ExecuteScalar<long>(new SqlQuery("tenants_interim").SelectCount().Where("Address", address));
-                if (0L < count) throw new Exception(string.Format("Address '{0}' busy.", registrationInfo.Address));
-
-                var serializedInfo = string.Empty;
-                using (var writer = new StringWriter())
-                {
-                    new XmlSerializer(typeof(TenantRegistrationInfo)).Serialize(writer, registrationInfo, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
-                    serializedInfo = writer.ToString();
-                }
-                var tenantInterimKey = Guid.NewGuid().ToString("N").ToUpper();
-
-                dbManager.ExecuteNonQuery(
-                    new SqlInsert("tenants_interim")
-                    .InColumnValue("Address", address)
-                    .InColumnValue("InterimKey", tenantInterimKey)
-                    .InColumnValue("DropDateTime", DateTime.UtcNow.AddMinutes(2))
-                    .InColumnValue("Info", serializedInfo)
-                );
-
-                tx.Commit();
-
-                return tenantInterimKey;
-            }
-        }
-
-        /// <inheritdoc/>
-        public TenantRegistrationInfo GetTenantInterim(string tenantInterimKey)
-        {
-            if (string.IsNullOrEmpty(tenantInterimKey)) throw new ArgumentNullException("tenantInterimKey");
-
-            using (var dbManager = new DbManager(dbId))
-            {
-                ClearOldInterimTenants(dbManager);
-                var serializedInfo = dbManager.ExecuteScalar<string>(new SqlQuery("tenants_interim").Select("Info").Where("InterimKey", tenantInterimKey));
-                dbManager.ExecuteNonQuery(new SqlDelete("tenants_interim").Where("InterimKey", tenantInterimKey));
-
-                if (string.IsNullOrEmpty(serializedInfo)) return null;
-                using (var reader = new StringReader(serializedInfo))
-                {
-                    return (TenantRegistrationInfo)new XmlSerializer(typeof(TenantRegistrationInfo)).Deserialize(reader);
-                }
-            }
-        }
-
-
-        /// <inheritdoc/>
-        public void InitializeTemplateData(int tenant, Guid user, string[] sqlInstructions)
-        {
-            using (var dbManager = new DbManager(dbId))
-            using (var tx = dbManager.BeginTransaction())
-            {
-                dbManager.ExecuteNonQuery(
-                    new SqlInsert("core_acl")
-                    .InColumns("Ace", "Subject", "Action", "AceType", "Object", "Tenant")
-                    .Values(new SqlQuery("tenants_template_acl").Select("Ace", "Subject", "Action", "AceType", "Object", tenant.ToString()))
-                );
-
-                dbManager.ExecuteNonQuery(
-                    new SqlInsert("core_subscription")
-                    .InColumns("Source", "Action", "Recipient", "Object", "Unsubscribed", "Tenant")
-                    .Values(new SqlQuery("tenants_template_subscription").Select("Source", "Action", "Recipient", "Object", "Unsubscribed", tenant.ToString()))
-                );
-
-                dbManager.ExecuteNonQuery(
-                    new SqlInsert("core_subscriptionmethod")
-                    .InColumns("Source", "Action", "Recipient", "Sender", "Tenant")
-                    .Values(new SqlQuery("tenants_template_subscriptionmethod").Select("Source", "Action", "Recipient", "Sender", tenant.ToString()))
-                );
-
-                if (sqlInstructions != null && 0 < sqlInstructions.Length)
-                {
-                    var comand = dbManager.Connection.CreateCommand()
-                        .AddParameter("tenant", tenant)
-                        .AddParameter("user", user.ToString());
-                    foreach (var sql in sqlInstructions)
-                    {
-                        comand.CommandText = sql;
-                        comand.ExecuteNonQuery();
-                    }
-                }
-
-                tx.Commit();
-            }
-        }
-
-
         private SqlQuery GetTenantQuery(Exp where)
         {
             return new SqlQuery(table)
@@ -500,12 +428,6 @@ namespace ASC.Core.Configuration.DAO
                 tenant.MappedDomains.Add(tenant.MappedDomain.ToLowerInvariant());
             }
             tenant.TenantDomain = tenant.TenantDomain.ToLowerInvariant();
-        }
-
-
-        private void ClearOldInterimTenants(DbManager dbManager)
-        {
-            dbManager.ExecuteNonQuery(new SqlDelete("tenants_interim").Where(Exp.Lt("DropDateTime", DateTime.UtcNow)));
         }
 
         /// <summary>
