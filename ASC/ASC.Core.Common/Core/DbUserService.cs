@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Linq;
-using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Data;
@@ -39,14 +37,14 @@ namespace ASC.Core
             if (user == null) throw new ArgumentNullException("user");
             if (user.Id == default(Guid)) user.Id = Guid.NewGuid();
 
-            Action<DbManager, IDbTransaction> a = (db, tx) =>
+            ExecAction(db =>
             {
                 ISqlInstruction i = new SqlQuery("core_user")
                     .SelectCount()
                     .Where(tenantColumn, tenant)
                     .Where("id", user.Id.ToString());
 
-                var count = db.ExecuteScalar<int>(i);
+                var count = db.ExecScalar<int>(i);
                 if (count == 0)
                 {
                     i = new SqlInsert("core_user")
@@ -68,7 +66,7 @@ namespace ASC.Core
                         .InColumnValue("removed", user.Removed)
                         .InColumnValue("last_modified", DateTime.UtcNow)
                         .InColumnValue(tenantColumn, tenant);
-                    db.ExecuteNonQuery(i);
+                    db.ExecNonQuery(i);
                 }
                 else
                 {
@@ -91,16 +89,14 @@ namespace ASC.Core
                         .Set("last_modified", DateTime.UtcNow)
                         .Where(tenantColumn, tenant)
                         .Where("id", user.Id.ToString());
-                    db.ExecuteNonQuery(i);
+                    db.ExecNonQuery(i);
 
                     if (user.Removed)
                     {
-                        db.ExecuteNonQuery(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where("user_id", user.Id));
+                        db.ExecNonQuery(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where("user_id", user.Id));
                     }
                 }
-            };
-
-            ExecAction(a);
+            });
 
             return user;
         }
@@ -328,14 +324,14 @@ namespace ASC.Core
             return new SqlQuery(table).Where(GetTenantColumnName(table), tenant);
         }
 
-        private SqlUpdate Update(string table, int tenant)
-        {
-            return new SqlUpdate(table).Where(GetTenantColumnName(table), tenant);
-        }
-
         private SqlInsert Insert(string table, int tenant)
         {
             return new SqlInsert(table, true).InColumnValue(GetTenantColumnName(table), tenant);
+        }
+
+        private SqlUpdate Update(string table, int tenant)
+        {
+            return new SqlUpdate(table).Where(GetTenantColumnName(table), tenant);
         }
 
         private SqlDelete Delete(string table, int tenant)

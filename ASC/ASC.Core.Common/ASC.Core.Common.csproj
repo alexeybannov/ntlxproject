@@ -123,6 +123,7 @@
     <Compile Include="CoreTalk\CoreHostResolver\FixedCoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\ICoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\ConfigAddressResolver.cs" />
+    <Compile Include="Data\IDbExecuter.cs" />
     <Compile Include="Hosting\ICoreHost.cs" />
     <Compile Include="Context\CoreContext.cs" />
     <Compile Include="Context\WorkContext.cs" />
