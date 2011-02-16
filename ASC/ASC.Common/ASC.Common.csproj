@@ -229,7 +229,6 @@
     <Compile Include="Runtime\Remoting\Channels\Http\HttpServerChannelEx.cs" />
     <Compile Include="Runtime\Serialization\BinarySerializer.cs" />
     <Compile Include="Security\Authentication\DemoAccount.cs" />
-    <Compile Include="Security\Authentication\IGuestAccount.cs" />
     <Compile Include="Security\Authentication\SysAccount.cs" />
     <Compile Include="Security\Authorizing\AzObjectIdHelper.cs" />
     <Compile Include="Security\Authorizing\AzObjectSecurityProviderHelper.cs" />
@@ -293,7 +292,6 @@
     <Compile Include="Runtime\Remoting\Channels\ChannelDemandAttribute.cs" />
     <Compile Include="Security\Authentication\AccountBase.cs" />
     <Compile Include="Security\Authentication\Attributes\AuthenticationLevelAttribute.cs" />
-    <Compile Include="Security\Authentication\AuthStrategy.cs" />
     <Compile Include="Security\Authentication\GuestAccount.cs" />
     <Compile Include="Security\Authentication\IAccount.cs" />
     <Compile Include="Security\Authentication\IServiceAccount.cs" />
@@ -307,7 +305,6 @@
     <Compile Include="Security\Authorizing\Domain\Action.cs" />
     <Compile Include="Security\Authorizing\Domain\AuthCategory.cs" />
     <Compile Include="Security\Authorizing\Domain\Role.cs" />
-    <Compile Include="Security\Authorizing\Domain\SubjectType.cs" />
     <Compile Include="Security\Authorizing\AzManager.cs" />
     <Compile Include="Security\IPermissionProvider.cs" />
     <Compile Include="Security\Authorizing\Interfaces\IAction.cs" />
@@ -398,7 +395,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Notify\doc.txt" />
-    <Content Include="Security\Authorizing\readme.txt" />
     <EmbeddedResource Include="Notify\Resource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>

@@ -33,15 +33,6 @@ namespace ASC.Common.Security.Authorizing
 
         #endregion
 
-        #region ISubject
-
-        public SubjectType Type
-        {
-            get { return SubjectType.Role; }
-        }
-
-        #endregion
-
         #region IRole Members
 
         public string AuthenticationType
