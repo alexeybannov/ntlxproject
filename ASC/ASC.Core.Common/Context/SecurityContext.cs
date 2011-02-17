@@ -1,13 +1,9 @@
-#region usings
-
 using System;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Security.Authorizing;
-
-#endregion
 
 namespace ASC.Core
 {

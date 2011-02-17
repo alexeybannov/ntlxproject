@@ -26,7 +26,7 @@ namespace ASC.Core
         }
 
 
-        #region Implementation IUserManager
+        #region Users
 
         public UserInfo[] GetUsers()
         {
@@ -187,11 +187,11 @@ namespace ASC.Core
             var refs = GetRefsInternal();
             if (groupId == Constants.GroupUser.ID || groupId == Constants.GroupVisitor.ID)
             {
-                var visitorRef = refs.SingleOrDefault(r => r.RefType == UserGroupRefType.Contains && r.UserId == userId && r.GroupId == Constants.GroupVisitor.ID);
-                if (groupId == Constants.GroupUser.ID) return visitorRef != null;
-                return visitorRef == null;
+                var visitor = refs.Any(r => r.RefType == UserGroupRefType.Contains && r.UserId == userId && r.GroupId == Constants.GroupVisitor.ID);
+                if (groupId == Constants.GroupUser.ID) return visitor;
+                return !visitor;
             }
-            return refs.SingleOrDefault(r => r.RefType == UserGroupRefType.Contains && r.UserId == userId && r.GroupId == groupId) != null;
+            return refs.Any(r => r.RefType == UserGroupRefType.Contains && r.UserId == userId && r.GroupId == groupId);
         }
 
         public UserInfo[] GetUsersByGroup(Guid groupId)
@@ -218,17 +218,10 @@ namespace ASC.Core
             userService.RemoveUserGroupRef(CoreContext.TenantManager.GetCurrentTenant().TenantId, userId, groupId, UserGroupRefType.Contains);
         }
 
-        public UserInfo GetCompanyCEO()
-        {
-            var id = GetDepartmentManager(Guid.Empty);
-            return id != Guid.Empty ? GetUsers(id) : null;
-        }
+        #endregion Users
 
-        public void SetCompanyCEO(Guid userId)
-        {
-            RemoveDepartmentManager(Guid.Empty, GetDepartmentManager(Guid.Empty));
-            SetDepartmentManager(Guid.Empty, userId);
-        }
+
+        #region Company
 
         public GroupInfo[] GetDepartments()
         {
@@ -237,11 +230,10 @@ namespace ASC.Core
 
         public Guid GetDepartmentManager(Guid deparmentID)
         {
-            foreach (var r in ManagersCache.Values)
-            {
-                if (r.DepartmentId == deparmentID) return r.ManagerId;
-            }
-            return Guid.Empty;
+            return GetRefsInternal()
+                .Where(r => r.RefType == UserGroupRefType.Manager && r.GroupId == deparmentID)
+                .Select(r => r.UserId)
+                .SingleOrDefault();
         }
 
         public void SetDepartmentManager(Guid deparmentID, Guid userID)
@@ -249,14 +241,71 @@ namespace ASC.Core
             var managerId = GetDepartmentManager(deparmentID);
             if (managerId != Guid.Empty)
             {
-                RemoveDepartmentManager(deparmentID, managerId);
+                userService.RemoveUserGroupRef(
+                    CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                    managerId, deparmentID, UserGroupRefType.Manager);
             }
-            CoreContext.InternalUserManager.SetDepartmentManager(deparmentID, userID);
-            var r = new DepartmentManagerRef(deparmentID, userID);
-            ManagersCache[r.Id] = r;
+            if (userID != Guid.Empty)
+            {
+                userService.SaveUserGroupRef(
+                    CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                    new UserGroupRef() { RefType = UserGroupRefType.Manager, UserId = userID, GroupId = deparmentID });
+            }
         }
 
-        #endregion
+        public UserInfo GetCompanyCEO()
+        {
+            var id = GetDepartmentManager(Guid.Empty);
+            return id != Guid.Empty ? GetUsers(id) : null;
+        }
+
+        public void SetCompanyCEO(Guid userId)
+        {
+            SetDepartmentManager(Guid.Empty, userId);
+        }
+
+        #endregion Company
+
+
+        #region Groups
+
+        public GroupInfo[] GetGroups()
+        {
+            return GetGroups(Guid.Empty);
+        }
+
+        public GroupInfo[] GetGroups(Guid categoryID)
+        {
+            return GetGroupsInternal()
+                .Where(g => g.Parent == null && g.CategoryID == categoryID)
+                .ToArray();
+        }
+
+        public GroupInfo GetGroupInfo(Guid groupID)
+        {
+            return GetGroupsInternal()
+                .SingleOrDefault(g => g.ID == groupID) ?? Constants.LostGroupInfo;
+        }
+
+        public GroupInfo SaveGroupInfo(GroupInfo g)
+        {
+            if (Constants.LostGroupInfo.Equals(g)) return Constants.LostGroupInfo;
+            if (Constants.BuildinGroups.Any(b => b.ID == g.ID)) return Constants.BuildinGroups.Single(b => b.ID == g.ID);
+
+
+            //g = CoreContext.InternalGroupManager.SaveGroupInfo(g);
+            return g;
+        }
+
+        public void DeleteGroup(Guid id)
+        {
+            if (Constants.LostGroupInfo.Equals(id)) return;
+            if (Constants.BuildinGroups.Any(b => b.ID == id)) return;
+
+            userService.RemoveGroup(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
+        }
+
+        #endregion Groups
 
 
         private void RecursiveAddChildGroups(GroupInfo parent, List<GroupInfo> result)
@@ -268,64 +317,6 @@ namespace ASC.Core
                 RecursiveAddChildGroups(group, result);
             }
         }
-
-
-        #region IGroupManager
-
-        public GroupInfo[] GetGroups()
-        {
-            return GetGroups(Guid.Empty);
-        }
-
-        public GroupInfo[] GetGroups(Guid categoryID)
-        {
-            return new List<GroupInfo>(GroupsCache.Values)
-                .FindAll(g => g.Parent == null && g.CategoryID == categoryID)
-                .ToArray();
-        }
-
-        public GroupInfo GetGroupInfo(Guid groupID)
-        {
-            return FindGroupInfo(GroupsCache.Values, groupID) ?? Constants.LostGroupInfo;
-        }
-
-        public GroupInfo SaveGroupInfo(GroupInfo groupInfo)
-        {
-            if (ReferenceEquals(groupInfo, Constants.LostGroupInfo) || Equals(groupInfo, Constants.LostGroupInfo))
-            {
-                return Constants.LostGroupInfo;
-            }
-            if (Array.Find(Constants.BuildinGroups, gr => gr.ID == groupInfo.ID) != null)
-            {
-                throw new UserManipulationException(CommonDescriptionResource.UserManipulationException_BuildInEdit);
-            }
-            groupInfo = CoreContext.InternalGroupManager.SaveGroupInfo(groupInfo);
-            GroupsCache.Flush();
-            return groupInfo;
-        }
-
-        public void DeleteGroup(Guid groupID)
-        {
-            if (groupID == Constants.LostGroupInfo.ID) return;
-            if (Array.Find(Constants.BuildinGroups, gr => gr.ID == groupID) != null)
-                throw new UserManipulationException(CommonDescriptionResource.UserManipulationException_BuildInEdit);
-            CoreContext.InternalGroupManager.DeleteGroup(groupID);
-            GroupsCache.Flush();
-            UsersCache.Flush();
-        }
-
-        private GroupInfo FindGroupInfo(ICollection<GroupInfo> groups, Guid groupID)
-        {
-            if (groups == null) return null;
-            foreach (GroupInfo g in groups)
-            {
-                if (g.ID == groupID) return g;
-                var findedGroup = FindGroupInfo(g.Descendants, groupID);
-                if (findedGroup != null) return findedGroup;
-            }
-            return null;
-        }
-
 
         private bool IsPropertiesContainsWords(IEnumerable<string> properties, IEnumerable<string> words)
         {
@@ -354,6 +345,12 @@ namespace ASC.Core
             return userService.GetUserGroupRefs(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime));
         }
 
+        private IEnumerable<GroupInfo> GetGroupsInternal()
+        {
+            //TODO: add sys groups
+            return null;
+        }
+
         private UserInfo ToUserInfo(User u)
         {
             return null;
@@ -363,7 +360,5 @@ namespace ASC.Core
         {
             return null;
         }
-
-        #endregion IGroupManager
     }
 }

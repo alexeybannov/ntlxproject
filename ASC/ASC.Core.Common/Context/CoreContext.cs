@@ -36,7 +36,7 @@ namespace ASC.Core
         {
             cacheInfoStorage = new Lazy<CacheInfoStorageClient>(() => new CacheInfoStorageClient(GetService<ICacheInfoStorageService>(), TimeSpan.FromSeconds(2)));
             tenantManager = new Lazy<ITenantManagerClient>(() => new ClientTenantManager());
-            userManager = new Lazy<ClientUserManager>(() => new ClientUserManager());
+            userManager = new Lazy<ClientUserManager>(() => new ClientUserManager(null));
             authentication = new Lazy<AuthenticationService>(() => new AuthenticationService());
             azManager = new Lazy<AzClientManager>(() => new AzClientManager());
             subscriptionManager = new Lazy<ClientSubscriptionManager>(() => new ClientSubscriptionManager(GetService<ISubscriptionManager>()));

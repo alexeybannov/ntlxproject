@@ -65,7 +65,7 @@ namespace ASC.Core.Notify
                         result.Add(new RecipientsGroup(gr.ID.ToString(), gr.Name));
                 }
 
-                UserInfo[] users = CoreContext.UserManager.GetUsersByGroup(coreGroup.ID, IncludeType.Distinct);
+                UserInfo[] users = CoreContext.UserManager.GetUsersByGroup(coreGroup.ID);
                 Array.ForEach(users, u => result.Add(new DirectRecipient(u.ID.ToString(), u.ToString())));
             }
             return result.ToArray();
