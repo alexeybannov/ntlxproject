@@ -35,17 +35,9 @@ namespace ASC.Core
 
         UserInfo GetUserByEmail(string email);
 
-        UserInfo[] Search(string text);
-
-        UserInfo[] Search(string text, UserSearchType searchType);
-
         UserInfo[] Search(string text, EmployeeStatus status);
 
-        UserInfo[] Search(string text, EmployeeStatus status, UserSearchType searchType);
-
         UserInfo[] Search(string text, EmployeeStatus status, Guid groupId);
-
-        UserInfo[] Search(string text, EmployeeStatus status, Guid groupId, UserSearchType searchType);
 
         #endregion
 
@@ -59,7 +51,7 @@ namespace ASC.Core
 
         bool IsUserInGroup(Guid userID, Guid groupID);
 
-        UserInfo[] GetUsersByGroup(Guid groupID, IncludeType includeType);
+        UserInfo[] GetUsersByGroup(Guid groupID);
 
         void AddUserIntoGroup(Guid userID, Guid groupID);
 
@@ -77,15 +69,7 @@ namespace ASC.Core
 
         Guid GetDepartmentManager(Guid deparmentID);
 
-        bool IsDepartmentManager(Guid deparmentID, Guid userID);
-
-        bool IsManager(Guid userID);
-
-        bool IsManager(Guid managerID, Guid userID);
-
         void SetDepartmentManager(Guid deparmentID, Guid userID);
-
-        bool RemoveDepartmentManager(Guid deparmentID, Guid userID);
         
         #endregion
     }
