@@ -119,26 +119,20 @@
   </resheader>
   <data name="NotifyException_Message_FormatterGetTags" xml:space="preserve">
     <value>Get tags from formatter of pattern "{0}" failed.</value>
-    <comment>       ё </comment>
   </data>
   <data name="NotifyException_Message_NoSenderChannelBySenderName" xml:space="preserve">
     <value>Not registered sender "{0}".</value>
-    <comment>   </comment>
   </data>
   <data name="NotifyException_Message_NoSenders" xml:space="preserve">
     <value>Notice hasn't any senders.</value>
-    <comment>      </comment>
   </data>
   <data name="NotifyException_Message_NullPatternForSenderName" xml:space="preserve">
     <value>For action "{0}" by sender "{1}" no one patterns getted.</value>
-    <comment> ActionPattern         </comment>
   </data>
   <data name="NotifyException_Message_PatternFormatterNotInstanced" xml:space="preserve">
     <value>For pattern "{0}" formatter not instanced.</value>
-    <comment>    </comment>
   </data>
   <data name="NotifyException_Message_ProviderNotInstanced" xml:space="preserve">
     <value>"{0}" not instanced from notify source.</value>
-    <comment>    ё </comment>
   </data>
 </root>

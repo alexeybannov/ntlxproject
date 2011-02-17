@@ -17,7 +17,7 @@ namespace ASC.Core.Common.Publisher
 
         public PublisherHost()
         {
-            Version = new Version(CoreConstResource.Version);
+            Version = new Version("0.1");
         }
 
         #region IPublisherHost

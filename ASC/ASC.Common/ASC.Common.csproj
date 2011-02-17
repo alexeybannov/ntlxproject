@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{76DE7717-3D4B-4A5B-B740-15B8913DF0CB}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -15,6 +15,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <SignAssembly>true</SignAssembly>
+    <TrunkDir>..\..\..\</TrunkDir>
+    <AssemblyOriginatorKeyFile>$(TrunkDir)ASC.snk</AssemblyOriginatorKeyFile>
+    <RedDir Condition=" '$(RedDir)' == '' ">$(TrunkDir)redistributable\asc\</RedDir>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -46,15 +50,15 @@
   <ItemGroup>
     <Reference Include="HtmlSanitizationLibrary, Version=4.0.0.0, Culture=neutral, PublicKeyToken=d127efab8a9c114f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\HtmlSanitizationLibrary.dll</HintPath>
+      <HintPath>..\..\..\redistributable\third-party\Microsoft\AntiXss\HtmlSanitizationLibrary.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\log4net.dll</HintPath>
+      <HintPath>..\..\..\redistributable\third-party\log4net\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NVelocity, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\NVelocity.dll</HintPath>
+      <HintPath>..\..\..\redistributable\third-party\NVelocity\NVelocity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -64,7 +68,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.60.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\System.Data.SQLite.DLL</HintPath>
+      <HintPath>..\..\..\redistributable\third-party\db\sqlite\System.Data.SQLite.DLL</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization">
@@ -229,6 +233,7 @@
     <Compile Include="Runtime\Remoting\Channels\Http\HttpServerChannelEx.cs" />
     <Compile Include="Runtime\Serialization\BinarySerializer.cs" />
     <Compile Include="Security\Authentication\DemoAccount.cs" />
+    <Compile Include="Security\Authentication\IGuestAccount.cs" />
     <Compile Include="Security\Authentication\SysAccount.cs" />
     <Compile Include="Security\Authorizing\AzObjectIdHelper.cs" />
     <Compile Include="Security\Authorizing\AzObjectSecurityProviderHelper.cs" />
@@ -292,6 +297,7 @@
     <Compile Include="Runtime\Remoting\Channels\ChannelDemandAttribute.cs" />
     <Compile Include="Security\Authentication\AccountBase.cs" />
     <Compile Include="Security\Authentication\Attributes\AuthenticationLevelAttribute.cs" />
+    <Compile Include="Security\Authentication\AuthStrategy.cs" />
     <Compile Include="Security\Authentication\GuestAccount.cs" />
     <Compile Include="Security\Authentication\IAccount.cs" />
     <Compile Include="Security\Authentication\IServiceAccount.cs" />
@@ -305,6 +311,7 @@
     <Compile Include="Security\Authorizing\Domain\Action.cs" />
     <Compile Include="Security\Authorizing\Domain\AuthCategory.cs" />
     <Compile Include="Security\Authorizing\Domain\Role.cs" />
+    <Compile Include="Security\Authorizing\Domain\SubjectType.cs" />
     <Compile Include="Security\Authorizing\AzManager.cs" />
     <Compile Include="Security\IPermissionProvider.cs" />
     <Compile Include="Security\Authorizing\Interfaces\IAction.cs" />
@@ -403,4 +410,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(TrunkDir)_ci\msbuild\ASC.MSBuild.AssemblyInfo.Targets" />
+  <Target Name="AfterBuild">
+    <Message Importance="High" Text="Copy assemblies to redistributable: $(MSBuildProjectName) -&gt; @(MainAssembly->'$(RedDir)%(FileName)%(Extension)') @(FinalDocFile->'$(RedDir)%(FileName)%(Extension)') @(IntermediateSatelliteAssembliesWithTargetPath->'$(RedDir)%(Culture)\$(TargetName).resources.dll')" />
+    <Copy SourceFiles="@(IntermediateAssembly)" DestinationFolder="$(RedDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DocFileItem)" DestinationFiles="@(FinalDocFile->'$(RedDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(_DocumentationFileProduced)'=='true'" />
+    <Copy SourceFiles="@(IntermediateSatelliteAssembliesWithTargetPath)" DestinationFiles="@(IntermediateSatelliteAssembliesWithTargetPath->'$(RedDir)%(Culture)\$(TargetName).resources.dll')" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

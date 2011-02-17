@@ -42,13 +42,6 @@ namespace ASC.Core.Users
             Description = ASC.Common.Security.Authorizing.Constants.Visitor.Description
         };
 
-        public static readonly GroupInfo GroupService = new GroupInfo(SysGroupCategoryId)
-        {
-            ID = ASC.Common.Security.Authorizing.Constants.Service.ID,
-            Name = ASC.Common.Security.Authorizing.Constants.Service.Name,
-            Description = ASC.Common.Security.Authorizing.Constants.Service.Description
-        };
-
         public static readonly GroupInfo GroupAdmin = new GroupInfo(SysGroupCategoryId)
         {
             ID = ASC.Common.Security.Authorizing.Constants.Admin.ID,
@@ -58,7 +51,7 @@ namespace ASC.Core.Users
 
         public static readonly GroupInfo[] BuildinGroups = new[]
         {
-            GroupEveryone, GroupUser, GroupVisitor, GroupService, GroupAdmin
+            GroupEveryone, GroupUser, GroupVisitor, GroupAdmin
         };
 
         #endregion
@@ -71,12 +64,9 @@ namespace ASC.Core.Users
                 DescriptionResource.ServiceName_UserManager,
                 DescriptionResource.ServiceDescription_UserManager,
                 ConstResource.ServiceSysName_UserManager,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    ConstResource.ServiceSysName_UserManager
-                    )
+                UriUtil.BuildUri(ConstResource.ServiceSysName_UserManager)
                 );
 
         public static readonly ServiceInfoBase GroupManagerServiceInfo =
@@ -85,12 +75,9 @@ namespace ASC.Core.Users
                 DescriptionResource.ServiceName_GroupManager,
                 DescriptionResource.ServiceDescription_GroupManager,
                 ConstResource.ServiceSysName_GroupManager,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    ConstResource.ServiceSysName_GroupManager
-                    )
+                UriUtil.BuildUri(ConstResource.ServiceSysName_GroupManager)
                 );
 
         public static readonly ServiceInfoBase AuthorizationManagerServiceInfo =
@@ -99,12 +86,9 @@ namespace ASC.Core.Users
                 DescriptionResource.ServiceName_AuthorizationManager,
                 DescriptionResource.ServiceDescription_AuthorizationManager,
                 ConstResource.ServiceSysName_AuthorizationManager,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    ConstResource.ServiceSysName_AuthorizationManager
-                    )
+                UriUtil.BuildUri(ConstResource.ServiceSysName_AuthorizationManager)
                 );
 
         public static readonly ServiceInfoBase SubscriptionManagerServiceInfo =
@@ -113,12 +97,9 @@ namespace ASC.Core.Users
                 DescriptionResource.ServiceName_SubscriptionManager,
                 DescriptionResource.ServiceDescription_SubscriptionManager,
                 ConstResource.ServiceSysName_SubscriptionManager,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    ConstResource.ServiceSysName_SubscriptionManager
-                    )
+                UriUtil.BuildUri(ConstResource.ServiceSysName_SubscriptionManager)
                 );
 
         #endregion

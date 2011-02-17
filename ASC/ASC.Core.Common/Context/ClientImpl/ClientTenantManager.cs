@@ -17,7 +17,7 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Core
 {
-    internal class ClientTenantManager : ITenantManager
+    internal class ClientTenantManager : ITenantManagerClient
     {
         private const string CURRENT_TENANT = "CURRENT_TENANT";
         private readonly ICache<int, Tenant> cache;
@@ -195,26 +195,6 @@ namespace ASC.Core
         public void CheckTenantAddress(string address)
         {
             CoreContext.InternalTenantManager.CheckTenantAddress(address);
-        }
-
-        #endregion
-
-        #region IService Members
-
-        public IServiceInfo Info
-        {
-            get
-            {
-                try
-                {
-                    TenantThrow(false);
-                    return CoreContext.InternalTenantManager.Info;
-                }
-                finally
-                {
-                    TenantThrow(true);
-                }
-            }
         }
 
         #endregion

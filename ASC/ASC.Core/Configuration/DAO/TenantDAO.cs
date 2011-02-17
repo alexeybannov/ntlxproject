@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Serialization;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
@@ -143,7 +140,7 @@ namespace ASC.Core.Configuration.DAO
                         );
 
                         tx.Commit();
-                    } 
+                    }
                 }
                 else
                 {
@@ -429,6 +426,7 @@ namespace ASC.Core.Configuration.DAO
             }
             tenant.TenantDomain = tenant.TenantDomain.ToLowerInvariant();
         }
+
 
         /// <summary>
         /// Validates the alias and checks if it exists in the database.

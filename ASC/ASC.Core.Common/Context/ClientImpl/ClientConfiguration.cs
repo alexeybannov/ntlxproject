@@ -12,7 +12,7 @@ using SmartAssembly.Attributes;
 
 namespace ASC.Core
 {
-    public class ClientConfiguration : IConfiguration
+    public class ClientConfiguration
     {
         private readonly object syncRoot = new object();
         private int? secureCorePort;
@@ -22,17 +22,6 @@ namespace ASC.Core
 
         private SysConfig cfg;
         private bool? standalone;
-
-        #region IService
-
-        IServiceInfo IService.Info
-        {
-            [Obfuscation(Exclude = true)]
-            [DoNotObfuscate]
-            get { return CoreContext.InternalConfiguration.Info; }
-        }
-
-        #endregion
 
         #region IConfiguration
 

@@ -1,11 +1,7 @@
-using ASC.Common.Services;
-using ASC.Runtime.Remoting.Channels;
 
-namespace ASC.Core.Users
+namespace ASC.Core
 {
-    [Service("{C4B144B8-EB5B-4ed7-A46E-300243D46DA1}", ServiceInstancingType.Singleton)]
-    [ChannelDemand]
-    interface ISubscriptionManager : IService
+    public interface ISubscriptionManagerClient
     {
         #region identify ways to subscribe
 

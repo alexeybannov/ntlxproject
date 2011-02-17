@@ -126,10 +126,23 @@ namespace ASC.Common.Data
         public IDbTransaction BeginTransaction()
         {
             if (InTransaction) throw new InvalidOperationException("Transaction already open.");
+
             Command.Transaction = Command.Connection.BeginTransaction();
-            var dbTransaction = new DbTransaction(Command.Transaction);
-            dbTransaction.Unavailable += TransactionUnavailable;
-            return dbTransaction;
+            
+            var tx = new DbTransaction(Command.Transaction);
+            tx.Unavailable += TransactionUnavailable;
+            return tx;
+        }
+
+        public IDbTransaction BeginTransaction(IsolationLevel il)
+        {
+            if (InTransaction) throw new InvalidOperationException("Transaction already open.");
+            
+            Command.Transaction = Command.Connection.BeginTransaction(il);
+            
+            var tx = new DbTransaction(Command.Transaction);
+            tx.Unavailable += TransactionUnavailable;
+            return tx;
         }
 
         public void CommitTransaction()

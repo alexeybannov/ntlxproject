@@ -10,7 +10,7 @@ using UserConst = ASC.Core.Users.Constants;
 
 namespace ASC.Core
 {
-    class AzClientManager : IAuthorizationManager
+    class AzClientManager : IAuthorizationManagerClient
     {
         private readonly IDictionary<int, ICache<string, AzRecord>> azAceCache = new Dictionary<int, ICache<string, AzRecord>>();
         private readonly IDictionary<int, ICache<string, AzObjectInfo>> azObjectInfoCache = new Dictionary<int, ICache<string, AzObjectInfo>>();
@@ -256,15 +256,6 @@ namespace ASC.Core
                 azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);
             }
             AzAceCache.Remove(azRecord.Id);
-        }
-
-        #endregion
-
-        #region IService Members
-
-        public IServiceInfo Info
-        {
-            get { throw new NotImplementedException(); }
         }
 
         #endregion

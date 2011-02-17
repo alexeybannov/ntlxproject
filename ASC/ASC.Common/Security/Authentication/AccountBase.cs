@@ -23,6 +23,11 @@ namespace ASC.Common.Security.Authentication
 
         public SecurityLevel SecurityLevel { get; internal set; }
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
         public string AuthenticationType
         {
             get { return "ASC"; }

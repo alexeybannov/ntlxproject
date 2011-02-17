@@ -27,12 +27,9 @@ namespace ASC.Core.Configuration
                 DescriptionResource.ServiceName_Configuration,
                 DescriptionResource.ServiceDescription_Configuration,
                 ConstResource.ServiceSysName_Configuration,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    ConstResource.ServiceSysName_Configuration
-                    )
+                UriUtil.BuildUri(                    ConstResource.ServiceSysName_Configuration                    )
                 );
 
         public static readonly ServiceInfoBase ServiceLocatorServiceInfo =
@@ -41,12 +38,9 @@ namespace ASC.Core.Configuration
                 DescriptionResource.ServiceName_ServiceLocator,
                 DescriptionResource.ServiceDescription_ServiceLocator,
                 ConstResource.ServiceSysName_ServiceLocator,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    ConstResource.ServiceSysName_ServiceLocator
-                    )
+                UriUtil.BuildUri(                    ConstResource.ServiceSysName_ServiceLocator                    )
                 );
 
         public static readonly ServiceInfoBase AuthenticationServiceInfo =
@@ -55,12 +49,9 @@ namespace ASC.Core.Configuration
                 DescriptionResource.ServiceName_Authentication,
                 DescriptionResource.ServiceDescription_Authentication,
                 ConstResource.ServiceSysName_Authentication,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    ConstResource.ServiceSysName_Authentication
-                    )
+                UriUtil.BuildUri(                    ConstResource.ServiceSysName_Authentication                    )
                 );
 
         public static readonly ServiceInfoBase NotifyServiceInfo =
@@ -69,9 +60,9 @@ namespace ASC.Core.Configuration
                 DescriptionResource.ServiceName_Notify,
                 DescriptionResource.ServiceDescription_Notify,
                 ConstResource.ServiceSysName_Notify,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(CoreConstResource.CoreUriPostfix, ConstResource.ServiceSysName_Notify)
+                UriUtil.BuildUri(ConstResource.ServiceSysName_Notify)
                 );
 
         public static readonly ServiceInfoBase CacheInfoStorageServiceInfo =
@@ -80,9 +71,9 @@ namespace ASC.Core.Configuration
                 DescriptionResource.ServiceName_CacheInfoStorage,
                 DescriptionResource.ServiceDescription_CacheInfoStorage,
                 ConstResource.ServiceSysName_CacheInfoStorage,
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(CoreConstResource.CoreUriPostfix, ConstResource.ServiceSysName_CacheInfoStorage)
+                UriUtil.BuildUri(ConstResource.ServiceSysName_CacheInfoStorage)
                 );
 
         public static readonly ServiceInfoBase TenantManagerServiceInfo =
@@ -91,9 +82,9 @@ namespace ASC.Core.Configuration
                 "TenantManager",
                 null,
                 "TenantManager",
-                new Version(CoreConstResource.Version),
+                new Version("0.1"),
                 new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(CoreConstResource.CoreUriPostfix, "TenantManager")
+                UriUtil.BuildUri("TenantManager")
                 );
 
         #endregion
@@ -229,11 +220,11 @@ namespace ASC.Core.Configuration
 
         #region Alert
 
-        public static readonly string NotifyEMailSenderSysName = CoreConstResource.NotifyEMailSenderSysName;
+        public static readonly string NotifyEMailSenderSysName = "email.sender";
 
-        public static readonly string NotifyMessengerSenderSysName = CoreConstResource.NotifyMessengerSenderSysName;
+        public static readonly string NotifyMessengerSenderSysName = "messanger.sender";
 
-        public static readonly string NotifyWebSenderSysName = CoreConstResource.NotifyWebSenderSysName;
+        public static readonly string NotifyWebSenderSysName = "web.sender";
 
         #endregion
 

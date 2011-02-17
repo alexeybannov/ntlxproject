@@ -14,15 +14,14 @@ namespace ASC.Core
 	public class HostedSolution
 	{
 		private IDAOFactory daoFactory;
-
 		private TenantRegistrator tenantRegistrator;
+
 
 		private HostedSolution(IDAOFactory daoFactory)
 		{
 			this.daoFactory = daoFactory;
-			tenantRegistrator = new TenantRegistrator(daoFactory.GetTenantDAO());
+			tenantRegistrator = new TenantRegistrator(daoFactory);
 		}
-
 
 		public static HostedSolution GetHostedSolution(ConnectionStringSettings connectionString)
 		{
@@ -32,6 +31,11 @@ namespace ASC.Core
 			}
 			return new HostedSolution(new DAOFactory());
 		}
+
+        public List<Tenant> FindTenants(string login)
+        {
+            return FindTenants(login, null);
+        }
         
 		public List<Tenant> FindTenants(string login, string password)
 		{
@@ -52,7 +56,7 @@ namespace ASC.Core
 
 		public string RegisterTenant(TenantRegistrationInfo info)
 		{
-			return tenantRegistrator.RegisterTenant(info);
+            return tenantRegistrator.RegisterTenant(info);
 		}
 
 		public string CreateAuthenticationCookie(int tenantID, string login, string password)

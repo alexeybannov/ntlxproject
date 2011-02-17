@@ -7,10 +7,22 @@ using ASC.Core.Users;
 
 namespace ASC.Core
 {
-    public interface IUserManagerClient : IUserManager
+    public interface IUserManagerClient
     {
         #region users
 
+        UserInfo[] GetUsers();
+
+        UserInfo GetUsers(Guid userID);
+
+        UserInfo SaveUserInfo(UserInfo userInfo);
+
+        void DeleteUser(Guid userID);
+
+        void SaveUserPhoto(Guid userID, Guid moduleID, byte[] photo);
+
+        byte[] GetUserPhoto(Guid userID, Guid moduleID);
+        
         bool UserExists(Guid userID);
 
         UserInfo[] GetUsers(EmployeeStatus status);
@@ -49,6 +61,10 @@ namespace ASC.Core
 
         UserInfo[] GetUsersByGroup(Guid groupID, IncludeType includeType);
 
+        void AddUserIntoGroup(Guid userID, Guid groupID);
+
+        void RemoveUserFromGroup(Guid userID, Guid groupID);
+        
         #endregion
 
         #region Company Info
@@ -67,6 +83,10 @@ namespace ASC.Core
 
         bool IsManager(Guid managerID, Guid userID);
 
+        void SetDepartmentManager(Guid deparmentID, Guid userID);
+
+        bool RemoveDepartmentManager(Guid deparmentID, Guid userID);
+        
         #endregion
     }
 }

@@ -214,8 +214,7 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        private bool IsPropertiesContainsWords(IEnumerable<string> properties, IEnumerable<string> words,
-                                               UserSearchType searchType)
+        private bool IsPropertiesContainsWords(IEnumerable<string> properties, IEnumerable<string> words, UserSearchType searchType)
         {
             foreach (string word in words)
             {
@@ -369,11 +368,6 @@ namespace ASC.Core
             return result.ToArray();
         }
 
-        public UserGroupReference[] GetUsersGroupReferences()
-        {
-            return new List<UserGroupReference>(UserGroupRefsCache.Values).ToArray();
-        }
-
         public void AddUserIntoGroup(Guid userID, Guid groupID)
         {
             if (Constants.LostUser.ID == userID ||
@@ -420,18 +414,13 @@ namespace ASC.Core
 
         public void SetCompanyCEO(Guid userId)
         {
-            if (userId == Guid.Empty) RemoveDepartmentManager(Guid.Empty, userId);
-            else SetDepartmentManager(Guid.Empty, userId);
+            RemoveDepartmentManager(Guid.Empty, GetDepartmentManager(Guid.Empty));
+            SetDepartmentManager(Guid.Empty, userId);
         }
 
         public GroupInfo[] GetDepartments()
         {
             return CoreContext.GroupManager.GetGroups();
-        }
-
-        public DepartmentManagerRef[] GetDepartmentManagerRefs()
-        {
-            return new List<DepartmentManagerRef>(ManagersCache.Values).ToArray();
         }
 
         public Guid GetDepartmentManager(Guid deparmentID)
@@ -495,14 +484,6 @@ namespace ASC.Core
 
         #endregion
 
-        #region Implementation of IService
-
-        public IServiceInfo Info
-        {
-            get { return CoreContext.InternalUserManager.Info; }
-        }
-
-        #endregion
 
         private bool IsUserCEO(Guid userId)
         {

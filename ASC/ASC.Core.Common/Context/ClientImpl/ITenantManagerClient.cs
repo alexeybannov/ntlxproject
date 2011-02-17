@@ -1,16 +1,10 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
-using ASC.Common.Services;
 using ASC.Core.Tenants;
 
-#endregion
-
-namespace ASC.Core.Configuration
+namespace ASC.Core
 {
-    [Service("{E0F0E200-563C-4CFF-89D4-F1AD623CCEFB}")]
-    interface ITenantManager : IService
+    public interface ITenantManagerClient
     {
         List<Tenant> GetTenants();
 
@@ -22,12 +16,20 @@ namespace ASC.Core.Configuration
 
         void RemoveTenant(int tenantId);
 
+        Tenant GetCurrentTenant();
+
+        Tenant GetCurrentTenant(bool throwOnError);
+
+        void SetCurrentTenant(Tenant tenant);
+
+        void SetCurrentTenant(int tenantId);
+
+        void SetCurrentTenant(string domain);
 
         TenantOwner GetTenantOwner(Guid ownerId);
 
         void SaveTenantOwner(TenantOwner owner);
 
-        
         TenantQuota GetTenantQuota(int tenant, string name);
 
         void SetTenantQuota(int tenant, string name, TenantQuota quota);

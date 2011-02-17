@@ -66,6 +66,7 @@ namespace ASC.Common.Web
             AddMimeMapping(".bm", "image/bmp");
             AddMimeMapping(".bmp", "image/bmp");
             AddMimeMapping(".bmp", "image/x-windows-bmp");
+            AddMimeMapping(".bmp", "image/x-ms-bmp");
             AddMimeMapping(".boo", "application/book");
             AddMimeMapping(".book", "application/book");
             AddMimeMapping(".boz", "application/x-bzip2");

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Permissions;
-using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Services;
 using ASC.Core.Common.Remoting;
@@ -72,96 +71,6 @@ namespace ASC.Core.Users.Service.SrvImpl
 		{
 			SecurityContext.DemandPermissions(UserConst.Action_EditAz);
 			GetAzDAO().RemoveAzObjectInfo(azObjectInfo);
-		}
-
-		/// <inheritdoc/>
-		public AzRecord[] GetAces(Guid subjectID, Guid actionID, ISecurityObjectId objectId)
-		{
-			throw new NotSupportedException();
-		}
-
-		///<inheritdoc/>
-		public AzCategory[] GetAzCategories(Guid moduleID)
-		{
-			throw new NotSupportedException();
-		}
-
-		///<inheritdoc/>
-		public AzRecord[] GetAces(Guid subjectID, Guid actionID)
-		{
-			throw new NotSupportedException();
-		}
-
-		///<inheritdoc/>
-		public AzRecord[] GetAcesBySubject(Guid subjectID)
-		{
-			throw new NotSupportedException();
-		}
-
-		///<inheritdoc/>
-		public AzRecord[] GetAcesByAction(Guid actionID)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public AzRecord[] GetAllObjectAces(IEnumerable<IAction> actions, ISecurityObject objectId)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public AzRecord[] GetAllObjectAces(IEnumerable<IAction> actions, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public AzRecord[] GetAllObjectAces<T>(IEnumerable<IAction> actions, object objectId)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public AzRecord[] GetAllObjectAces<T>(IEnumerable<IAction> actions, object objectId, ISecurityObjectProvider secObjProvider)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public bool GetObjectAceInheritance(ISecurityObjectId objectId)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public void SetObjectAceInheritance(ISecurityObjectId objectId, bool inherit)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public bool GetObjectAceInheritance<T>(object objectId)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public void SetObjectAceInheritance<T>(object objectId, bool inherit)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public AzObjectInfo GetAzObjectInfo<T>(object objectId)
-		{
-			throw new NotSupportedException();
-		}
-
-		/// <inheritdoc/>
-		public AzObjectInfo GetAzObjectInfo(ISecurityObjectId objectId)
-		{
-			throw new NotSupportedException();
 		}
 
 		#endregion

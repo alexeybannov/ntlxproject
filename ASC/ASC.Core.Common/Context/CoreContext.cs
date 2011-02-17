@@ -17,7 +17,7 @@ namespace ASC.Core
         private static readonly object syncRoot;
         private static readonly ClientConfiguration configuration;
         private static Lazy<CacheInfoStorageClient> cacheInfoStorage;
-        private static Lazy<ITenantManager> tenantManager;
+        private static Lazy<ITenantManagerClient> tenantManager;
         private static Lazy<ClientUserManager> userManager;
         private static Lazy<AuthenticationService> authentication;
         private static Lazy<AzClientManager> azManager;
@@ -34,16 +34,12 @@ namespace ASC.Core
 
         internal static void Reconnect()
         {
-            cacheInfoStorage =
-                new Lazy<CacheInfoStorageClient>(
-                    () => new CacheInfoStorageClient(GetService<ICacheInfoStorageService>(), TimeSpan.FromSeconds(2)));
-            tenantManager = new Lazy<ITenantManager>(() => new ClientTenantManager());
+            cacheInfoStorage = new Lazy<CacheInfoStorageClient>(() => new CacheInfoStorageClient(GetService<ICacheInfoStorageService>(), TimeSpan.FromSeconds(2)));
+            tenantManager = new Lazy<ITenantManagerClient>(() => new ClientTenantManager());
             userManager = new Lazy<ClientUserManager>(() => new ClientUserManager());
             authentication = new Lazy<AuthenticationService>(() => new AuthenticationService());
             azManager = new Lazy<AzClientManager>(() => new AzClientManager());
-            subscriptionManager =
-                new Lazy<ClientSubscriptionManager>(
-                    () => new ClientSubscriptionManager(GetService<ISubscriptionManager>()));
+            subscriptionManager = new Lazy<ClientSubscriptionManager>(() => new ClientSubscriptionManager(GetService<ISubscriptionManager>()));
         }
 
         #region << Public Properties >>
@@ -53,7 +49,7 @@ namespace ASC.Core
             get { return cacheInfoStorage.Instance; }
         }
 
-        public static ITenantManager TenantManager
+        public static ITenantManagerClient TenantManager
         {
             get { return tenantManager.Instance; }
         }
@@ -68,12 +64,12 @@ namespace ASC.Core
             get { return userManager.Instance; }
         }
 
-        public static IAuthentication Authentication
+        public static IAuthenticationClient Authentication
         {
             get { return authentication.Instance; }
         }
 
-        public static IAuthorizationManager AuthorizationManager
+        public static IAuthorizationManagerClient AuthorizationManager
         {
             get { return azManager.Instance; }
         }
@@ -83,7 +79,7 @@ namespace ASC.Core
             get { return GetService<INotify>(); }
         }
 
-        public static ISubscriptionManager SubscriptionManager
+        public static ISubscriptionManagerClient SubscriptionManager
         {
             get { return subscriptionManager.Instance; }
         }

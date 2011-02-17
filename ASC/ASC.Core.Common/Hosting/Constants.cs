@@ -14,32 +14,28 @@ namespace ASC.Core.Hosting
 {
     public sealed class Constants
     {
-        [Obfuscation(Exclude = true)] [DoNotObfuscate] internal static readonly ServiceInfoBase CoreHostServiceInfo =
+        [Obfuscation(Exclude = true)]
+        [DoNotObfuscate]
+        internal static readonly ServiceInfoBase CoreHostServiceInfo =
             new ServiceInfoBase(
-                typeof (ICoreHost),
-                "main core services host",
-                null,
-                "core_host",
-                new Version(CoreConstResource.Version),
-                new[] {TransportType.Ipc, TransportType.Tcp},
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    "core_host"
-                    )
-                );
+            typeof(ICoreHost),
+            "main core services host",
+            null,
+            "core_host",
+            new Version("0.1"),
+            new[] { TransportType.Ipc, TransportType.Tcp },
+            UriUtil.BuildUri("core_host")
+            );
 
         public static readonly ServiceInfoBase ModuleHostServiceInfo =
             new ServiceInfoBase(
-                typeof (IModuleHost),
+                typeof(IModuleHost),
                 "services module parts host",
                 null,
                 "module_host",
-                new Version(CoreConstResource.Version),
-                new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(
-                    CoreConstResource.CoreUriPostfix,
-                    "module_host"
-                    )
+                new Version("0.1"),
+                new[] { TransportType.Tcp, TransportType.Ipc },
+                UriUtil.BuildUri("module_host")
                 );
 
         public static readonly ServiceInfoBase[] HostingServices = new[]

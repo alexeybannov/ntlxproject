@@ -120,9 +120,9 @@ namespace ASC.Core.Notify
                 throw new ArgumentException("group");
             }
             UserInfo user = CoreContext.UserManager.GetUsers(userID);
-            if (senderName == CoreConstResource.NotifyEMailSenderSysName)
+            if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName)
                 return new[] {user.Email};
-            else if (senderName == CoreConstResource.NotifyMessengerSenderSysName)
+            else if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName)
                 return new[] {user.UserName};
             else
                 return new string[] {};

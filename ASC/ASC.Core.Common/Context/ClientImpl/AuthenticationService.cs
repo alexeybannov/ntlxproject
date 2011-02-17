@@ -1,5 +1,3 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +9,9 @@ using ASC.Core.Common.Cache;
 using ASC.Core.Configuration;
 using UsersConst = ASC.Core.Users.Constants;
 
-#endregion
-
 namespace ASC.Core
 {
-    public class AuthenticationService : IAuthentication
+    public class AuthenticationService : IAuthenticationClient
     {
         private readonly IDictionary<int, ICache<Guid, IUserAccount>> accountsCache;
 
@@ -43,15 +39,6 @@ namespace ASC.Core
         {
             accountsCache = new Dictionary<int, ICache<Guid, IUserAccount>>();
         }
-
-        #region IService
-
-        public IServiceInfo Info
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
 
         #region Implementation of IAuthentication
 

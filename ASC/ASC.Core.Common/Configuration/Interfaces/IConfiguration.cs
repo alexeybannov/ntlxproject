@@ -10,7 +10,7 @@ namespace ASC.Core.Configuration
 {
     [Service("{37017EA8-7826-43b6-BDF3-D5A02AE80C69}", ServiceInstancingType.Singleton)]
     [AuthenticationLevel(SecurityLevel.None)]
-    public interface IConfiguration : IService
+    interface IConfiguration : IService
     {
         int SecureCorePort { get; }
 

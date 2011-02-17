@@ -13,10 +13,10 @@ namespace ASC.Common.Utils
 
         private static readonly string _UriPartsSeparator = @"/";
 
-        public static string BuildUri(string postfix, params string[] parts)
+        public static string BuildUri(params string[] parts)
         {
             var sb = new StringBuilder(String.Join(_UriPartsSeparator, parts));
-            sb.Append(postfix);
+            sb.Append(".coreobj");
             return sb.ToString();
         }
 

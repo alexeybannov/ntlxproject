@@ -9,7 +9,7 @@ using ASC.Core.Users;
 
 namespace ASC.Core
 {
-    internal class ClientSubscriptionManager : ISubscriptionManager
+    internal class ClientSubscriptionManager : ISubscriptionManagerClient
     {
         private readonly ISubscriptionManager subscriptionManager;
         private readonly object syncRoot = new object();
@@ -30,10 +30,6 @@ namespace ASC.Core
         internal DateTime _lastVersionCheck = DateTime.MinValue;
         internal int _actualVersion;
 
-        public IServiceInfo Info
-        {
-            get { throw new NotSupportedException(); }
-        }
 
         public ClientSubscriptionManager(ISubscriptionManager subscriptionManager)
         {

@@ -7,7 +7,7 @@ using System;
 namespace ASC.Common.Security.Authentication
 {
     [Serializable]
-    public class GuestAccount : SysAccount
+    public class GuestAccount : SysAccount, IGuestAccount
     {
         public GuestAccount(Guid ID, string Name)
             : base(ID, Name)

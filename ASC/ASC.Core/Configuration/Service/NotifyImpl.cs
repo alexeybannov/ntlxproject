@@ -11,6 +11,7 @@ using ASC.Notify.Messages;
 using ASC.Notify.Sinks.Smtp;
 using log4net;
 using NotifyContext = ASC.Notify.Context;
+
 [assembly: AssemblyServices(typeof(NotifyImpl))]
 
 namespace ASC.Core.Configuration.Service
@@ -64,11 +65,6 @@ namespace ASC.Core.Configuration.Service
             }
             LogMessage(message, senderName);
             return response;
-        }
-
-        public INoticeMessage[] GetPooledNoticies(string senderName)
-        {
-            throw new NotImplementedException();
         }
 
         private void UpdateSmtpSender()

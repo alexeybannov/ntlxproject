@@ -1,6 +1,7 @@
 #region usings
 
 using System;
+using ASC.Common.Security.Authorizing;
 
 #endregion
 
@@ -10,7 +11,7 @@ namespace ASC.Common.Security.Authentication
     public class DemoAccount : SysAccount
     {
         public DemoAccount()
-            : base(new Guid(CommonDescriptionResource.SysRole_Demo_ID), CommonDescriptionResource.SysRole_Demo_Name)
+            : base(Constants.Demo.ID, Constants.Demo.Name)
         {
         }
     }

@@ -20,10 +20,20 @@ namespace ASC.Common.Utils
             return GetText(html, 0);
         }
 
+		public static string GetText(string html, bool preserveSpaces)
+		{
+			return GetText(html, 0, "...", false, preserveSpaces);
+		}
+
         public static string GetText(string html, int maxLength)
         {
             return GetText(html, maxLength, "...");
         }
+
+		public static string GetText(string html, int maxLength, bool preserveSpaces)
+		{
+			return GetText(html, maxLength, "...", false, preserveSpaces);
+		}
 
         public static string GetText(string html, int maxLength, string endBlockTemplate)
         {
@@ -32,42 +42,53 @@ namespace ASC.Common.Utils
 
         public static string GetText(string html, int maxLength, string endBlockTemplate, bool calcEndBlockTemplate)
         {
-            html = html ?? string.Empty;
-            endBlockTemplate = endBlockTemplate ?? string.Empty;
-
-            string unformatedText = string.Empty;
-
-            var tags = new Regex(@"</?(.|\n)*?>");
-            unformatedText = HttpUtility.HtmlDecode(tags.Replace(html, string.Empty));
-
-            var spaces = new Regex(@"\s+");
-            unformatedText = HttpUtility.HtmlDecode(spaces.Replace(unformatedText, " ")).Trim();
-
-            if (maxLength == 0 || unformatedText.Length < maxLength)
-                return unformatedText;
-            maxLength = calcEndBlockTemplate ? maxLength - endBlockTemplate.Length : maxLength;
-            int lastSpaceIndex = 0, spaceIndex = 0;
-            while (spaceIndex < maxLength)
-            {
-                lastSpaceIndex = spaceIndex;
-                spaceIndex = unformatedText.IndexOf(' ', lastSpaceIndex + 1);
-                if (spaceIndex < 0)
-                    break;
-            }
-            if (lastSpaceIndex > 0)
-            {
-                unformatedText = unformatedText.Remove(lastSpaceIndex);
-            }
-            else
-            {
-                unformatedText = unformatedText.Substring(0, maxLength);
-            }
-            if (!endBlockTemplate.Equals(string.Empty))
-            {
-                unformatedText += endBlockTemplate;
-            }
-            return unformatedText;
+			return GetText(html, maxLength, endBlockTemplate, calcEndBlockTemplate, false);
         }
+
+		public static string GetText(string html, int maxLength, string endBlockTemplate, bool calcEndBlockTemplate, bool preserveSpaces)
+		{
+			html = html ?? string.Empty;
+			endBlockTemplate = endBlockTemplate ?? string.Empty;
+
+			string unformatedText = html;
+
+			if (preserveSpaces)
+			{
+				var regex = new Regex(	@"<br\s*\/*>",	RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
+				unformatedText = HttpUtility.HtmlDecode(regex.Replace(unformatedText, " "));
+			}
+
+			var tags = new Regex(@"</?(.|\n)*?>");
+			unformatedText = HttpUtility.HtmlDecode(tags.Replace(unformatedText, string.Empty));
+
+			var spaces = new Regex(@"\s+");
+			unformatedText = HttpUtility.HtmlDecode(spaces.Replace(unformatedText, " ")).Trim();
+
+			if (maxLength == 0 || unformatedText.Length < maxLength)
+				return unformatedText;
+			maxLength = calcEndBlockTemplate ? maxLength - endBlockTemplate.Length : maxLength;
+			int lastSpaceIndex = 0, spaceIndex = 0;
+			while (spaceIndex < maxLength)
+			{
+				lastSpaceIndex = spaceIndex;
+				spaceIndex = unformatedText.IndexOf(' ', lastSpaceIndex + 1);
+				if (spaceIndex < 0)
+					break;
+			}
+			if (lastSpaceIndex > 0)
+			{
+				unformatedText = unformatedText.Remove(lastSpaceIndex);
+			}
+			else
+			{
+				unformatedText = unformatedText.Substring(0, maxLength);
+			}
+			if (!endBlockTemplate.Equals(string.Empty))
+			{
+				unformatedText += endBlockTemplate;
+			}
+			return unformatedText;
+		}
 
         public static string ToPlainText(string html)
         {

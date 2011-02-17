@@ -120,12 +120,6 @@ namespace ASC.Core.Configuration.Service
             return new GenericPrincipal(account, roles.ToArray());
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Authenticated = true)]
-        public IAccount GetAccountByID(Guid id)
-        {
-            throw new NotSupportedException();
-        }
-
         #endregion
 
         private static string GetHash512(string data, bool revers)

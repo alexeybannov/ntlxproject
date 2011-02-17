@@ -10,7 +10,7 @@ namespace ASC.Core.Users
 {
     [Service("{E2C64542-46E5-4cc1-BD4B-748ED6F8B289}", ServiceInstancingType.Singleton)]
     [ChannelDemand]
-    public interface IUserManager : IService
+    interface IUserManager : IService
     {
         #region users
 

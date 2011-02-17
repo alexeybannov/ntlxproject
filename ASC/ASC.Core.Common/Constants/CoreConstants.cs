@@ -10,6 +10,6 @@ namespace ASC.Core
 {
     public sealed class CoreConstants
     {
-        public static readonly Version CoreVersion = new Version(CoreConstResource.Version);
+        public static readonly Version CoreVersion = new Version("0.1");
     }
 }

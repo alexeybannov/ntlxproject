@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Permissions;
+using ASC.Common.Security.Authorizing;
 using ASC.Common.Services;
 using ASC.Core.Common.Remoting;
 using ASC.Core.Configuration.DAO;
 using ASC.Core.Configuration.Service;
 using ASC.Core.Factories;
 using ASC.Core.Tenants;
-using ASC.Common.Security.Authorizing;
 
 [assembly: AssemblyServices(typeof(TenantManager))]
 
@@ -51,31 +51,6 @@ namespace ASC.Core.Configuration.Service
         public void RemoveTenant(int tenantId)
         {
             GetTenantDAO().RemoveTenant(tenantId);
-        }
-
-        public Tenant GetCurrentTenant()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Tenant GetCurrentTenant(bool throwOnError)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetCurrentTenant(Tenant tenant)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetCurrentTenant(int tenantId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetCurrentTenant(string domain)
-        {
-            throw new NotImplementedException();
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = Role.Administrators)]

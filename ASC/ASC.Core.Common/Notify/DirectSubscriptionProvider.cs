@@ -15,10 +15,10 @@ namespace ASC.Core.Notify
     {
         private readonly IRecipientProvider _recipientProvider;
         private readonly IActionProvider _actionProvider;
-        private readonly ISubscriptionManager _subscriptionManager;
+        private readonly ISubscriptionManagerClient _subscriptionManager;
         private readonly string _sourceID;
 
-        internal DirectSubscriptionProvider(string sourceID, ISubscriptionManager subscriptionManager,
+        internal DirectSubscriptionProvider(string sourceID, ISubscriptionManagerClient subscriptionManager,
                                             IRecipientProvider recipientProvider, IActionProvider actionProvider)
         {
             if (String.IsNullOrEmpty(sourceID)) throw new ArgumentNullException("sourceID");
