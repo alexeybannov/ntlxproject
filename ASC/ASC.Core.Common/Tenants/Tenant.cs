@@ -50,16 +50,6 @@ namespace ASC.Core.Tenants
 
         public TimeZoneInfo TimeZone { get; set; }
 
-        public string Tagline { get; set; }
-
-        public string Description { get; set; }
-
-        public string Keywords { get; set; }
-
-        public string Country { get; set; }
-
-        public string Address { get; set; }
-
         public List<string> TrustedDomains { get; private set; }
 
         public bool TrustedDomainsEnabled { get; set; }

@@ -62,8 +62,6 @@ namespace ASC.Core.Configuration.Service
 		/// <inheritdoc/>
 		public void ServiceStartedUp(IServiceInfo srvInfo, Guid serviceInstanceID, ConnectionHostEntry hostEntry)
 		{
-			if (!CoreContext.Configuration.Cfg.IsInTrustZone(hostEntry.HostName)) throw new ServiceRegistrationException(srvInfo.ID, hostEntry.HostName);
-
 			log.InfoFormat("service \"{0}[{2}]\" started up at {1}", srvInfo, hostEntry.Address, serviceInstanceID);
 
 			services[srvInfo.ID] = srvInfo;

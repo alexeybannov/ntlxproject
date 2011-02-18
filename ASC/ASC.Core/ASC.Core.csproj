@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{201BDF9F-BBDD-4D4E-96D9-E42437AAFB93}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -12,9 +12,7 @@
     <AssemblyName>ASC.Core</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>false</SignAssembly>
     <TrunkDir>..\..\</TrunkDir>
-    <AssemblyOriginatorKeyFile>$(TrunkDir)ASC.snk</AssemblyOriginatorKeyFile>
     <RedDir Condition=" '$(RedDir)' == '' ">$(TrunkDir)redistributable\asc\</RedDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

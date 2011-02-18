@@ -6,7 +6,6 @@ using ASC.Common.Services;
 using ASC.Common.Utils;
 using ASC.Core.Common;
 using ASC.Net;
-using SmartAssembly.Attributes;
 
 #endregion
 
@@ -14,8 +13,6 @@ namespace ASC.Core.Hosting
 {
     public sealed class Constants
     {
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         internal static readonly ServiceInfoBase CoreHostServiceInfo =
             new ServiceInfoBase(
             typeof(ICoreHost),

@@ -68,8 +68,6 @@ namespace ASC.Core.Notify
             Name = name;
         }
 
-        #region INotifySource
-
         public string ID { get; private set; }
 
         public string Name { get; private set; }
@@ -78,7 +76,7 @@ namespace ASC.Core.Notify
         {
             lock (actionPatterns)
             {
-                CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+                var culture = Thread.CurrentThread.CurrentCulture;
                 if (!actionPatterns.ContainsKey(culture))
                 {
                     actionPatterns[culture] = CreateActionPatternProvider();
@@ -91,7 +89,7 @@ namespace ASC.Core.Notify
         {
             lock (actions)
             {
-                CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+                var culture = Thread.CurrentThread.CurrentCulture;
                 if (!actions.ContainsKey(culture))
                 {
                     actions[culture] = CreateActionProvider();
@@ -104,7 +102,7 @@ namespace ASC.Core.Notify
         {
             lock (patterns)
             {
-                CultureInfo culture = Thread.CurrentThread.CurrentCulture;
+                var culture = Thread.CurrentThread.CurrentCulture;
                 if (!patterns.ContainsKey(culture))
                 {
                     patterns[culture] = CreatePatternsProvider();
@@ -137,8 +135,6 @@ namespace ASC.Core.Notify
             return SubscriprionProvider;
         }
 
-        #endregion
-
         protected void LazyInitializeProviders()
         {
             if (!initialized)
@@ -157,23 +153,24 @@ namespace ASC.Core.Notify
         {
             RecipientsProvider = CreateRecipientsProvider();
             if (RecipientsProvider == null)
-                throw new NotifyException(
-                    String.Format(Resource.NotifyException_Message_ProviderNotInstanced,
-                                  "IRecipientsProvider"));
+            {
+                throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IRecipientsProvider"));
+            }
+
             DependencyProvider = CreateDependencyProvider();
             if (DependencyProvider == null)
-                throw new NotifyException(
-                    String.Format(Resource.NotifyException_Message_ProviderNotInstanced,
-                                  "IDependencyProvider"));
+            {
+                throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IDependencyProvider"));
+            }
+
             SubscriprionProvider = CreateSubscriptionProvider();
             if (SubscriprionProvider == null)
-                throw new NotifyException(
-                    String.Format(Resource.NotifyException_Message_ProviderNotInstanced,
-                                  "ISubscriprionProvider"));
+            {
+                throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "ISubscriprionProvider"));
+            }
+
             initialized = true;
         }
-
-        #region virtual methods
 
         protected abstract IActionPatternProvider CreateActionPatternProvider();
 
@@ -183,24 +180,21 @@ namespace ASC.Core.Notify
 
         protected virtual ISubscriptionProvider CreateSubscriptionProvider()
         {
-            var directSubscriptionProvider = new DirectSubscriptionProvider(ID, CoreContext.SubscriptionManager,
-                                                                            RecipientsProvider, ActionProvider);
-            return new TopSubscriptionProvider(RecipientsProvider, directSubscriptionProvider,
-                                               Array.ConvertAll(WorkContext.DefaultClientSenders, (sm) => sm.ID));
+            var directSubscriptionProvider = new DirectSubscriptionProvider(ID, CoreContext.SubscriptionManager, RecipientsProvider, ActionProvider);
+            return new TopSubscriptionProvider(RecipientsProvider, directSubscriptionProvider, Array.ConvertAll(WorkContext.DefaultClientSenders, (sm) => sm.ID));
         }
-
+        
         protected virtual IDependencyProvider CreateDependencyProvider()
         {
             return new FakeDepProvider();
         }
 
+        
         private class FakeDepProvider : IDependencyProvider
         {
-            private static readonly ITagValue[] _fake = new ITagValue[0];
-
             public ITagValue[] GetDependencies(INoticeMessage message, string objectID, ITag[] tags)
             {
-                return _fake;
+                return new ITagValue[0];
             }
         }
 
@@ -209,15 +203,9 @@ namespace ASC.Core.Notify
             return new RecipientProviderImpl();
         }
 
-        #endregion
-
-        #region IDependencyProvider Members
-
         public virtual ITagValue[] GetDependencies(INoticeMessage message, string objectID, ITag[] tags)
         {
-            return new ITagValue[] { };
+            return new ITagValue[0];
         }
-
-        #endregion
     }
 }

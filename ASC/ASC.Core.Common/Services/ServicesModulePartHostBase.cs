@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using ASC.Common.Module;
 using ASC.Common.Services;
-using SmartAssembly.Attributes;
 
 #endregion
 
@@ -66,31 +65,23 @@ namespace ASC.Core.Common.Services
 
         #region IController
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         void IController.Start()
         {
             ControllerStart();
         }
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         public void ControllerStart()
         {
             foreach (Guid id in _ModulePartsList.Keys)
                 (this as IServicesModulePartsHost).Start(id);
         }
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         void IController.Stop()
         {
             foreach (Guid id in _ModulePartsList.Keys)
                 (this as IServicesModulePartsHost).Stop(id);
         }
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         public void ControllerStop()
         {
             foreach (Guid id in _ModulePartsList.Keys)
@@ -101,8 +92,6 @@ namespace ASC.Core.Common.Services
 
         #region IServicesModulePartsHost
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         void IServicesModulePartsHost.Start(Guid servicesModulePartID)
         {
             if (_ModulePartsList.ContainsKey(servicesModulePartID))
@@ -115,8 +104,6 @@ namespace ASC.Core.Common.Services
                 throw new ModulePartNotFoundException(servicesModulePartID);
         }
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         void IServicesModulePartsHost.Stop(Guid servicesModulePartID)
         {
             if (_ModulePartsList.ContainsKey(servicesModulePartID))
@@ -131,8 +118,6 @@ namespace ASC.Core.Common.Services
 
         Guid[] IServicesModulePartsHost.ServicesModuleParts
         {
-            [Obfuscation(Exclude = true)]
-            [DoNotObfuscate]
             get
             {
                 var result = new Guid[_ModulePartsList.Count];
@@ -141,8 +126,6 @@ namespace ASC.Core.Common.Services
             }
         }
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         void IServicesModulePartsHost.Add(Guid servicesModulePartID)
         {
             if (!_ModulePartsList.ContainsKey(servicesModulePartID))
@@ -153,8 +136,6 @@ namespace ASC.Core.Common.Services
             }
         }
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         void IServicesModulePartsHost.Remove(Guid servicesModulePartID)
         {
             if (_ModulePartsList.ContainsKey(servicesModulePartID))
@@ -171,13 +152,9 @@ namespace ASC.Core.Common.Services
 
         HostStatus IServicesModulePartsHost.Status
         {
-            [Obfuscation(Exclude = true)]
-            [DoNotObfuscate]
             get { return _Status; }
         }
 
-        [Obfuscation(Exclude = true)]
-        [DoNotObfuscate]
         HostStatus IServicesModulePartsHost.GetStatus(Guid servicesModulePartID)
         {
             if (!_ModulePartsList.ContainsKey(servicesModulePartID))

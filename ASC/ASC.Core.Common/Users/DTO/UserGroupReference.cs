@@ -2,15 +2,12 @@
 
 using System;
 using System.Reflection;
-using SmartAssembly.Attributes;
 
 #endregion
 
 namespace ASC.Core.Users
 {
     [Serializable]
-    [Obfuscation(Exclude = true, ApplyToMembers = true)]
-    [DoNotObfuscateType]
     public class UserGroupReference
     {
         public UserGroupReference(Guid userId, Guid groupId)

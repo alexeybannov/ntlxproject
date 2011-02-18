@@ -9,11 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASC.Core.Common</RootNamespace>
     <AssemblyName>ASC.Core.Common</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,9 +25,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SignAssembly>false</SignAssembly>
     <TrunkDir>..\..\</TrunkDir>
-    <AssemblyOriginatorKeyFile>$(TrunkDir)ASC.snk</AssemblyOriginatorKeyFile>
     <RedDir Condition=" '$(RedDir)' == '' ">$(TrunkDir)redistributable\asc\</RedDir>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -59,6 +53,10 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ASC.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d7a83c48f8054c7a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\redistributable\asc\ASC.Common.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\redistributable\third-party\log4net\log4net.dll</HintPath>
@@ -129,8 +127,8 @@
     <Compile Include="Core\User.cs" />
     <Compile Include="Core\UserGroupRef.cs" />
     <Compile Include="Core\UserGroupRefType.cs" />
-    <Compile Include="Data\DbExecuter.cs" />
     <Compile Include="Data\DbBaseService.cs" />
+    <Compile Include="Data\DbExecuter.cs" />
     <Compile Include="Data\IDbExecuter.cs" />
     <Compile Include="Hosting\ICoreHost.cs" />
     <Compile Include="Context\CoreContext.cs" />
@@ -309,12 +307,6 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj">
-      <Project>{76DE7717-3D4B-4A5B-B740-15B8913DF0CB}</Project>
-      <Name>ASC.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

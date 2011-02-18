@@ -30,7 +30,7 @@ namespace ASC.Core
 
         public User GetUser(int tenant, Guid id)
         {
-            return GetUsers(tenant, default(DateTime)).FirstOrDefault(u => u.Id == id);
+            return GetUsers(tenant, default(DateTime)).SingleOrDefault(u => u.Id == id);
         }
 
         public User SaveUser(int tenant, User user)
@@ -46,11 +46,11 @@ namespace ASC.Core
 
         public void RemoveUser(int tenant, Guid id)
         {
-            service.RemoveUser(tenant, id);
-            lock (cache)
+            var u = service.GetUser(tenant, id);
+            if (u != null && !u.Removed)
             {
-                cache.Reset<User>(tenant);
-                cache.Reset<UserGroupRef>(tenant);
+                u.Removed = true;
+                SaveUser(tenant, u);
             }
         }
 
@@ -94,11 +94,11 @@ namespace ASC.Core
 
         public void RemoveGroup(int tenant, Guid id)
         {
-            service.RemoveUser(tenant, id);
-            lock (cache)
+            var g = service.GetGroup(tenant, id);
+            if (g != null && !g.Removed)
             {
-                cache.Reset<Group>(tenant);
-                cache.Reset<UserGroupRef>(tenant);
+                g.Removed = true;
+                SaveGroup(tenant, g);
             }
         }
 
@@ -123,8 +123,8 @@ namespace ASC.Core
 
         public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
         {
-            service.RemoveUserGroupRef(tenant, userId, groupId, refType);
-            cache.Reset<UserGroupRef>(tenant);
+            var r = new UserGroupRef() { UserId = userId, GroupId = groupId, RefType = refType, Removed = true };
+            SaveUserGroupRef(tenant, r);
         }
     }
 }

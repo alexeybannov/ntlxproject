@@ -16,7 +16,7 @@ namespace ASC.Core.Configuration.DAO
     {
         private string dbId = "tenant";
 
-        private string[] columns = new[] { "ID", "Alias", "Language", "Timezone", "Name", "Tagline", "Description", "Keywords", "Country", "Address", "TrustedDomains", "TrustedDomainsEnabled", "OwnerId", "CreationDateTime", "MappedDomain", "Status", "StatusChanged" };
+        private string[] columns = new[] { "ID", "Alias", "Language", "Timezone", "Name", "TrustedDomains", "TrustedDomainsEnabled", "OwnerId", "CreationDateTime", "MappedDomain", "Status", "StatusChanged" };
 
         private string table = "tenants_tenants";
 
@@ -106,11 +106,6 @@ namespace ASC.Core.Configuration.DAO
                                 t.Language,
                                 t.TimeZone.Id,
                                 t.Name ?? t.TenantAlias,
-                                t.Tagline,
-                                t.Description,
-                                t.Keywords,
-                                t.Country,
-                                t.Address,
                                 t.GetTrustedDomains(),
                                 t.TrustedDomainsEnabled,
                                 t.OwnerId.ToString(),
@@ -154,17 +149,12 @@ namespace ASC.Core.Configuration.DAO
                         .Set(columns[2], t.Language)
                         .Set(columns[3], t.TimeZone.Id)
                         .Set(columns[4], t.Name ?? t.TenantAlias)
-                        .Set(columns[5], t.Tagline)
-                        .Set(columns[6], t.Description)
-                        .Set(columns[7], t.Keywords)
-                        .Set(columns[8], t.Country)
-                        .Set(columns[9], t.Address)
-                        .Set(columns[10], t.GetTrustedDomains())
-                        .Set(columns[11], t.TrustedDomainsEnabled)
-                        .Set(columns[12], t.OwnerId.ToString())
-                        .Set(columns[14], t.MappedDomain)
-                        .Set(columns[15], t.Status)
-                        .Set(columns[16], t.StatusChangeDate)
+                        .Set(columns[5], t.GetTrustedDomains())
+                        .Set(columns[6], t.TrustedDomainsEnabled)
+                        .Set(columns[7], t.OwnerId.ToString())
+                        .Set(columns[9], t.MappedDomain)
+                        .Set(columns[10], t.Status)
+                        .Set(columns[11], t.StatusChangeDate)
                         .Where(columns[0], t.TenantId)
                     );
                 }
@@ -346,12 +336,7 @@ namespace ASC.Core.Configuration.DAO
                 Language = row.Get<string>("Language"),
 
                 Name = row.Get<string>("Name"),
-                Tagline = row.Get<string>("Tagline"),
-                Keywords = row.Get<string>("Keywords"),
-                Description = row.Get<string>("Description"),
                 MappedDomain = row.Get<string>("MappedDomain"),
-                Address = row.Get<string>("Address"),
-                Country = row.Get<string>("Country"),
 
                 TrustedDomainsEnabled = row.Get<bool>("TrustedDomainsEnabled"),
 
