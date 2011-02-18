@@ -1,110 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 
 namespace ASC.Core.Data
 {
-    public abstract class DbBaseService : IDbExecuter
+    public abstract class DbBaseService
     {
-        private readonly string dbid;
+        private readonly IDbExecuter db;
 
-
-        protected DbBaseService(ConnectionStringSettings connectionString)
+        protected string TenantColumn
         {
-            if (connectionString == null) throw new ArgumentNullException("connectionString");
-
-            dbid = connectionString.Name;
-            if (!DbRegistry.IsDatabaseRegistered(dbid))
-            {
-                DbRegistry.RegisterDatabase(dbid, connectionString);
-            }
+            get;
+            private set;
         }
 
 
-        public T ExecScalar<T>(ISqlInstruction sql)
+        protected DbBaseService(ConnectionStringSettings connectionString, string tenantColumn)
         {
-            using (var db = new DbManager(dbid))
-            {
-                return db.ExecuteScalar<T>(sql);
-            }
-        }
-
-        public int ExecNonQuery(ISqlInstruction sql)
-        {
-            using (var db = new DbManager(dbid))
-            {
-                return db.ExecuteNonQuery(sql);
-            }
-        }
-
-        public List<object[]> ExecList(ISqlInstruction sql)
-        {
-            using (var db = new DbManager(dbid))
-            {
-                return db.ExecuteList(sql);
-            }
-        }
-
-        public void ExecBatch(IEnumerable<ISqlInstruction> batch)
-        {
-            using (var db = new DbManager(dbid))
-            {
-                db.ExecuteBatch(batch);
-            }
-        }
-
-        public void ExecAction(Action<IDbExecuter> action)
-        {
-            using (var db = new DbManager(dbid))
-            using (var tx = db.BeginTransaction())
-            {
-                action(new DbExecuter(db));
-                tx.Commit();
-            }
+            db = new DbExecuter(connectionString);
+            TenantColumn = tenantColumn;
         }
 
 
-        private class DbExecuter : IDbExecuter
+        protected T ExecScalar<T>(ISqlInstruction sql)
         {
-            private DbManager db;
+            return db.ExecScalar<T>(sql);
+        }
 
-            
-            public DbExecuter(DbManager db)
-            {
-                this.db = db;
-            }
+        protected int ExecNonQuery(ISqlInstruction sql)
+        {
+            return db.ExecNonQuery(sql);
+        }
+
+        protected List<object[]> ExecList(ISqlInstruction sql)
+        {
+            return db.ExecList(sql);
+        }
+
+        protected void ExecBatch(IEnumerable<ISqlInstruction> batch)
+        {
+            db.ExecBatch(batch);
+        }
+
+        protected void ExecAction(Action<IDbExecuter> action)
+        {
+            db.ExecAction(action);
+        }
 
 
-            public T ExecScalar<T>(ISqlInstruction sql)
-            {
-                return db.ExecuteScalar<T>(sql);
-            }
+        protected SqlQuery Query(string table, int tenant)
+        {
+            return new SqlQuery(table).Where(GetTenantColumnName(table), tenant);
+        }
 
-            public int ExecNonQuery(ISqlInstruction sql)
-            {
-                return db.ExecuteNonQuery(sql);
-            }
+        protected SqlInsert Insert(string table, int tenant)
+        {
+            return new SqlInsert(table, true).InColumnValue(GetTenantColumnName(table), tenant);
+        }
 
-            public List<object[]> ExecList(ISqlInstruction sql)
-            {
-                return db.ExecuteList(sql);
-            }
+        protected SqlUpdate Update(string table, int tenant)
+        {
+            return new SqlUpdate(table).Where(GetTenantColumnName(table), tenant);
+        }
 
-            public void ExecBatch(IEnumerable<ISqlInstruction> batch)
-            {
-                db.ExecuteBatch(batch);
-            }
+        protected SqlDelete Delete(string table, int tenant)
+        {
+            return new SqlDelete(table).Where(GetTenantColumnName(table), tenant);
+        }
 
-            public void ExecAction(Action<IDbExecuter> action)
-            {
-                using (var tx = db.BeginTransaction())
-                {
-                    action(this);
-                    tx.Commit();
-                }
-            }
+        protected string GetTenantColumnName(string table)
+        {
+            var pos = table.LastIndexOf(' ');
+            return (0 < pos ? table.Substring(pos).Trim() + '.' : string.Empty) + TenantColumn;
         }
     }
 }

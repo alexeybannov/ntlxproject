@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace ASC.Core
 {
+    [DebuggerDisplay("{LastName} {FirstName}")]
     public class User
     {
         public Guid Id

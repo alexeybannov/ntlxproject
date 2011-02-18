@@ -10,11 +10,8 @@ namespace ASC.Core
 {
     public class DbUserService : DbBaseService, IUserService
     {
-        private readonly string tenantColumn = "tenant";
-
-
         public DbUserService(ConnectionStringSettings connectionString)
-            : base(connectionString)
+            : base(connectionString, "tenant")
         {
 
         }
@@ -39,15 +36,14 @@ namespace ASC.Core
 
             ExecAction(db =>
             {
-                ISqlInstruction i = new SqlQuery("core_user")
+                var i = (ISqlInstruction)Query("core_user", tenant)
                     .SelectCount()
-                    .Where(tenantColumn, tenant)
                     .Where("id", user.Id.ToString());
 
                 var count = db.ExecScalar<int>(i);
                 if (count == 0)
                 {
-                    i = new SqlInsert("core_user")
+                    i = Insert("core_user", tenant)
                         .InColumnValue("id", user.Id.ToString())
                         .InColumnValue("username", user.UserName)
                         .InColumnValue("firstname", user.FirstName)
@@ -64,13 +60,12 @@ namespace ASC.Core
                         .InColumnValue("location", user.Location)
                         .InColumnValue("notes", user.Notes)
                         .InColumnValue("removed", user.Removed)
-                        .InColumnValue("last_modified", DateTime.UtcNow)
-                        .InColumnValue(tenantColumn, tenant);
+                        .InColumnValue("last_modified", DateTime.UtcNow);
                     db.ExecNonQuery(i);
                 }
                 else
                 {
-                    i = new SqlUpdate("core_user")
+                    i = Update("core_user", tenant)
                         .Set("username", user.UserName)
                         .Set("firstname", user.FirstName)
                         .Set("lastname", user.LastName)
@@ -87,7 +82,6 @@ namespace ASC.Core
                         .Set("notes", user.Notes)
                         .Set("removed", user.Removed)
                         .Set("last_modified", DateTime.UtcNow)
-                        .Where(tenantColumn, tenant)
                         .Where("id", user.Id.ToString());
                     db.ExecNonQuery(i);
 
@@ -204,8 +198,7 @@ namespace ASC.Core
                 .InColumnValue("groupid", r.GroupId.ToString())
                 .InColumnValue("ref_type", (int)r.RefType)
                 .InColumnValue("removed", r.Removed)
-                .InColumnValue("last_modified", DateTime.UtcNow)
-                .InColumnValue(tenantColumn, tenant);
+                .InColumnValue("last_modified", DateTime.UtcNow);
 
             ExecNonQuery(i);
 
@@ -316,33 +309,6 @@ namespace ASC.Core
                 Removed = Convert.ToBoolean(r[3]),
                 ModifiedOn = Convert.ToDateTime(r[4]),
             };
-        }
-
-
-        private SqlQuery Query(string table, int tenant)
-        {
-            return new SqlQuery(table).Where(GetTenantColumnName(table), tenant);
-        }
-
-        private SqlInsert Insert(string table, int tenant)
-        {
-            return new SqlInsert(table, true).InColumnValue(GetTenantColumnName(table), tenant);
-        }
-
-        private SqlUpdate Update(string table, int tenant)
-        {
-            return new SqlUpdate(table).Where(GetTenantColumnName(table), tenant);
-        }
-
-        private SqlDelete Delete(string table, int tenant)
-        {
-            return new SqlDelete(table).Where(GetTenantColumnName(table), tenant);
-        }
-
-        private string GetTenantColumnName(string table)
-        {
-            var pos = table.LastIndexOf(' ');
-            return (0 < pos ? table.Substring(pos).Trim() + '.' : string.Empty) + tenantColumn;
-        }
+        }        
     }
 }
