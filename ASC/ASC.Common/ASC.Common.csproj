@@ -133,8 +133,7 @@
     <Compile Include="Notify\Channels\ISenderChannel.cs" />
     <Compile Include="Notify\Channels\SenderChannelSkeleton.cs" />
     <Compile Include="Notify\Channels\SenderHolder.cs" />
-    <Compile Include="Notify\Context\Context.cs" />
-    <Compile Include="Notify\Context\WorkContext.cs" />
+    <Compile Include="Notify\Context.cs" />
     <Compile Include="Notify\Cron\CronExpression.cs" />
     <Compile Include="Notify\Cron\ISet.cs" />
     <Compile Include="Notify\Cron\ISortedSet.cs" />
@@ -407,4 +406,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(TrunkDir)_ci\msbuild\ASC.MSBuild.AssemblyInfo.Targets" />
+  <Target Name="AfterBuild">
+    <Message Importance="High" Text="Copy assemblies to redistributable: $(MSBuildProjectName) -&gt; @(MainAssembly->'$(RedDir)%(FileName)%(Extension)') @(FinalDocFile->'$(RedDir)%(FileName)%(Extension)') @(IntermediateSatelliteAssembliesWithTargetPath->'$(RedDir)%(Culture)\$(TargetName).resources.dll')" />
+    <Copy SourceFiles="@(IntermediateAssembly)" DestinationFolder="$(RedDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DocFileItem)" DestinationFiles="@(FinalDocFile->'$(RedDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(_DocumentationFileProduced)'=='true'" />
+    <Copy SourceFiles="@(IntermediateSatelliteAssembliesWithTargetPath)" DestinationFiles="@(IntermediateSatelliteAssembliesWithTargetPath->'$(RedDir)%(Culture)\$(TargetName).resources.dll')" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

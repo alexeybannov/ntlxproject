@@ -74,19 +74,6 @@ namespace ASC.Core.Configuration.DAO
             return ToAccount(rows[0], credential.Tenant);
         }
 
-        public List<IUserAccount> GetAccounts(int tenant)
-        {
-            var query = new SqlQuery("core_user u")
-                .Select("u.ID", "u.LastName", "u.FirstName", "u.Title", "u.Department", "u.Email")
-                .Select(new SqlQuery("core_usergroup g").Select("1").Where(Exp.EqColumns("u.ID", "g.UserID") & Exp.Eq("g.GroupID", ASC.Core.Users.Constants.GroupAdmin.ID)))
-                .Where("u.Tenant", tenant)
-                .Where("u.Status", EmployeeStatus.Active);
-
-            return DbManager
-                .ExecuteList(query)
-                .ConvertAll(row => ToAccount(row, tenant));
-        }
-
         public IEnumerable<Guid> GetAccountRoles(Guid accountId)
         {
             return DbManager

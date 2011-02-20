@@ -53,21 +53,7 @@ namespace ASC.Core.Configuration.Service
             GetTenantDAO().RemoveTenant(tenantId);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = Role.Administrators)]
-        [PrincipalPermission(SecurityAction.Demand, Role = Role.System)]
-        public TenantOwner GetTenantOwner(Guid ownerId)
-        {
-            return GetTenantDAO().GetTenantOwner(ownerId);
-        }
-
-        [PrincipalPermission(SecurityAction.Demand, Role = Role.Administrators)]
-        [PrincipalPermission(SecurityAction.Demand, Role = Role.System)]
-        public void SaveTenantOwner(TenantOwner owner)
-        {
-            GetTenantDAO().SaveTenantOwner(owner);
-        }
-
-
+                
         public TenantQuota GetTenantQuota(int tenant, string name)
         {
             return GetTenantDAO().GetTenantQuota(tenant, name);

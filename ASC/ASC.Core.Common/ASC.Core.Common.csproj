@@ -178,10 +178,10 @@
     <Compile Include="Security\Authorizing\PermissionResolver.cs" />
     <Compile Include="Security\Authorizing\RoleProvider.cs" />
     <Compile Include="Services\Factories\RemotingCoreServiceFactory.cs" />
-    <Compile Include="Tenants\TenantOwner.cs" />
     <Compile Include="Tenants\Sink\TenantClientSink.cs" />
     <Compile Include="Tenants\Sink\TenantClientSinkProvider.cs" />
     <Compile Include="Tenants\Tenant.cs" />
+    <Compile Include="Tenants\TenantRegistrationInfo.cs" />
     <Compile Include="Tenants\TenantUtil.cs" />
     <Compile Include="Users\DisplayUserNameFormat.cs" />
     <Compile Include="Users\DTO\AzCategory.cs" />
@@ -309,4 +309,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <Message Importance="High" Text="Copy assemblies to redistributable: $(MSBuildProjectName) -&gt; @(MainAssembly->'$(RedDir)%(FileName)%(Extension)') @(FinalDocFile->'$(RedDir)%(FileName)%(Extension)') @(IntermediateSatelliteAssembliesWithTargetPath->'$(RedDir)%(Culture)\$(TargetName).resources.dll')" />
+    <Copy SourceFiles="@(IntermediateAssembly)" DestinationFolder="$(RedDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(DocFileItem)" DestinationFiles="@(FinalDocFile->'$(RedDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(_DocumentationFileProduced)'=='true'" />
+    <Copy SourceFiles="@(IntermediateSatelliteAssembliesWithTargetPath)" DestinationFiles="@(IntermediateSatelliteAssembliesWithTargetPath->'$(RedDir)%(Culture)\$(TargetName).resources.dll')" SkipUnchangedFiles="true" />
+  </Target>
+  <Import Project="$(TrunkDir)_ci\msbuild\ASC.MSBuild.AssemblyInfo.Targets" />
 </Project>

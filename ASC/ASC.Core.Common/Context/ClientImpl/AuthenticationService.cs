@@ -1,50 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using ASC.Common.Security.Authentication;
-using ASC.Common.Services;
-using ASC.Core.Common.Cache;
-using ASC.Core.Configuration;
+using ASC.Core.Security.Authentication;
 using UsersConst = ASC.Core.Users.Constants;
 
 namespace ASC.Core
 {
     public class AuthenticationService : IAuthenticationClient
     {
-        private readonly IDictionary<int, ICache<Guid, IUserAccount>> accountsCache;
-
-        private ICache<Guid, IUserAccount> AccountsCache
-        {
-            get
-            {
-                int tenant = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                lock (accountsCache)
-                {
-                    if (!accountsCache.ContainsKey(tenant))
-                    {
-                        var accountsCacheInfo = new CacheInfo(UsersConst.CacheIdAccounts + tenant);
-                        accountsCacheInfo.AddParentCache(UsersConst.CacheIdUsers + tenant, CacheReaction.Synchronize,
-                                                         CacheReaction.Synchronize, CacheReaction.Synchronize);
-                        accountsCache[tenant] =
-                            CoreContext.CacheInfoStorage.CreateCache<Guid, IUserAccount>(accountsCacheInfo, SyncAccounts);
-                    }
-                    return accountsCache[tenant];
-                }
-            }
-        }
-
-        internal AuthenticationService()
-        {
-            accountsCache = new Dictionary<int, ICache<Guid, IUserAccount>>();
-        }
-
-        #region Implementation of IAuthentication
-
         public IUserAccount[] GetUserAccounts()
         {
-            return AccountsCache.Values.ToArray();
+            return CoreContext.UserManager.GetUsers(ASC.Core.Users.EmployeeStatus.Active)
+                .Select(u => new UserAccount(u, CoreContext.TenantManager.GetCurrentTenant().TenantId))
+                .ToArray();
         }
 
         public void SetUserPassword(Guid userID, string password)
@@ -64,16 +34,10 @@ namespace ASC.Core
             return CoreContext.InternalAuthentication.AuthenticateAccount(account);
         }
 
-        #endregion
-
         public IAccount GetAccountByID(Guid id)
         {
-            return AccountsCache.ContainsKey(id) ? AccountsCache[id] : null;
-        }
-
-        private IDictionary<Guid, IUserAccount> SyncAccounts()
-        {
-            return CoreContext.InternalAuthentication.GetUserAccounts().ToDictionary(a => a.ID);
+            var u = CoreContext.UserManager.GetUsers(id);
+            return !UsersConst.LostUser.Equals(u) ? new UserAccount(u, CoreContext.TenantManager.GetCurrentTenant().TenantId) : null;
         }
     }
 }

@@ -8,8 +8,6 @@ namespace ASC.Core.Configuration
     [Service("{005E6280-3852-403c-A768-8AF42A059269}")]
     interface IAuthentication : IService
     {
-        IUserAccount[] GetUserAccounts();
-
         IPrincipal AuthenticateAccount(IAccount account);
         
         string GetUserPasswordHash(Guid userID);

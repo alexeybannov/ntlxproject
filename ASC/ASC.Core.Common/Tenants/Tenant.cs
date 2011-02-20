@@ -54,7 +54,9 @@ namespace ASC.Core.Tenants
 
         public bool TrustedDomainsEnabled { get; set; }
 
-        public Guid OwnerId { get; set; }
+        public string OwnerEMail { get; set; }
+
+        public string OwnerName { get; set; }
 
         public DateTime CreatedDateTime { get; internal set; }
 

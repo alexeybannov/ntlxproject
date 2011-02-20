@@ -26,10 +26,6 @@ namespace ASC.Core
 
         void SetCurrentTenant(string domain);
 
-        TenantOwner GetTenantOwner(Guid ownerId);
-
-        void SaveTenantOwner(TenantOwner owner);
-
         TenantQuota GetTenantQuota(int tenant, string name);
 
         void SetTenantQuota(int tenant, string name, TenantQuota quota);

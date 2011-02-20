@@ -41,49 +41,40 @@ namespace ASC.Core.Tenants
             dao.CheckTenantAddress(address);
         }
 
-        public string RegisterTenant(TenantRegistrationInfo registrationInfo)
+        public string RegisterTenant(TenantRegistrationInfo ri)
         {
-            ValidateTenantRegistrationInfo(registrationInfo);
+            ValidateTenantRegistrationInfo(ri);
 
             bool doLogout = true;
             try
             {
                 SecurityContext.AuthenticateMe(Configuration.Constants.CoreSystem);
 
-                var owner = new TenantOwner(registrationInfo.Email)
+                var tenant = new Tenant(ri.Address.ToLowerInvariant())
                 {
-                    FirstName = registrationInfo.FirstName,
-                    LastName = registrationInfo.LastName,
+                    Name = ri.Name,
+                    Language = ri.Culture.Name,
+                    TimeZone = ri.TimeZoneInfo,
+                    OwnerName = string.Format("{0} {1}", ri.FirstName, ri.LastName),
+                    OwnerEMail = ri.Email
                 };
-                CoreContext.Authentication.SetUserPassword(owner.Id, registrationInfo.Password);
-                CoreContext.TenantManager.SaveTenantOwner(owner);
-
-                var tenant = new Tenant(registrationInfo.Address.ToLowerInvariant())
-                {
-                    Name = registrationInfo.Name,
-                    Language = registrationInfo.Culture.Name,
-                    TimeZone = registrationInfo.TimeZoneInfo,
-                    OwnerId = owner.Id,
-                };
-                tenant.TrustedDomains.AddRange(registrationInfo.TrustedDomains);
                 tenant = CoreContext.TenantManager.SaveTenant(tenant);
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
 
                 var user = new UserInfo()
                 {
-                    ID = owner.Id,
-                    LastName = registrationInfo.LastName,
-                    FirstName = registrationInfo.FirstName,
-                    Email = registrationInfo.Email,
-                    UserName = registrationInfo.Email.Substring(0, registrationInfo.Email.IndexOf('@'))
+                    LastName = ri.LastName,
+                    FirstName = ri.FirstName,
+                    Email = ri.Email,
+                    UserName = ri.Email.Substring(0, ri.Email.IndexOf('@'))
                 };
                 user = CoreContext.UserManager.SaveUserInfo(user);
-                CoreContext.Authentication.SetUserPassword(user.ID, registrationInfo.Password);
+                CoreContext.Authentication.SetUserPassword(user.ID, ri.Password);
                 CoreContext.UserManager.AddUserIntoGroup(user.ID, Constants.GroupAdmin.ID);
 
                 SecurityContext.Logout();
                 doLogout = false;
-                return SecurityContext.AuthenticateMe(registrationInfo.Email, registrationInfo.Password);
+                return SecurityContext.AuthenticateMe(ri.Email, ri.Password);
             }
             finally
             {

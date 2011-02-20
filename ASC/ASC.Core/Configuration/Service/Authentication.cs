@@ -35,14 +35,6 @@ namespace ASC.Core.Configuration.Service
 
         #region IAuthentication
 
-        public IUserAccount[] GetUserAccounts()
-        {
-            return daoFactory
-                .GetConfigDao()
-                .GetAccounts(CoreContext.TenantManager.GetCurrentTenant().TenantId)
-                .ToArray();
-        }
-
         [PrincipalPermission(SecurityAction.Demand, Authenticated = true)]
         public void SetUserPassword(Guid userID, string password)
         {

@@ -21,13 +21,6 @@ namespace ASC.Core.Configuration.DAO
 		void RemoveTenant(int tenantId);
 
 
-        List<TenantOwner> GetTenantOwners();
-        
-		TenantOwner GetTenantOwner(Guid ownerId);
-
-		void SaveTenantOwner(TenantOwner owner);
-
-
 		TenantQuota GetTenantQuota(int tenant, string name);
 
 		void SetTenantQuota(int tenant, string name, TenantQuota quota);

@@ -16,7 +16,7 @@ namespace ASC.Core.Configuration.DAO
     {
         private string dbId = "tenant";
 
-        private string[] columns = new[] { "ID", "Alias", "Language", "Timezone", "Name", "TrustedDomains", "TrustedDomainsEnabled", "OwnerId", "CreationDateTime", "MappedDomain", "Status", "StatusChanged" };
+        private string[] columns = new[] { "ID", "Alias", "Language", "Timezone", "Name", "TrustedDomains", "TrustedDomainsEnabled", "Owner_name", "Owner_email", "CreationDateTime", "MappedDomain", "Status", "StatusChanged" };
 
         private string table = "tenants_tenants";
 
@@ -108,7 +108,8 @@ namespace ASC.Core.Configuration.DAO
                                 t.Name ?? t.TenantAlias,
                                 t.GetTrustedDomains(),
                                 t.TrustedDomainsEnabled,
-                                t.OwnerId.ToString(),
+                                t.OwnerName,
+                                t.OwnerEMail,
                                 t.CreatedDateTime,
                                 t.MappedDomain,
                                 t.Status,
@@ -151,10 +152,11 @@ namespace ASC.Core.Configuration.DAO
                         .Set(columns[4], t.Name ?? t.TenantAlias)
                         .Set(columns[5], t.GetTrustedDomains())
                         .Set(columns[6], t.TrustedDomainsEnabled)
-                        .Set(columns[7], t.OwnerId.ToString())
-                        .Set(columns[9], t.MappedDomain)
-                        .Set(columns[10], t.Status)
-                        .Set(columns[11], t.StatusChangeDate)
+                        .Set(columns[7], t.OwnerName)
+                        .Set(columns[8], t.OwnerEMail)
+                        .Set(columns[10], t.MappedDomain)
+                        .Set(columns[11], t.Status)
+                        .Set(columns[12], t.StatusChangeDate)
                         .Where(columns[0], t.TenantId)
                     );
                 }
@@ -278,46 +280,7 @@ namespace ASC.Core.Configuration.DAO
                     );
             }
         }
-
-
-        /// <inheritdoc/>
-        public List<TenantOwner> GetTenantOwners()
-        {
-            using (var dbManager = new DbManager(dbId))
-            {
-                return dbManager.ExecuteList(
-                    new SqlQuery("tenants_owner").Select("Email", "FirstName", "LastName", "Id")
-                )
-                .ConvertAll<TenantOwner>(ToTenantOwner);
-            }
-        }
-
-        /// <inheritdoc/>
-        public TenantOwner GetTenantOwner(Guid ownerId)
-        {
-            using (var dbManager = new DbManager(dbId))
-            {
-                return dbManager.ExecuteList(
-                    new SqlQuery("tenants_owner").Select("Email", "FirstName", "LastName", "Id").Where("Id", ownerId.ToString())
-                )
-                .ConvertAll<TenantOwner>(ToTenantOwner)
-                .Find(o => o.Id == ownerId);
-            }
-        }
-
-        /// <inheritdoc/>
-        public void SaveTenantOwner(TenantOwner owner)
-        {
-            using (var dbManager = new DbManager(dbId))
-            {
-                dbManager.ExecuteNonQuery(
-                    new SqlInsert("tenants_owner", true)
-                    .InColumns("Id", "FirstName", "LastName", "Email")
-                    .Values(owner.Id.ToString(), owner.FirstName, owner.LastName, owner.Email)
-                );
-            }
-        }
-
+        
 
         private SqlQuery GetTenantQuery(Exp where)
         {
@@ -339,7 +302,8 @@ namespace ASC.Core.Configuration.DAO
                 MappedDomain = row.Get<string>("MappedDomain"),
 
                 TrustedDomainsEnabled = row.Get<bool>("TrustedDomainsEnabled"),
-
+                OwnerEMail = row.Get<string>("owner_email"),
+                OwnerName = row.Get<string>("owner_name"),
                 CreatedDateTime = row.Get<DateTime>("CreationDateTime"),
 
                 Status = (TenantStatus)row.Get<int>("Status"),
@@ -361,22 +325,9 @@ namespace ASC.Core.Configuration.DAO
                 }
             }
 
-            var ownerId = row.Get<string>("OwnerId");
-            if (!string.IsNullOrEmpty(ownerId)) tenant.OwnerId = new Guid(ownerId);
-
             SetTenantDomain(tenant);
 
             return tenant;
-        }
-
-        private TenantOwner ToTenantOwner(object[] r)
-        {
-            return new TenantOwner((string)r[0])
-            {
-                FirstName = (string)r[1],
-                LastName = (string)r[2],
-                Id = new Guid((string)r[3])
-            };
         }
 
         private void SetTenantDomain(Tenant tenant)

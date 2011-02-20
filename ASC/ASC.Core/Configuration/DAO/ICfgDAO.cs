@@ -16,8 +16,6 @@ namespace ASC.Core.Configuration.DAO
         UserSecurity GetUserSecurity(Guid userID);
 
 
-        List<IUserAccount> GetAccounts(int tenant);
-
         IUserAccount GetAccount(Credential credential);
 
         IEnumerable<Guid> GetAccountRoles(Guid accountId);

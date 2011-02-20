@@ -17,7 +17,7 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Core
 {
-    internal class ClientTenantManager : ITenantManagerClient
+    class ClientTenantManager : ITenantManagerClient
     {
         private const string CURRENT_TENANT = "CURRENT_TENANT";
         private readonly ICache<int, Tenant> cache;
@@ -160,16 +160,6 @@ namespace ASC.Core
         public void SetCurrentTenant(string domain)
         {
             SetCurrentTenant(GetTenant(domain));
-        }
-
-        public TenantOwner GetTenantOwner(Guid ownerId)
-        {
-            return CoreContext.InternalTenantManager.GetTenantOwner(ownerId);
-        }
-
-        public void SaveTenantOwner(TenantOwner owner)
-        {
-            CoreContext.InternalTenantManager.SaveTenantOwner(owner);
         }
 
         public TenantQuota GetTenantQuota(int tenant, string name)

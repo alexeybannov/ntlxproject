@@ -19,7 +19,6 @@ namespace ASC.Core.Host
 	public class CoreHost : ServicesModulePartHostBase, ICoreHost
 	{
 		private readonly IDictionary<Guid, CoreSMPEntry> coreServiceParts = new Dictionary<Guid, CoreSMPEntry>();
-		private WebServiceEntryPoint wsEntryPoint;
 
 		public CoreHost()
 			: this(0)
@@ -41,9 +40,6 @@ namespace ASC.Core.Host
 
 			CoreContext.Configuration.SecureCorePort = TcpPortResolver.GetFreePort();
 			LogManager.GetLogger("ASC.Core.Host").InfoFormat("{0} - SecureCorePort", CoreContext.Configuration.SecureCorePort);
-
-			EnableWebService = false;
-			WebServicePort = 0;
 		}
 
 		public event HostStatusChangeEventEventHandler HostStatusChange;
@@ -95,33 +91,14 @@ namespace ASC.Core.Host
 
 		#region ServiceController
 
-		protected override void BeforeStartWork()
-		{
-			//System.Runtime.Remoting.Services.TrackingServices.RegisterTrackingHandler(new RemotingTrackingHandler());
-		}
-
 		protected override void AfterStartWork()
 		{
 			ControllerStart();
-
-			SecurityContext.AuthenticateMe(ConfConst.CoreSystem);
-
-			if (EnableWebService)
-			{
-				if (WebServicePort == 0) WebServicePort = TcpPortResolver.GetFreePort();
-				wsEntryPoint = new WebServiceEntryPoint();
-				wsEntryPoint.Start(WebServicePort, "AscWSEntryPoint");
-			}
+    		SecurityContext.AuthenticateMe(ConfConst.CoreSystem);
 		}
 
 		protected override void BeforeStopWork()
 		{
-			if (wsEntryPoint != null)
-			{
-				wsEntryPoint.Stop();
-				wsEntryPoint = null;
-			}
-
 			ControllerStop();
 		}
 
@@ -187,24 +164,5 @@ namespace ASC.Core.Host
 			get;
 			private set;
 		}
-
-		public bool EnableWebService
-		{
-			get;
-			set;
-		}
-
-		public int WebServicePort
-		{
-			get { return webServicePort; }
-			set
-			{
-				if (wsEntryPoint != null) throw new InvalidOperationException(string.Format("Web Service already started at {0} port", webServicePort));
-				if (value < 0) throw new ArgumentOutOfRangeException("WebServicePort", value, "Must be more or equal 0");
-				webServicePort = value;
-			}
-		}
-
-		private int webServicePort;
 	}
 }

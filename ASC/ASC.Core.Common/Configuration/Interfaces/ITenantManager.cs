@@ -23,11 +23,6 @@ namespace ASC.Core.Configuration
         void RemoveTenant(int tenantId);
 
 
-        TenantOwner GetTenantOwner(Guid ownerId);
-
-        void SaveTenantOwner(TenantOwner owner);
-
-        
         TenantQuota GetTenantQuota(int tenant, string name);
 
         void SetTenantQuota(int tenant, string name, TenantQuota quota);
