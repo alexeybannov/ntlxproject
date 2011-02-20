@@ -1,18 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Services;
-using ASC.Core.Common;
-using ASC.Core.Common.Cache;
 using ASC.Core.Users;
 
 namespace ASC.Core
 {
     class ClientUserManager : IUserManagerClient, IGroupManagerClient
     {
-        private IUserService userService;
+        private readonly IUserService userService;
 
         private readonly IDictionary<Guid, UserInfo> systemUsers;
 
@@ -112,18 +107,25 @@ namespace ASC.Core
         public UserInfo SaveUserInfo(UserInfo u)
         {
             if (systemUsers.ContainsKey(u.ID)) return systemUsers[u.ID];
+            if (u.ID == Guid.Empty) SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            else SecurityContext.DemandPermissions<UserInfo>(u.ID, new UserSecurityProvider(), Constants.Action_EditUser);
+
             return ToUserInfo(userService.SaveUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, ToUser(u)));
         }
 
         public void DeleteUser(Guid id)
         {
             if (systemUsers.ContainsKey(id)) return;
+            SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
+
             userService.RemoveUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
         }
 
         public void SaveUserPhoto(Guid id, Guid notused, byte[] photo)
         {
             if (systemUsers.ContainsKey(id)) return;
+            SecurityContext.DemandPermissions<UserInfo>(id, new UserSecurityProvider(), Constants.Action_EditUser);
+
             userService.SetUserPhoto(CoreContext.TenantManager.GetCurrentTenant().TenantId, id, photo);
         }
 
@@ -205,6 +207,7 @@ namespace ASC.Core
         public void AddUserIntoGroup(Guid userId, Guid groupId)
         {
             if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
+            GroupSecurityHelper.DemandPermission();
 
             userService.SaveUserGroupRef(
                 CoreContext.TenantManager.GetCurrentTenant().TenantId,
@@ -214,6 +217,7 @@ namespace ASC.Core
         public void RemoveUserFromGroup(Guid userId, Guid groupId)
         {
             if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
+            GroupSecurityHelper.DemandPermission();
 
             userService.RemoveUserGroupRef(CoreContext.TenantManager.GetCurrentTenant().TenantId, userId, groupId, UserGroupRefType.Contains);
         }
@@ -291,7 +295,7 @@ namespace ASC.Core
         {
             if (Constants.LostGroupInfo.Equals(g)) return Constants.LostGroupInfo;
             if (Constants.BuildinGroups.Any(b => b.ID == g.ID)) return Constants.BuildinGroups.Single(b => b.ID == g.ID);
-
+            GroupSecurityHelper.DemandPermission();
 
             //g = CoreContext.InternalGroupManager.SaveGroupInfo(g);
             return g;
@@ -301,6 +305,7 @@ namespace ASC.Core
         {
             if (Constants.LostGroupInfo.Equals(id)) return;
             if (Constants.BuildinGroups.Any(b => b.ID == id)) return;
+            GroupSecurityHelper.DemandPermission();
 
             userService.RemoveGroup(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
         }

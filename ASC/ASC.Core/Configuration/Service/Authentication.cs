@@ -73,7 +73,7 @@ namespace ASC.Core.Configuration.Service
             var userSecurity = daoFactory.GetConfigDao().GetUserSecurity(userID);
             if (userSecurity == null)
             {
-                throw new UserNotFoundException(userID);
+                return null;
             }
 
             var pwdHash = GetHash512(userSecurity.PasswordHashSHA512, false);

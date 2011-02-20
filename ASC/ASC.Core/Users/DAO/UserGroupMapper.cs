@@ -10,12 +10,6 @@ namespace ASC.Core.Users.DAO
 			private set;
 		}
 
-		public static string[] CategoryColumns
-		{
-			get;
-			private set;
-		}
-
 		public static string[] UserGroupColumns
 		{
 			get;
@@ -42,11 +36,6 @@ namespace ASC.Core.Users.DAO
 				"Timestamp",
 			};
 
-			CategoryColumns = new[]
-			{
-				"ID", "ModuleID", "Name", "Description", "GroupType"
-			};
-			
 			UserGroupColumns = new[]
 			{
 				"UserID", "GroupID"
@@ -84,18 +73,6 @@ namespace ASC.Core.Users.DAO
 				Notes = (string)r[14],
 			}
 			.ContactsFromString((string)r[11]);
-		}
-
-		public static GroupCategory ToCategory(object[] r)
-		{
-			return new GroupCategory()
-			{
-				ID = ToGuid(r[0]),
-				ModuleID = ToGuid(r[1]),
-				Name = (string)r[2],
-				Description = (string)r[3],
-				GroupType = (GroupType)Convert.ToInt64(r[4])
-			};
 		}
 
 		public static UserGroupReference ToUserGroupRef(object[] r)

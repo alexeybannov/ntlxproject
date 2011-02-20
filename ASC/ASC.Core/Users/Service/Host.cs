@@ -24,15 +24,7 @@ namespace ASC.Core.Users.Service
 
 		protected override IServiceController CreateService(IServiceInfo srvInfo)
 		{
-			if (srvInfo.ID == Constants.UserManagerServiceInfo.ID)
-			{
-				return new UserManager(DaoFactory);
-			}
-			else if (srvInfo.ID == Constants.GroupManagerServiceInfo.ID)
-			{
-				return new GroupManager(DaoFactory);
-			}
-			else if (srvInfo.ID == Constants.AuthorizationManagerServiceInfo.ID)
+			if (srvInfo.ID == Constants.AuthorizationManagerServiceInfo.ID)
 			{
 				return new AuthorizationManager(DaoFactory);
 			}

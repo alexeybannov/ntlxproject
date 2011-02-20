@@ -125,6 +125,18 @@ namespace ASC.Core
             return photo ?? new byte[0];
         }
 
+        public string GetUserPassword(int tenant, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetUserPassword(int tenant, Guid id, string password)
+        {
+            throw new NotImplementedException();
+            //string pwdHash = CoreContext.InternalAuthentication.GetUserPasswordHash(userID);
+            //return pwdHash != null ? Encoding.Unicode.GetString(Convert.FromBase64String(pwdHash)) : null;
+        }
+
 
         public IEnumerable<Group> GetGroups(int tenant, DateTime from)
         {
@@ -309,6 +321,6 @@ namespace ASC.Core
                 Removed = Convert.ToBoolean(r[3]),
                 ModifiedOn = Convert.ToDateTime(r[4]),
             };
-        }        
+        }
     }
 }

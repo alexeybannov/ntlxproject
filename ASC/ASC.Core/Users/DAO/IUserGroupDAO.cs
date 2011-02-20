@@ -55,37 +55,6 @@ namespace ASC.Core.Users.DAO
 		#endregion
 
 
-		#region Categories
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		List<GroupCategory> GetCategories();
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="categoryID"></param>
-		/// <returns></returns>
-		GroupCategory GetCategory(Guid categoryID);
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="category"></param>
-		/// <returns></returns>
-		GroupCategory SaveCategory(GroupCategory category);
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="categoryID"></param>
-		void RemoveCategory(Guid categoryID);
-
-		#endregion
-
-	
 		#region Groups
 
 		/// <summary>

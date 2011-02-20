@@ -29,15 +29,10 @@ namespace ASC.Core
         {
             syncRoot = new object();
             configuration = new ClientConfiguration();
-            Reconnect();
-        }
-
-        internal static void Reconnect()
-        {
             cacheInfoStorage = new Lazy<CacheInfoStorageClient>(() => new CacheInfoStorageClient(GetService<ICacheInfoStorageService>(), TimeSpan.FromSeconds(2)));
             tenantManager = new Lazy<ITenantManagerClient>(() => new ClientTenantManager());
             userManager = new Lazy<ClientUserManager>(() => new ClientUserManager(null));
-            authentication = new Lazy<AuthenticationService>(() => new AuthenticationService());
+            authentication = new Lazy<AuthenticationService>(() => new AuthenticationService(null));
             azManager = new Lazy<AzClientManager>(() => new AzClientManager());
             subscriptionManager = new Lazy<ClientSubscriptionManager>(() => new ClientSubscriptionManager(GetService<ISubscriptionManager>()));
         }
@@ -106,16 +101,6 @@ namespace ASC.Core
         internal static IAuthentication InternalAuthentication
         {
             get { return GetService<IAuthentication>(); }
-        }
-
-        internal static IUserManager InternalUserManager
-        {
-            get { return GetService<IUserManager>(); }
-        }
-
-        internal static IGroupManager InternalGroupManager
-        {
-            get { return GetService<IGroupManager>(); }
         }
 
         internal static IAuthorizationManager InternalAuthorizationManager

@@ -17,6 +17,10 @@ namespace ASC.Core
 
         void SetUserPhoto(int tenant, Guid id, byte[] photo);
 
+        string GetUserPassword(int tenant, Guid id);
+
+        void SetUserPassword(int tenant, Guid id, string password);
+
 
         IEnumerable<Group> GetGroups(int tenant, DateTime from);
 

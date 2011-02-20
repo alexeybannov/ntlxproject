@@ -100,62 +100,6 @@ namespace ASC.Core.Users.DAO
 		}
 
 
-		public List<GroupCategory> GetCategories()
-		{
-			return DbManager
-				.ExecuteList(Query("core_groupcategory").Select(UserGroupMapper.CategoryColumns))
-				.MapToObject<GroupCategory>(UserGroupMapper.ToCategory);
-		}
-
-		public GroupCategory GetCategory(Guid categoryID)
-		{
-			var categories = DbManager
-				.ExecuteList(Query("core_groupcategory").Select(UserGroupMapper.CategoryColumns).Where("ID", categoryID.ToString()))
-				.MapToObject<GroupCategory>(UserGroupMapper.ToCategory);
-
-			return 0 < categories.Count ? categories[0] : null;
-		}
-
-		public GroupCategory SaveCategory(GroupCategory c)
-		{
-			using (var tx = DbManager.BeginTransaction())
-			{
-				if (c.ID == Guid.Empty) c.ID = Guid.NewGuid();
-				if (c.ModuleID == Guid.Empty)
-				{
-					var oldGuid = DbManager.ExecuteScalar<string>(Query("core_groupcategory").Select("ID").Where("ModuleID", Guid.Empty.ToString()));
-					if (!string.IsNullOrEmpty(oldGuid) && new Guid(oldGuid) != c.ID) throw new OnlyOneDefaultCategoryException();
-				}
-
-				DbManager.ExecuteNonQuery(
-					Insert("core_groupcategory")
-					.InColumns(UserGroupMapper.CategoryColumns)
-					.Values(c.ID.ToString(), c.ModuleID.ToString(), c.Name, c.Description, c.GroupType)
-				);
-
-				tx.Commit();
-			}
-			return c;
-		}
-
-		public void RemoveCategory(Guid categoryID)
-		{
-			using (var tx = DbManager.BeginTransaction())
-			{
-				var groupIds = DbManager
-					.ExecuteList(Query("core_group").Select("ID").Where("CategoryID", categoryID.ToString()))
-					.ConvertAll<string>(r => Convert.ToString(r[0]));
-
-				foreach (var groupId in groupIds)
-				{
-					RemoveGroupInternal(groupId);
-				}
-				DbManager.ExecuteNonQuery(Delete("core_groupcategory").Where("ID", categoryID.ToString()));
-
-				tx.Commit();
-			}
-		}
-
 		public List<GroupInfo> GetGroups()
 		{
 			return GetAllGroups().FindAll(g => g.Parent == null);

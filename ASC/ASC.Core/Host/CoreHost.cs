@@ -1,18 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using ASC.Common.Module;
 using ASC.Common.Services;
 using ASC.Core.Common.CoreTalk;
 using ASC.Core.Common.Services;
 using ASC.Core.Configuration.Module;
 using ASC.Core.Hosting;
-using ASC.Core.Users.Module;
 using ASC.Net;
 using ASC.Reflection;
 using log4net;
 using ConfConst = ASC.Core.Configuration.Constants;
-using UsersConst = ASC.Core.Users.Constants;
 
 namespace ASC.Core.Host
 {
@@ -151,7 +148,6 @@ namespace ASC.Core.Host
 		private void _BuildCache()
 		{
 			_AddCoreSMPEntry(ConfConst.ModulePartInfo_Services, typeof(ConfigurationModule));
-			_AddCoreSMPEntry(UsersConst.ModulePartInfo_Services, typeof(UsersModule));
 		}
 
 		private void _AddCoreSMPEntry(IModulePartInfo partInfo, Type moduleType)

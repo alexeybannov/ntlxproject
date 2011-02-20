@@ -58,28 +58,6 @@ namespace ASC.Core.Users
 
         #region Services
 
-        public static readonly ServiceInfoBase UserManagerServiceInfo =
-            new CoreServiceInfo(
-                typeof(IUserManager),
-                DescriptionResource.ServiceName_UserManager,
-                DescriptionResource.ServiceDescription_UserManager,
-                ConstResource.ServiceSysName_UserManager,
-                new Version("0.1"),
-                new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(ConstResource.ServiceSysName_UserManager)
-                );
-
-        public static readonly ServiceInfoBase GroupManagerServiceInfo =
-            new CoreServiceInfo(
-                typeof(IGroupManager),
-                DescriptionResource.ServiceName_GroupManager,
-                DescriptionResource.ServiceDescription_GroupManager,
-                ConstResource.ServiceSysName_GroupManager,
-                new Version("0.1"),
-                new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(ConstResource.ServiceSysName_GroupManager)
-                );
-
         public static readonly ServiceInfoBase AuthorizationManagerServiceInfo =
             new CoreServiceInfo(
                 typeof(IAuthorizationManager),
@@ -106,8 +84,6 @@ namespace ASC.Core.Users
 
         public static readonly ServiceInfoBase[] UsersServices = new[]
                                                                      {
-                                                                         UserManagerServiceInfo,
-                                                                         GroupManagerServiceInfo,
                                                                          AuthorizationManagerServiceInfo,
                                                                          SubscriptionManagerServiceInfo
                                                                      };

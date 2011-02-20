@@ -66,17 +66,10 @@ namespace ASC.Core.Factories
                     result = (IService)_services[type];
                     if (result == null)
                     {
-                        //users
-                        if (type == typeof(IUserManager))
-                            result = new UserManager(usrHost.DaoFactory);
-                        else if (type == typeof(IGroupManager))
-                            result = new GroupManager(usrHost.DaoFactory);
-                        else if (type == typeof(IAuthorizationManager))
+                        if (type == typeof(IAuthorizationManager))
                             result = new AuthorizationManager(usrHost.DaoFactory);
                         else if (type == typeof(ISubscriptionManager))
                             result = new SubscriptionManager(usrHost.DaoFactory);
-
-                        //configuration
                         else if (type == typeof(IAuthentication))
                             result = new Authentication(daoFactory);
                         else if (type == typeof(IServiceLocator))

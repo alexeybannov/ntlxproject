@@ -64,6 +64,16 @@ namespace ASC.Core
             service.SetUserPhoto(tenant, id, photo);
         }
 
+        public string GetUserPassword(int tenant, Guid id)
+        {
+            return service.GetUserPassword(tenant, id);
+        }
+
+        public void SetUserPassword(int tenant, Guid id, string password)
+        {
+            service.SetUserPassword(tenant, id, password);
+        }
+
 
         public IEnumerable<Group> GetGroups(int tenant, DateTime from)
         {

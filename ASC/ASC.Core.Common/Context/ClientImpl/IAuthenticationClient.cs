@@ -1,5 +1,4 @@
 using System;
-using System.Security.Principal;
 using ASC.Common.Security.Authentication;
 
 namespace ASC.Core
@@ -7,8 +6,6 @@ namespace ASC.Core
     public interface IAuthenticationClient
     {
         IUserAccount[] GetUserAccounts();
-
-        IPrincipal AuthenticateAccount(IAccount account);
 
         IAccount GetAccountByID(Guid id);
 
