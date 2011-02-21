@@ -1,12 +1,8 @@
-#region usings
-
 using System;
-
-#endregion
 
 namespace ASC.Core
 {
-    internal class Lazy<T>
+    class Lazy<T>
     {
         private object locker = new object();
         private T instance;

@@ -135,47 +135,11 @@
   <data name="ModulePart_Services_Name" xml:space="preserve">
     <value>Users service</value>
   </data>
-  <data name="ServiceDescription_UserManager" xml:space="preserve">
-    <value>Users service</value>
-  </data>
-  <data name="ServiceDescription_GroupManager" xml:space="preserve">
-    <value>Groups service</value>
-  </data>
   <data name="ServiceDescription_AuthorizationManager" xml:space="preserve">
     <value>Authorization service</value>
   </data>
-  <data name="ServiceName_UserManager" xml:space="preserve">
-    <value>Users</value>
-  </data>
-  <data name="ServiceName_GroupManager" xml:space="preserve">
-    <value>Groups</value>
-  </data>
   <data name="ServiceName_AuthorizationManager" xml:space="preserve">
     <value>AuthorizationManager</value>
-  </data>
-  <data name="UserNotFoundException_Message" xml:space="preserve">
-    <value>User {0} not found</value>
-  </data>
-  <data name="UserStaleException_Message" xml:space="preserve">
-    <value>User information is outdated</value>
-  </data>
-  <data name="GCNotFoundException_Message" xml:space="preserve">
-    <value>Category group {0} not found</value>
-  </data>
-  <data name="OODCException_Message" xml:space="preserve">
-    <value>Main groups category not found</value>
-  </data>
-  <data name="GroupNotFoundException_Message" xml:space="preserve">
-    <value>Group {0} not found</value>
-  </data>
-  <data name="UserAllreadyInGroupException_Message" xml:space="preserve">
-    <value>User {0} already in group {1}</value>
-  </data>
-  <data name="UserAllreadyInGroupException_Message_Logical" xml:space="preserve">
-    <value>Category groups "{0}" is a logical, so the user "{1}" can belong to only one, but he is already in group "{2}"</value>
-  </data>
-  <data name="GroupNotEmptyException_Message" xml:space="preserve">
-    <value>Group not empty</value>
   </data>
   <data name="AzCategoryNotFoundException_Message" xml:space="preserve">
     <value>Category action {0} not found</value>

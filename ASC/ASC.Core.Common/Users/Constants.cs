@@ -5,7 +5,6 @@ using ASC.Common.Module;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Services;
 using ASC.Common.Utils;
-using ASC.Core.Common;
 using ASC.Core.Common.Services;
 using ASC.Core.Common.Users.Resources;
 using ASC.Net;
@@ -141,12 +140,6 @@ namespace ASC.Core.Users
 
         public static readonly string CacheIdAzObjectInfo = "{51C98904-8185-4225-A66C-827DC1FCA5EA}";
 
-        public static readonly string CacheIdMamagers = "{0DA70F61-1B6B-4c5d-AB8F-5B5452AC1A2C}";
-
-        public static readonly string CacheIdCompanyProps = "{600CE032-C7F1-4b98-BAFD-EA2AE57488BC}";
-
-        public static readonly string CacheIdAccounts = "{1196DC04-08CD-478e-BE7E-AA619738E6E2}";
-
         public static readonly string CacheIdTenants = "{EC3D1538-5A79-43D3-9482-103B5AA2507E}";
 
         #region authorization rules module to work with users
@@ -225,14 +218,6 @@ namespace ASC.Core.Users
                                                                  ID = new Guid("{74B9CBD1-2412-4e79-9F36-7163583E9D3A}"),
                                                                  Name = "Unknown"
                                                              };
-
-        public static readonly GroupCategory LostGroupCategory = new GroupCategory
-                                                                     {
-                                                                         ID =
-                                                                             new Guid(
-                                                                             "{5D601032-DF2D-411b-A9C3-43A13C8AFB2E}"),
-                                                                         Name = "Unknown"
-                                                                     };
 
         #endregion
     }

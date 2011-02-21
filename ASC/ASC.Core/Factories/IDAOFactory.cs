@@ -5,13 +5,9 @@ namespace ASC.Core.Factories
 {
 	public interface IDAOFactory
 	{
-		IUserGroupDAO GetUserGroupDAO();
-
 		IAzDAO GetAzDao();
 
 		ISubscriptionDAO GetSubscriptionDao();
-
-		ICompanyDAO GetCompanyDao();
 
 		ICfgDAO GetConfigDao();
 

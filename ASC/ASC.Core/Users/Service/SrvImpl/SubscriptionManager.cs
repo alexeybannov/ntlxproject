@@ -189,14 +189,5 @@ namespace ASC.Core.Users.Service.SrvImpl
         {
             return factory.GetSubscriptionDao();
         }
-
-        private SubscriptionManipulationException SMException(string message, Exception exc)
-        {
-            if (exc != null)
-            {
-                log.Error("ThrowSMException", exc);
-            }
-            return new SubscriptionManipulationException(message, exc != null ? exc.ToString() : null);
-        }
     }
 }

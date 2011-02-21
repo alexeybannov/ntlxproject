@@ -135,20 +135,8 @@
   <data name="ModulePart_Services_SysName" xml:space="preserve">
     <value>common_services</value>
   </data>
-  <data name="ServiceID_UserManager" xml:space="preserve">
-    <value>{E2C64542-46E5-4cc1-BD4B-748ED6F8B289}</value>
-  </data>
-  <data name="ServiceID_GroupManager" xml:space="preserve">
-    <value>{086E079B-D179-4927-89F1-68B6974A05C7}</value>
-  </data>
   <data name="ServiceID_AuthorizationManager" xml:space="preserve">
     <value>{0883BD87-12D6-49a3-9C3D-A5295B13AF4C}</value>
-  </data>
-  <data name="ServiceSysName_UserManager" xml:space="preserve">
-    <value>user_manager</value>
-  </data>
-  <data name="ServiceSysName_GroupManager" xml:space="preserve">
-    <value>group_manager</value>
   </data>
   <data name="ServiceSysName_AuthorizationManager" xml:space="preserve">
     <value>authorization_manager</value>

@@ -187,33 +187,6 @@ namespace ASC.Core.Common.Users.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Category group {0} not found.
-        /// </summary>
-        internal static string GCNotFoundException_Message {
-            get {
-                return ResourceManager.GetString("GCNotFoundException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Group not empty.
-        /// </summary>
-        internal static string GroupNotEmptyException_Message {
-            get {
-                return ResourceManager.GetString("GroupNotEmptyException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Group {0} not found.
-        /// </summary>
-        internal static string GroupNotFoundException_Message {
-            get {
-                return ResourceManager.GetString("GroupNotFoundException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Kernel module provides access to users, groups and permissions..
         /// </summary>
         internal static string Module_Description {
@@ -268,29 +241,11 @@ namespace ASC.Core.Common.Users.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Main groups category not found.
-        /// </summary>
-        internal static string OODCException_Message {
-            get {
-                return ResourceManager.GetString("OODCException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Authorization service.
         /// </summary>
         internal static string ServiceDescription_AuthorizationManager {
             get {
                 return ResourceManager.GetString("ServiceDescription_AuthorizationManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Groups service.
-        /// </summary>
-        internal static string ServiceDescription_GroupManager {
-            get {
-                return ResourceManager.GetString("ServiceDescription_GroupManager", resourceCulture);
             }
         }
         
@@ -304,15 +259,6 @@ namespace ASC.Core.Common.Users.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Users service.
-        /// </summary>
-        internal static string ServiceDescription_UserManager {
-            get {
-                return ResourceManager.GetString("ServiceDescription_UserManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to AuthorizationManager.
         /// </summary>
         internal static string ServiceName_AuthorizationManager {
@@ -322,65 +268,11 @@ namespace ASC.Core.Common.Users.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Groups.
-        /// </summary>
-        internal static string ServiceName_GroupManager {
-            get {
-                return ResourceManager.GetString("ServiceName_GroupManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to SubscriptionManager.
         /// </summary>
         internal static string ServiceName_SubscriptionManager {
             get {
                 return ResourceManager.GetString("ServiceName_SubscriptionManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Users.
-        /// </summary>
-        internal static string ServiceName_UserManager {
-            get {
-                return ResourceManager.GetString("ServiceName_UserManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User {0} already in group {1}.
-        /// </summary>
-        internal static string UserAllreadyInGroupException_Message {
-            get {
-                return ResourceManager.GetString("UserAllreadyInGroupException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Category groups &quot;{0}&quot; is a logical, so the user &quot;{1}&quot; can belong to only one, but he is already in group &quot;{2}&quot;.
-        /// </summary>
-        internal static string UserAllreadyInGroupException_Message_Logical {
-            get {
-                return ResourceManager.GetString("UserAllreadyInGroupException_Message_Logical", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User {0} not found.
-        /// </summary>
-        internal static string UserNotFoundException_Message {
-            get {
-                return ResourceManager.GetString("UserNotFoundException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User information is outdated.
-        /// </summary>
-        internal static string UserStaleException_Message {
-            get {
-                return ResourceManager.GetString("UserStaleException_Message", resourceCulture);
             }
         }
     }

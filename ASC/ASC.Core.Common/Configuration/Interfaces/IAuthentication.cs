@@ -9,9 +9,5 @@ namespace ASC.Core.Configuration
     interface IAuthentication : IService
     {
         IPrincipal AuthenticateAccount(IAccount account);
-        
-        string GetUserPasswordHash(Guid userID);
-
-        void SetUserPassword(Guid userID, string password);
     }
 }

@@ -223,29 +223,11 @@ namespace ASC.Core.Common.Users.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {086E079B-D179-4927-89F1-68B6974A05C7}.
-        /// </summary>
-        internal static string ServiceID_GroupManager {
-            get {
-                return ResourceManager.GetString("ServiceID_GroupManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {C4B144B8-EB5B-4ed7-A46E-300243D46DA1}.
         /// </summary>
         internal static string ServiceID_SubscriptionManager {
             get {
                 return ResourceManager.GetString("ServiceID_SubscriptionManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {E2C64542-46E5-4cc1-BD4B-748ED6F8B289}.
-        /// </summary>
-        internal static string ServiceID_UserManager {
-            get {
-                return ResourceManager.GetString("ServiceID_UserManager", resourceCulture);
             }
         }
         
@@ -259,29 +241,11 @@ namespace ASC.Core.Common.Users.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to group_manager.
-        /// </summary>
-        internal static string ServiceSysName_GroupManager {
-            get {
-                return ResourceManager.GetString("ServiceSysName_GroupManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to subscription_manager.
         /// </summary>
         internal static string ServiceSysName_SubscriptionManager {
             get {
                 return ResourceManager.GetString("ServiceSysName_SubscriptionManager", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to user_manager.
-        /// </summary>
-        internal static string ServiceSysName_UserManager {
-            get {
-                return ResourceManager.GetString("ServiceSysName_UserManager", resourceCulture);
             }
         }
     }

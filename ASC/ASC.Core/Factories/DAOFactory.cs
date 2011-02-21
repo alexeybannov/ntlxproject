@@ -15,12 +15,6 @@ namespace ASC.Core.Factories
         #region IDAOFactory
 
         ///<inheritdoc />
-        public IUserGroupDAO GetUserGroupDAO()
-        {
-            return new UserGroupDAO(DAO_KEY, GetTenant());
-        }
-
-        ///<inheritdoc />
         public IAzDAO GetAzDao()
         {
             return new AzDAO(DAO_KEY, GetTenant());
@@ -30,12 +24,6 @@ namespace ASC.Core.Factories
         public ISubscriptionDAO GetSubscriptionDao()
         {
             return new SubscriptionDAO(DAO_KEY, GetTenant());
-        }
-
-        ///<inheritdoc />
-        public ICompanyDAO GetCompanyDao()
-        {
-            return new CompanyDAO(DAO_KEY, GetTenant());
         }
 
         /// <inheritdoc/>
