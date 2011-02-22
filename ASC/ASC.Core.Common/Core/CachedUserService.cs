@@ -10,9 +10,9 @@ namespace ASC.Core
         private CacheHelper cache;
 
 
-        public CachedUserService()
+        public CachedUserService(IUserService service)
         {
-            this.service = new DbUserService(null);
+            this.service = service;
             this.cache = new CacheHelper();
         }
 
@@ -46,11 +46,11 @@ namespace ASC.Core
 
         public void RemoveUser(int tenant, Guid id)
         {
-            var u = service.GetUser(tenant, id);
-            if (u != null && !u.Removed)
+            service.RemoveUser(tenant, id);
+            lock (cache)
             {
-                u.Removed = true;
-                SaveUser(tenant, u);
+                cache.Reset<User>(tenant);
+                cache.Reset<UserGroupRef>(tenant);
             }
         }
 
@@ -104,11 +104,11 @@ namespace ASC.Core
 
         public void RemoveGroup(int tenant, Guid id)
         {
-            var g = service.GetGroup(tenant, id);
-            if (g != null && !g.Removed)
+            service.RemoveGroup(tenant, id);
+            lock (cache)
             {
-                g.Removed = true;
-                SaveGroup(tenant, g);
+                cache.Reset<Group>(tenant);
+                cache.Reset<UserGroupRef>(tenant);
             }
         }
 
@@ -133,8 +133,8 @@ namespace ASC.Core
 
         public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
         {
-            var r = new UserGroupRef() { UserId = userId, GroupId = groupId, RefType = refType, Removed = true };
-            SaveUserGroupRef(tenant, r);
+            service.RemoveUserGroupRef(tenant, userId, groupId, refType);
+            cache.Reset<UserGroupRef>(tenant);
         }
     }
 }

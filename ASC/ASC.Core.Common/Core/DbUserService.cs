@@ -33,69 +33,35 @@ namespace ASC.Core
         {
             if (user == null) throw new ArgumentNullException("user");
             if (user.Id == default(Guid)) user.Id = Guid.NewGuid();
+            user.ModifiedOn = DateTime.UtcNow;
 
-            ExecAction(db =>
-            {
-                var i = (ISqlInstruction)Query("core_user", tenant)
-                    .SelectCount()
-                    .Where("id", user.Id.ToString());
-
-                var count = db.ExecScalar<int>(i);
-                if (count == 0)
-                {
-                    i = Insert("core_user", tenant)
-                        .InColumnValue("id", user.Id.ToString())
-                        .InColumnValue("username", user.UserName)
-                        .InColumnValue("firstname", user.FirstName)
-                        .InColumnValue("lastname", user.LastName)
-                        .InColumnValue("sex", user.Sex)
-                        .InColumnValue("bithdate", user.BirthDate)
-                        .InColumnValue("status", user.Status)
-                        .InColumnValue("title", user.Title)
-                        .InColumnValue("department", user.Department)
-                        .InColumnValue("workfromdate", user.WorkFromDate)
-                        .InColumnValue("terminateddate", user.WorkToDate)
-                        .InColumnValue("contacts", user.Contacts)
-                        .InColumnValue("email", user.Email)
-                        .InColumnValue("location", user.Location)
-                        .InColumnValue("notes", user.Notes)
-                        .InColumnValue("removed", user.Removed)
-                        .InColumnValue("last_modified", DateTime.UtcNow);
-                    db.ExecNonQuery(i);
-                }
-                else
-                {
-                    i = Update("core_user", tenant)
-                        .Set("username", user.UserName)
-                        .Set("firstname", user.FirstName)
-                        .Set("lastname", user.LastName)
-                        .Set("sex", user.Sex)
-                        .Set("bithdate", user.BirthDate)
-                        .Set("status", user.Status)
-                        .Set("title", user.Title)
-                        .Set("department", user.Department)
-                        .Set("workfromdate", user.WorkFromDate)
-                        .Set("terminateddate", user.WorkToDate)
-                        .Set("contacts", user.Contacts)
-                        .Set("email", user.Email)
-                        .Set("location", user.Location)
-                        .Set("notes", user.Notes)
-                        .Set("removed", user.Removed)
-                        .Set("last_modified", DateTime.UtcNow)
-                        .Where("id", user.Id.ToString());
-                    db.ExecNonQuery(i);
-
-                    if (user.Removed)
-                    {
-                        db.ExecNonQuery(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where("user_id", user.Id));
-                    }
-                }
-            });
-
+            var i = Insert("core_user", tenant)
+                .InColumnValue("id", user.Id.ToString())
+                .InColumnValue("username", user.UserName)
+                .InColumnValue("firstname", user.FirstName)
+                .InColumnValue("lastname", user.LastName)
+                .InColumnValue("sex", user.Sex)
+                .InColumnValue("bithdate", user.BirthDate)
+                .InColumnValue("status", user.Status)
+                .InColumnValue("title", user.Title)
+                .InColumnValue("department", user.Department)
+                .InColumnValue("workfromdate", user.WorkFromDate)
+                .InColumnValue("terminateddate", user.WorkToDate)
+                .InColumnValue("contacts", user.Contacts)
+                .InColumnValue("email", user.Email)
+                .InColumnValue("location", user.Location)
+                .InColumnValue("notes", user.Notes)
+                .InColumnValue("last_modified", user.ModifiedOn);
+            ExecNonQuery(i);
             return user;
         }
 
         public void RemoveUser(int tenant, Guid id)
+        {
+            RemoveUser(tenant, id, false);
+        }
+
+        public void RemoveUser(int tenant, Guid id, bool immediate)
         {
             var sid = id.ToString();
             var batch = new List<ISqlInstruction>();
@@ -103,10 +69,17 @@ namespace ASC.Core
             batch.Add(Delete("core_acl", tenant).Where("subject", sid));
             batch.Add(Delete("core_subscription", tenant).Where("recipient", sid));
             batch.Add(Delete("core_subscriptionmethod", tenant).Where("recipient", sid));
-            batch.Add(Delete("core_usergroup", tenant).Where("userid", sid));
             batch.Add(Delete("core_userphoto", tenant).Where("userid", sid));
-            batch.Add(Delete("core_user", tenant).Where("id", sid));
-
+            if (immediate)
+            {
+                batch.Add(Delete("core_usergroup", tenant).Where("userid", sid));
+                batch.Add(Delete("core_user", tenant).Where("id", sid));
+            }
+            else
+            {
+                batch.Add(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where("userid", sid));
+                batch.Add(Update("core_user", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where("id", sid));
+            }
             ExecBatch(batch);
         }
 
@@ -154,42 +127,44 @@ namespace ASC.Core
         {
             if (group == null) throw new ArgumentNullException("user");
             if (group.Id == default(Guid)) group.Id = Guid.NewGuid();
+            group.ModifiedOn = DateTime.UtcNow;
 
-            var batch = new List<ISqlInstruction>();
-
-            var i = Insert("core_user", tenant)
+            var i = Insert("core_group", tenant)
                 .InColumnValue("id", group.Id.ToString())
                 .InColumnValue("name", group.Name)
                 .InColumnValue("parentid", group.ParentId.ToString())
                 .InColumnValue("categoryid", group.CategoryId.ToString())
                 .InColumnValue("removed", group.Removed)
-                .InColumnValue("last_modified", DateTime.UtcNow);
-            batch.Add(i);
-
-            if (group.Removed)
-            {
-                var ids = CollectGroupChilds(tenant, group.Id.ToString());
-                batch.Add(Update("core_group", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(Exp.In("id", ids)));
-                batch.Add(UserDepartmentToNull(tenant, ids));
-                batch.Add(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(Exp.In("group_id", ids)));
-            }
-
-            ExecBatch(batch);
-
+                .InColumnValue("last_modified", group.ModifiedOn);
+            ExecNonQuery(i);
             return group;
         }
 
         public void RemoveGroup(int tenant, Guid id)
         {
+            RemoveGroup(tenant, id, false);
+        }
+
+        public void RemoveGroup(int tenant, Guid id, bool immediate)
+        {
             var batch = new List<ISqlInstruction>();
+
             var ids = CollectGroupChilds(tenant, id.ToString());
 
             batch.Add(Delete("core_acl", tenant).Where(Exp.In("subject", ids)));
             batch.Add(Delete("core_subscription", tenant).Where(Exp.In("recipient", ids)));
             batch.Add(Delete("core_subscriptionmethod", tenant).Where(Exp.In("recipient", ids)));
             batch.Add(UserDepartmentToNull(tenant, ids));
-            batch.Add(Delete("core_usergroup", tenant).Where(Exp.In("groupid", ids)));
-            batch.Add(Delete("core_group", tenant).Where(Exp.In("id", ids)));
+            if (immediate)
+            {
+                batch.Add(Delete("core_usergroup", tenant).Where(Exp.In("groupid", ids)));
+                batch.Add(Delete("core_group", tenant).Where(Exp.In("id", ids)));
+            }
+            else
+            {
+                batch.Add(Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(Exp.In("groupid", ids)));
+                batch.Add(Update("core_group", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(Exp.In("id", ids)));
+            }
 
             ExecBatch(batch);
         }
@@ -204,13 +179,14 @@ namespace ASC.Core
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
         {
             if (r == null) throw new ArgumentNullException("userGroupRef");
+            r.ModifiedOn = DateTime.UtcNow;
 
             var i = Insert("core_usergroup", tenant)
                 .InColumnValue("userid", r.UserId.ToString())
                 .InColumnValue("groupid", r.GroupId.ToString())
                 .InColumnValue("ref_type", (int)r.RefType)
                 .InColumnValue("removed", r.Removed)
-                .InColumnValue("last_modified", DateTime.UtcNow);
+                .InColumnValue("last_modified", r.ModifiedOn);
 
             ExecNonQuery(i);
 
@@ -219,11 +195,16 @@ namespace ASC.Core
 
         public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
         {
-            var d = Delete("core_usergroup", tenant)
-                .Where("userid", userId.ToString())
-                .Where("groupid", groupId.ToString())
-                .Where("ref_type", (int)refType);
-            ExecNonQuery(d);
+            RemoveUserGroupRef(tenant, userId, groupId, refType, false);
+        }
+
+        public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType, bool immediate)
+        {
+            var where = Exp.Eq("userid", userId.ToString()) & Exp.Eq("groupid", groupId.ToString()) & Exp.Eq("ref_type", (int)refType);
+            var i = immediate ?
+                (ISqlInstruction)Delete("core_usergroup", tenant).Where(where) :
+                (ISqlInstruction)Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(where);
+            ExecNonQuery(i);
         }
 
 

@@ -110,7 +110,8 @@ namespace ASC.Core
             if (u.ID == Guid.Empty) SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
             else SecurityContext.DemandPermissions<UserInfo>(u.ID, new UserSecurityProvider(), Constants.Action_EditUser);
 
-            return ToUserInfo(userService.SaveUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, ToUser(u)));
+            var newUser = userService.SaveUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, ToUser(u));
+            return GetUsers(newUser.Id);
         }
 
         public void DeleteUser(Guid id)
@@ -297,8 +298,8 @@ namespace ASC.Core
             if (Constants.BuildinGroups.Any(b => b.ID == g.ID)) return Constants.BuildinGroups.Single(b => b.ID == g.ID);
             GroupSecurityHelper.DemandPermission();
 
-            //g = CoreContext.InternalGroupManager.SaveGroupInfo(g);
-            return g;
+            var newGroup = userService.SaveGroup(CoreContext.TenantManager.GetCurrentTenant().TenantId, ToGroup(g));
+            return GetGroupInfo(newGroup.Id);
         }
 
         public void DeleteGroup(Guid id)
@@ -352,18 +353,79 @@ namespace ASC.Core
 
         private IEnumerable<GroupInfo> GetGroupsInternal()
         {
-            //TODO: add sys groups
-            return null;
+            var groupsInfo = new Dictionary<Guid, GroupInfo>();
+            var groups = userService.GetGroups(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime)).ToDictionary(g => g.Id);
+            foreach (var g in groups.Values.OrderBy(g => g.ParentId))
+            {
+                var gi = new GroupInfo
+                {
+                    ID = g.Id,
+                    Name = g.Name,
+                    CategoryID = g.CategoryId,
+                };
+                if (g.ParentId != Guid.Empty && groupsInfo.ContainsKey(g.ParentId))
+                {
+                    groupsInfo[g.ParentId].AddDescendant(gi);
+                }
+                groupsInfo[gi.ID] = gi;
+            }
+            return groupsInfo.Values.Concat(Constants.BuildinGroups);
         }
 
         private UserInfo ToUserInfo(User u)
         {
-            return null;
+            var ui = new UserInfo
+            {
+                BirthDate = u.BirthDate,
+                Department = u.Department,
+                Email = u.Email,
+                FirstName = u.FirstName,
+                ID = u.Id,
+                LastName = u.LastName,
+                Location = u.Location,
+                Notes = u.Notes,
+                Sex = u.Sex,
+                Status = (EmployeeStatus)u.Status,
+                TerminatedDate = u.WorkToDate,
+                Title = u.Title,
+                UserName = u.UserName,
+                WorkFromDate = u.WorkFromDate,
+            };
+            ui.ContactsFromString(u.Contacts);
+            return ui;
         }
 
         private User ToUser(UserInfo u)
         {
-            return null;
+            return new User
+            {
+                BirthDate = u.BirthDate,
+                Contacts = u.ContactsToString(),
+                Department = u.Department,
+                Email = u.Email,
+                FirstName = u.FirstName,
+                Id = u.ID,
+                LastName = u.LastName,
+                Location = u.Location,
+                Notes = u.Notes,
+                Sex = u.Sex,
+                Status = (int)u.Status,
+                Title = u.Title,
+                UserName = u.UserName,
+                WorkFromDate = u.WorkFromDate,
+                WorkToDate = u.TerminatedDate,
+            };
+        }
+
+        private Group ToGroup(GroupInfo g)
+        {
+            return new Group
+            {
+                Id = g.ID,
+                Name = g.Name,
+                ParentId = g.Parent != null ? g.Parent.ID : Guid.Empty,
+                CategoryId = g.CategoryID,
+            };
         }
     }
 }

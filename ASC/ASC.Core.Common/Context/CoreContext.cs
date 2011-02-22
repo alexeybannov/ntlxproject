@@ -5,6 +5,7 @@ using ASC.Common.Services;
 using ASC.Core.Common.Cache;
 using ASC.Core.Configuration;
 using ASC.Core.Users;
+using System.Configuration;
 
 #endregion
 
@@ -27,12 +28,14 @@ namespace ASC.Core
 
         static CoreContext()
         {
+            var dbUserService = new DbUserService(ConfigurationManager.ConnectionStrings["core_nc"]);
+
             syncRoot = new object();
             configuration = new ClientConfiguration();
             cacheInfoStorage = new Lazy<CacheInfoStorageClient>(() => new CacheInfoStorageClient(GetService<ICacheInfoStorageService>(), TimeSpan.FromSeconds(2)));
             tenantManager = new Lazy<ITenantManagerClient>(() => new ClientTenantManager());
-            userManager = new Lazy<ClientUserManager>(() => new ClientUserManager(null));
-            authentication = new Lazy<AuthenticationService>(() => new AuthenticationService(null));
+            userManager = new Lazy<ClientUserManager>(() => new ClientUserManager(dbUserService));
+            authentication = new Lazy<AuthenticationService>(() => new AuthenticationService(dbUserService));
             azManager = new Lazy<AzClientManager>(() => new AzClientManager());
             subscriptionManager = new Lazy<ClientSubscriptionManager>(() => new ClientSubscriptionManager(GetService<ISubscriptionManager>()));
         }
