@@ -10,11 +10,6 @@ namespace ASC.Core.Configuration.DAO
         
         byte[] GetSettings(string key);
 
-        
-        void SaveUserSecurity(UserSecurity userSecurity);
-        
-        UserSecurity GetUserSecurity(Guid userID);
-
 
         IUserAccount GetAccount(Credential credential);
 

@@ -53,26 +53,6 @@ namespace ASC.Core.Users.Service.SrvImpl
 			GetAzDAO().RemoveAce(azRecord);
 		}
 
-		/// <inheritdoc/>
-		public IList<AzObjectInfo> GetAzObjectInfos()
-		{
-			return GetAzDAO().GetAzObjectInfos();
-		}
-
-		/// <inheritdoc/>
-		public void SaveAzObjectInfo(AzObjectInfo azObjectInfo)
-		{
-			SecurityContext.DemandPermissions(UserConst.Action_EditAz);
-			GetAzDAO().SaveAzObjectInfo(azObjectInfo);
-		}
-
-		/// <inheritdoc/>
-		public void RemoveAzObjectInfo(AzObjectInfo azObjectInfo)
-		{
-			SecurityContext.DemandPermissions(UserConst.Action_EditAz);
-			GetAzDAO().RemoveAzObjectInfo(azObjectInfo);
-		}
-
 		#endregion
 
 		private IAzDAO GetAzDAO()

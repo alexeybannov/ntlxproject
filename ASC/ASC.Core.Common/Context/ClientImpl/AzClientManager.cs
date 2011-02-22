@@ -13,7 +13,6 @@ namespace ASC.Core
     class AzClientManager : IAuthorizationManagerClient
     {
         private readonly IDictionary<int, ICache<string, AzRecord>> azAceCache = new Dictionary<int, ICache<string, AzRecord>>();
-        private readonly IDictionary<int, ICache<string, AzObjectInfo>> azObjectInfoCache = new Dictionary<int, ICache<string, AzObjectInfo>>();
         private readonly IDictionary<int, IDictionary<Guid, List<string>>> azAceCacheByActions = new Dictionary<int, IDictionary<Guid, List<string>>>();
 
         private ICache<string, AzRecord> AzAceCache
@@ -52,35 +51,10 @@ namespace ASC.Core
             }
         }
 
-        private ICache<string, AzObjectInfo> AzObjectInfoCache
-        {
-            get
-            {
-                int tenant = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                lock (azObjectInfoCache)
-                {
-                    if (!azObjectInfoCache.ContainsKey(tenant))
-                    {
-                        var azObjectInfoCacheInit = new CacheInfo(UserConst.CacheIdAzAce + tenant);
-                        azObjectInfoCacheInit.AddParentCache(UserConst.CacheIdUsers + tenant);
-                        azObjectInfoCacheInit.AddParentCache(UserConst.CacheIdCategories + tenant);
-                        azObjectInfoCacheInit.AddParentCache(UserConst.CacheIdGroups + tenant);
-                        azObjectInfoCache[tenant] = CoreContext.CacheInfoStorage.CreateCache<string, AzObjectInfo>(azObjectInfoCacheInit, SyncAzObjectInfoCache);
-                    }
-                    return azObjectInfoCache[tenant];
-                }
-            }
-        }
-
         private IDictionary<string, AzRecord> SyncAzAceCache()
         {
             azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);
             return CoreContext.InternalAuthorizationManager.GetAces().ToDictionary(a => a.Id);
-        }
-
-        private IDictionary<string, AzObjectInfo> SyncAzObjectInfoCache()
-        {
-            return CoreContext.InternalAuthorizationManager.GetAzObjectInfos().ToDictionary(a => a.ObjectId);
         }
 
         #region IAuthorizationManager Members
@@ -107,30 +81,25 @@ namespace ASC.Core
 
         public IList<AzObjectInfo> GetAzObjectInfos()
         {
-            return AzObjectInfoCache.Values.ToList();
+            return new List<AzObjectInfo>();
         }
 
         public AzObjectInfo GetAzObjectInfo<T>(object objectId)
         {
-            return GetAzObjectInfo(new SecurityObjectId<T>(objectId));
+            return null;
         }
 
         public AzObjectInfo GetAzObjectInfo(ISecurityObjectId objectId)
         {
-            var fullId = AzObjectIdHelper.GetFullObjectId(objectId);
-            return AzObjectInfoCache.ContainsKey(fullId) ? AzObjectInfoCache[fullId] : new AzObjectInfo(objectId);
+            return null;
         }
 
         public void SaveAzObjectInfo(AzObjectInfo azObjectInfo)
         {
-            CoreContext.InternalAuthorizationManager.SaveAzObjectInfo(azObjectInfo);
-            AzObjectInfoCache[azObjectInfo.ObjectId] = azObjectInfo;
         }
 
         public void RemoveAzObjectInfo(AzObjectInfo azObjectInfo)
         {
-            CoreContext.InternalAuthorizationManager.RemoveAzObjectInfo(azObjectInfo);
-            AzObjectInfoCache.Remove(azObjectInfo.ObjectId);
         }
 
         public AzRecord[] GetAces(Guid subjectID, Guid actionID, ISecurityObjectId objectId)
@@ -259,11 +228,6 @@ namespace ASC.Core
         }
 
         #endregion
-
-        private List<AzRecord> GetAcesByObjectId(string fullObjId)
-        {
-            return AzAceCache.Values.Where(a => a.FullObjectId == fullObjId).ToList();
-        }
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
         {

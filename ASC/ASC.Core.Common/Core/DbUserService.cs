@@ -5,6 +5,7 @@ using System.Linq;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Data;
+using ASC.Security.Cryptography;
 
 namespace ASC.Core
 {
@@ -100,14 +101,20 @@ namespace ASC.Core
 
         public string GetUserPassword(int tenant, Guid id)
         {
-            throw new NotImplementedException();
+            var q = Query("core_usersecurity", tenant).Select("pwdhashsha512").Where("userid", id.ToString());
+            var h2 = ExecScalar<string>(q);
+            return !string.IsNullOrEmpty(h2) ? Crypto.GetV(h2, 1, false) : null;
         }
 
         public void SetUserPassword(int tenant, Guid id, string password)
         {
-            throw new NotImplementedException();
-            //string pwdHash = CoreContext.InternalAuthentication.GetUserPasswordHash(userID);
-            //return pwdHash != null ? Encoding.Unicode.GetString(Convert.FromBase64String(pwdHash)) : null;
+            var h1 = !string.IsNullOrEmpty(password) ? Hasher.Base64Hash(password, HashAlg.SHA256) : null;
+            var h2 = !string.IsNullOrEmpty(password) ? Crypto.GetV(password, 1, true) : null;
+            var i = Insert("core_usersecurity", tenant)
+                .InColumnValue("userid", id.ToString())
+                .InColumnValue("pwdhash", h1)
+                .InColumnValue("pwdhashsha512", h1);
+            ExecNonQuery(i);
         }
 
 

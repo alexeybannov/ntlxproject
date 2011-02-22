@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{201BDF9F-BBDD-4D4E-96D9-E42437AAFB93}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -60,7 +60,6 @@
     <Compile Include="Configuration\DAO\ICfgDAO.cs" />
     <Compile Include="Configuration\DAO\ITenantDAO.cs" />
     <Compile Include="Configuration\DAO\TenantDAO.cs" />
-    <Compile Include="Configuration\DAO\UserSecurity.cs" />
     <Compile Include="Configuration\Module\CommonModulePart.cs" />
     <Compile Include="Configuration\Module\CommonServicesModulePart.cs" />
     <Compile Include="Configuration\Module\ConfigurationModule.cs" />
@@ -76,7 +75,6 @@
     </Compile>
     <Compile Include="Configuration\Service\Notify\Web\WebSenderSink.cs" />
     <Compile Include="Configuration\Service\ServiceLocator.cs" />
-    <Compile Include="Crypto.cs" />
     <Compile Include="Factories\EmbedCoreServiceFactory.cs" />
     <Compile Include="HostedSolution.cs" />
     <Compile Include="Host\CoreHost.cs" />
@@ -96,7 +94,7 @@
     <Compile Include="Users\Service\SrvImpl\SubscriptionManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\common\common\ASC.Common\ASC.Common.csproj">
+    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj">
       <Project>{76DE7717-3D4B-4A5B-B740-15B8913DF0CB}</Project>
       <Name>ASC.Common</Name>
     </ProjectReference>

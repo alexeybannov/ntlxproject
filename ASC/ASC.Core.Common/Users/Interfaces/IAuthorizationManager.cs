@@ -13,12 +13,5 @@ namespace ASC.Core.Users
         void AddAce(AzRecord azRecord);
 
         void RemoveAce(AzRecord azRecord);
-
-        
-        IList<AzObjectInfo> GetAzObjectInfos();
-
-        void SaveAzObjectInfo(AzObjectInfo azObjectInfo);
-
-        void RemoveAzObjectInfo(AzObjectInfo azObjectInfo);
     }
 }

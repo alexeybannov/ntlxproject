@@ -37,29 +37,6 @@ namespace ASC.Core.Configuration.DAO
             return DbManager.ExecuteScalar<byte[]>(Query("core_settings").Select("Value").Where("Id", key));
         }
 
-        public void SaveUserSecurity(UserSecurity s)
-        {
-            DbManager.ExecuteNonQuery(
-                Insert("core_usersecurity").InColumns("UserID", "PwdHash", "PwdHashSHA512").Values(s.UserID, s.PasswordHash, s.PasswordHashSHA512)
-            );
-        }
-
-        public UserSecurity GetUserSecurity(Guid userID)
-        {
-            var list = DbManager
-                .ExecuteList(Query("core_usersecurity").Select("UserID", "PwdHash", "PwdHashSHA512").Where("UserID", userID))
-                .ConvertAll<UserSecurity>(r =>
-                {
-                    return new UserSecurity(new Guid(Convert.ToString(r[0])))
-                    {
-                        PasswordHash = Convert.ToString(r[1]),
-                        PasswordHashSHA512 = Convert.ToString(r[2]),
-                    };
-                }
-                );
-            return list.Count != 0 ? list[0] : null;
-        }
-
         public IUserAccount GetAccount(Credential credential)
         {
             if (credential == null) throw new ArgumentNullException("credential");

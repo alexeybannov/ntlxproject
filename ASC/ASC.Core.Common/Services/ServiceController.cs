@@ -5,6 +5,7 @@ using System.Threading;
 using ASC.Common.Services;
 using ASC.Core.Common.Remoting;
 using ASC.Core.Common.Security.Authentication;
+using ASC.Core.Configuration;
 
 #endregion
 
@@ -173,7 +174,7 @@ namespace ASC.Core.Common.Services
             InternalServiceInfoCache.ServiceInfoEx sinfo = InternalServiceInfoCache.Get(Info.ID);
             if (sinfo == null || !sinfo.IsFixedCoreService)
             {
-                SecurityContext.AuthenticateMe(ServiceAccount.CreateFor(this));
+                SecurityContext.AuthenticateMe(Constants.CoreSystem);
             }
         }
     }
