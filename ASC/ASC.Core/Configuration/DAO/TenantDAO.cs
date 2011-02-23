@@ -46,7 +46,7 @@ namespace ASC.Core.Configuration.DAO
         }
 
         /// <inheritdoc/>
-        public List<Tenant> FindTenants(string login, string password)
+        public List<Tenant> GetTenants(string login, string password)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
 
@@ -69,18 +69,6 @@ namespace ASC.Core.Configuration.DAO
             using (var dbManager = new DbManager(dbId))
             {
                 CheckTenantAlias(dbManager, address);
-            }
-        }
-
-        /// <inheritdoc/>
-        public Tenant GetTenant(string domain)
-        {
-            if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException("domain");
-
-            using (var dbManager = new DbManager(dbId))
-            {
-                var tenants = dbManager.ExecuteList<Tenant>(GetTenantQuery(Exp.Eq("Alias", domain.ToLowerInvariant())), ToTenant);
-                return tenants.Count == 1 ? tenants[0] : null;
             }
         }
 

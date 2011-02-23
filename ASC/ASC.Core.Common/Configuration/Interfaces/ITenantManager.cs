@@ -16,8 +16,6 @@ namespace ASC.Core.Configuration
 
         Tenant GetTenant(int tenantId);
 
-        Tenant GetTenant(string domain);
-
         Tenant SaveTenant(Tenant tenant);
 
         void RemoveTenant(int tenantId);

@@ -36,11 +36,6 @@ namespace ASC.Core.Configuration.Service
             return GetTenantDAO().GetTenant(tenantId);
         }
 
-        public Tenant GetTenant(string domain)
-        {
-            return GetTenantDAO().GetTenant(domain);
-        }
-
         [PrincipalPermission(SecurityAction.Demand, Authenticated = true)]
         public Tenant SaveTenant(Tenant tenant)
         {

@@ -8,13 +8,11 @@ namespace ASC.Core.Configuration.DAO
 	{
 		List<Tenant> GetTenants();
 
-		List<Tenant> FindTenants(string login, string password);
+		List<Tenant> GetTenants(string login, string password);
 
 		void CheckTenantAddress(string address);
 
 		Tenant GetTenant(int tenantId);
-
-		Tenant GetTenant(string domain);
 
 		Tenant SaveTenant(Tenant tenant);
 

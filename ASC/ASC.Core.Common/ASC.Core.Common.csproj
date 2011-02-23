@@ -116,6 +116,8 @@
     <Compile Include="Core\CachedUserService.cs" />
     <Compile Include="Core\CacheHelper.cs" />
     <Compile Include="Core\CacheItem.cs" />
+    <Compile Include="Core\DbTenantService.cs" />
+    <Compile Include="Core\ITenantService.cs" />
     <Compile Include="Core\DbUserService.cs" />
     <Compile Include="Core\Group.cs" />
     <Compile Include="Core\IUserService.cs" />

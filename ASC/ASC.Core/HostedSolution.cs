@@ -46,7 +46,7 @@ namespace ASC.Core
                     .GetAccount(new Credential(login, Hasher.Base64Hash(password, HashAlg.SHA256)));
                 if (account == null) throw new SecurityException("Invalid login or password.");
             }
-			return daoFactory.GetTenantDAO().FindTenants(login, password);
+			return daoFactory.GetTenantDAO().GetTenants(login, password);
 		}
 
 		public void CheckTenantAddress(string address)
