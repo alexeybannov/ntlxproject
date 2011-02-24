@@ -70,146 +70,11 @@ namespace ASC.Core.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account {0} not found..
-        /// </summary>
-        public static string AuthenticationException_AccountNotFound {
-            get {
-                return ResourceManager.GetString("AuthenticationException_AccountNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Demo mode off..
-        /// </summary>
-        public static string AuthenticationException_DemoDisabled {
-            get {
-                return ResourceManager.GetString("AuthenticationException_DemoDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creation session ticket. Access denied..
-        /// </summary>
-        public static string AuthenticationException_DisallowCreateTicketFor {
-            get {
-                return ResourceManager.GetString("AuthenticationException_DisallowCreateTicketFor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Account {0} not found..
-        /// </summary>
-        public static string AuthenticationException_Impossible_AccountNotFound {
-            get {
-                return ResourceManager.GetString("AuthenticationException_Impossible_AccountNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Password incorrect..
-        /// </summary>
-        public static string AuthenticationException_Impossible_IncorrectPassword {
-            get {
-                return ResourceManager.GetString("AuthenticationException_Impossible_IncorrectPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter login and password..
-        /// </summary>
-        public static string AuthenticationException_Impossible_LoginPwdNotSet {
-            get {
-                return ResourceManager.GetString("AuthenticationException_Impossible_LoginPwdNotSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creation session ticket. Account not found..
-        /// </summary>
-        public static string AuthenticationException_Impossible_ResolveAccountToCreateTicket {
-            get {
-                return ResourceManager.GetString("AuthenticationException_Impossible_ResolveAccountToCreateTicket", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creation session ticket. Authentication strategy not found..
-        /// </summary>
-        public static string AuthenticationException_Impossible_ResolveAuthStrategy {
-            get {
-                return ResourceManager.GetString("AuthenticationException_Impossible_ResolveAuthStrategy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Account incorrect..
-        /// </summary>
-        public static string AuthenticationException_Incorrect_AccountData {
-            get {
-                return ResourceManager.GetString("AuthenticationException_Incorrect_AccountData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Password not set..
-        /// </summary>
-        public static string AuthenticationException_Incorrect_NoPassword {
-            get {
-                return ResourceManager.GetString("AuthenticationException_Incorrect_NoPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Low security level: required: {0}, actual: {1}, account: {2}..
-        /// </summary>
-        public static string AuthenticationException_LowSecurityLevel {
-            get {
-                return ResourceManager.GetString("AuthenticationException_LowSecurityLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User status {0} not active..
-        /// </summary>
-        public static string AuthenticationException_UserStatusInvalid {
-            get {
-                return ResourceManager.GetString("AuthenticationException_UserStatusInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Modules host &quot;{0}&quot; not found..
         /// </summary>
         public static string ModuleHostNotFoundException_Message {
             get {
                 return ResourceManager.GetString("ModuleHostNotFoundException_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to by e-mail.
-        /// </summary>
-        public static string NotifyEMailSenderName {
-            get {
-                return ResourceManager.GetString("NotifyEMailSenderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to by messenger.
-        /// </summary>
-        public static string NotifyMessengerSenderName {
-            get {
-                return ResourceManager.GetString("NotifyMessengerSenderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to web.
-        /// </summary>
-        public static string NotifyWebSenderName {
-            get {
-                return ResourceManager.GetString("NotifyWebSenderName", resourceCulture);
             }
         }
         
@@ -327,24 +192,6 @@ namespace ASC.Core.Common {
         public static string SevicePublisher_Publish_IncorrectType {
             get {
                 return ResourceManager.GetString("SevicePublisher_Publish_IncorrectType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Build-in groups..
-        /// </summary>
-        public static string SysGroupCategoryDescription {
-            get {
-                return ResourceManager.GetString("SysGroupCategoryDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to build-in.
-        /// </summary>
-        public static string SysGroupCategoryName {
-            get {
-                return ResourceManager.GetString("SysGroupCategoryName", resourceCulture);
             }
         }
         

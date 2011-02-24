@@ -35,7 +35,7 @@ namespace ASC.Core
         private static readonly IServicePublisher servicePublisher = new ServicePublisher();
         private static readonly IServiceActivator serviceActivator = new ServiceActivator();
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (WorkContext));
+        private static readonly ILog log = LogManager.GetLogger(typeof(WorkContext));
 
         public static ICoreAddressResolver CoreAddressResolver
         {
@@ -116,7 +116,7 @@ namespace ASC.Core
 
         private static T[] GetAssemblyAttributes<T>(Assembly assembly) where T : Attribute
         {
-            return (T[]) assembly.GetCustomAttributes(typeof (T), true);
+            return (T[])assembly.GetCustomAttributes(typeof(T), true);
         }
 
         private static NotifyContext notifyContext;
@@ -131,28 +131,16 @@ namespace ASC.Core
         }
 
         private static readonly NotifySenderDescription[] availableServerNotifySenders = new[]
-                                                                                             {
-                                                                                                 new NotifySenderDescription
-                                                                                                     (Constants.
-                                                                                                          NotifyEMailSenderSysName,
-                                                                                                      CommonDescriptionResource
-                                                                                                          .
-                                                                                                          NotifyEMailSenderName)
-                                                                                                 ,
-                                                                                                 new NotifySenderDescription
-                                                                                                     (Constants.
-                                                                                                          NotifyMessengerSenderSysName,
-                                                                                                      CommonDescriptionResource
-                                                                                                          .
-                                                                                                          NotifyMessengerSenderName)
-                                                                                             };
+        {
+            new NotifySenderDescription(Constants.NotifyEMailSenderSysName, "by e-mail"),
+            new NotifySenderDescription(Constants.NotifyMessengerSenderSysName,"by messenger")
+        };
 
         public static NotifySenderDescription[] AvailableNotifySenders
         {
             get
             {
-                return new List<NotifySenderDescription>(availableServerNotifySenders)
-                    .ToArray();
+                return new List<NotifySenderDescription>(availableServerNotifySenders).ToArray();
             }
         }
 
@@ -160,11 +148,7 @@ namespace ASC.Core
         {
             get
             {
-                return new[]
-                           {
-                               new NotifySenderDescription(Constants.NotifyEMailSenderSysName,
-                                                           CommonDescriptionResource.NotifyEMailSenderName),
-                           };
+                return new[] { new NotifySenderDescription(Constants.NotifyEMailSenderSysName, "by e-mail"), };
             }
         }
 
@@ -228,28 +212,28 @@ namespace ASC.Core
                             foreach (FactoryElement f in section.Factories)
                             {
                                 serviceFactories.Add(
-                                    !string.IsNullOrEmpty(f.Service) ? Type.GetType(f.Service, true) : typeof (IService),
-                                    (IServiceFactory) Activator.CreateInstance(Type.GetType(f.FactoryType, true)));
+                                    !string.IsNullOrEmpty(f.Service) ? Type.GetType(f.Service, true) : typeof(IService),
+                                    (IServiceFactory)Activator.CreateInstance(Type.GetType(f.FactoryType, true)));
                             }
                         }
                         else
                         {
                             log.Debug("ServiceFactory section not found. ServiceFactory initialized default values.");
-                            serviceFactories.Add(typeof (IService), new RemotingCoreServiceFactory());
+                            serviceFactories.Add(typeof(IService), new RemotingCoreServiceFactory());
                         }
                     }
                 }
             }
-            Type type = typeof (T);
+            Type type = typeof(T);
             IServiceFactory factory = null;
             if (!serviceFactories.TryGetValue(type, out factory))
             {
-                if (!serviceFactories.TryGetValue(typeof (IService), out factory))
+                if (!serviceFactories.TryGetValue(typeof(IService), out factory))
                 {
                     throw new Exception("Service factory not found for " + type);
                 }
             }
-            return (T) factory.GetService(type);
+            return (T)factory.GetService(type);
         }
 
         #endregion

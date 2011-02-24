@@ -27,7 +27,6 @@ namespace ASC.Common.Security.Authorizing
         public AuthCategory(Guid id, string name, string description, string sysname)
             : this(id, name, description)
         {
-            if (String.IsNullOrEmpty(sysname)) throw new ArgumentNullException("sysname");
             SysName = sysname;
         }
 

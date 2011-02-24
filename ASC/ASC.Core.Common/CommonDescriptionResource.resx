@@ -159,61 +159,10 @@
   <data name="ServiceActivationException_Reason_NotThisServiceType" xml:space="preserve">
     <value>Reason: services types mistmatch, url: {0}.</value>
   </data>
-  <data name="AuthenticationException_Impossible_ResolveAccountToCreateTicket" xml:space="preserve">
-    <value>Creation session ticket. Account not found.</value>
-  </data>
-  <data name="AuthenticationException_AccountNotFound" xml:space="preserve">
-    <value>Account {0} not found.</value>
-  </data>
-  <data name="AuthenticationException_UserStatusInvalid" xml:space="preserve">
-    <value>User status {0} not active.</value>
-  </data>
-  <data name="AuthenticationException_LowSecurityLevel" xml:space="preserve">
-    <value>Low security level: required: {0}, actual: {1}, account: {2}.</value>
-  </data>
-  <data name="AuthenticationException_Impossible_ResolveAuthStrategy" xml:space="preserve">
-    <value>Creation session ticket. Authentication strategy not found.</value>
-  </data>
-  <data name="AuthenticationException_Impossible_AccountNotFound" xml:space="preserve">
-    <value>Account {0} not found.</value>
-  </data>
-  <data name="AuthenticationException_Impossible_IncorrectPassword" xml:space="preserve">
-    <value>Password incorrect.</value>
-  </data>
-  <data name="AuthenticationException_Impossible_LoginPwdNotSet" xml:space="preserve">
-    <value>Enter login and password.</value>
-  </data>
   <data name="ServiceActivationException_Message_LocationNotFound" xml:space="preserve">
     <value>Service {0} location "{0}" not found.</value>
   </data>
-  <data name="AuthenticationException_DisallowCreateTicketFor" xml:space="preserve">
-    <value>Creation session ticket. Access denied.</value>
-  </data>
-  <data name="AuthenticationException_Incorrect_NoPassword" xml:space="preserve">
-    <value>Password not set.</value>
-  </data>
-  <data name="NotifyEMailSenderName" xml:space="preserve">
-    <value>by e-mail</value>
-  </data>
-  <data name="NotifyMessengerSenderName" xml:space="preserve">
-    <value>by messenger</value>
-  </data>
-  <data name="SysGroupCategoryDescription" xml:space="preserve">
-    <value>Build-in groups.</value>
-  </data>
-  <data name="SysGroupCategoryName" xml:space="preserve">
-    <value>build-in</value>
-  </data>
   <data name="UserManipulationException_BuildInEdit" xml:space="preserve">
     <value>Can not edit the built-in groups.</value>
-  </data>
-  <data name="NotifyWebSenderName" xml:space="preserve">
-    <value>web</value>
-  </data>
-  <data name="AuthenticationException_Incorrect_AccountData" xml:space="preserve">
-    <value>Account incorrect.</value>
-  </data>
-  <data name="AuthenticationException_DemoDisabled" xml:space="preserve">
-    <value>Demo mode off.</value>
   </data>
 </root>
