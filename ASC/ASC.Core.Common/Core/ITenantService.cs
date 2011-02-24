@@ -6,7 +6,7 @@ namespace ASC.Core
 {
     public interface ITenantService
     {
-        List<Tenant> GetTenants(DateTime from);
+        IEnumerable<Tenant> GetTenants(DateTime from);
 
         Tenant GetTenant(int id);
 

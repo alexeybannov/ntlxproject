@@ -1,10 +1,6 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-
-#endregion
 
 namespace ASC.Core.Tenants
 {
@@ -29,7 +25,7 @@ namespace ASC.Core.Tenants
         public Tenant(string alias)
             : this()
         {
-            if (!string.IsNullOrEmpty(alias)) TenantAlias = alias.ToLowerInvariant();
+            TenantAlias = alias.ToLowerInvariant();
         }
 
         internal Tenant(int id, string alias)
@@ -99,8 +95,9 @@ namespace ASC.Core.Tenants
 
         public override string ToString()
         {
-            return TenantAlias;
+            return TenantDomain ?? TenantAlias;
         }
+
 
         internal string GetTrustedDomains()
         {
@@ -127,9 +124,7 @@ namespace ASC.Core.Tenants
     public enum TenantStatus
     {
         Active = 0,
-
         Suspended = 1,
-
         RemovePending = 2
     }
 }

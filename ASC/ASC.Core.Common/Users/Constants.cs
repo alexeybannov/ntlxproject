@@ -121,7 +121,7 @@ namespace ASC.Core.Users
             DescriptionResource.Module_Name,
             DescriptionResource.Module_Description,
             ConstResource.Module_SysName,
-            CoreConstants.CoreVersion,
+            new Version("0.1"),
             ModuleType.CoreInfrastructure,
             ModulePartsInfo
             );

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A51D0454-4AFA-46DE-89D4-B03D37E1816C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -192,7 +192,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ConstResource.resx</DependentUpon>
     </Compile>
-    <Compile Include="Constants\CoreConstants.cs" />
     <Compile Include="Configuration\Resources\DescriptionResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -281,7 +280,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\common\common\ASC.Common\ASC.Common.csproj">
+    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj">
       <Project>{76DE7717-3D4B-4A5B-B740-15B8913DF0CB}</Project>
       <Name>ASC.Common</Name>
     </ProjectReference>

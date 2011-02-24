@@ -15,13 +15,11 @@ namespace ASC.Core.Factories
 {
     public class EmbedCoreServiceFactory : IServiceFactory
     {
-        readonly ASC.Core.Users.Service.Host usrHost = null;
         readonly IDAOFactory daoFactory;
 
         public EmbedCoreServiceFactory()
         {
             var _srvPart = new CommonServicesModulePart();
-            usrHost = new ASC.Core.Users.Service.Host();
             daoFactory = new DAOFactory();
 
             if (!DbRegistry.IsDatabaseRegistered(DAOFactory.DAO_KEY))
@@ -67,9 +65,9 @@ namespace ASC.Core.Factories
                     if (result == null)
                     {
                         if (type == typeof(IAuthorizationManager))
-                            result = new AuthorizationManager(usrHost.DaoFactory);
+                            result = new AuthorizationManager(daoFactory);
                         else if (type == typeof(ISubscriptionManager))
-                            result = new SubscriptionManager(usrHost.DaoFactory);
+                            result = new SubscriptionManager(daoFactory);
                         else if (type == typeof(IAuthentication))
                             result = new Authentication(daoFactory);
                         else if (type == typeof(IServiceLocator))
