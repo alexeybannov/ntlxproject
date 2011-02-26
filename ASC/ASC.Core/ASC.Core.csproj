@@ -53,23 +53,14 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\DAO\CfgDAO.cs" />
-    <Compile Include="Configuration\DAO\ICfgDAO.cs" />
-    <Compile Include="Configuration\DAO\ITenantDAO.cs" />
-    <Compile Include="Configuration\DAO\TenantDAO.cs" />
     <Compile Include="Configuration\Module\CommonModulePart.cs" />
     <Compile Include="Configuration\Module\CommonServicesModulePart.cs" />
     <Compile Include="Configuration\Module\ConfigurationModule.cs" />
-    <Compile Include="Configuration\Service\Authentication.cs" />
-    <Compile Include="Configuration\Service\CacheInfoStorageService.cs" />
-    <Compile Include="Configuration\Service\Configuration.cs" />
     <Compile Include="Configuration\Service\Notify\Jabber\JabberSenderSink.cs" />
-    <Compile Include="Configuration\Service\TenantManager.cs" />
     <Compile Include="Configuration\Service\Host.cs" />
     <Compile Include="Configuration\Service\NotifyImpl.cs" />
     <Compile Include="Configuration\Service\ServiceLocator.cs" />
     <Compile Include="Factories\EmbedCoreServiceFactory.cs" />
-    <Compile Include="HostedSolution.cs" />
     <Compile Include="Host\CoreHost.cs" />
     <Compile Include="Host\ServiceInitializer.cs" />
     <Compile Include="Host\ServicesHost.cs" />

@@ -1,13 +1,7 @@
-#region usings
-
-using System;
+using System.Configuration;
 using ASC.Common.Services;
-using ASC.Core.Common.Cache;
 using ASC.Core.Configuration;
 using ASC.Core.Users;
-using System.Configuration;
-
-#endregion
 
 namespace ASC.Core
 {
@@ -15,56 +9,54 @@ namespace ASC.Core
     {
         #region << Private fields >>
 
-        private static readonly object syncRoot;
-        private static readonly ClientConfiguration configuration;
-        private static Lazy<CacheInfoStorageClient> cacheInfoStorage;
-        private static Lazy<ITenantManagerClient> tenantManager;
-        private static Lazy<ClientUserManager> userManager;
-        private static Lazy<AuthenticationService> authentication;
-        private static Lazy<AzClientManager> azManager;
-        private static Lazy<ClientSubscriptionManager> subscriptionManager;
+        private static readonly Lazy<AzClientManager> azManager;
+        private static readonly Lazy<ClientSubscriptionManager> subscriptionManager;
 
         #endregion << Private fields >>
 
         static CoreContext()
         {
-            var dbUserService = new DbUserService(ConfigurationManager.ConnectionStrings["core_nc"]);
+            var userService = new DbUserService(ConfigurationManager.ConnectionStrings["core_nc"]);
+            var tenantService = new DbTenantService(ConfigurationManager.ConnectionStrings["core_nc"]);
+            var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings["core_nc"]);
 
-            syncRoot = new object();
-            configuration = new ClientConfiguration();
-            cacheInfoStorage = new Lazy<CacheInfoStorageClient>(() => new CacheInfoStorageClient(GetService<ICacheInfoStorageService>(), TimeSpan.FromSeconds(2)));
-            tenantManager = new Lazy<ITenantManagerClient>(() => new ClientTenantManager());
-            userManager = new Lazy<ClientUserManager>(() => new ClientUserManager(dbUserService));
-            authentication = new Lazy<AuthenticationService>(() => new AuthenticationService(dbUserService));
+            Configuration = new ClientConfiguration(tenantService);
+            TenantManager = new ClientTenantManager(tenantService, quotaService);
+            UserManager = new ClientUserManager(userService);
+            Authentication = new AuthenticationService(userService);
             azManager = new Lazy<AzClientManager>(() => new AzClientManager());
             subscriptionManager = new Lazy<ClientSubscriptionManager>(() => new ClientSubscriptionManager(GetService<ISubscriptionManager>()));
         }
 
         #region << Public Properties >>
 
-        public static CacheInfoStorageClient CacheInfoStorage
+        public static ClientConfiguration Configuration
         {
-            get { return cacheInfoStorage.Instance; }
+            get;
+            private set;
         }
 
         public static ITenantManagerClient TenantManager
         {
-            get { return tenantManager.Instance; }
+            get;
+            private set;
         }
 
         public static IUserManagerClient UserManager
         {
-            get { return userManager.Instance; }
+            get;
+            private set;
         }
 
         public static IGroupManagerClient GroupManager
         {
-            get { return userManager.Instance; }
+            get { return (IGroupManagerClient)UserManager; }
         }
 
         public static IAuthenticationClient Authentication
         {
-            get { return authentication.Instance; }
+            get;
+            private set;
         }
 
         public static IAuthorizationManagerClient AuthorizationManager
@@ -82,11 +74,6 @@ namespace ASC.Core
             get { return subscriptionManager.Instance; }
         }
 
-        public static ClientConfiguration Configuration
-        {
-            get { return configuration; }
-        }
-
         public static IServiceLocator ServiceLocator
         {
             get { return GetService<IServiceLocator>(); }
@@ -94,29 +81,6 @@ namespace ASC.Core
 
         #endregion << Public Properties >>
 
-        #region << Internal Services >>
-
-        internal static IConfiguration InternalConfiguration
-        {
-            get { return GetService<IConfiguration>(); }
-        }
-
-        internal static IAuthentication InternalAuthentication
-        {
-            get { return GetService<IAuthentication>(); }
-        }
-
-        internal static IAuthorizationManager InternalAuthorizationManager
-        {
-            get { return GetService<IAuthorizationManager>(); }
-        }
-
-        internal static ITenantManager InternalTenantManager
-        {
-            get { return GetService<ITenantManager>(); }
-        }
-
-        #endregion << Internal Services >>
 
         private static T GetService<T>()
             where T : IService

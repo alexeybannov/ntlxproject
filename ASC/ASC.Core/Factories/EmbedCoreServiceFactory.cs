@@ -68,18 +68,10 @@ namespace ASC.Core.Factories
                             result = new AuthorizationManager(daoFactory);
                         else if (type == typeof(ISubscriptionManager))
                             result = new SubscriptionManager(daoFactory);
-                        else if (type == typeof(IAuthentication))
-                            result = new Authentication(daoFactory);
                         else if (type == typeof(IServiceLocator))
                             result = new ServiceLocator();
                         else if (type == typeof(INotify))
                             result = new NotifyImpl();
-                        else if (type == typeof(IConfiguration))
-                            result = new ASC.Core.Configuration.Service.Configuration(daoFactory);
-                        else if (type == typeof(ICacheInfoStorageService))
-                            result = new CacheInfoStorageService();
-                        else if (type == typeof(ITenantManager))
-                            result = new TenantManager(daoFactory);
 
                         if (result != null)
                             _services[type] = result;

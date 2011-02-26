@@ -29,11 +29,24 @@ namespace ASC.Core
             get;
             set;
         }
-        
+
         public UserGroupRefType RefType
         {
             get;
             set;
+        }
+
+
+        public UserGroupRef()
+        {
+
+        }
+
+        public UserGroupRef(Guid userId, Guid groupId, UserGroupRefType refType)
+        {
+            UserId = userId;
+            GroupId = groupId;
+            RefType = refType;
         }
 
 

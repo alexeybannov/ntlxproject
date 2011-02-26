@@ -1,10 +1,6 @@
-﻿#region usings
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-#endregion
 
 [assembly: AssemblyTitle("ASC.Common")]
 [assembly: AssemblyDescription("")]

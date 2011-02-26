@@ -1,81 +1,78 @@
 using System;
+using System.Configuration;
+using System.Text;
 using ASC.Core.Configuration;
+using ASC.Core.Tenants;
 
 namespace ASC.Core
 {
     public class ClientConfiguration
     {
-        private readonly object syncRoot = new object();
-        private int? secureCorePort;
+        private readonly ITenantService tenantService;
 
-        private readonly RemotingSubsystemConfiguration remotingSubsystemConfiguration = new RemotingSubsystemConfiguration();
-
-        private SysConfig cfg;
-        private bool? standalone;
-
-
-        #region IConfiguration
 
         public bool Standalone
         {
-            get
-            {
-                if (!standalone.HasValue)
-                {
-                    standalone = CoreContext.InternalConfiguration.Standalone;
-                }
-                return standalone.Value;
-            }
+            get { return ConfigurationManager.AppSettings["asc.core.tenants.base-domain"] == "localhost"; }
         }
 
         public int SecureCorePort
         {
-            get
-            {
-                if (!secureCorePort.HasValue) secureCorePort = CoreContext.InternalConfiguration.SecureCorePort;
-                return secureCorePort.Value;
-            }
-            internal set { secureCorePort = value; }
+            get;
+            set;
         }
-
-        public void SaveSetting(string key, object value)
-        {
-            CoreContext.InternalConfiguration.SaveSetting(key, value);
-        }
-
-        public object GetSetting(string key)
-        {
-            return CoreContext.InternalConfiguration.GetSetting(key);
-        }
-
-        #endregion
-
 
         public RemotingSubsystemConfiguration RemotingSubsystemConfiguration
         {
-            get { return remotingSubsystemConfiguration; }
+            get;
+            private set;
         }
-
-        #region settings
 
         public SysConfig Cfg
         {
-            get
-            {
-                if (cfg == null) cfg = new SysConfig(this);
-                return cfg;
-            }
+            get;
+            private set;
         }
+
+
+        public ClientConfiguration(ITenantService tenantService)
+        {
+            this.tenantService = tenantService;
+            RemotingSubsystemConfiguration = new RemotingSubsystemConfiguration();
+            Cfg = new SysConfig(this);
+        }
+
+
+        public void SaveSetting(string key, string value)
+        {
+            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+            if (value == null) throw new ArgumentNullException("value");
+            SecurityContext.DemandPermissions(Constants.Action_Configure);
+
+            var data = value != null ? Encoding.UTF8.GetBytes(value) : null;
+            data = Crypto.GetV(data, 2, true);
+            tenantService.SetTenantSettings(Tenant.DEFAULT_TENANT, key, data);
+        }
+
+        public string GetSetting(string key)
+        {
+            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
+
+            var data = tenantService.GetTenantSettings(Tenant.DEFAULT_TENANT, key);
+            data = Crypto.GetV(data, 2, false);
+            return data != null ? Encoding.UTF8.GetString(data) : null;
+        }
+
 
         public class SysConfig
         {
             private readonly ClientConfiguration config;
-            private DateTime lastFlushSettings = DateTime.Now;
             private readonly TimeSpan flushInterval = TimeSpan.FromMinutes(1);
+            private DateTime lastFlushSettings = DateTime.Now;
             private SmtpSettings smtpSettings;
 
 
-            internal SysConfig(ClientConfiguration clientCongfig)
+            public SysConfig(ClientConfiguration clientCongfig)
             {
                 if (clientCongfig == null) throw new ArgumentNullException("clientCongfig");
                 config = clientCongfig;
@@ -106,10 +103,6 @@ namespace ASC.Core
                 get { return true; }
                 set { }
             }
-
-            #endregion
-
-            #region serialization of properties in line
 
             internal string Serialize(SmtpSettings smtpSettings)
             {
@@ -189,8 +182,6 @@ namespace ASC.Core
             {
                 return (T)Deserialize(value, typeof(T));
             }
-
-            #endregion
 
             private void CheckAndFlushSettings()
             {

@@ -63,6 +63,8 @@ namespace ASC.Core.Tenants
 
         public string MappedDomain { get; set; }
 
+        public DateTime LastModified { get; set; }
+
         public TenantStatus Status { get; internal set; }
 
         public DateTime StatusChangeDate { get; internal set; }

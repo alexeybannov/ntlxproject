@@ -72,21 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cache\CachSynchronizeFunc.cs" />
-    <Compile Include="Cache\CacheInfoStorageResult.cs" />
-    <Compile Include="Cache\CacheAction.cs" />
-    <Compile Include="Cache\CacheInfoStorage.cs" />
-    <Compile Include="Cache\CacheInfo.cs" />
-    <Compile Include="Cache\CacheVersion.cs" />
-    <Compile Include="Cache\CacheReaction.cs" />
-    <Compile Include="Cache\Cache.cs" />
-    <Compile Include="Cache\CacheController.cs" />
-    <Compile Include="Cache\ICache.cs" />
-    <Compile Include="Cache\ICacheInfoStorage.cs" />
-    <Compile Include="Configuration\Interfaces\ITenantManager.cs" />
-    <Compile Include="Configuration\Interfaces\ICacheInfoStorageService.cs" />
     <Compile Include="Configuration\Interfaces\INotify.cs" />
-    <Compile Include="Configuration\Interfaces\IAuthentication.cs" />
     <Compile Include="Configuration\Resources\ConstResource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,7 +81,6 @@
     <Compile Include="Configuration\SmtpSettings.cs" />
     <Compile Include="Context\ClientImpl\AuthenticationService.cs" />
     <Compile Include="Context\ClientImpl\AzClientManager.cs" />
-    <Compile Include="Cache\CacheInfoStorageClient.cs" />
     <Compile Include="Context\ClientImpl\ClientConfiguration.cs" />
     <Compile Include="Context\ClientImpl\ClientSubscriptionManager.cs" />
     <Compile Include="Context\ClientImpl\ClientTenantManager.cs" />
@@ -116,6 +101,8 @@
     <Compile Include="Core\CachedUserService.cs" />
     <Compile Include="Core\CacheHelper.cs" />
     <Compile Include="Core\CacheItem.cs" />
+    <Compile Include="Core\DbQuotaService.cs" />
+    <Compile Include="Core\IQuotaService.cs" />
     <Compile Include="Core\DbTenantService.cs" />
     <Compile Include="Core\ITenantService.cs" />
     <Compile Include="Core\DbUserService.cs" />
@@ -127,10 +114,10 @@
     <Compile Include="Data\DbBaseService.cs" />
     <Compile Include="Data\DbExecuter.cs" />
     <Compile Include="Data\IDbExecuter.cs" />
+    <Compile Include="HostedSolution.cs" />
     <Compile Include="Hosting\ICoreHost.cs" />
     <Compile Include="Context\CoreContext.cs" />
     <Compile Include="Context\WorkContext.cs" />
-    <Compile Include="Configuration\Interfaces\IConfiguration.cs" />
     <Compile Include="Configuration\Interfaces\IServiceLocator.cs" />
     <Compile Include="Configuration\Constants.cs" />
     <Compile Include="Hosting\IServicesHost.cs" />
@@ -173,8 +160,6 @@
     <Compile Include="Security\Authorizing\PermissionResolver.cs" />
     <Compile Include="Security\Authorizing\RoleProvider.cs" />
     <Compile Include="Services\Factories\RemotingCoreServiceFactory.cs" />
-    <Compile Include="Tenants\Sink\TenantClientSink.cs" />
-    <Compile Include="Tenants\Sink\TenantClientSinkProvider.cs" />
     <Compile Include="Tenants\Tenant.cs" />
     <Compile Include="Tenants\TenantRegistrationInfo.cs" />
     <Compile Include="Tenants\TenantUtil.cs" />

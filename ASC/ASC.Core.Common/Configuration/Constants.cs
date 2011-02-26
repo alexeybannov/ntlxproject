@@ -21,17 +21,6 @@ namespace ASC.Core.Configuration
     {
         #region services info
 
-        public static readonly ServiceInfoBase ConfigurationServiceInfo =
-            new CoreServiceInfo(
-                typeof (IConfiguration),
-                DescriptionResource.ServiceName_Configuration,
-                DescriptionResource.ServiceDescription_Configuration,
-                ConstResource.ServiceSysName_Configuration,
-                new Version("0.1"),
-                new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(                    ConstResource.ServiceSysName_Configuration                    )
-                );
-
         public static readonly ServiceInfoBase ServiceLocatorServiceInfo =
             new CoreServiceInfo(
                 typeof (IServiceLocator),
@@ -41,17 +30,6 @@ namespace ASC.Core.Configuration
                 new Version("0.1"),
                 new[] {TransportType.Tcp, TransportType.Ipc},
                 UriUtil.BuildUri(                    ConstResource.ServiceSysName_ServiceLocator                    )
-                );
-
-        public static readonly ServiceInfoBase AuthenticationServiceInfo =
-            new CoreServiceInfo(
-                typeof (IAuthentication),
-                DescriptionResource.ServiceName_Authentication,
-                DescriptionResource.ServiceDescription_Authentication,
-                ConstResource.ServiceSysName_Authentication,
-                new Version("0.1"),
-                new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(                    ConstResource.ServiceSysName_Authentication                    )
                 );
 
         public static readonly ServiceInfoBase NotifyServiceInfo =
@@ -65,38 +43,12 @@ namespace ASC.Core.Configuration
                 UriUtil.BuildUri(ConstResource.ServiceSysName_Notify)
                 );
 
-        public static readonly ServiceInfoBase CacheInfoStorageServiceInfo =
-            new CoreServiceInfo(
-                typeof (ICacheInfoStorageService),
-                DescriptionResource.ServiceName_CacheInfoStorage,
-                DescriptionResource.ServiceDescription_CacheInfoStorage,
-                ConstResource.ServiceSysName_CacheInfoStorage,
-                new Version("0.1"),
-                new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri(ConstResource.ServiceSysName_CacheInfoStorage)
-                );
-
-        public static readonly ServiceInfoBase TenantManagerServiceInfo =
-            new CoreServiceInfo(
-                typeof (ITenantManager),
-                "TenantManager",
-                null,
-                "TenantManager",
-                new Version("0.1"),
-                new[] {TransportType.Tcp, TransportType.Ipc},
-                UriUtil.BuildUri("TenantManager")
-                );
-
         #endregion
 
         public static readonly ServiceInfoBase[] ConfigurationServices = new[]
                                                                              {
-                                                                                 CacheInfoStorageServiceInfo,
-                                                                                 ConfigurationServiceInfo,
-                                                                                 AuthenticationServiceInfo,
                                                                                  ServiceLocatorServiceInfo,
                                                                                  NotifyServiceInfo,
-                                                                                 TenantManagerServiceInfo,
                                                                              };
 
         #region Module parts info

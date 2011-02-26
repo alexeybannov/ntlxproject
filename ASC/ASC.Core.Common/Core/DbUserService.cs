@@ -5,6 +5,8 @@ using System.Linq;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Data;
+using ASC.Core.Tenants;
+using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
 namespace ASC.Core
@@ -27,6 +29,23 @@ namespace ASC.Core
         public User GetUser(int tenant, Guid id)
         {
             var q = GetUserQuery(tenant, default(DateTime)).Where("id", id);
+            return ExecList(q).ConvertAll(r => ToUser(r)).SingleOrDefault();
+        }
+
+        public User GetUser(int tenant, string login, string password)
+        {
+            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
+
+            var q = GetUserQuery()
+                .InnerJoin("core_usersecurity s", Exp.EqColumns("u.id", "s.userid"))
+                .Where("u.status", (int)EmployeeStatus.Active)
+                .Where(Exp.Eq("upper(u.email)", login.ToUpperInvariant()) | Exp.Eq("u.id", login))
+                .Where("s.pwdhash", password);
+            if (tenant != Tenant.DEFAULT_TENANT)
+            {
+                q.Where("u.tenant", tenant);
+            }
+
             return ExecList(q).ConvertAll(r => ToUser(r)).SingleOrDefault();
         }
 
@@ -215,12 +234,17 @@ namespace ASC.Core
         }
 
 
-        private SqlQuery GetUserQuery(int tenant, DateTime from)
+        private SqlQuery GetUserQuery()
         {
-            var q = Query("core_user", tenant)
+            return new SqlQuery("core_user u")
                 .Select("id", "username", "firstname", "lastname", "sex", "bithdate")
                 .Select("status", "title", "department", "workfromdate", "terminateddate")
                 .Select("contacts", "email", "location", "notes", "removed", "last_modified");
+        }
+
+        private SqlQuery GetUserQuery(int tenant, DateTime from)
+        {
+            var q = GetUserQuery().Where("tenant", tenant);
             if (from != default(DateTime)) q.Where(Exp.Ge("last_modified", from));
             return q;
         }
@@ -301,11 +325,8 @@ namespace ASC.Core
 
         private UserGroupRef ToUserGroupRef(object[] r)
         {
-            return new UserGroupRef
+            return new UserGroupRef(new Guid((string)r[0]), new Guid((string)r[1]), (UserGroupRefType)Convert.ToInt32(r[2]))
             {
-                UserId = new Guid((string)r[0]),
-                GroupId = new Guid((string)r[1]),
-                RefType = (UserGroupRefType)Convert.ToInt32(r[2]),
                 Removed = Convert.ToBoolean(r[3]),
                 ModifiedOn = Convert.ToDateTime(r[4]),
             };

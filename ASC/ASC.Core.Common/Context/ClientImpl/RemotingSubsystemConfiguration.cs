@@ -4,7 +4,6 @@ using System.Collections;
 using System.Runtime.Remoting.Channels;
 using ASC.Core.Common.Remoting;
 using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants.Sink;
 
 #endregion
 
@@ -29,8 +28,7 @@ namespace ASC.Core
         public IClientChannelSinkProvider GetFirstClientSinkProvider()
         {
             var provider = new SecurityClientSinkProvider();
-            provider.Next = new TenantClientSinkProvider();
-            provider.Next.Next = GetClientFormatterSinkProvider();
+            provider.Next = GetClientFormatterSinkProvider();
 
             return provider;
         }

@@ -1,16 +1,11 @@
-﻿using ASC.Core.Configuration.DAO;
-using ASC.Core.Users.DAO;
+﻿using ASC.Core.Users.DAO;
 
 namespace ASC.Core.Factories
 {
-	public interface IDAOFactory
+	interface IDAOFactory
 	{
 		IAzDAO GetAzDao();
 
 		ISubscriptionDAO GetSubscriptionDao();
-
-		ICfgDAO GetConfigDao();
-
-		ITenantDAO GetTenantDAO();
 	}
 }

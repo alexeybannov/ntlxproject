@@ -19,8 +19,7 @@ namespace ASC.Core
             {
                 return AuthenticationContext.ChangePassword(userID, password);
             }
-            else
-                return null;
+            return null;
         }
 
         public static bool IsAuthenticated
@@ -98,8 +97,7 @@ namespace ASC.Core
             return CheckPermissions<T>(objectId, null, actions);
         }
 
-        public static bool CheckPermissions<T>(object objectId, ISecurityObjectProvider securityObjProvider,
-                                               params IAction[] actions)
+        public static bool CheckPermissions<T>(object objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
             return CheckPermissions(new SecurityObjectId<T>(objectId), securityObjProvider, actions);
         }
@@ -109,8 +107,7 @@ namespace ASC.Core
             return CheckPermissions(securityObject, null, actions);
         }
 
-        public static bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider,
-                                            params IAction[] actions)
+        public static bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
             return PermissionResolver.Check(CurrentAccount, objectId, securityObjProvider, actions);
         }
@@ -125,8 +122,7 @@ namespace ASC.Core
             DemandPermissions<T>(objectId, null, actions);
         }
 
-        public static void DemandPermissions<T>(object objectId, ISecurityObjectProvider securityObjProvider,
-                                                params IAction[] actions)
+        public static void DemandPermissions<T>(object objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
             DemandPermissions(new SecurityObjectId<T>(objectId), securityObjProvider, actions);
         }
@@ -136,8 +132,7 @@ namespace ASC.Core
             DemandPermissions(securityObject, null, actions);
         }
 
-        public static void DemandPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider,
-                                             params IAction[] actions)
+        public static void DemandPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
             PermissionResolver.Demand(CurrentAccount, objectId, securityObjProvider, actions);
         }

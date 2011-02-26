@@ -60,6 +60,11 @@ namespace ASC.Core
             return GetUsersInternal().SingleOrDefault(u => u.ID == id) ?? Constants.LostUser;
         }
 
+        public UserInfo GetUsers(int tenant, string login, string password)
+        {
+            return ToUserInfo(userService.GetUser(tenant, login, password));
+        }
+
         public bool UserExists(Guid id)
         {
             return !GetUsers(id).Equals(Constants.LostUser);
@@ -212,7 +217,7 @@ namespace ASC.Core
 
             userService.SaveUserGroupRef(
                 CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                new UserGroupRef() { UserId = userId, GroupId = groupId, RefType = UserGroupRefType.Contains });
+                new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
         }
 
         public void RemoveUserFromGroup(Guid userId, Guid groupId)
@@ -254,7 +259,7 @@ namespace ASC.Core
             {
                 userService.SaveUserGroupRef(
                     CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                    new UserGroupRef() { RefType = UserGroupRefType.Manager, UserId = userID, GroupId = deparmentID });
+                    new UserGroupRef(userID, deparmentID, UserGroupRefType.Manager));
             }
         }
 

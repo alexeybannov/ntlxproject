@@ -4,7 +4,6 @@ using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Services;
-using ASC.Core.Common.Cache;
 using ASC.Core.Users;
 using UserConst = ASC.Core.Users.Constants;
 
@@ -12,10 +11,10 @@ namespace ASC.Core
 {
     class AzClientManager : IAuthorizationManagerClient
     {
-        private readonly IDictionary<int, ICache<string, AzRecord>> azAceCache = new Dictionary<int, ICache<string, AzRecord>>();
+        private readonly IDictionary<int, IDictionary<string, AzRecord>> azAceCache = new Dictionary<int, IDictionary<string, AzRecord>>();
         private readonly IDictionary<int, IDictionary<Guid, List<string>>> azAceCacheByActions = new Dictionary<int, IDictionary<Guid, List<string>>>();
 
-        private ICache<string, AzRecord> AzAceCache
+        private IDictionary<string, AzRecord> AzAceCache
         {
             get
             {
@@ -24,11 +23,7 @@ namespace ASC.Core
                 {
                     if (!azAceCache.ContainsKey(tenant))
                     {
-                        var aceCacheInit = new CacheInfo(UserConst.CacheIdAzAce + tenant);
-                        aceCacheInit.AddParentCache(UserConst.CacheIdUsers + tenant);
-                        aceCacheInit.AddParentCache(UserConst.CacheIdCategories + tenant);
-                        aceCacheInit.AddParentCache(UserConst.CacheIdGroups + tenant);
-                        azAceCache[tenant] = CoreContext.CacheInfoStorage.CreateCache<string, AzRecord>(aceCacheInit, SyncAzAceCache);
+                        //azAceCache[tenant] = CoreContext.CacheInfoStorage.CreateCache<string, AzRecord>(aceCacheInit, SyncAzAceCache);
                     }
                     return azAceCache[tenant];
                 }
@@ -54,7 +49,8 @@ namespace ASC.Core
         private IDictionary<string, AzRecord> SyncAzAceCache()
         {
             azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);
-            return CoreContext.InternalAuthorizationManager.GetAces().ToDictionary(a => a.Id);
+            //return CoreContext.InternalAuthorizationManager.GetAces().ToDictionary(a => a.Id);
+            return null;
         }
 
         #region IAuthorizationManager Members
@@ -209,7 +205,7 @@ namespace ASC.Core
 
         public void AddAce(AzRecord azRecord)
         {
-            CoreContext.InternalAuthorizationManager.AddAce(azRecord);
+            //CoreContext.InternalAuthorizationManager.AddAce(azRecord);
             if (!AzAceCache.ContainsKey(azRecord.Id))
             {
                 azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);
@@ -219,7 +215,7 @@ namespace ASC.Core
 
         public void RemoveAce(AzRecord azRecord)
         {
-            CoreContext.InternalAuthorizationManager.RemoveAce(azRecord);
+            //CoreContext.InternalAuthorizationManager.RemoveAce(azRecord);
             if (AzAceCache.ContainsKey(azRecord.Id))
             {
                 azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);

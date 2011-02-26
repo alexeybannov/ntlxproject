@@ -13,32 +13,48 @@ namespace ASC.Core
 {
     public class DbTenantService : DbBaseService, ITenantService
     {
-        private List<string> forbiddenDomains;
+        private readonly List<string> forbiddenDomains;
 
-        private Regex validDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private readonly Regex validDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
 
         public DbTenantService(ConnectionStringSettings connectionString)
             : base(connectionString, null)
         {
             forbiddenDomains = ExecList(new SqlQuery("tenants_forbiden").Select("address"))
-                .Select(r => (string)r[0])
+                .ConvertAll(r => (string)r[0])
                 .ToList();
         }
 
 
+        public void ValidateDomain(string domain)
+        {
+            ExecAction(db => ValidateDomain(db, domain, Tenant.DEFAULT_TENANT));
+        }
+
         public IEnumerable<Tenant> GetTenants(DateTime from)
         {
-            var q = GetTenantQuery(from != default(DateTime) ? Exp.Ge("last_modified", from) : Exp.Empty);
-            return ExecList(q)
-                .Select(r => ToTenant(r));
+            return GetTenants(from != default(DateTime) ? Exp.Ge("last_modified", from) : Exp.Empty);
+        }
+
+        public IEnumerable<Tenant> GetTenants(string login, string password)
+        {
+            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
+
+            var q = new SqlQuery("core_user u")
+                .InnerJoin("core_usersecurity s", Exp.EqColumns("u.id", "s.userid"))
+                .Select("u.tenant")
+                .Where("upper(u.email)", login.ToUpperInvariant());
+            if (password != null)
+            {
+                q.Where("pwdhash", password);
+            }
+            return GetTenants(Exp.In("id", q));
         }
 
         public Tenant GetTenant(int id)
         {
-            var q = GetTenantQuery(Exp.Eq("id", id));
-            return ExecList(q)
-                .Select(r => ToTenant(r))
+            return GetTenants(Exp.Eq("id", id))
                 .SingleOrDefault();
         }
 
@@ -49,6 +65,7 @@ namespace ASC.Core
             ExecAction(db =>
             {
                 var isnew = t.TenantId == Tenant.DEFAULT_TENANT;
+                t.LastModified = DateTime.UtcNow;
 
                 ValidateDomain(db, t.TenantAlias, t.TenantId);
                 if (!string.IsNullOrEmpty(t.MappedDomain)) ValidateDomain(db, t.MappedDomain, t.TenantId);
@@ -67,6 +84,7 @@ namespace ASC.Core
                     .InColumnValue("creationdatetime", t.CreatedDateTime)
                     .InColumnValue("status", (int)t.Status)
                     .InColumnValue("statuschanged", t.StatusChangeDate)
+                    .InColumnValue("last_modified", t.LastModified)
                     .Identity<int>(0, -1, true);
 
                 t.TenantId = db.ExecScalar<int>(i);
@@ -96,33 +114,48 @@ namespace ASC.Core
         }
 
 
-        private SqlQuery GetTenantQuery(Exp where)
+        public byte[] GetTenantSettings(int tenant, string key)
         {
-            return new SqlQuery("tenants_tenants t")
-                .Select("id", "alias", "mappeddomain", "name", "language", "timezone", "owner_name", "owner_email")
-                .Select("trusteddomains", "trusteddomainsenabled", "creationdatetime", "status", "statuschanged")
-                .Where(where);
+            return ExecScalar<byte[]>(new SqlQuery("core_settings").Select("value").Where("tenant", tenant).Where("id", key));
         }
 
-        private Tenant ToTenant(object[] r)
+        public void SetTenantSettings(int tenant, string key, byte[] data)
         {
-            var tenant = new Tenant(Convert.ToInt32(r[0]), (string)r[1])
-            {
-                MappedDomain = (string)r[2],
-                Name = (string)r[3],
-                Language = (string)r[4],
-                TimeZone = GetTimeZone((string)r[5]),
-                OwnerName = (string)r[6],
-                OwnerEMail = (string)r[7],
-                TrustedDomainsEnabled = Convert.ToBoolean(r[9]),
-                CreatedDateTime = (DateTime)r[10],
-                Status = (TenantStatus)Convert.ToInt32(r[11]),
-                StatusChangeDate = (DateTime)r[12],
-            };
-            tenant.SetTrustedDomains((string)r[8]);
-            CalculateTenantDomain(tenant);
+            var i = data == null || data.Length == 0 ?
+                (ISqlInstruction)new SqlDelete("core_settings").Where("tenant", tenant).Where("id", key) :
+                (ISqlInstruction)new SqlInsert("core_settings", true).InColumns("tenant", "id", "value").Values(tenant, key, data);
+            ExecNonQuery(i);
+        }
 
-            return tenant;
+        
+        private IEnumerable<Tenant> GetTenants(Exp where)
+        {
+            var q = new SqlQuery("tenants_tenants t")
+                .Select("id", "alias", "mappeddomain", "name", "language", "timezone", "owner_name", "owner_email")
+                .Select("trusteddomains", "trusteddomainsenabled", "creationdatetime", "status", "statuschanged", "last_modified")
+                .Where(where);
+
+            return ExecList(q).ConvertAll(r =>
+            {
+                var tenant = new Tenant(Convert.ToInt32(r[0]), (string)r[1])
+                {
+                    MappedDomain = (string)r[2],
+                    Name = (string)r[3],
+                    Language = (string)r[4],
+                    TimeZone = GetTimeZone((string)r[5]),
+                    OwnerName = (string)r[6],
+                    OwnerEMail = (string)r[7],
+                    TrustedDomainsEnabled = Convert.ToBoolean(r[9]),
+                    CreatedDateTime = (DateTime)r[10],
+                    Status = (TenantStatus)Convert.ToInt32(r[11]),
+                    StatusChangeDate = (DateTime)r[12],
+                    LastModified = (DateTime)r[13],
+                };
+                tenant.SetTrustedDomains((string)r[8]);
+                CalculateTenantDomain(tenant);
+
+                return tenant;
+            });
         }
 
         private void CalculateTenantDomain(Tenant tenant)

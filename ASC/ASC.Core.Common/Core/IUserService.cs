@@ -9,6 +9,8 @@ namespace ASC.Core
 
         User GetUser(int tenant, Guid id);
 
+        User GetUser(int tenant, string login, string password);
+
         User SaveUser(int tenant, User user);
 
         void RemoveUser(int tenant, Guid id);

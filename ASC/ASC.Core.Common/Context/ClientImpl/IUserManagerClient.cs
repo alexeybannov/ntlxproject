@@ -15,6 +15,8 @@ namespace ASC.Core
 
         UserInfo GetUsers(Guid userID);
 
+        UserInfo GetUsers(int tenant, string login, string password);
+
         UserInfo SaveUserInfo(UserInfo userInfo);
 
         void DeleteUser(Guid userID);
@@ -22,7 +24,7 @@ namespace ASC.Core
         void SaveUserPhoto(Guid userID, Guid moduleID, byte[] photo);
 
         byte[] GetUserPhoto(Guid userID, Guid moduleID);
-        
+
         bool UserExists(Guid userID);
 
         UserInfo[] GetUsers(EmployeeStatus status);
@@ -56,7 +58,7 @@ namespace ASC.Core
         void AddUserIntoGroup(Guid userID, Guid groupID);
 
         void RemoveUserFromGroup(Guid userID, Guid groupID);
-        
+
         #endregion
 
         #region Company Info
@@ -70,7 +72,7 @@ namespace ASC.Core
         Guid GetDepartmentManager(Guid deparmentID);
 
         void SetDepartmentManager(Guid deparmentID, Guid userID);
-        
+
         #endregion
     }
 }

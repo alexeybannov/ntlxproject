@@ -33,6 +33,11 @@ namespace ASC.Core
             return GetUsers(tenant, default(DateTime)).SingleOrDefault(u => u.Id == id);
         }
 
+        public User GetUser(int tenant, string login, string password)
+        {
+            return service.GetUser(tenant, login, password);
+        }
+
         public User SaveUser(int tenant, User user)
         {
             user = service.SaveUser(tenant, user);
