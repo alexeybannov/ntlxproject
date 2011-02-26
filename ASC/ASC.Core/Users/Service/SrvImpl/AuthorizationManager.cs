@@ -4,7 +4,6 @@ using System.Security.Permissions;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Services;
 using ASC.Core.Common.Remoting;
-using ASC.Core.Factories;
 using ASC.Core.Users.DAO;
 using UserConst = ASC.Core.Users.Constants;
 
@@ -12,15 +11,11 @@ using UserConst = ASC.Core.Users.Constants;
 
 namespace ASC.Core.Users.Service.SrvImpl
 {
-	class AuthorizationManager : RemotingServiceController, IAuthorizationManager
+	class AuthorizationManager : RemotingServiceController
 	{
-		private IDAOFactory factory;
-
-		internal AuthorizationManager(IDAOFactory daoFactory)
-			: base(UserConst.AuthorizationManagerServiceInfo)
+		internal AuthorizationManager()
+			: base(null)
 		{
-			if (daoFactory == null) throw new ArgumentNullException("daoFactory");
-			this.factory = daoFactory;
 		}
 
 		#region IAuthorizationManager
@@ -55,9 +50,9 @@ namespace ASC.Core.Users.Service.SrvImpl
 
 		#endregion
 
-		private IAzDAO GetAzDAO()
+		private AzDAO GetAzDAO()
 		{
-			return factory.GetAzDao();
+			return null;
 		}
 	}
 }

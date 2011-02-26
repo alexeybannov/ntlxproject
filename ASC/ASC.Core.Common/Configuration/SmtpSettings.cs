@@ -1,8 +1,4 @@
-#region usings
-
 using System;
-
-#endregion
 
 namespace ASC.Core.Configuration
 {
@@ -22,6 +18,7 @@ namespace ASC.Core.Configuration
         public string CredentialsUserName;
 
         public string CredentialsUserPassword;
+
         public bool EnableSSL;
 
         public override bool Equals(object obj)

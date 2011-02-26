@@ -1,19 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Core.Data;
+using System.Configuration;
 
-namespace ASC.Core.Users.DAO
+namespace ASC.Core
 {
-    class SubscriptionDAO : DAOBase
+    class DbSubscriptionService : DbBaseService, ISubscriptionService
     {
-        public SubscriptionDAO(string dbId, int tenant)
-            : base(dbId, tenant)
+        public DbSubscriptionService(ConnectionStringSettings connectionString)
+            : base(connectionString, "tenant")
         {
 
         }
 
 
-        public string[] GetSubscriptionMethod(string sourceID, string actionID, string recipientID)
+        public string[] GetSubscriptions(string sourceID, string actionID, string recipientID)
+        {
+            if (sourceID == null) throw new ArgumentNullException("sourceID");
+            if (actionID == null) throw new ArgumentNullException("actionID");
+            if (recipientID == null) throw new ArgumentNullException("recipientID");
+
+            List<Subscription> subscriptions = null;
+            using (var dao = GetDAO())
+            {
+                subscriptions = dao.LoadSubscriptions(sourceID, actionID, true, null, false, recipientID, true);
+            }
+
+            List<string> objects = new List<string>(subscriptions.Count);
+            foreach (var sub in subscriptions)
+                if (!sub.IsUnsubscribed && !objects.Contains(sub.ObjectID)) objects.Add(sub.ObjectID);
+
+            return objects.ToArray();
+        }
+
+        public string[] GetSubscriptionMethod(int tenant, string sourceID, string actionID, string recipientID)
         {
             var method = DbManager.ExecuteScalar<string>(
                 Query("core_subscriptionmethod")
@@ -27,7 +48,7 @@ namespace ASC.Core.Users.DAO
             return string.IsNullOrEmpty(method) ? new string[0] : method.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public void UpdateSubscriptionMethod(string sourceID, string actionID, string recipientID, string[] senderNames)
+        public void UpdateSubscriptionMethod(int tenant, string sourceID, string actionID, string recipientID, string[] senderNames)
         {
             if (senderNames == null || senderNames.Length == 0)
             {
@@ -45,7 +66,7 @@ namespace ASC.Core.Users.DAO
             }
         }
 
-        public List<Subscription> LoadSubscriptions(string sourceID, string actionID, bool actionFilter, string objectID, bool objectFilter, string recipientID, bool recipientFilter)
+        public List<Subscription> LoadSubscriptions(int tenant, string sourceID, string actionID, bool actionFilter, string objectID, bool objectFilter, string recipientID, bool recipientFilter)
         {
             var query = Query("core_subscription").Select("Id", "Source", "Action", "Recipient", "Object", "Unsubscribed").Where("Source", sourceID);
             if (actionFilter) query.Where("Action", actionID);
@@ -68,7 +89,7 @@ namespace ASC.Core.Users.DAO
                 });
         }
 
-        public void Subscribe(string sourceID, string actionID, string recipientID, string objectID)
+        public void Subscribe(int tenant, string sourceID, string actionID, string recipientID, string objectID)
         {
             var exists = LoadSubscriptions(sourceID, actionID, true, objectID, true, recipientID, true);
             if (exists.Count == 0)
@@ -87,13 +108,13 @@ namespace ASC.Core.Users.DAO
             }
         }
 
-        public void UnSubscribe(string sourceID, string actionID, string objectID, bool objectFilter)
+        public void UnSubscribe(int tenant, string sourceID, string actionID, string objectID, bool objectFilter)
         {
             var delete = Delete("core_subscription").Where("Source", sourceID).Where("Action", actionID);
             if (objectFilter) delete.Where("Object", objectID);
             DbManager.ExecuteNonQuery(delete);
         }
-        public void UnSubscribe(string sourceID, string actionID, string recipientID, string objectID)
+        public void UnSubscribe(int tenant, string sourceID, string actionID, string recipientID, string objectID)
         {
             var exists = LoadSubscriptions(sourceID, actionID, true, objectID, true, recipientID, true);
             if (exists.Count == 0)
@@ -110,6 +131,31 @@ namespace ASC.Core.Users.DAO
                     DbManager.ExecuteNonQuery(Update("core_subscription").Set("Unsubscribed", 1).Where("Id", exists[0].ID));
                 }
             }
+        }
+
+        [Serializable]
+        public class Subscription
+        {
+            internal int ID
+            {
+                get;
+                set;
+            }
+
+            public Subscription()
+            {
+                IsUnsubscribed = false;
+            }
+
+            public string SourceID;
+
+            public string ActionID;
+
+            public string RecipientID;
+
+            public string ObjectID;
+
+            public bool IsUnsubscribed;
         }
     }
 }

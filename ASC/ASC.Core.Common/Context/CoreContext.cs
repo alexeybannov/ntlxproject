@@ -1,7 +1,6 @@
 using System.Configuration;
 using ASC.Common.Services;
 using ASC.Core.Configuration;
-using ASC.Core.Users;
 
 namespace ASC.Core
 {
@@ -10,7 +9,6 @@ namespace ASC.Core
         #region << Private fields >>
 
         private static readonly Lazy<AzClientManager> azManager;
-        private static readonly Lazy<ClientSubscriptionManager> subscriptionManager;
 
         #endregion << Private fields >>
 
@@ -25,7 +23,6 @@ namespace ASC.Core
             UserManager = new ClientUserManager(userService);
             Authentication = new AuthenticationService(userService);
             azManager = new Lazy<AzClientManager>(() => new AzClientManager());
-            subscriptionManager = new Lazy<ClientSubscriptionManager>(() => new ClientSubscriptionManager(GetService<ISubscriptionManager>()));
         }
 
         #region << Public Properties >>
@@ -59,6 +56,12 @@ namespace ASC.Core
             private set;
         }
 
+        internal static ClientSubscriptionManager SubscriptionManager
+        {
+            get;
+            private set;
+        }
+
         public static IAuthorizationManagerClient AuthorizationManager
         {
             get { return azManager.Instance; }
@@ -67,11 +70,6 @@ namespace ASC.Core
         public static INotify Notify
         {
             get { return GetService<INotify>(); }
-        }
-
-        public static ISubscriptionManagerClient SubscriptionManager
-        {
-            get { return subscriptionManager.Instance; }
         }
 
         public static IServiceLocator ServiceLocator

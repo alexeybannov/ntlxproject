@@ -4,7 +4,6 @@ using System.Security.Permissions;
 using System.Threading;
 using ASC.Common.Services;
 using ASC.Core.Common.Remoting;
-using ASC.Core.Factories;
 using ASC.Core.Users.DAO;
 using ASC.Core.Users.Service.SrvImpl;
 using log4net;
@@ -13,17 +12,14 @@ using log4net;
 
 namespace ASC.Core.Users.Service.SrvImpl
 {
-    class SubscriptionManager : RemotingServiceController, ISubscriptionManager
+    class SubscriptionManager : RemotingServiceController
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(SubscriptionManager));
-        private readonly IDAOFactory factory;
         private int version = 0;
 
-        internal SubscriptionManager(IDAOFactory daoFactory)
-            : base(Constants.SubscriptionManagerServiceInfo)
+        internal SubscriptionManager()
+            : base(null)
         {
-            if (daoFactory == null) throw new ArgumentNullException("daoFactory");
-            factory = daoFactory;
         }
 
         #region ISubscriptionManager
@@ -82,21 +78,6 @@ namespace ASC.Core.Users.Service.SrvImpl
             using (var dao = GetDAO())
             {
                 dao.UnSubscribe(sourceID, actionID, objectID, true);
-            }
-        }
-
-        [PrincipalPermission(SecurityAction.Demand, Authenticated = true)]
-        public void Unsubscribe(string sourceID, string actionID, string recipientID)
-        {
-            if (sourceID == null) throw new ArgumentNullException("sourceID");
-            if (actionID == null) throw new ArgumentNullException("actionID");
-            if (recipientID == null) throw new ArgumentNullException("recipientID");
-
-            Interlocked.Increment(ref version);
-
-            using (var dao = GetDAO())
-            {
-                dao.UnSubscribe(sourceID, actionID, recipientID);
             }
         }
 
@@ -185,9 +166,9 @@ namespace ASC.Core.Users.Service.SrvImpl
 
         #endregion
 
-        private ISubscriptionDAO GetDAO()
+        private SubscriptionDAO GetDAO()
         {
-            return factory.GetSubscriptionDao();
+            return null;
         }
     }
 }

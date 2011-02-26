@@ -53,24 +53,14 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\Module\CommonModulePart.cs" />
-    <Compile Include="Configuration\Module\CommonServicesModulePart.cs" />
-    <Compile Include="Configuration\Module\ConfigurationModule.cs" />
     <Compile Include="Configuration\Service\Notify\Jabber\JabberSenderSink.cs" />
-    <Compile Include="Configuration\Service\Host.cs" />
     <Compile Include="Configuration\Service\NotifyImpl.cs" />
-    <Compile Include="Configuration\Service\ServiceLocator.cs" />
-    <Compile Include="Factories\EmbedCoreServiceFactory.cs" />
     <Compile Include="Host\CoreHost.cs" />
     <Compile Include="Host\ServiceInitializer.cs" />
     <Compile Include="Host\ServicesHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Users\DAO\AzDAO.cs" />
     <Compile Include="Users\DAO\DAOBase.cs" />
-    <Compile Include="Factories\DAOFactory.cs" />
-    <Compile Include="Users\DAO\IAzDAO.cs" />
-    <Compile Include="Factories\IDAOFactory.cs" />
-    <Compile Include="Users\DAO\ISubscriptionDAO.cs" />
     <Compile Include="Users\DAO\Subscription.cs" />
     <Compile Include="Users\DAO\SubscriptionDAO.cs" />
     <Compile Include="Users\Service\SrvImpl\AuthorizationManager.cs" />

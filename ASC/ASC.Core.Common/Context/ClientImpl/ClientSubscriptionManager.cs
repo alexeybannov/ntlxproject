@@ -9,9 +9,9 @@ using ASC.Core.Users;
 
 namespace ASC.Core
 {
-    internal class ClientSubscriptionManager : ISubscriptionManagerClient
+    class ClientSubscriptionManager
     {
-        private readonly ISubscriptionManager subscriptionManager;
+        private readonly ISubscriptionService subscriptionManager;
         private readonly object syncRoot = new object();
 
         private readonly Dictionary<SubItem, VersionedElement<string[]>> _sendMethod =
@@ -31,7 +31,7 @@ namespace ASC.Core
         internal int _actualVersion;
 
 
-        public ClientSubscriptionManager(ISubscriptionManager subscriptionManager)
+        public ClientSubscriptionManager(ISubscriptionService subscriptionManager)
         {
             if (subscriptionManager == null) throw new ArgumentNullException("subscriptionManager");
             this.subscriptionManager = subscriptionManager;
@@ -47,12 +47,6 @@ namespace ASC.Core
         {
             ClearCache();
             subscriptionManager.Unsubscribe(sourceID, actionID, objectID, recipientID);
-        }
-
-        public void Unsubscribe(string sourceID, string actionID, string recipientID)
-        {
-            ClearCache();
-            subscriptionManager.Unsubscribe(sourceID, actionID, recipientID);
         }
 
         public void UnsubscribeAll(string sourceID, string actionID, string objectID)
@@ -169,7 +163,7 @@ namespace ASC.Core
                 if (DateTime.Now - _actualPeriod > _lastVersionCheck)
                 {
                     _lastVersionCheck = DateTime.Now;
-                    _actualVersion = subscriptionManager.Version;
+                    
                 }
                 return _actualVersion;
             }

@@ -55,37 +55,7 @@ namespace ASC.Core.Users
 
         #endregion
 
-        #region Services
-
-        public static readonly ServiceInfoBase AuthorizationManagerServiceInfo =
-            new CoreServiceInfo(
-                typeof(IAuthorizationManager),
-                DescriptionResource.ServiceName_AuthorizationManager,
-                DescriptionResource.ServiceDescription_AuthorizationManager,
-                ConstResource.ServiceSysName_AuthorizationManager,
-                new Version("0.1"),
-                new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(ConstResource.ServiceSysName_AuthorizationManager)
-                );
-
-        public static readonly ServiceInfoBase SubscriptionManagerServiceInfo =
-            new CoreServiceInfo(
-                typeof(ISubscriptionManager),
-                DescriptionResource.ServiceName_SubscriptionManager,
-                DescriptionResource.ServiceDescription_SubscriptionManager,
-                ConstResource.ServiceSysName_SubscriptionManager,
-                new Version("0.1"),
-                new[] { TransportType.Tcp, TransportType.Ipc },
-                UriUtil.BuildUri(ConstResource.ServiceSysName_SubscriptionManager)
-                );
-
-        #endregion
-
-        public static readonly ServiceInfoBase[] UsersServices = new[]
-                                                                     {
-                                                                         AuthorizationManagerServiceInfo,
-                                                                         SubscriptionManagerServiceInfo
-                                                                     };
+        public static readonly ServiceInfoBase[] UsersServices = new ServiceInfoBase[0];
 
         #region the modules
 

@@ -87,7 +87,6 @@
     <Compile Include="Context\ClientImpl\IAuthenticationClient.cs" />
     <Compile Include="Context\ClientImpl\IAuthorizationManagerClient.cs" />
     <Compile Include="Context\ClientImpl\IGroupManagerClient.cs" />
-    <Compile Include="Context\ClientImpl\ISubscriptionManagerClient.cs" />
     <Compile Include="Context\ClientImpl\ITenantManagerClient.cs" />
     <Compile Include="Context\ClientImpl\IUserManagerClient.cs" />
     <Compile Include="Context\ClientImpl\RemotingSubsystemConfiguration.cs" />
@@ -101,6 +100,7 @@
     <Compile Include="Core\CachedUserService.cs" />
     <Compile Include="Core\CacheHelper.cs" />
     <Compile Include="Core\CacheItem.cs" />
+    <Compile Include="Core\ISubscriptionService.cs" />
     <Compile Include="Core\DbQuotaService.cs" />
     <Compile Include="Core\IQuotaService.cs" />
     <Compile Include="Core\DbTenantService.cs" />
@@ -108,6 +108,7 @@
     <Compile Include="Core\DbUserService.cs" />
     <Compile Include="Core\Group.cs" />
     <Compile Include="Core\IUserService.cs" />
+    <Compile Include="Core\SubscriptionDAO.cs" />
     <Compile Include="Core\User.cs" />
     <Compile Include="Core\UserGroupRef.cs" />
     <Compile Include="Core\UserGroupRefType.cs" />
@@ -171,7 +172,6 @@
     <Compile Include="Users\DTO\GroupSecurityHelper.cs" />
     <Compile Include="Users\DTO\UserSecurityProvider.cs" />
     <Compile Include="Users\IncludeType.cs" />
-    <Compile Include="Users\Interfaces\ISubscriptionManager.cs" />
     <Compile Include="Users\Resources\ConstResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -208,7 +208,6 @@
     <Compile Include="Users\Constants.cs" />
     <Compile Include="Users\DTO\GroupInfo.cs" />
     <Compile Include="Users\DTO\UserInfo.cs" />
-    <Compile Include="Users\Interfaces\IAuthorizationManager.cs" />
     <Compile Include="Users\Resources\DescriptionResource.Designer.cs">
       <DependentUpon>DescriptionResource.resx</DependentUpon>
       <AutoGen>True</AutoGen>

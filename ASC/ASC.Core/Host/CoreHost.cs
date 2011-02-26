@@ -4,7 +4,6 @@ using ASC.Common.Module;
 using ASC.Common.Services;
 using ASC.Core.Common.CoreTalk;
 using ASC.Core.Common.Services;
-using ASC.Core.Configuration.Module;
 using ASC.Core.Hosting;
 using ASC.Net;
 using ASC.Reflection;
@@ -27,8 +26,6 @@ namespace ASC.Core.Host
 			: base(ASC.Core.Hosting.Constants.CoreHostServiceInfo)
 		{
 			FixedPort = 0 < fixedPort ? fixedPort : TcpPortResolver.GetFreePort();
-
-			_BuildCache();
 
 			WorkContext.AddCoreAddressResolver(
 				new FixedCoreAddressResolver(ConnectionHostEntry.GetLocalhost(FixedPort)),
@@ -143,11 +140,6 @@ namespace ASC.Core.Host
 				}
 				return ServiceModulePartInstance;
 			}
-		}
-
-		private void _BuildCache()
-		{
-			_AddCoreSMPEntry(ConfConst.ModulePartInfo_Services, typeof(ConfigurationModule));
 		}
 
 		private void _AddCoreSMPEntry(IModulePartInfo partInfo, Type moduleType)
