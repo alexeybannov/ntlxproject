@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A51D0454-4AFA-46DE-89D4-B03D37E1816C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -108,7 +108,7 @@
     <Compile Include="Core\DbUserService.cs" />
     <Compile Include="Core\Group.cs" />
     <Compile Include="Core\IUserService.cs" />
-    <Compile Include="Core\SubscriptionDAO.cs" />
+    <Compile Include="Core\DbSubscriptionService.cs" />
     <Compile Include="Core\User.cs" />
     <Compile Include="Core\UserGroupRef.cs" />
     <Compile Include="Core\UserGroupRefType.cs" />
@@ -264,7 +264,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj">
+    <ProjectReference Include="..\..\common\common\ASC.Common\ASC.Common.csproj">
       <Project>{76DE7717-3D4B-4A5B-B740-15B8913DF0CB}</Project>
       <Name>ASC.Common</Name>
     </ProjectReference>

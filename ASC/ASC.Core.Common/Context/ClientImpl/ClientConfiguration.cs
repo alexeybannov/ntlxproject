@@ -87,6 +87,7 @@ namespace ASC.Core
             public bool DemoAccountEnabled
             {
                 get { return true; }
+                set { }
             }
 
             private string Serialize(SmtpSettings smtp)

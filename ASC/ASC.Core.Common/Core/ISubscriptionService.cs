@@ -15,9 +15,7 @@ namespace ASC.Core
         
         bool IsUnsubscribe(int tenant, string sourceId, string recipientId, string actionId, string objectId);
                 
-        void Subscribe(int tenant, string sourceId, string actionId, string objectId, string recipientId);
-
-        void Unsubscribe(int tenant, string sourceId, string actionId, string objectId, string recipientId);
+        void Subscribe(int tenant, string sourceId, string actionId, string objectId, string recipientId, bool subscribe);
 
         void UnsubscribeAll(int tenant, string sourceId, string actionId);
 

@@ -40,25 +40,25 @@ namespace ASC.Core
         public void Subscribe(string sourceID, string actionID, string objectID, string recipientID)
         {
             ClearCache();
-            subscriptionManager.Subscribe(sourceID, actionID, objectID, recipientID);
+            //subscriptionManager.Subscribe(sourceID, actionID, objectID, recipientID);
         }
 
         public void Unsubscribe(string sourceID, string actionID, string objectID, string recipientID)
         {
             ClearCache();
-            subscriptionManager.Unsubscribe(sourceID, actionID, objectID, recipientID);
+            //subscriptionManager.Unsubscribe(sourceID, actionID, objectID, recipientID);
         }
 
         public void UnsubscribeAll(string sourceID, string actionID, string objectID)
         {
             ClearCache();
-            subscriptionManager.UnsubscribeAll(sourceID, actionID, objectID);
+            //subscriptionManager.UnsubscribeAll(sourceID, actionID, objectID);
         }
 
         public void UnsubscribeAll(string sourceID, string actionID)
         {
             ClearCache();
-            subscriptionManager.UnsubscribeAll(sourceID, actionID);
+            //subscriptionManager.UnsubscribeAll(sourceID, actionID);
         }
 
         public string[] GetSubscriptionMethod(string sourceID, string actionID, string recipientID)
@@ -71,15 +71,14 @@ namespace ASC.Core
                 cached = _sendMethod.TryGetValue(item, out value);
                 if (!cached || !value.IsActual(Version))
                 {
-                    string[] methods = subscriptionManager.GetSubscriptionMethod(item.sourceID, item.actionID,
-                                                                                 item.recipientID);
+                    string[] methods = null;// subscriptionManager.GetSubscriptionMethod(item.sourceID, item.actionID, item.recipientID);
                     if (methods == null) methods = new string[0];
                     value = new VersionedElement<string[]>(Version, methods);
                     if (cached) _sendMethod[item] = value;
                     else _sendMethod.Add(item, value);
                 }
             }
-            return value.Value != null ? (string[]) value.Value.Clone() : null;
+            return value.Value != null ? (string[])value.Value.Clone() : null;
         }
 
         public string[] GetRecipients(string sourceID, string actionID, string objectID)
@@ -92,14 +91,12 @@ namespace ASC.Core
                 cached = _recipients.TryGetValue(item, out value);
                 if (!cached || !value.IsActual(Version))
                 {
-                    value = new VersionedElement<string[]>(
-                        Version,
-                        subscriptionManager.GetRecipients(item.sourceID, item.actionID, item.objectID));
+                    //value = new VersionedElement<string[]>(Version, subscriptionManager.GetRecipients(item.sourceID, item.actionID, item.objectID));
                     if (cached) _recipients[item] = value;
                     else _recipients.Add(item, value);
                 }
             }
-            return value.Value != null ? (string[]) value.Value.Clone() : new string[0];
+            return value.Value != null ? (string[])value.Value.Clone() : new string[0];
         }
 
         public string[] GetSubscriptions(string sourceID, string actionID, string recipientID)
@@ -112,14 +109,12 @@ namespace ASC.Core
                 cached = _subscriptions.TryGetValue(item, out value);
                 if (!cached || !value.IsActual(Version))
                 {
-                    value = new VersionedElement<string[]>(
-                        Version,
-                        subscriptionManager.GetSubscriptions(item.sourceID, item.actionID, item.recipientID));
+                    //value = new VersionedElement<string[]>(Version, subscriptionManager.GetSubscriptions(item.sourceID, item.actionID, item.recipientID));
                     if (cached) _subscriptions[item] = value;
                     else _subscriptions.Add(item, value);
                 }
             }
-            return value.Value != null ? (string[]) value.Value.Clone() : null;
+            return value.Value != null ? (string[])value.Value.Clone() : null;
         }
 
         public bool IsUnsubscribe(string sourceID, string recipientID, string actionID, string objectID)
@@ -132,9 +127,7 @@ namespace ASC.Core
                 cached = _unsubscriptions.TryGetValue(item, out value);
                 if (!cached || !value.IsActual(Version))
                 {
-                    value = new VersionedElement<bool>(
-                        Version,
-                        subscriptionManager.IsUnsubscribe(item.sourceID, item.recipientID, item.actionID, item.objectID));
+                    //value = new VersionedElement<bool>(Version, subscriptionManager.IsUnsubscribe(item.sourceID, item.recipientID, item.actionID, item.objectID)); 
                     if (cached) _unsubscriptions[item] = value;
                     else _unsubscriptions.Add(item, value);
                 }
@@ -144,7 +137,7 @@ namespace ASC.Core
 
         public void UpdateSubscriptionMethod(string sourceID, string actionID, string recipientID, string[] senderNames)
         {
-            subscriptionManager.UpdateSubscriptionMethod(sourceID, actionID, recipientID, senderNames);
+            //subscriptionManager.UpdateSubscriptionMethod(sourceID, actionID, recipientID, senderNames);
             var item = new SubItem(sourceID, actionID, recipientID);
             var value = new VersionedElement<string[]>(Version, senderNames);
             lock (syncRoot)
@@ -163,7 +156,7 @@ namespace ASC.Core
                 if (DateTime.Now - _actualPeriod > _lastVersionCheck)
                 {
                     _lastVersionCheck = DateTime.Now;
-                    
+
                 }
                 return _actualVersion;
             }
