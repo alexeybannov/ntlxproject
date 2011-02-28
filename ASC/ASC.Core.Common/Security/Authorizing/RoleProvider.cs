@@ -44,10 +44,10 @@ namespace ASC.Core.Security.Authorizing
         private List<IRole> GetParentRoles(Guid roleID)
         {
             var roles = new List<IRole>();
-            GroupInfo gi = CoreContext.GroupManager.GetGroupInfo(roleID);
+            var gi = CoreContext.GroupManager.GetGroupInfo(roleID);
             if (gi != null)
             {
-                GroupInfo parent = gi.Parent;
+                var parent = gi.Parent;
                 while (parent != null)
                 {
                     roles.Add(parent);

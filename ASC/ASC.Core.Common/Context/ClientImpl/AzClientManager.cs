@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
-using ASC.Common.Services;
 using ASC.Core.Users;
-using UserConst = ASC.Core.Users.Constants;
 
 namespace ASC.Core
 {
@@ -53,49 +51,10 @@ namespace ASC.Core
             return null;
         }
 
-        #region IAuthorizationManager Members
-
-        public AzRecord[] GetAces()
-        {
-            return AzAceCache.Values.ToArray();
-        }
 
         public AzRecord[] GetAces(Guid subjectID, Guid actionID)
         {
             return AzAceCache.Values.Where(a => a.SubjectId == subjectID && a.ActionId == actionID && a.FullObjectId == null).ToArray();
-        }
-
-        public AzRecord[] GetAcesBySubject(Guid subjectID)
-        {
-            return AzAceCache.Values.Where(a => a.SubjectId == subjectID && a.FullObjectId == null).ToArray();
-        }
-
-        public AzRecord[] GetAcesByAction(Guid actionID)
-        {
-            return AzAceCache.Values.Where(a => a.ActionId == actionID && a.FullObjectId == null).ToArray();
-        }
-
-        public IList<AzObjectInfo> GetAzObjectInfos()
-        {
-            return new List<AzObjectInfo>();
-        }
-
-        public AzObjectInfo GetAzObjectInfo<T>(object objectId)
-        {
-            return null;
-        }
-
-        public AzObjectInfo GetAzObjectInfo(ISecurityObjectId objectId)
-        {
-            return null;
-        }
-
-        public void SaveAzObjectInfo(AzObjectInfo azObjectInfo)
-        {
-        }
-
-        public void RemoveAzObjectInfo(AzObjectInfo azObjectInfo)
-        {
         }
 
         public AzRecord[] GetAces(Guid subjectID, Guid actionID, ISecurityObjectId objectId)
@@ -116,28 +75,12 @@ namespace ASC.Core
             return AzAceCache.Values.Where(a => a.SubjectId == subjectID && a.ActionId == actionID && a.FullObjectId == fullObjectId).ToArray();
         }
 
-        public AzRecord[] GetAllObjectAces<T>(IEnumerable<IAction> actions, object objectId)
-        {
-            return GetAllObjectAces<T>(actions, objectId, null);
-        }
-
-        public AzRecord[] GetAllObjectAces<T>(IEnumerable<IAction> actions, object objectId, ISecurityObjectProvider secObjProvider)
-        {
-            return GetAllObjectAces(actions, new SecurityObjectId<T>(objectId), secObjProvider);
-        }
-
-        public AzRecord[] GetAllObjectAces(IEnumerable<IAction> actions, ISecurityObject securityObject)
-        {
-            return GetAllObjectAces(actions, securityObject, null);
-        }
-
         public AzRecord[] GetAllObjectAces(IEnumerable<IAction> actions, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
             if (actions == null) throw new ArgumentNullException("actions");
             if (objectId == null) throw new ArgumentNullException("objectId");
 
             //the code is not very intuitive, but it is fast
-
             var objectAces = new List<AzRecord>();
             var acesByActions = new List<AzRecord>();
             foreach (var id in actions.Select(a => a.ID))
@@ -154,53 +97,24 @@ namespace ASC.Core
             var fullId = AzObjectIdHelper.GetFullObjectId(objectId);
 
             objectAces.AddRange(acesByActions.Where(a => a.FullObjectId == fullId));
-            var isInheritAces = GetObjectAceInheritance(objectId);
 
-            if (isInheritAces)
+            var inheritAces = new List<AzRecord>();
+            var secObjProviderHelper = new AzObjectSecurityProviderHelper(objectId, secObjProvider);
+            while (secObjProviderHelper.NextInherit())
             {
-                var inheritAces = new List<AzRecord>();
-                var secObjProviderHelper = new AzObjectSecurityProviderHelper(objectId, secObjProvider);
-                while (secObjProviderHelper.NextInherit())
-                {
-                    fullId = AzObjectIdHelper.GetFullObjectId(secObjProviderHelper.CurrentObjectId);
-                    inheritAces.AddRange(acesByActions.Where(a => a.FullObjectId == fullId));
-                }
-
-                inheritAces.AddRange(acesByActions.Where(a => a.FullObjectId == null));
-
-                for (int i = 0; i < inheritAces.Count; i++)
-                {
-                    inheritAces[i] = (AzRecord)inheritAces[i].Clone();
-                    inheritAces[i].Inherited = true;
-                }
-                objectAces.AddRange(DistinctAces(inheritAces));
+                fullId = AzObjectIdHelper.GetFullObjectId(secObjProviderHelper.CurrentObjectId);
+                inheritAces.AddRange(acesByActions.Where(a => a.FullObjectId == fullId));
             }
+
+            inheritAces.AddRange(acesByActions.Where(a => a.FullObjectId == null));
+
+            for (int i = 0; i < inheritAces.Count; i++)
+            {
+                inheritAces[i] = (AzRecord)inheritAces[i].Clone();
+                inheritAces[i].Inherited = true;
+            }
+            objectAces.AddRange(DistinctAces(inheritAces));
             return objectAces.ToArray();
-        }
-
-        public bool GetObjectAceInheritance(ISecurityObjectId objectId)
-        {
-            if (objectId == null) throw new ArgumentNullException("objectId");
-            return GetAzObjectInfo(objectId).InheritAces;
-        }
-
-        public bool GetObjectAceInheritance<T>(object objectId)
-        {
-            return GetObjectAceInheritance(new SecurityObjectId<T>(objectId));
-        }
-
-        public void SetObjectAceInheritance(ISecurityObjectId objectId, bool inherit)
-        {
-            if (objectId == null) throw new ArgumentNullException("objectId");
-            SecurityContext.DemandPermissions(UserConst.Action_EditAz);
-            AzObjectInfo azObjectInfo = GetAzObjectInfo(objectId);
-            azObjectInfo.InheritAces = inherit;
-            SaveAzObjectInfo(azObjectInfo);
-        }
-
-        public void SetObjectAceInheritance<T>(object objectId, bool inherit)
-        {
-            SetObjectAceInheritance(new SecurityObjectId<T>(objectId), inherit);
         }
 
         public void AddAce(AzRecord azRecord)
@@ -223,7 +137,20 @@ namespace ASC.Core
             AzAceCache.Remove(azRecord.Id);
         }
 
-        #endregion
+
+        public AzObjectInfo GetAzObjectInfo(ISecurityObjectId objectId)
+        {
+            return null;
+        }
+
+        public void SaveAzObjectInfo(AzObjectInfo azObjectInfo)
+        {
+        }
+
+        public void RemoveAzObjectInfo(AzObjectInfo azObjectInfo)
+        {
+        }
+
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
         {

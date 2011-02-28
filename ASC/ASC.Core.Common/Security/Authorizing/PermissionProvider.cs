@@ -1,5 +1,3 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,50 +5,26 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Users;
 
-#endregion
-
 namespace ASC.Core.Security.Authorizing
 {
-    internal class PermissionProvider : IPermissionProvider
+    class PermissionProvider : IPermissionProvider
     {
-        #region IPermissionProvider
-
-        public List<Ace> GetAcl(ISubject subject, IAction action)
+        public IEnumerable<Ace> GetAcl(ISubject subject, IAction action)
         {
             return CoreContext.AuthorizationManager
                 .GetAces(subject.ID, action.ID)
-                .Select(r => ToAce(r))
-                .ToList();
+                .Select(r => ToAce(r));
         }
 
-        public List<Ace> GetAcl(ISubject subject)
+        public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
             if (subject == null) throw new ArgumentNullException("subject");
-            return CoreContext.AuthorizationManager
-                .GetAcesBySubject(subject.ID)
-                .Select(r => ToAce(r))
-                .ToList();
-        }
-
-        public List<Ace> GetAcl(IAction action)
-        {
-            if (action == null) throw new ArgumentNullException("subject");
-            return CoreContext.AuthorizationManager
-                .GetAcesByAction(action.ID)
-                .Select(r => ToAce(r))
-                .ToList();
-        }
-
-        public List<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId,
-                                ISecurityObjectProvider secObjProvider)
-        {
-            if (subject == null) throw new ArgumentNullException("subject");
-            IEnumerable<AzRecord> filteredAces = CoreContext.AuthorizationManager
-                .GetAllObjectAces(new[] {action}, objectId, secObjProvider)
+            var filteredAces = CoreContext.AuthorizationManager
+                .GetAllObjectAces(new[] { action }, objectId, secObjProvider)
                 .Where(r => subject.ID == r.SubjectId && action.ID == r.ActionId);
             var aces = new List<Ace>();
             var aceKeys = new List<string>();
-            foreach (AzRecord ace in filteredAces)
+            foreach (var ace in filteredAces)
             {
                 string key = string.Format("{0}{1:D}", ace.ActionId, ace.Reaction);
                 if (!aceKeys.Contains(key))
@@ -66,7 +40,5 @@ namespace ASC.Core.Security.Authorizing
         {
             return new Ace(r.ActionId, r.Reaction);
         }
-
-        #endregion
     }
 }

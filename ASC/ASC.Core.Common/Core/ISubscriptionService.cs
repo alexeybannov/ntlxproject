@@ -10,7 +10,7 @@ namespace ASC.Core
         
         string[] GetSubscriptionMethod(int tenant, string sourceId, string actionId, string recipientId);
 
-        void UpdateSubscriptionMethod(int tenant, string sourceId, string actionId, string recipientId, string[] senderNames);
+        void SetSubscriptionMethod(int tenant, string sourceId, string actionId, string recipientId, string[] senderNames);
 
         
         bool IsUnsubscribe(int tenant, string sourceId, string recipientId, string actionId, string objectId);

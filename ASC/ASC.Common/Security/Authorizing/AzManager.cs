@@ -1,9 +1,5 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
-
-#endregion
 
 namespace ASC.Common.Security.Authorizing
 {
@@ -12,7 +8,6 @@ namespace ASC.Common.Security.Authorizing
         private readonly IPermissionProvider permissionProvider;
         private readonly IRoleProvider roleProvider;
 
-        #region
 
         internal AzManager()
         {
@@ -23,11 +18,11 @@ namespace ASC.Common.Security.Authorizing
         {
             if (roleProvider == null) throw new ArgumentNullException("roleProvider");
             if (permissionProvider == null) throw new ArgumentNullException("permissionProvider");
+
             this.roleProvider = roleProvider;
             this.permissionProvider = permissionProvider;
         }
 
-        #endregion
 
         public bool CheckPermission(ISubject subject, IAction action, ISecurityObjectId objectId,
                                     ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
@@ -35,7 +30,7 @@ namespace ASC.Common.Security.Authorizing
         {
             if (subject == null) throw new ArgumentNullException("subject");
             if (action == null) throw new ArgumentNullException("action");
-            AzManagerAcl acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
+            var acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
             denySubject = acl.DenySubject;
             denyAction = acl.DenyAction;
             return acl.IsAllow;
@@ -53,14 +48,14 @@ namespace ASC.Common.Security.Authorizing
             {
                 return AzManagerAcl.Allow;
             }
-            AzManagerAcl acl = AzManagerAcl.Default;
-            bool findDeny = false;
+            var acl = AzManagerAcl.Default;
+            var findDeny = false;
             foreach (ISubject subj in GetSubjects(subject, objectId, securityObjProvider))
             {
-                List<Ace> aceList = (objectId == null)
+               var aceList = (objectId == null)
                                         ? permissionProvider.GetAcl(subj, action)
                                         : permissionProvider.GetAcl(subj, action, objectId, securityObjProvider);
-                foreach (Ace ace in aceList)
+                foreach (var ace in aceList)
                 {
                     if (ace.Reaction == AceType.Deny && !findDeny)
                     {
@@ -92,7 +87,7 @@ namespace ASC.Common.Security.Authorizing
             subjects.Add(subject);
             subjects.AddRange(
                 roleProvider.GetRoles(subject)
-                    .ConvertAll(r => { return (ISubject) r; })
+                    .ConvertAll(r => { return (ISubject)r; })
                 );
             if (objectId != null)
             {
@@ -119,12 +114,12 @@ namespace ASC.Common.Security.Authorizing
 
             public static AzManagerAcl Allow
             {
-                get { return new AzManagerAcl {IsAllow = true}; }
+                get { return new AzManagerAcl { IsAllow = true }; }
             }
 
             public static AzManagerAcl Default
             {
-                get { return new AzManagerAcl {IsAllow = false}; }
+                get { return new AzManagerAcl { IsAllow = false }; }
             }
         }
 

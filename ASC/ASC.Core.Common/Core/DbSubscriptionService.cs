@@ -65,7 +65,7 @@ namespace ASC.Core
             return (ExecScalar<string>(q) ?? string.Empty).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public void UpdateSubscriptionMethod(int tenant, string sourceId, string actionId, string recipientId, string[] senders)
+        public void SetSubscriptionMethod(int tenant, string sourceId, string actionId, string recipientId, string[] senders)
         {
             if (sourceId == null) throw new ArgumentNullException("sourceId");
             if (actionId == null) throw new ArgumentNullException("actionId");
@@ -116,7 +116,7 @@ namespace ASC.Core
             if (sourceId == null) throw new ArgumentNullException("sourceId");
             if (actionId == null) throw new ArgumentNullException("actionId");
 
-            var d = Delete("core_subscription", tenant).Where("source", sourceId).Where("action", actionId).Where("object", objectId);
+            var d = Delete("core_subscription", tenant).Where("source", sourceId).Where("action", actionId).Where("object", objectId ?? string.Empty);
             ExecNonQuery(d);
         }
 
