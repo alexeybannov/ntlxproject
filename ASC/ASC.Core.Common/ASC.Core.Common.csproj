@@ -97,6 +97,7 @@
     <Compile Include="CoreTalk\CoreHostResolver\FixedCoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\ICoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\ConfigAddressResolver.cs" />
+    <None Include="Core\DbAzService.cs" />
     <Compile Include="Core\CachedUserService.cs" />
     <Compile Include="Core\CacheHelper.cs" />
     <Compile Include="Core\CacheItem.cs" />
@@ -122,8 +123,13 @@
     <Compile Include="Configuration\Interfaces\IServiceLocator.cs" />
     <Compile Include="Configuration\Constants.cs" />
     <Compile Include="Hosting\IServicesHost.cs" />
+    <Compile Include="Host\CoreHost.cs" />
+    <Compile Include="Host\ServiceInitializer.cs" />
+    <Compile Include="Host\ServicesHost.cs" />
     <Compile Include="Notify\DirectSubscriptionProvider.cs" />
     <Compile Include="Notify\Jabber\IJabberService.cs" />
+    <Compile Include="Notify\Jabber\JabberSenderSink.cs" />
+    <Compile Include="Notify\NotifyImpl.cs" />
     <Compile Include="Notify\NotifySenderDescription.cs" />
     <Compile Include="Notify\NotifySource.cs" />
     <Compile Include="Notify\RecipientProviderImpl.cs" />

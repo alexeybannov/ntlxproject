@@ -6,10 +6,9 @@ using ASC.Common.Data.Sql.Expressions;
 
 namespace ASC.Core.Users.DAO
 {
-    class AzDAO : DAOBase
+    public class DbAzService
     {
-        public AzDAO(string dbId, int tenant)
-            : base(dbId, tenant)
+        public DbAzService(string dbId, int tenant)
         {
 
         }

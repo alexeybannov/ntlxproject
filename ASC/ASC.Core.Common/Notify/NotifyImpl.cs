@@ -5,16 +5,15 @@ using System.Net.Mail;
 using ASC.Common.Services;
 using ASC.Common.Utils;
 using ASC.Core.Common.Remoting;
-using ASC.Core.Configuration.Service;
-using ASC.Core.Configuration.Service.Notify.Jabber;
+using ASC.Core.Configuration;
+using ASC.Core.Notify;
+using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks.Smtp;
 using log4net;
 using NotifyContext = ASC.Notify.Context;
 
-[assembly: AssemblyServices(typeof(NotifyImpl))]
-
-namespace ASC.Core.Configuration.Service
+namespace ASC.Core.Notify
 {
     [Locator]
     class NotifyImpl : RemotingServiceController, INotify

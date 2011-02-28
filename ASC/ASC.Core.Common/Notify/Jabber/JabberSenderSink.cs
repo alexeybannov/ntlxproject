@@ -3,7 +3,7 @@ using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
 
-namespace ASC.Core.Configuration.Service.Notify.Jabber
+namespace ASC.Core.Notify.Jabber
 {
     class JabberSenderSink : SinkSkeleton, ISenderSink
     {

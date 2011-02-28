@@ -119,6 +119,8 @@ namespace ASC.Core
 
         public void AddAce(AzRecord azRecord)
         {
+            if (azRecord.Inherited) throw new InvalidOperationException("Can not add inherited authorization record");
+
             //CoreContext.InternalAuthorizationManager.AddAce(azRecord);
             if (!AzAceCache.ContainsKey(azRecord.Id))
             {
@@ -129,6 +131,8 @@ namespace ASC.Core
 
         public void RemoveAce(AzRecord azRecord)
         {
+            if (azRecord.Inherited) throw new InvalidOperationException("Can not remove inherited authorization record");
+
             //CoreContext.InternalAuthorizationManager.RemoveAce(azRecord);
             if (AzAceCache.ContainsKey(azRecord.Id))
             {

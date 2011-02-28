@@ -18,5 +18,3 @@ using System.Runtime.InteropServices;
 [assembly: Guid("3ff04204-4b22-4899-bcde-07edfcbb5355")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: InternalsVisibleTo("ASC.Core.Common.Tests")]
-[assembly: InternalsVisibleTo("ASC.Core")]
-[assembly: InternalsVisibleTo("ASC.Core.Tests")]
