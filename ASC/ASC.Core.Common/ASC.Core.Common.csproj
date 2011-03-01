@@ -97,10 +97,11 @@
     <Compile Include="CoreTalk\CoreHostResolver\FixedCoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\ICoreAddressResolver.cs" />
     <Compile Include="CoreTalk\CoreHostResolver\ConfigAddressResolver.cs" />
-    <None Include="Core\DbAzService.cs" />
+    <Compile Include="Core\DbAzService.cs" />
     <Compile Include="Core\CachedUserService.cs" />
     <Compile Include="Core\CacheHelper.cs" />
     <Compile Include="Core\CacheItem.cs" />
+    <Compile Include="Core\IAzService.cs" />
     <Compile Include="Core\ISubscriptionService.cs" />
     <Compile Include="Core\DbQuotaService.cs" />
     <Compile Include="Core\IQuotaService.cs" />

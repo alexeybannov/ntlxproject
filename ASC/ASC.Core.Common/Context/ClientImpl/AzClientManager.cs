@@ -9,52 +9,20 @@ namespace ASC.Core
 {
     class AzClientManager : IAuthorizationManagerClient
     {
-        private readonly IDictionary<int, IDictionary<string, AzRecord>> azAceCache = new Dictionary<int, IDictionary<string, AzRecord>>();
-        private readonly IDictionary<int, IDictionary<Guid, List<string>>> azAceCacheByActions = new Dictionary<int, IDictionary<Guid, List<string>>>();
+        private readonly IDbAzService service;
 
-        private IDictionary<string, AzRecord> AzAceCache
-        {
-            get
-            {
-                int tenant = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                lock (azAceCache)
-                {
-                    if (!azAceCache.ContainsKey(tenant))
-                    {
-                        //azAceCache[tenant] = CoreContext.CacheInfoStorage.CreateCache<string, AzRecord>(aceCacheInit, SyncAzAceCache);
-                    }
-                    return azAceCache[tenant];
-                }
-            }
-        }
 
-        private IDictionary<Guid, List<string>> AzAceCacheByActions
+        public AzClientManager(IDbAzService service)
         {
-            get
-            {
-                int tenant = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                lock (azAceCacheByActions)
-                {
-                    if (!azAceCacheByActions.ContainsKey(tenant))
-                    {
-                        azAceCacheByActions[tenant] = AzAceCache.Values.GroupBy(a => a.ActionId).ToDictionary(g => g.Key, g => g.Select(a => a.Id).ToList());
-                    }
-                    return azAceCacheByActions[tenant];
-                }
-            }
-        }
-
-        private IDictionary<string, AzRecord> SyncAzAceCache()
-        {
-            azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);
-            //return CoreContext.InternalAuthorizationManager.GetAces().ToDictionary(a => a.Id);
-            return null;
+            this.service = service;
         }
 
 
-        public AzRecord[] GetAces(Guid subjectID, Guid actionID)
+        public AzRecord[] GetAces(Guid subjectId, Guid actionId)
         {
-            return AzAceCache.Values.Where(a => a.SubjectId == subjectID && a.ActionId == actionID && a.FullObjectId == null).ToArray();
+            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where(a => a.SubjectId == subjectId && a.ActionId == actionId && a.ObjectId == null)
+                .ToArray();
         }
 
         public AzRecord[] GetAces(Guid subjectID, Guid actionID, ISecurityObjectId objectId)
@@ -62,17 +30,21 @@ namespace ASC.Core
             var fullObjectId = AzObjectIdHelper.GetFullObjectId(objectId);
             if (subjectID == Guid.Empty && actionID == Guid.Empty)
             {
-                return AzAceCache.Values.Where(a => a.FullObjectId == fullObjectId).ToArray();
+                return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                    .Where(a => a.ObjectId == fullObjectId).ToArray();
             }
             if (subjectID == Guid.Empty)
             {
-                return AzAceCache.Values.Where(a => a.ActionId == actionID && a.FullObjectId == fullObjectId).ToArray();
+                return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                    .Where(a => a.ActionId == actionID && a.ObjectId == fullObjectId).ToArray();
             }
             if (actionID == Guid.Empty)
             {
-                return AzAceCache.Values.Where(a => a.SubjectId == subjectID && a.FullObjectId == fullObjectId).ToArray();
+                return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                    .Where(a => a.SubjectId == subjectID && a.ObjectId == fullObjectId).ToArray();
             }
-            return AzAceCache.Values.Where(a => a.SubjectId == subjectID && a.ActionId == actionID && a.FullObjectId == fullObjectId).ToArray();
+            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where(a => a.SubjectId == subjectID && a.ActionId == actionID && a.ObjectId == fullObjectId).ToArray();
         }
 
         public AzRecord[] GetAllObjectAces(IEnumerable<IAction> actions, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
@@ -80,65 +52,37 @@ namespace ASC.Core
             if (actions == null) throw new ArgumentNullException("actions");
             if (objectId == null) throw new ArgumentNullException("objectId");
 
-            //the code is not very intuitive, but it is fast
-            var objectAces = new List<AzRecord>();
-            var acesByActions = new List<AzRecord>();
-            foreach (var id in actions.Select(a => a.ID))
-            {
-                List<string> azIds = null;
-                if (AzAceCacheByActions.TryGetValue(id, out azIds))
-                {
-                    if (azIds != null)
-                    {
-                        acesByActions.AddRange(azIds.Select(azId => AzAceCache[azId]));
-                    }
-                }
-            }
             var fullId = AzObjectIdHelper.GetFullObjectId(objectId);
+            var actionIds = actions.Select(a => a.ID);
+            var objectAces = new List<AzRecord>();
+            var acesByActions = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where(a => actionIds.Contains(a.ActionId))
+                .ToList();
 
-            objectAces.AddRange(acesByActions.Where(a => a.FullObjectId == fullId));
+            objectAces.AddRange(acesByActions.Where(a => a.ObjectId == fullId));
 
             var inheritAces = new List<AzRecord>();
             var secObjProviderHelper = new AzObjectSecurityProviderHelper(objectId, secObjProvider);
             while (secObjProviderHelper.NextInherit())
             {
                 fullId = AzObjectIdHelper.GetFullObjectId(secObjProviderHelper.CurrentObjectId);
-                inheritAces.AddRange(acesByActions.Where(a => a.FullObjectId == fullId));
+                inheritAces.AddRange(acesByActions.Where(a => a.ObjectId == fullId));
             }
 
-            inheritAces.AddRange(acesByActions.Where(a => a.FullObjectId == null));
+            inheritAces.AddRange(acesByActions.Where(a => a.ObjectId == null));
 
-            for (int i = 0; i < inheritAces.Count; i++)
-            {
-                inheritAces[i] = (AzRecord)inheritAces[i].Clone();
-                inheritAces[i].Inherited = true;
-            }
             objectAces.AddRange(DistinctAces(inheritAces));
             return objectAces.ToArray();
         }
 
-        public void AddAce(AzRecord azRecord)
+        public void AddAce(AzRecord r)
         {
-            if (azRecord.Inherited) throw new InvalidOperationException("Can not add inherited authorization record");
-
-            //CoreContext.InternalAuthorizationManager.AddAce(azRecord);
-            if (!AzAceCache.ContainsKey(azRecord.Id))
-            {
-                azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);
-            }
-            AzAceCache[azRecord.Id] = azRecord;
+            service.SaveAce(CoreContext.TenantManager.GetCurrentTenant().TenantId, r);
         }
 
-        public void RemoveAce(AzRecord azRecord)
+        public void RemoveAce(AzRecord r)
         {
-            if (azRecord.Inherited) throw new InvalidOperationException("Can not remove inherited authorization record");
-
-            //CoreContext.InternalAuthorizationManager.RemoveAce(azRecord);
-            if (AzAceCache.ContainsKey(azRecord.Id))
-            {
-                azAceCacheByActions.Remove(CoreContext.TenantManager.GetCurrentTenant().TenantId);
-            }
-            AzAceCache.Remove(azRecord.Id);
+            service.RemoveAce(CoreContext.TenantManager.GetCurrentTenant().TenantId, r);
         }
 
 

@@ -6,26 +6,20 @@ namespace ASC.Core
 {
     public static class CoreContext
     {
-        #region << Private fields >>
-
-        private static readonly Lazy<AzClientManager> azManager;
-
-        #endregion << Private fields >>
-
         static CoreContext()
         {
             var userService = new DbUserService(ConfigurationManager.ConnectionStrings["core_nc"]);
             var tenantService = new DbTenantService(ConfigurationManager.ConnectionStrings["core_nc"]);
             var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings["core_nc"]);
+            var azService = new DbAzService(ConfigurationManager.ConnectionStrings["core_nc"]);
 
             Configuration = new ClientConfiguration(tenantService);
             TenantManager = new ClientTenantManager(tenantService, quotaService);
             UserManager = new ClientUserManager(userService);
             Authentication = new AuthenticationService(userService);
-            azManager = new Lazy<AzClientManager>(() => new AzClientManager());
+            AuthorizationManager = new AzClientManager(azService);
         }
 
-        #region << Public Properties >>
 
         public static ClientConfiguration Configuration
         {
@@ -64,7 +58,8 @@ namespace ASC.Core
 
         public static IAuthorizationManagerClient AuthorizationManager
         {
-            get { return azManager.Instance; }
+            get;
+            private set;
         }
 
         public static INotify Notify
@@ -77,9 +72,7 @@ namespace ASC.Core
             get { return GetService<IServiceLocator>(); }
         }
 
-        #endregion << Public Properties >>
-
-
+        
         private static T GetService<T>()
             where T : IService
         {
