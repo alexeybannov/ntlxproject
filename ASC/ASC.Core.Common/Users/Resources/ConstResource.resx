@@ -135,12 +135,6 @@
   <data name="ModulePart_Services_SysName" xml:space="preserve">
     <value>common_services</value>
   </data>
-  <data name="ServiceID_AuthorizationManager" xml:space="preserve">
-    <value>{0883BD87-12D6-49a3-9C3D-A5295B13AF4C}</value>
-  </data>
-  <data name="ServiceSysName_AuthorizationManager" xml:space="preserve">
-    <value>authorization_manager</value>
-  </data>
   <data name="Action_EditUser_ID" xml:space="preserve">
     <value>{EF5E6790-F346-4b6e-B662-722BC28CB0DB}</value>
   </data>
@@ -170,12 +164,6 @@
   </data>
   <data name="AuthCategory_Az_SysName" xml:space="preserve">
     <value>Core.Az</value>
-  </data>
-  <data name="ServiceID_SubscriptionManager" xml:space="preserve">
-    <value>{C4B144B8-EB5B-4ed7-A46E-300243D46DA1}</value>
-  </data>
-  <data name="ServiceSysName_SubscriptionManager" xml:space="preserve">
-    <value>subscription_manager</value>
   </data>
   <data name="Action_AddRemoveUser_SysName" xml:space="preserve">
     <value>AddRemoveUser</value>

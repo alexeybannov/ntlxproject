@@ -135,12 +135,6 @@
   <data name="ModulePart_Services_Name" xml:space="preserve">
     <value>Users service</value>
   </data>
-  <data name="ServiceDescription_AuthorizationManager" xml:space="preserve">
-    <value>Authorization service</value>
-  </data>
-  <data name="ServiceName_AuthorizationManager" xml:space="preserve">
-    <value>AuthorizationManager</value>
-  </data>
   <data name="AzCategoryNotFoundException_Message" xml:space="preserve">
     <value>Category action {0} not found</value>
   </data>
@@ -176,12 +170,6 @@
   </data>
   <data name="AuthCategory_Az_Name" xml:space="preserve">
     <value>Permissions</value>
-  </data>
-  <data name="ServiceDescription_SubscriptionManager" xml:space="preserve">
-    <value>Subscription manager</value>
-  </data>
-  <data name="ServiceName_SubscriptionManager" xml:space="preserve">
-    <value>SubscriptionManager</value>
   </data>
   <data name="Action_AddRemoveUser_Description" xml:space="preserve">
     <value />
