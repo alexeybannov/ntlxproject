@@ -9,8 +9,13 @@ namespace ASC.Core
 {
     public static class SecurityContext
     {
-        private static readonly object syncRoot = new object();
-        private static IPermissionResolver permissionResolver;
+        static SecurityContext()
+        {
+            var permProvider = new PermissionProvider();
+            var azManager = new AzManager(new RoleProvider(), permProvider);
+            PermissionResolver = new PermissionResolver(azManager, permProvider);
+        }
+
 
         public static string SetUserPassword(Guid userID, string password)
         {
@@ -56,11 +61,6 @@ namespace ASC.Core
             get { return IsAuthenticated && (CurrentAccount.ID == Constants.Demo.ID); }
         }
 
-        public static bool DemoModeEnabled
-        {
-            get { return CoreContext.Configuration.Cfg.DemoAccountEnabled; }
-        }
-
         public static IAccount CurrentAccount
         {
             get { return AuthenticationContext.CurrentAccount; }
@@ -68,38 +68,14 @@ namespace ASC.Core
 
         public static IPermissionResolver PermissionResolver
         {
-            get
-            {
-                if (permissionResolver == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (permissionResolver == null)
-                        {
-                            var permProvider = new PermissionProvider();
-                            var roleProvider = new RoleProvider();
-                            var azManager = new AzManager(roleProvider, permProvider);
-                            permissionResolver = new PermissionResolver(azManager, permProvider);
-                        }
-                    }
-                }
-                return permissionResolver;
-            }
+            get;
+            private set;
         }
+
 
         public static bool CheckPermissions(params IAction[] actions)
         {
             return PermissionResolver.Check(CurrentAccount, actions);
-        }
-
-        public static bool CheckPermissions<T>(object objectId, params IAction[] actions)
-        {
-            return CheckPermissions<T>(objectId, null, actions);
-        }
-
-        public static bool CheckPermissions<T>(object objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
-        {
-            return CheckPermissions(new SecurityObjectId<T>(objectId), securityObjProvider, actions);
         }
 
         public static bool CheckPermissions(ISecurityObject securityObject, params IAction[] actions)
@@ -115,16 +91,6 @@ namespace ASC.Core
         public static void DemandPermissions(params IAction[] actions)
         {
             PermissionResolver.Demand(CurrentAccount, actions);
-        }
-
-        public static void DemandPermissions<T>(object objectId, params IAction[] actions)
-        {
-            DemandPermissions<T>(objectId, null, actions);
-        }
-
-        public static void DemandPermissions<T>(object objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
-        {
-            DemandPermissions(new SecurityObjectId<T>(objectId), securityObjProvider, actions);
         }
 
         public static void DemandPermissions(ISecurityObject securityObject, params IAction[] actions)

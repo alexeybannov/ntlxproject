@@ -24,6 +24,11 @@ namespace ASC.Common.Security.Authorizing
             SysName = sysname;
         }
 
+        public Action(Guid id, string name)
+            : this(id, name, null)
+        {
+        }
+
         public Action(Guid id, string name, string description)
         {
             if (id == Guid.Empty) throw new ArgumentNullException("id");

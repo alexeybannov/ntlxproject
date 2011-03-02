@@ -2,7 +2,7 @@ using System;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 
-namespace ASC.Core.Users
+namespace ASC.Core
 {
     [Serializable]
     public class AzRecord

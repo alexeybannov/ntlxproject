@@ -1,5 +1,4 @@
 using System.Configuration;
-using ASC.Common.Services;
 using ASC.Core.Configuration;
 
 namespace ASC.Core
@@ -8,20 +7,22 @@ namespace ASC.Core
     {
         static CoreContext()
         {
-            var userService = new DbUserService(ConfigurationManager.ConnectionStrings["core_nc"]);
             var tenantService = new DbTenantService(ConfigurationManager.ConnectionStrings["core_nc"]);
             var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings["core_nc"]);
+            var userService = new DbUserService(ConfigurationManager.ConnectionStrings["core_nc"]);
             var azService = new DbAzService(ConfigurationManager.ConnectionStrings["core_nc"]);
+            var subService = new DbSubscriptionService(ConfigurationManager.ConnectionStrings["core_nc"]);
 
             Configuration = new ClientConfiguration(tenantService);
             TenantManager = new ClientTenantManager(tenantService, quotaService);
             UserManager = new ClientUserManager(userService);
-            Authentication = new AuthenticationService(userService);
-            AuthorizationManager = new AzClientManager(azService);
+            Authentication = new ClientAuthManager(userService);
+            AuthorizationManager = new ClientAzManager(azService);
+            SubscriptionManager = new ClientSubscriptionManager(subService);
         }
 
 
-        public static ClientConfiguration Configuration
+        public static IClientConfiguration Configuration
         {
             get;
             private set;
@@ -50,13 +51,7 @@ namespace ASC.Core
             private set;
         }
 
-        internal static ClientSubscriptionManager SubscriptionManager
-        {
-            get;
-            private set;
-        }
-
-        public static IAuthorizationManagerClient AuthorizationManager
+        public static IAuthManagerClient AuthorizationManager
         {
             get;
             private set;
@@ -64,19 +59,13 @@ namespace ASC.Core
 
         public static INotify Notify
         {
-            get { return GetService<INotify>(); }
+            get { return null; }
         }
 
-        public static IServiceLocator ServiceLocator
+        internal static ClientSubscriptionManager SubscriptionManager
         {
-            get { return GetService<IServiceLocator>(); }
-        }
-
-        
-        private static T GetService<T>()
-            where T : IService
-        {
-            return WorkContext.GetService<T>();
+            get;
+            private set;
         }
     }
 }

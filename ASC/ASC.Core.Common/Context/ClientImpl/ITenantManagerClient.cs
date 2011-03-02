@@ -16,6 +16,9 @@ namespace ASC.Core
 
         void RemoveTenant(int tenantId);
 
+        void CheckTenantAddress(string address);
+
+
         Tenant GetCurrentTenant();
 
         Tenant GetCurrentTenant(bool throwOnError);
@@ -26,6 +29,7 @@ namespace ASC.Core
 
         void SetCurrentTenant(string domain);
 
+        
         TenantQuota GetTenantQuota(int tenant, string name);
 
         void SetTenantQuota(int tenant, string name, TenantQuota quota);
@@ -33,7 +37,5 @@ namespace ASC.Core
         void SetTenantQuotaRow(int tenant, string name, TenantQuotaRow row, bool exchange);
 
         List<TenantQuotaRow> FindTenantQuotaRows(int tenant, string name, TenantQuotaRowQuery query);
-
-        void CheckTenantAddress(string address);
     }
 }

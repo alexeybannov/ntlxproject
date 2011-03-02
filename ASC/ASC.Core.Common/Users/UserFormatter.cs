@@ -1,18 +1,14 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading;
 
-#endregion
-
 namespace ASC.Core.Users
 {
-    public class UserFormatter
-        : IComparer<UserInfo>
+    public class UserFormatter : IComparer<UserInfo>
     {
-        private readonly DisplayUserNameFormat _format = DisplayUserNameFormat.Default;
+        private readonly DisplayUserNameFormat format = DisplayUserNameFormat.Default;
+
 
         public UserFormatter()
         {
@@ -20,10 +16,9 @@ namespace ASC.Core.Users
 
         public UserFormatter(DisplayUserNameFormat format)
         {
-            _format = format;
+            this.format = format;
         }
 
-        #region display users
 
         public static string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
         {
@@ -37,18 +32,10 @@ namespace ASC.Core.Users
             return GetUserName(userInfo, DisplayUserNameFormat.Default);
         }
 
-        #endregion
-
-        #region sort users
-
-        #region IComparer<UserInfo> Members
-
         int IComparer<UserInfo>.Compare(UserInfo x, UserInfo y)
         {
-            return Compare(x, y, _format);
+            return Compare(x, y, format);
         }
-
-        #endregion
 
         public static int Compare(UserInfo x, UserInfo y)
         {
@@ -77,8 +64,6 @@ namespace ASC.Core.Users
             }
             return result;
         }
-
-        #endregion
 
         private static readonly Dictionary<string, Dictionary<DisplayUserNameFormat, string>> DisplayFormats = new Dictionary
             <string, Dictionary<DisplayUserNameFormat, string>>

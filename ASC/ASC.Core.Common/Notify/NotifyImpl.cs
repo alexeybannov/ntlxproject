@@ -4,9 +4,7 @@ using System.Net;
 using System.Net.Mail;
 using ASC.Common.Services;
 using ASC.Common.Utils;
-using ASC.Core.Common.Remoting;
 using ASC.Core.Configuration;
-using ASC.Core.Notify;
 using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks.Smtp;
@@ -15,8 +13,7 @@ using NotifyContext = ASC.Notify.Context;
 
 namespace ASC.Core.Notify
 {
-    [Locator]
-    class NotifyImpl : RemotingServiceController, INotify
+    class NotifyImpl : INotify
     {
         private readonly NotifyContext notifyContext = new NotifyContext();
 
@@ -28,7 +25,6 @@ namespace ASC.Core.Notify
 
 
         public NotifyImpl()
-            : base(Constants.NotifyServiceInfo)
         {
             logOnly = bool.TrueString.Equals(WorkContext.GetProperty("Notify.LogOnly") as string, StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
@@ -71,7 +67,7 @@ namespace ASC.Core.Notify
             notifyContext.NotifyService.UnregisterSender(Constants.NotifyEMailSenderSysName);
 
             var prop = new Hashtable();
-            var settings = CoreContext.Configuration.Cfg.SmtpSettings;
+            var settings = CoreContext.Configuration.SmtpSettings;
             try
             {
                 prop[SmtpSenderSink.SmtpServerNameParam] = settings.Host;

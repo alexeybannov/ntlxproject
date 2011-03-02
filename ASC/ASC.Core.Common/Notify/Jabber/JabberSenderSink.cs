@@ -1,5 +1,4 @@
 ﻿using System;
-using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
 
@@ -53,7 +52,7 @@ namespace ASC.Core.Notify.Jabber
                             lastTime = DateTime.Now;
                             try
                             {
-                                jabberService = WorkContext.ServiceActivator.Activate<IJabberService>();
+                                //jabberService = WorkContext.ServiceActivator.Activate<IJabberService>();
                             }
                             catch { }
                         }

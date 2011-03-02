@@ -6,7 +6,7 @@ using ASC.Core.Users;
 
 namespace ASC.Core
 {
-    public interface IAuthorizationManagerClient
+    public interface IAuthManagerClient
     {
         AzRecord[] GetAces(Guid subjectID, Guid actionID);
 

@@ -8,6 +8,7 @@ namespace ASC.Core
         private T instance;
         private readonly Func<T> ctor;
 
+        
         public T Instance
         {
             get
@@ -23,6 +24,7 @@ namespace ASC.Core
             }
         }
 
+        
         public Lazy(Func<T> ctor)
         {
             this.ctor = ctor;

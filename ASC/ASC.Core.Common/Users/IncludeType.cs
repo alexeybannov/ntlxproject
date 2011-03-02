@@ -1,19 +1,15 @@
-#region usings
-
 using System;
-
-#endregion
 
 namespace ASC.Core.Users
 {
     [Flags]
     public enum IncludeType
     {
-        Distinct = 0x01,
+        Distinct = 1,
 
-        InParent = 0x02,
+        InParent = 2,
 
-        InChild = 0x04,
+        InChild = 4,
 
         All = Distinct | InParent | InChild
     }

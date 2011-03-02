@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common.Security;
 using ASC.Core.Users;
 
 namespace ASC.Core
@@ -113,7 +114,7 @@ namespace ASC.Core
         {
             if (systemUsers.ContainsKey(u.ID)) return systemUsers[u.ID];
             if (u.ID == Guid.Empty) SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
-            else SecurityContext.DemandPermissions<UserInfo>(u.ID, new UserSecurityProvider(), Constants.Action_EditUser);
+            else SecurityContext.DemandPermissions(new SecurityObjectId<UserInfo>(u.ID), new UserSecurityProvider(), Constants.Action_EditUser);
 
             var newUser = userService.SaveUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, ToUser(u));
             return GetUsers(newUser.Id);
@@ -130,7 +131,7 @@ namespace ASC.Core
         public void SaveUserPhoto(Guid id, Guid notused, byte[] photo)
         {
             if (systemUsers.ContainsKey(id)) return;
-            SecurityContext.DemandPermissions<UserInfo>(id, new UserSecurityProvider(), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(new SecurityObjectId<UserInfo>(id), new UserSecurityProvider(), Constants.Action_EditUser);
 
             userService.SetUserPhoto(CoreContext.TenantManager.GetCurrentTenant().TenantId, id, photo);
         }

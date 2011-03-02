@@ -72,31 +72,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\Interfaces\INotify.cs" />
-    <Compile Include="Configuration\Resources\ConstResource1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ConstResource.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Configuration\INotify.cs" />
     <Compile Include="Configuration\SmtpSettings.cs" />
-    <Compile Include="Context\ClientImpl\AuthenticationService.cs" />
-    <Compile Include="Context\ClientImpl\AzClientManager.cs" />
+    <Compile Include="Context\ClientImpl\ClientAuthManager.cs" />
+    <Compile Include="Context\ClientImpl\ClientAzManager.cs" />
     <Compile Include="Context\ClientImpl\ClientConfiguration.cs" />
     <Compile Include="Context\ClientImpl\ClientSubscriptionManager.cs" />
     <Compile Include="Context\ClientImpl\ClientTenantManager.cs" />
     <Compile Include="Context\ClientImpl\IAuthenticationClient.cs" />
-    <Compile Include="Context\ClientImpl\IAuthorizationManagerClient.cs" />
+    <Compile Include="Context\ClientImpl\IAuthManagerClient.cs" />
+    <Compile Include="Context\ClientImpl\IConfigurationClient.cs" />
     <Compile Include="Context\ClientImpl\IGroupManagerClient.cs" />
     <Compile Include="Context\ClientImpl\ITenantManagerClient.cs" />
     <Compile Include="Context\ClientImpl\IUserManagerClient.cs" />
-    <Compile Include="Context\ClientImpl\RemotingSubsystemConfiguration.cs" />
-    <Compile Include="Context\Lazy.cs" />
     <Compile Include="Context\SecurityContext.cs" />
     <Compile Include="Context\ClientImpl\ClientUserManager.cs" />
-    <Compile Include="CoreTalk\CoreHostResolver\CoreAddressResolver.cs" />
-    <Compile Include="CoreTalk\CoreHostResolver\FixedCoreAddressResolver.cs" />
-    <Compile Include="CoreTalk\CoreHostResolver\ICoreAddressResolver.cs" />
-    <Compile Include="CoreTalk\CoreHostResolver\ConfigAddressResolver.cs" />
     <Compile Include="Core\DbAzService.cs" />
     <Compile Include="Core\CachedUserService.cs" />
     <Compile Include="Core\CacheHelper.cs" />
@@ -118,15 +108,9 @@
     <Compile Include="Data\DbExecuter.cs" />
     <Compile Include="Data\IDbExecuter.cs" />
     <Compile Include="HostedSolution.cs" />
-    <Compile Include="Hosting\ICoreHost.cs" />
     <Compile Include="Context\CoreContext.cs" />
     <Compile Include="Context\WorkContext.cs" />
-    <Compile Include="Configuration\Interfaces\IServiceLocator.cs" />
     <Compile Include="Configuration\Constants.cs" />
-    <Compile Include="Hosting\IServicesHost.cs" />
-    <Compile Include="Host\CoreHost.cs" />
-    <Compile Include="Host\ServiceInitializer.cs" />
-    <Compile Include="Host\ServicesHost.cs" />
     <Compile Include="Notify\DirectSubscriptionProvider.cs" />
     <Compile Include="Notify\Jabber\IJabberService.cs" />
     <Compile Include="Notify\Jabber\JabberSenderSink.cs" />
@@ -155,103 +139,31 @@
     <Compile Include="Tenants\TenantQuotaRowQuery.cs" />
     <Compile Include="Tenants\TenantQuotaRow.cs" />
     <Compile Include="Tenants\TenantQuota.cs" />
-    <Compile Include="Remoting\Sink\DebugServerSink.cs" />
-    <Compile Include="Remoting\Sink\DebugServerSinkProvider.cs" />
     <Compile Include="Security\Authentication\AuthenticationContext.cs" />
     <Compile Include="Security\Authentication\CookieStorage.cs" />
-    <Compile Include="Security\Authentication\Sink\SecurityServerSinkProvider.cs" />
-    <Compile Include="Security\Authentication\Sink\SecurityServerSink.cs" />
-    <Compile Include="Security\Authentication\Sink\SecurityClientSink.cs" />
-    <Compile Include="Security\Authentication\Sink\SecurityClientSinkProvider.cs" />
     <Compile Include="Security\Authentication\UserAccount.cs" />
     <Compile Include="Security\Authorizing\PermissionProvider.cs" />
     <Compile Include="Security\Authorizing\PermissionResolver.cs" />
     <Compile Include="Security\Authorizing\RoleProvider.cs" />
-    <Compile Include="Services\Factories\RemotingCoreServiceFactory.cs" />
     <Compile Include="Tenants\Tenant.cs" />
     <Compile Include="Tenants\TenantRegistrationInfo.cs" />
     <Compile Include="Tenants\TenantUtil.cs" />
     <Compile Include="Users\DisplayUserNameFormat.cs" />
-    <Compile Include="Users\DTO\AzCategory.cs" />
-    <Compile Include="Users\DTO\AzObjectInfo.cs" />
-    <Compile Include="Users\DTO\AzRecord.cs" />
-    <Compile Include="Users\DTO\EmployeeStatus.cs" />
-    <Compile Include="Users\DTO\GroupSecurityHelper.cs" />
-    <Compile Include="Users\DTO\UserSecurityProvider.cs" />
+    <Compile Include="Core\AzObjectInfo.cs" />
+    <Compile Include="Core\AzRecord.cs" />
+    <Compile Include="Users\EmployeeStatus.cs" />
+    <Compile Include="Users\GroupSecurityHelper.cs" />
+    <Compile Include="Users\UserSecurityProvider.cs" />
     <Compile Include="Users\IncludeType.cs" />
-    <Compile Include="Users\Resources\ConstResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ConstResource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Configuration\Resources\DescriptionResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DescriptionResource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="CommonDescriptionResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CommonDescriptionResource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Hosting\Constants.cs" />
-    <Compile Include="Hosting\IModuleHost.cs" />
-    <Compile Include="Module\ModuleServicePart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Remoting\RemotingServiceController.cs" />
-    <Compile Include="Remoting\ServicePublisher.cs" />
-    <Compile Include="Remoting\ServicePublishingException.cs" />
-    <Compile Include="Services\Exceptions\ServiceInstanceNotFoundException.cs" />
-    <Compile Include="Services\InternalServiceInfoCache.cs" />
-    <Compile Include="Services\ServicesModulePartHostBase.cs" />
-    <Compile Include="Services\CoreServiceInfo.cs" />
-    <Compile Include="Remoting\RemotingActivator.cs" />
-    <Compile Include="Services\Exceptions\ServiceActivationException.cs" />
-    <Compile Include="Services\ServiceActivator.cs" />
-    <Compile Include="Services\ServiceController.cs" />
-    <Compile Include="Services\ServiceDescriber.cs" />
-    <Compile Include="Services\ServiceHost.cs" />
-    <Compile Include="Services\WellKnownServiceHolder.cs" />
     <Compile Include="Users\Constants.cs" />
-    <Compile Include="Users\DTO\GroupInfo.cs" />
-    <Compile Include="Users\DTO\UserInfo.cs" />
-    <Compile Include="Users\Resources\DescriptionResource.Designer.cs">
-      <DependentUpon>DescriptionResource.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
+    <Compile Include="Users\GroupInfo.cs" />
+    <Compile Include="Users\UserInfo.cs" />
     <Compile Include="Users\UserFormatter.cs" />
     <Compile Include="Users\UserInfoExtention.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Publisher\articledb.xsd" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configuration\Resources\ConstResource.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConstResource1.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Users\Resources\ConstResource.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConstResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\Resources\DescriptionResource.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DescriptionResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CommonDescriptionResource.resx">
-      <SubType>Designer</SubType>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>CommonDescriptionResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Users\Resources\DescriptionResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DescriptionResource.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

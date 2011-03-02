@@ -7,12 +7,12 @@ using ASC.Core.Users;
 
 namespace ASC.Core
 {
-    public class AuthenticationService : IAuthenticationClient
+    class ClientAuthManager : IAuthenticationClient
     {
         private readonly IUserService userService;
 
 
-        public AuthenticationService(IUserService userService)
+        public ClientAuthManager(IUserService userService)
         {
             this.userService = userService;
         }

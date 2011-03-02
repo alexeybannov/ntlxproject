@@ -7,12 +7,12 @@ using ASC.Core.Users;
 
 namespace ASC.Core
 {
-    class AzClientManager : IAuthorizationManagerClient
+    class ClientAzManager : IAuthManagerClient
     {
         private readonly IDbAzService service;
 
 
-        public AzClientManager(IDbAzService service)
+        public ClientAzManager(IDbAzService service)
         {
             this.service = service;
         }

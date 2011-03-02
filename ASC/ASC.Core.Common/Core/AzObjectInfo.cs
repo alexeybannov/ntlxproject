@@ -8,7 +8,7 @@ using ASC.Common.Security.Authorizing;
 
 #endregion
 
-namespace ASC.Core.Users
+namespace ASC.Core
 {
     [DebuggerDisplay("ObjectId = {ObjectId}, InheritAces = {InheritAces}")]
     [Serializable]
@@ -81,7 +81,7 @@ namespace ASC.Core.Users
 
         private bool ContainsInSelf(ISubject container, ISubject subject)
         {
-            GroupInfo[] groups = CoreContext.UserManager.GetUserGroups(subject.ID);
+            var groups = CoreContext.UserManager.GetUserGroups(subject.ID);
             return Array.Exists(groups, g => { return g.ID.Equals(container.ID); });
         }
 

@@ -364,6 +364,7 @@
     <Compile Include="Utils\Extentions\ObjectExtentions.cs" />
     <Compile Include="Utils\Extentions\Stream.cs" />
     <Compile Include="Utils\DebugUtil.cs" />
+    <Compile Include="Utils\Lazy.cs" />
     <Compile Include="Utils\Processes\CmdLine.cs" />
     <Compile Include="Utils\Processes\ProcessLauncher.cs" />
     <Compile Include="Utils\VelocityFormatter.cs" />

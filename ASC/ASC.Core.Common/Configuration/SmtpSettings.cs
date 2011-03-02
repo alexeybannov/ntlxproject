@@ -26,14 +26,14 @@ namespace ASC.Core.Configuration
             var settings = obj as SmtpSettings;
             if (settings == null) return false;
             return
-                String.Equals(Host, settings.Host) &&
-                String.Equals(SenderAddress, settings.SenderAddress) &&
-                String.Equals(SenderDisplayName, settings.SenderDisplayName) &&
-                String.Equals(CredentialsDomain, settings.CredentialsDomain) &&
-                String.Equals(CredentialsUserName, settings.CredentialsUserName) &&
-                String.Equals(CredentialsUserPassword, settings.CredentialsUserPassword) &&
-                Equals(EnableSSL, settings.EnableSSL) &&
-                (Equals(Port, settings.Port));
+                string.Equals(Host, settings.Host) &&
+                string.Equals(SenderAddress, settings.SenderAddress) &&
+                string.Equals(SenderDisplayName, settings.SenderDisplayName) &&
+                string.Equals(CredentialsDomain, settings.CredentialsDomain) &&
+                string.Equals(CredentialsUserName, settings.CredentialsUserName) &&
+                string.Equals(CredentialsUserPassword, settings.CredentialsUserPassword) &&
+                EnableSSL == settings.EnableSSL &&
+                Port == settings.Port;
         }
 
         public override int GetHashCode()
