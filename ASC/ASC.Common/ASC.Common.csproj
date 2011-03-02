@@ -372,7 +372,6 @@
     <Compile Include="Utils\HtmlUtil.cs" />
     <Compile Include="Utils\LogHolder.cs" />
     <Compile Include="Utils\SysNameChecker.cs" />
-    <Compile Include="Utils\TimeProfiler.cs" />
     <Compile Include="Utils\Transliter.cs" />
     <Compile Include="Utils\UriUtil.cs" />
     <Compile Include="Utils\Wildcard.cs" />
