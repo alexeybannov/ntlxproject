@@ -1,95 +1,85 @@
-#region usings
-
 using System;
 using System.Data;
 
-#endregion
-
 namespace ASC.Common.Data.AdoProxy
 {
-    internal class DbConnectionProxy
-        : IDbConnection
+    class DbConnectionProxy : IDbConnection
     {
-        public readonly IDbConnection _connection;
-        public readonly ProxyCtx _ctx;
+        private readonly IDbConnection connection;
+        private readonly ProxyCtx context;
+        private bool disposed;
 
+        
         public DbConnectionProxy(IDbConnection connection, ProxyCtx ctx)
         {
-            if (connection == null)
-                throw new ArgumentNullException("command");
-            if (ctx == null)
-                throw new ArgumentNullException("ctx");
-            _connection = connection;
-            _ctx = ctx;
+            if (connection == null) throw new ArgumentNullException("connection");
+            if (ctx == null) throw new ArgumentNullException("ctx");
+
+            this.connection = connection;
+            context = ctx;
         }
 
-        #region IDbConnection
 
         public IDbTransaction BeginTransaction(IsolationLevel il)
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, String.Format("BeginTransaction({0})", il), dur),
-                _ctx.ProfileEnabled))
-                return new DbTransactionProxy(_connection.BeginTransaction(il), _ctx);
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, String.Format("BeginTransaction({0})", il), dur)))
+            {
+                return new DbTransactionProxy(connection.BeginTransaction(il), context);
+            }
         }
 
         public IDbTransaction BeginTransaction()
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, "BeginTransaction", dur),
-                _ctx.ProfileEnabled))
-                return new DbTransactionProxy(_connection.BeginTransaction(), _ctx);
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "BeginTransaction", dur)))
+            {
+                return new DbTransactionProxy(connection.BeginTransaction(), context);
+            }
         }
 
         public void ChangeDatabase(string databaseName)
         {
-            _connection.ChangeDatabase(databaseName);
+            connection.ChangeDatabase(databaseName);
         }
 
         public void Close()
         {
-            _connection.Close();
+            connection.Close();
         }
 
         public string ConnectionString
         {
-            get { return _connection.ConnectionString; }
-            set { _connection.ConnectionString = value; }
+            get { return connection.ConnectionString; }
+            set { connection.ConnectionString = value; }
         }
 
         public int ConnectionTimeout
         {
-            get { return _connection.ConnectionTimeout; }
+            get { return connection.ConnectionTimeout; }
         }
 
         public IDbCommand CreateCommand()
         {
-            return new DbCommandProxy(_connection.CreateCommand(), _ctx);
+            return new DbCommandProxy(connection.CreateCommand(), context);
         }
 
         public string Database
         {
-            get { return _connection.Database; }
+            get { return connection.Database; }
         }
 
         public void Open()
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, "Open", dur),
-                _ctx.ProfileEnabled))
-                _connection.Open();
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "Open", dur)))
+            {
+                connection.Open();
+            }
         }
 
         public ConnectionState State
         {
-            get { return _connection.State; }
+            get { return connection.State; }
         }
 
-        #endregion
-
-        #region IDisposable
-
-        private bool _disposed;
 
         public void Dispose()
         {
@@ -97,18 +87,18 @@ namespace ASC.Common.Data.AdoProxy
             GC.SuppressFinalize(this);
         }
 
-        public void Dispose(bool disposeManaged)
+        public void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (!disposed)
             {
-                if (disposeManaged)
+                if (disposing)
                 {
-                    using (ExecuteHelper.Begin(
-                        dur => _ctx.FireExecuteEvent(this, "Dispose", dur),
-                        _ctx.ProfileEnabled))
-                        _connection.Dispose();
+                    using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "Dispose", dur)))
+                    {
+                        connection.Dispose();
+                    }
                 }
-                _disposed = true;
+                disposed = true;
             }
         }
 
@@ -116,7 +106,5 @@ namespace ASC.Common.Data.AdoProxy
         {
             Dispose(false);
         }
-
-        #endregion
     }
 }

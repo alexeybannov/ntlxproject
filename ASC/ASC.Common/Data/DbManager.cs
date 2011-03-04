@@ -1,5 +1,3 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,17 +7,18 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Web;
 using log4net;
 
-#endregion
 
 namespace ASC.Common.Data
 {
     public class DbManager : IDisposable
     {
+        private readonly ILog logger = LogManager.GetLogger("ASC.SQL");
         private readonly ProxyCtx proxyContext;
-        private readonly bool proxyEnabled;
         private readonly bool shared;
+
         private IDbCommand command;
         private ISqlDialect dialect;
+
 
         public DbManager(string databaseId)
             : this(databaseId, true)
@@ -31,12 +30,10 @@ namespace ASC.Common.Data
             if (databaseId == null) throw new ArgumentNullException("databaseId");
             DatabaseId = databaseId;
             this.shared = shared;
-            proxyEnabled = true;
-            if (proxyEnabled)
+
+            if (logger.IsDebugEnabled)
             {
                 proxyContext = new ProxyCtx();
-                proxyContext.ProfileEnabled = true;
-                proxyContext.DatabaseId = databaseId;
                 proxyContext.ExecutedEvent += AdoProxyExecutedEventHandler;
             }
         }
@@ -117,7 +114,10 @@ namespace ASC.Common.Data
                 if (connection != null) return connection;
             }
             connection = DbRegistry.CreateDbConnection(DatabaseId);
-            if (proxyEnabled) connection = new DbConnectionProxy(connection, proxyContext);
+            if (proxyContext != null)
+            {
+                connection = new DbConnectionProxy(connection, proxyContext);
+            }
             connection.Open();
             if (shared && HttpContext.Current != null) DisposableHttpContext.Current[key] = connection;
             return connection;
@@ -128,7 +128,7 @@ namespace ASC.Common.Data
             if (InTransaction) throw new InvalidOperationException("Transaction already open.");
 
             Command.Transaction = Command.Connection.BeginTransaction();
-            
+
             var tx = new DbTransaction(Command.Transaction);
             tx.Unavailable += TransactionUnavailable;
             return tx;
@@ -137,9 +137,9 @@ namespace ASC.Common.Data
         public IDbTransaction BeginTransaction(IsolationLevel il)
         {
             if (InTransaction) throw new InvalidOperationException("Transaction already open.");
-            
+
             Command.Transaction = Command.Connection.BeginTransaction(il);
-            
+
             var tx = new DbTransaction(Command.Transaction);
             tx.Unavailable += TransactionUnavailable;
             return tx;
@@ -263,27 +263,11 @@ namespace ASC.Common.Data
             return dialect;
         }
 
-        private static void AdoProxyExecutedEventHandler(object sender, ExecutedEventArgs args)
+        private void AdoProxyExecutedEventHandler(object sender, ExecutedEventArgs a)
         {
-            ILog log = GetSqlLog();
-            if (log.IsDebugEnabled)
-            {
-                string logstr = "";
-                if (args.ProfilingEnabled)
-                    logstr = String.Format("{0}:{1} {2}", args.Duration, args.Executed, args.Description);
-                else
-                    logstr = String.Format("{0} {1}", args.Executed, args.Description);
-
-                //remove linebrakes and tabs for log analyzing
-                logstr.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ");
-
-                log.DebugFormat(logstr);
-            }
-        }
-
-        private static ILog GetSqlLog()
-        {
-            return LogManager.GetLogger("ASC.SQL");
+            //remove linebrakes and tabs for log analyzing
+            var desc = a.Description.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ");
+            logger.DebugFormat("({0:####} ms) {1}.{2}", (int)Math.Ceiling(a.Duration.TotalMilliseconds), a.Executed, desc);
         }
     }
 }

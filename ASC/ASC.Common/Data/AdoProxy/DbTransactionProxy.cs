@@ -1,61 +1,50 @@
-#region usings
-
 using System;
 using System.Data;
 
-#endregion
-
 namespace ASC.Common.Data.AdoProxy
 {
-    internal class DbTransactionProxy
-        : IDbTransaction
+    class DbTransactionProxy : IDbTransaction
     {
-        public readonly ProxyCtx _ctx;
-        public readonly IDbTransaction _transaction;
+        private bool disposed;
+        private readonly ProxyCtx context;
+        public readonly IDbTransaction transaction;
 
         public DbTransactionProxy(IDbTransaction transaction, ProxyCtx ctx)
         {
-            if (transaction == null)
-                throw new ArgumentNullException("command");
-            if (ctx == null)
-                throw new ArgumentNullException("ctx");
-            _transaction = transaction;
-            _ctx = ctx;
+            if (transaction == null) throw new ArgumentNullException("transaction");
+            if (ctx == null) throw new ArgumentNullException("ctx");
+
+            this.transaction = transaction;
+            context = ctx;
         }
 
-        #region IDbTransaction
 
         public void Commit()
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, "commit", dur),
-                _ctx.ProfileEnabled))
-                _transaction.Commit();
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "Commit", dur)))
+            {
+                transaction.Commit();
+            }
         }
 
         public IDbConnection Connection
         {
-            get { return _transaction.Connection; }
+            get { return transaction.Connection; }
         }
 
         public IsolationLevel IsolationLevel
         {
-            get { return _transaction.IsolationLevel; }
+            get { return transaction.IsolationLevel; }
         }
 
         public void Rollback()
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, "rollback", dur),
-                _ctx.ProfileEnabled))
-                _transaction.Rollback();
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "Rollback", dur)))
+            {
+                transaction.Rollback();
+            }
         }
 
-        #endregion
-
-        #region IDisposable
-
-        private bool _disposed;
 
         public void Dispose()
         {
@@ -63,15 +52,15 @@ namespace ASC.Common.Data.AdoProxy
             GC.SuppressFinalize(this);
         }
 
-        public void Dispose(bool disposeManaged)
+        public void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (!disposed)
             {
-                if (disposeManaged)
+                if (disposing)
                 {
-                    _transaction.Dispose();
+                    transaction.Dispose();
                 }
-                _disposed = true;
+                disposed = true;
             }
         }
 
@@ -79,7 +68,5 @@ namespace ASC.Common.Data.AdoProxy
         {
             Dispose(false);
         }
-
-        #endregion
     }
 }

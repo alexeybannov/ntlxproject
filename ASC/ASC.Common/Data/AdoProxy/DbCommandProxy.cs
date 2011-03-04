@@ -1,132 +1,113 @@
-#region usings
-
 using System;
 using System.Data;
 
-#endregion
-
 namespace ASC.Common.Data.AdoProxy
 {
-    internal class DbCommandProxy : IDbCommand
+    class DbCommandProxy : IDbCommand
     {
-        public readonly IDbCommand _command;
-        public readonly ProxyCtx _ctx;
+        private readonly IDbCommand command;
+        private readonly ProxyCtx context;
+        private bool disposed;
+
 
         public DbCommandProxy(IDbCommand command, ProxyCtx ctx)
         {
             if (command == null) throw new ArgumentNullException("command");
             if (ctx == null) throw new ArgumentNullException("ctx");
-            _command = command;
-            _ctx = ctx;
+
+            this.command = command;
+            context = ctx;
         }
 
-        #region IDbCommand
 
         public void Cancel()
         {
-            _command.Cancel();
+            command.Cancel();
         }
 
         public string CommandText
         {
-            get { return _command.CommandText; }
-            set { _command.CommandText = value; }
+            get { return command.CommandText; }
+            set { command.CommandText = value; }
         }
 
         public int CommandTimeout
         {
-            get { return _command.CommandTimeout; }
-            set { _command.CommandTimeout = value; }
+            get { return command.CommandTimeout; }
+            set { command.CommandTimeout = value; }
         }
 
         public CommandType CommandType
         {
-            get { return _command.CommandType; }
-            set { _command.CommandType = value; }
+            get { return command.CommandType; }
+            set { command.CommandType = value; }
         }
 
         public IDbConnection Connection
         {
-            get { return new DbConnectionProxy(_command.Connection, _ctx); }
-            set
-            {
-                if (value is DbConnectionProxy)
-                    _command.Connection = value;
-                else
-                    _command.Connection = new DbConnectionProxy(value, _ctx);
-            }
+            get { return new DbConnectionProxy(command.Connection, context); }
+            set { command.Connection = value is DbConnectionProxy ? value : new DbConnectionProxy(value, context); }
         }
 
         public IDbDataParameter CreateParameter()
         {
-            return _command.CreateParameter();
+            return command.CreateParameter();
         }
 
         public int ExecuteNonQuery()
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, "ExecuteNonQuery", dur),
-                _ctx.ProfileEnabled))
-                return _command.ExecuteNonQuery();
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "ExecuteNonQuery", dur)))
+            {
+                return command.ExecuteNonQuery();
+            }
         }
 
         public IDataReader ExecuteReader(CommandBehavior behavior)
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, String.Format("ExecuteReader({0})", behavior), dur),
-                _ctx.ProfileEnabled))
-                return _command.ExecuteReader(behavior);
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, string.Format("ExecuteReader({0})", behavior), dur)))
+            {
+                return command.ExecuteReader(behavior);
+            }
         }
 
         public IDataReader ExecuteReader()
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, "ExecuteReader", dur),
-                _ctx.ProfileEnabled))
-                return _command.ExecuteReader();
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "ExecuteReader", dur)))
+            {
+                return command.ExecuteReader();
+            }
         }
 
         public object ExecuteScalar()
         {
-            using (ExecuteHelper.Begin(
-                dur => _ctx.FireExecuteEvent(this, "ExecuteScalar", dur),
-                _ctx.ProfileEnabled))
-                return _command.ExecuteScalar();
+            using (ExecuteHelper.Begin(dur => context.FireExecuteEvent(this, "ExecuteScalar", dur)))
+            {
+                return command.ExecuteScalar();
+            }
         }
 
         public IDataParameterCollection Parameters
         {
-            get { return _command.Parameters; }
+            get { return command.Parameters; }
         }
 
         public void Prepare()
         {
-            _command.Prepare();
+            command.Prepare();
         }
 
         public IDbTransaction Transaction
         {
-            get { return _command.Transaction; }
-            set
-            {
-                if (value is DbTransactionProxy)
-                    _command.Transaction = ((DbTransactionProxy) value)._transaction;
-                else
-                    _command.Transaction = value;
-            }
+            get { return command.Transaction; }
+            set { command.Transaction = value is DbTransactionProxy ? ((DbTransactionProxy)value).transaction : value; }
         }
 
         public UpdateRowSource UpdatedRowSource
         {
-            get { return _command.UpdatedRowSource; }
-            set { _command.UpdatedRowSource = value; }
+            get { return command.UpdatedRowSource; }
+            set { command.UpdatedRowSource = value; }
         }
 
-        #endregion
-
-        #region IDisposable
-
-        private bool _disposed;
 
         public void Dispose()
         {
@@ -134,15 +115,15 @@ namespace ASC.Common.Data.AdoProxy
             GC.SuppressFinalize(this);
         }
 
-        public void Dispose(bool disposeManaged)
+        public void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (!disposed)
             {
-                if (disposeManaged)
+                if (disposing)
                 {
-                    _command.Dispose();
+                    command.Dispose();
                 }
-                _disposed = true;
+                disposed = true;
             }
         }
 
@@ -150,7 +131,5 @@ namespace ASC.Common.Data.AdoProxy
         {
             Dispose(false);
         }
-
-        #endregion
     }
 }
