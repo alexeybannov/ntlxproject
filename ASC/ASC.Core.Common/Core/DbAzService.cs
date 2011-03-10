@@ -7,7 +7,6 @@ using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
-using ASC.Core.Users;
 
 namespace ASC.Core
 {
@@ -20,12 +19,11 @@ namespace ASC.Core
         }
 
 
-        public IEnumerable<AzRecord> GetAces(int tenant)
+        public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
         {
             //rows with tenant = -1 - common,
             //if exists same row but tenant != -1 - row deleted
             //if acetype not equal then row with tenant = -1 ignore
-
             var q = new SqlQuery("core_acl")
                 .Select("subject", "action", "object", "acetype", "tenant", "creator")
                 .Where(Exp.Eq("tenant", Tenant.DEFAULT_TENANT) | Exp.Eq("tenant", tenant))

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
-using ASC.Core.Users;
 
 namespace ASC.Core
 {
@@ -20,7 +19,7 @@ namespace ASC.Core
 
         public AzRecord[] GetAces(Guid subjectId, Guid actionId)
         {
-            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+            return GetAcesInternal()
                 .Where(a => a.SubjectId == subjectId && a.ActionId == actionId && a.ObjectId == null)
                 .ToArray();
         }
@@ -30,20 +29,20 @@ namespace ASC.Core
             var fullObjectId = AzObjectIdHelper.GetFullObjectId(objectId);
             if (subjectID == Guid.Empty && actionID == Guid.Empty)
             {
-                return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                return GetAcesInternal()
                     .Where(a => a.ObjectId == fullObjectId).ToArray();
             }
             if (subjectID == Guid.Empty)
             {
-                return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                return GetAcesInternal()
                     .Where(a => a.ActionId == actionID && a.ObjectId == fullObjectId).ToArray();
             }
             if (actionID == Guid.Empty)
             {
-                return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                return GetAcesInternal()
                     .Where(a => a.SubjectId == subjectID && a.ObjectId == fullObjectId).ToArray();
             }
-            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+            return GetAcesInternal()
                 .Where(a => a.SubjectId == subjectID && a.ActionId == actionID && a.ObjectId == fullObjectId).ToArray();
         }
 
@@ -55,7 +54,7 @@ namespace ASC.Core
             var fullId = AzObjectIdHelper.GetFullObjectId(objectId);
             var actionIds = actions.Select(a => a.ID);
             var objectAces = new List<AzRecord>();
-            var acesByActions = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId)
+            var acesByActions = GetAcesInternal()
                 .Where(a => actionIds.Contains(a.ActionId))
                 .ToList();
 
@@ -99,6 +98,11 @@ namespace ASC.Core
         {
         }
 
+
+        private IEnumerable<AzRecord> GetAcesInternal()
+        {
+            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime));
+        }
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
         {

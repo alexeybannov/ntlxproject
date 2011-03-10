@@ -32,7 +32,7 @@ namespace ASC.Core
         public UserInfo[] GetUsers(EmployeeStatus status)
         {
             return GetUsersInternal()
-                .Where(u => (u.Status & status) == u.Status && IsUserInGroup(u.ID, Constants.GroupUser.ID))
+                .Where(u => (u.Status & status) == u.Status)
                 .ToArray();
         }
 
