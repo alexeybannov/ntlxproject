@@ -214,7 +214,7 @@ namespace ASC.Core
         public void AddUserIntoGroup(Guid userId, Guid groupId)
         {
             if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
-            GroupSecurityHelper.DemandPermission();
+            SecurityContext.DemandPermissions(new[] { Constants.Action_EditGroups, Constants.Action_EditAz });
 
             userService.SaveUserGroupRef(
                 CoreContext.TenantManager.GetCurrentTenant().TenantId,
@@ -224,7 +224,7 @@ namespace ASC.Core
         public void RemoveUserFromGroup(Guid userId, Guid groupId)
         {
             if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
-            GroupSecurityHelper.DemandPermission();
+            SecurityContext.DemandPermissions(new[] { Constants.Action_EditGroups, Constants.Action_EditAz });
 
             userService.RemoveUserGroupRef(CoreContext.TenantManager.GetCurrentTenant().TenantId, userId, groupId, UserGroupRefType.Contains);
         }
@@ -302,7 +302,7 @@ namespace ASC.Core
         {
             if (Constants.LostGroupInfo.Equals(g)) return Constants.LostGroupInfo;
             if (Constants.BuildinGroups.Any(b => b.ID == g.ID)) return Constants.BuildinGroups.Single(b => b.ID == g.ID);
-            GroupSecurityHelper.DemandPermission();
+            SecurityContext.DemandPermissions(new[] { Constants.Action_EditGroups, Constants.Action_EditAz });
 
             var newGroup = userService.SaveGroup(CoreContext.TenantManager.GetCurrentTenant().TenantId, ToGroup(g));
             return GetGroupInfo(newGroup.Id);
@@ -312,7 +312,7 @@ namespace ASC.Core
         {
             if (Constants.LostGroupInfo.Equals(id)) return;
             if (Constants.BuildinGroups.Any(b => b.ID == id)) return;
-            GroupSecurityHelper.DemandPermission();
+            SecurityContext.DemandPermissions(new[] { Constants.Action_EditGroups, Constants.Action_EditAz });
 
             userService.RemoveGroup(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
         }

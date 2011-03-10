@@ -1,10 +1,6 @@
-#region usings
-
 using System;
 using ASC.Common.Security.Authentication;
 using ASC.Core.Users;
-
-#endregion
 
 namespace ASC.Core.Security.Authentication
 {
@@ -18,17 +14,6 @@ namespace ASC.Core.Security.Authentication
         {
             if (credential == null) throw new ArgumentNullException("credential");
             Credential = credential;
-        }
-
-        internal UserAccount(IUserAccount userAccount)
-            : base(userAccount.ID, userAccount.Name)
-        {
-            FirstName = userAccount.FirstName;
-            LastName = userAccount.LastName;
-            Title = userAccount.Title;
-            Department = userAccount.Department;
-            Tenant = userAccount.Tenant;
-            Email = userAccount.Email;
         }
 
         internal UserAccount(UserInfo info, int tenant)

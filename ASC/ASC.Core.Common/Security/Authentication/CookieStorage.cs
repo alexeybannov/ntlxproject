@@ -1,15 +1,11 @@
-#region usings
-
 using System;
 using System.Web;
 using ASC.Common.Security.Authentication;
 using ASC.Security.Cryptography;
 
-#endregion
-
 namespace ASC.Core.Common.Security.Authentication
 {
-    internal class CookieStorage
+    class CookieStorage
     {
         public static Credential Get(string cookie)
         {
@@ -28,12 +24,11 @@ namespace ASC.Core.Common.Security.Authentication
 
         public static string Save(Credential loginPwd)
         {
-            string str = String.Format("{0}${1}${2}${3}",
+            var str = String.Format("{0}${1}${2}${3}",
                                        loginPwd.Login.ToLowerInvariant(),
                                        loginPwd.Tenant,
                                        loginPwd.PasswordHash,
-                                       GetUserDepenencySalt()
-                );
+                                       GetUserDepenencySalt());
             return InstanceCrypto.Encrypt(str);
         }
 
@@ -46,9 +41,10 @@ namespace ASC.Core.Common.Security.Authentication
         {
         }
 
+        
         private static string GetUserDepenencySalt()
         {
-            string data = string.Empty;
+            var data = string.Empty;
             try
             {
                 if (HttpContext.Current != null && HttpContext.Current.Request != null)
@@ -56,10 +52,7 @@ namespace ASC.Core.Common.Security.Authentication
                     data = HttpContext.Current.Request.UserHostAddress;
                 }
             }
-            catch
-            {
-                data = string.Empty;
-            }
+            catch { }
             return Hasher.Base64Hash(data, HashAlg.MD5);
         }
     }

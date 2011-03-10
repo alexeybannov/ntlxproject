@@ -1,8 +1,4 @@
-#region usings
-
 using System;
-
-#endregion
 
 namespace ASC.Core.Notify
 {
@@ -10,8 +6,10 @@ namespace ASC.Core.Notify
     public class NotifySenderDescription
     {
         public string ID { get; private set; }
+        
         public string Name { get; private set; }
 
+        
         public NotifySenderDescription(string id, string name)
         {
             if (String.IsNullOrEmpty(id)) throw new ArgumentException("id");

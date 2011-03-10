@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Net;
 using System.Net.Mail;
-using ASC.Common.Services;
 using ASC.Common.Utils;
 using ASC.Core.Configuration;
 using ASC.Core.Notify.Jabber;
@@ -28,9 +27,6 @@ namespace ASC.Core.Notify
         {
             logOnly = bool.TrueString.Equals(WorkContext.GetProperty("Notify.LogOnly") as string, StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
-
-            //log.DebugFormat(@"Add web sender sink at '{0}'", WebSiteUrl);
-            //notifyContext.NotifyService.RegisterSender(Constants.NotifyWebSenderSysName, new WebSenderSink(WebSiteUrl));
 
             log.Debug(@"Add jabber sender sink");
             notifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink());

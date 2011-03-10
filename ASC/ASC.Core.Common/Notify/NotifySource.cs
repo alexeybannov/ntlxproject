@@ -17,9 +17,8 @@ namespace ASC.Core.Notify
 {
     public abstract class NotifySource : INotifySource, IDependencyProvider
     {
-        private readonly IModuleInfo moduleInfo;
-        private bool initialized;
         private readonly object syncRoot = new object();
+        private bool initialized;
 
         private readonly IDictionary<CultureInfo, IActionProvider> actions = new Dictionary<CultureInfo, IActionProvider>();
 
@@ -27,11 +26,13 @@ namespace ASC.Core.Notify
 
         private readonly IDictionary<CultureInfo, IActionPatternProvider> actionPatterns = new Dictionary<CultureInfo, IActionPatternProvider>();
 
+
         protected ISubscriptionProvider SubscriprionProvider;
 
         protected IRecipientProvider RecipientsProvider;
 
         protected IDependencyProvider DependencyProvider;
+
 
         protected IActionProvider ActionProvider
         {
@@ -48,6 +49,20 @@ namespace ASC.Core.Notify
             get { return GetActionPatternProvider(); }
         }
 
+
+        public string ID
+        {
+            get;
+            private set;
+        }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
+
         public NotifySource(IModuleInfo moduleInfo)
             : this(
                 moduleInfo, moduleInfo != null ? moduleInfo.ID.ToString() : null,
@@ -63,14 +78,9 @@ namespace ASC.Core.Notify
         public NotifySource(IModuleInfo moduleInfo, string id, string name)
         {
             if (String.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
-            this.moduleInfo = moduleInfo;
             ID = id;
             Name = name;
         }
-
-        public string ID { get; private set; }
-
-        public string Name { get; private set; }
 
         public IActionPatternProvider GetActionPatternProvider()
         {
@@ -143,59 +153,47 @@ namespace ASC.Core.Notify
                 {
                     if (!initialized)
                     {
-                        Initialize();
+                        RecipientsProvider = CreateRecipientsProvider();
+                        if (RecipientsProvider == null)
+                        {
+                            throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IRecipientsProvider"));
+                        }
+
+                        DependencyProvider = CreateDependencyProvider();
+                        if (DependencyProvider == null)
+                        {
+                            throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IDependencyProvider"));
+                        }
+
+                        SubscriprionProvider = CreateSubscriptionProvider();
+                        if (SubscriprionProvider == null)
+                        {
+                            throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "ISubscriprionProvider"));
+                        }
+
+                        initialized = true;
                     }
                 }
             }
         }
 
-        private void Initialize()
-        {
-            RecipientsProvider = CreateRecipientsProvider();
-            if (RecipientsProvider == null)
-            {
-                throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IRecipientsProvider"));
-            }
-
-            DependencyProvider = CreateDependencyProvider();
-            if (DependencyProvider == null)
-            {
-                throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IDependencyProvider"));
-            }
-
-            SubscriprionProvider = CreateSubscriptionProvider();
-            if (SubscriprionProvider == null)
-            {
-                throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "ISubscriprionProvider"));
-            }
-
-            initialized = true;
-        }
-
+        
         protected abstract IActionPatternProvider CreateActionPatternProvider();
 
         protected abstract IPatternProvider CreatePatternsProvider();
 
         protected abstract IActionProvider CreateActionProvider();
 
+        
         protected virtual ISubscriptionProvider CreateSubscriptionProvider()
         {
             var directSubscriptionProvider = new DirectSubscriptionProvider(ID, CoreContext.SubscriptionManager, RecipientsProvider, ActionProvider);
             return new TopSubscriptionProvider(RecipientsProvider, directSubscriptionProvider, Array.ConvertAll(WorkContext.DefaultClientSenders, (sm) => sm.ID));
         }
-        
+
         protected virtual IDependencyProvider CreateDependencyProvider()
         {
-            return new FakeDepProvider();
-        }
-
-        
-        private class FakeDepProvider : IDependencyProvider
-        {
-            public ITagValue[] GetDependencies(INoticeMessage message, string objectID, ITag[] tags)
-            {
-                return new ITagValue[0];
-            }
+            return new EmptyDependencyProvider();
         }
 
         protected virtual IRecipientProvider CreateRecipientsProvider()
@@ -206,6 +204,15 @@ namespace ASC.Core.Notify
         public virtual ITagValue[] GetDependencies(INoticeMessage message, string objectID, ITag[] tags)
         {
             return new ITagValue[0];
+        }
+
+
+        private class EmptyDependencyProvider : IDependencyProvider
+        {
+            public ITagValue[] GetDependencies(INoticeMessage message, string objectID, ITag[] tags)
+            {
+                return new ITagValue[0];
+            }
         }
     }
 }

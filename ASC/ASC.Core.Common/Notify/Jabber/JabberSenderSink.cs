@@ -68,7 +68,7 @@ namespace ASC.Core.Notify.Jabber
             {
                 try
                 {
-                    return JabberService != null && JabberService.Info != null;
+                    return JabberService != null;
                 }
                 catch
                 {

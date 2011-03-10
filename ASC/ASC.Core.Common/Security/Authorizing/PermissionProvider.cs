@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
-using ASC.Core.Users;
 
 namespace ASC.Core.Security.Authorizing
 {

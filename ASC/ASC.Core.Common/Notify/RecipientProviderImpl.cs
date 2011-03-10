@@ -1,106 +1,72 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
-using ASC.Core.Common;
 using ASC.Core.Users;
 using ASC.Notify.Recipients;
 
-#endregion
-
 namespace ASC.Core.Notify
 {
-    public class RecipientProviderImpl
-        : IRecipientProvider
+    public class RecipientProviderImpl : IRecipientProvider
     {
-        #region IRecipientProvider
-
         public virtual IRecipient GetRecipient(string id)
         {
-            Guid recID = Guid.Empty;
-            try
+            var recID = Guid.Empty;
+            if (TryParseGuid(id, out recID))
             {
-                recID = new Guid(id);
+                var user = CoreContext.UserManager.GetUsers(recID);
+                if (user.ID != Constants.LostUser.ID) return new DirectRecipient(user.ID.ToString(), user.ToString());
+
+                var group = CoreContext.GroupManager.GetGroupInfo(recID);
+                if (group.ID != Constants.LostGroupInfo.ID) return new RecipientsGroup(group.ID.ToString(), group.Name);
             }
-            catch (Exception)
-            {
-                return null;
-            }
-
-            UserInfo user = null;
-            user = CoreContext.UserManager.GetUsers(recID);
-            if (user == Constants.LostUser)
-                user = null;
-
-            if (user != null)
-                return new DirectRecipient(user.ID.ToString(), user.ToString());
-
-            GroupInfo coreGroup = CoreContext.GroupManager.GetGroupInfo(recID);
-            if (Constants.LostGroupInfo.Equals(coreGroup))
-                coreGroup = null;
-            else if (coreGroup != null)
-                return new RecipientsGroup(coreGroup.ID.ToString(), coreGroup.Name);
             return null;
         }
 
         public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
         {
             if (group == null) throw new ArgumentNullException("group");
-            var result = new List<IRecipient>();
-            Guid groupID = Guid.Empty;
-            try
-            {
-                groupID = new Guid(group.ID);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            GroupInfo coreGroup = CoreContext.GroupManager.GetGroupInfo(groupID);
-            if (coreGroup != null)
-            {
-                if (coreGroup.Descendants != null)
-                {
-                    foreach (GroupInfo gr in coreGroup.Descendants)
-                        result.Add(new RecipientsGroup(gr.ID.ToString(), gr.Name));
-                }
 
-                UserInfo[] users = CoreContext.UserManager.GetUsersByGroup(coreGroup.ID);
-                Array.ForEach(users, u => result.Add(new DirectRecipient(u.ID.ToString(), u.ToString())));
+            var result = new List<IRecipient>();
+            var groupID = Guid.Empty;
+            if (TryParseGuid(group.ID, out groupID))
+            {
+                var coreGroup = CoreContext.GroupManager.GetGroupInfo(groupID);
+                if (coreGroup.ID != Constants.LostGroupInfo.ID)
+                {
+                    foreach (var gr in coreGroup.Descendants)
+                    {
+                        result.Add(new RecipientsGroup(gr.ID.ToString(), gr.Name));
+                    }
+                    var users = CoreContext.UserManager.GetUsersByGroup(coreGroup.ID);
+                    Array.ForEach(users, u => result.Add(new DirectRecipient(u.ID.ToString(), u.ToString())));
+                }
             }
             return result.ToArray();
         }
 
         public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
         {
-            if (recipient == null)
-                throw new ArgumentNullException("recipient");
-            Guid recID = Guid.Empty;
-            try
-            {
-                recID = new Guid(recipient.ID);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            if (recipient == null) throw new ArgumentNullException("recipient");
+
             var result = new List<IRecipientsGroup>();
-            if (recipient is IRecipientsGroup)
+            var recID = Guid.Empty;
+            if (TryParseGuid(recipient.ID, out recID))
             {
-                GroupInfo group = CoreContext.GroupManager.GetGroupInfo(recID);
-                while (group != null && group.Parent != null)
+                if (recipient is IRecipientsGroup)
                 {
-                    result.Add(new RecipientsGroup(group.Parent.ID.ToString(), group.Parent.Name));
-                    group = group.Parent;
-                    break;
+                    var group = CoreContext.GroupManager.GetGroupInfo(recID);
+                    while (group != null && group.Parent != null)
+                    {
+                        result.Add(new RecipientsGroup(group.Parent.ID.ToString(), group.Parent.Name));
+                        group = group.Parent;
+                        break;
+                    }
                 }
-            }
-            else if (recipient is IDirectRecipient)
-            {
-                GroupInfo[] groups = CoreContext.UserManager.GetUserGroups(recID, IncludeType.Distinct);
-                foreach (GroupInfo group in groups)
+                else if (recipient is IDirectRecipient)
                 {
-                    result.Add(new RecipientsGroup(group.ID.ToString(), group.Name));
+                    foreach (var group in CoreContext.UserManager.GetUserGroups(recID, IncludeType.Distinct))
+                    {
+                        result.Add(new RecipientsGroup(group.ID.ToString(), group.Name));
+                    }
                 }
             }
             return result.ToArray();
@@ -108,29 +74,20 @@ namespace ASC.Core.Notify
 
         public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
         {
-            if (recipient == null)
-                throw new ArgumentNullException("recipient");
-            Guid userID = Guid.Empty;
-            try
+            if (recipient == null) throw new ArgumentNullException("recipient");
+            var userID = Guid.Empty;
+            if (TryParseGuid(recipient.ID, out userID))
             {
-                userID = new Guid(recipient.ID);
+                var user = CoreContext.UserManager.GetUsers(userID);
+                if (user.ID != Constants.LostUser.ID)
+                {
+                    if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] { user.Email };
+                    if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName) return new[] { user.UserName };
+                }
             }
-            catch (Exception)
-            {
-                throw new ArgumentException("group");
-            }
-            UserInfo user = CoreContext.UserManager.GetUsers(userID);
-            if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName)
-                return new[] {user.Email};
-            else if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName)
-                return new[] {user.UserName};
-            else
-                return new string[] {};
+            return new string[0];
         }
 
-        #endregion
-
-        #region IRecipientProvider the object
 
         public IRecipient GetRecipient(string id, string objectID)
         {
@@ -152,6 +109,21 @@ namespace ASC.Core.Notify
             return GetRecipientAddresses(recipient, senderName);
         }
 
-        #endregion
+
+        private bool TryParseGuid(string id, out Guid guid)
+        {
+            guid = Guid.Empty;
+            if (!string.IsNullOrEmpty(id))
+            {
+                try
+                {
+                    guid = new Guid(id);
+                    return true;
+                }
+                catch (FormatException) { }
+                catch (OverflowException) { }
+            }
+            return false;
+        }
     }
 }
