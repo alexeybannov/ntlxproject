@@ -14,6 +14,8 @@ namespace ASC.Core
 
         Tenant GetTenant(int id);
 
+        Tenant GetTenant(string domain);
+
         Tenant SaveTenant(Tenant tenant);
 
         void RemoveTenant(int id);

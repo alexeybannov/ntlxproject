@@ -58,12 +58,12 @@ namespace ASC.Core
         public UserInfo GetUsers(Guid id)
         {
             if (systemUsers.ContainsKey(id)) return systemUsers[id];
-            return GetUsersInternal().SingleOrDefault(u => u.ID == id) ?? Constants.LostUser;
+            return ToUserInfo(userService.GetUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, id)) ?? Constants.LostUser;
         }
 
         public UserInfo GetUsers(int tenant, string login, string password)
         {
-            return ToUserInfo(userService.GetUser(tenant, login, password));
+            return ToUserInfo(userService.GetUser(tenant, login, password)) ?? Constants.LostUser;
         }
 
         public bool UserExists(Guid id)
@@ -332,12 +332,12 @@ namespace ASC.Core
 
         private bool IsPropertiesContainsWords(IEnumerable<string> properties, IEnumerable<string> words)
         {
-            foreach (var word in words)
+            foreach (var w in words)
             {
                 var find = false;
                 foreach (var p in properties)
                 {
-                    find = p.StartsWith(word, StringComparison.CurrentCultureIgnoreCase);
+                    find = p.StartsWith(w, StringComparison.CurrentCultureIgnoreCase);
                     if (find) break;
                 }
                 if (!find) return false;
@@ -380,6 +380,7 @@ namespace ASC.Core
 
         private UserInfo ToUserInfo(User u)
         {
+            if (u == null) return null;
             var ui = new UserInfo
             {
                 BirthDate = u.BirthDate,
@@ -403,6 +404,7 @@ namespace ASC.Core
 
         private User ToUser(UserInfo u)
         {
+            if (u == null) return null;
             return new User
             {
                 BirthDate = u.BirthDate,
@@ -425,6 +427,7 @@ namespace ASC.Core
 
         private Group ToGroup(GroupInfo g)
         {
+            if (g == null) return null;
             return new Group
             {
                 Id = g.ID,

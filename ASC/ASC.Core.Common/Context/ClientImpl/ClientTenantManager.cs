@@ -5,6 +5,8 @@ using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Web;
 using ASC.Core.Tenants;
+using System.Net;
+using System.Configuration;
 
 
 namespace ASC.Core
@@ -14,12 +16,18 @@ namespace ASC.Core
         private readonly ITenantService tenantService;
         private readonly IQuotaService quotaService;
         private const string CURRENT_TENANT = "CURRENT_TENANT";
+        private readonly List<string> thisCompAddresses = new List<string>();
 
 
         public ClientTenantManager(ITenantService tenantService, IQuotaService quotaService)
         {
             this.tenantService = tenantService;
             this.quotaService = quotaService;
+
+            thisCompAddresses.Add("localhost");
+            thisCompAddresses.Add(Dns.GetHostName().ToLowerInvariant());
+            thisCompAddresses.AddRange(Dns.GetHostAddresses("localhost").Select(a => a.ToString()));
+            thisCompAddresses.AddRange(Dns.GetHostAddresses(Dns.GetHostName()).Select(a => a.ToString()));
         }
 
 
@@ -35,16 +43,28 @@ namespace ASC.Core
 
         public Tenant GetTenant(string domain)
         {
-            if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException("domain");
-
-            var tenants = GetTenants();
-            var tenant = tenants.Find(t => t.MappedDomains.Contains(domain.ToLowerInvariant()));
-            if (tenant == null && CoreContext.Configuration.Standalone)
+            Tenant t = null;
+            if (thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
             {
-                tenant = tenants.Find(t => t.TenantId == 0);
-                if (tenant == null) return tenants.FirstOrDefault();
+                t = tenantService.GetTenant(0);
             }
-            return tenant;
+            if (t == null)
+            {
+                var baseUrl = ConfigurationManager.AppSettings["asc.core.tenants.base-domain"];
+                if (baseUrl != null && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    t = tenantService.GetTenant(domain.Substring(0, domain.Length - baseUrl.Length - 1));
+                }
+            }
+            if (t == null)
+            {
+                t = tenantService.GetTenant(domain);
+            }
+            if (t == null && CoreContext.Configuration.Standalone)
+            {
+                t = GetTenants().FirstOrDefault();
+            }
+            return t;
         }
 
         public Tenant SaveTenant(Tenant tenant)
@@ -106,7 +126,7 @@ namespace ASC.Core
             tenantService.ValidateDomain(address);
         }
 
-        
+
         public TenantQuota GetTenantQuota(int tenant, string name)
         {
             return quotaService.GetTenantQuota(tenant, name);

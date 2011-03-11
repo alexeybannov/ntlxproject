@@ -58,6 +58,14 @@ namespace ASC.Core
                 .SingleOrDefault();
         }
 
+        public Tenant GetTenant(string domain)
+        {
+            if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException("domain");
+
+            return GetTenants(Exp.Eq("alias", domain.ToLowerInvariant()) | Exp.Eq("mappeddomain", domain.ToLowerInvariant()))
+                .FirstOrDefault();
+        }
+
         public Tenant SaveTenant(Tenant t)
         {
             if (t == null) throw new ArgumentNullException("tenant");
@@ -94,13 +102,12 @@ namespace ASC.Core
                     db.ExecNonQuery(
                         new SqlInsert("core_subscription")
                         .InColumns("source", "action", "recipient", "object", "unsubscribed", "tenant")
-                        .Values(new SqlQuery("tenants_template_subscription").Select("source", "action", "recipient", "object", "unsubscribed", t.TenantId.ToString()))
-                    );
+                        .Values(new SqlQuery("tenants_template_subscription").Select("source", "action", "recipient", "object", "unsubscribed", t.TenantId.ToString())));
+
                     db.ExecNonQuery(
                         new SqlInsert("core_subscriptionmethod")
                         .InColumns("source", "action", "recipient", "sender", "tenant")
-                        .Values(new SqlQuery("tenants_template_subscriptionmethod").Select("source", "action", "recipient", "sender", t.TenantId.ToString()))
-                    );
+                        .Values(new SqlQuery("tenants_template_subscriptionmethod").Select("source", "action", "recipient", "sender", t.TenantId.ToString())));
                 }
             });
             CalculateTenantDomain(t);
@@ -127,7 +134,7 @@ namespace ASC.Core
             ExecNonQuery(i);
         }
 
-        
+
         private IEnumerable<Tenant> GetTenants(Exp where)
         {
             var q = new SqlQuery("tenants_tenants t")
@@ -160,35 +167,21 @@ namespace ASC.Core
 
         private void CalculateTenantDomain(Tenant tenant)
         {
-            tenant.MappedDomains.Clear();
             var baseHost = ConfigurationManager.AppSettings["asc.core.tenants.base-domain"];
-            if (baseHost == "localhost")
+            if (baseHost == "localhost" || tenant.TenantId == 0)
             {
                 //single tenant on local host
-                tenant.TenantDomain = Dns.GetHostName();
                 tenant.TenantAlias = "localhost";
-                tenant.MappedDomains.Add("localhost");
+                tenant.TenantDomain = Dns.GetHostName().ToLowerInvariant();
             }
             else
             {
-                tenant.TenantDomain = tenant.TenantAlias;
-                if (!string.IsNullOrEmpty(baseHost) && tenant.TenantAlias != baseHost)
-                {
-                    tenant.TenantDomain += "." + baseHost;
-                }
-                if (tenant.TenantId == 0)
-                {
-                    tenant.MappedDomains.Add(Dns.GetHostName().ToLowerInvariant());
-                    tenant.MappedDomains.Add("localhost");
-                }
+                tenant.TenantDomain = string.Format("{0}.{1}", tenant.TenantAlias, baseHost).TrimEnd('.').ToLowerInvariant();
             }
-            tenant.MappedDomains.Add(tenant.TenantDomain.ToLowerInvariant());
             if (!string.IsNullOrEmpty(tenant.MappedDomain))
             {
-                tenant.TenantDomain = tenant.MappedDomain;
-                tenant.MappedDomains.Add(tenant.MappedDomain.ToLowerInvariant());
+                tenant.TenantDomain = tenant.MappedDomain.ToLowerInvariant();
             }
-            tenant.TenantDomain = tenant.TenantDomain.ToLowerInvariant();
         }
 
         private TimeZoneInfo GetTimeZone(string zoneId)

@@ -95,7 +95,7 @@ namespace ASC.Core.Security.Authentication
                 if (credential == null) throw GetAuthError();
 
                 var u = CoreContext.UserManager.GetUsers(credential.Tenant, credential.Login, credential.PasswordHash);
-                if (u == null) throw GetAuthError();
+                if (u.ID == ASC.Core.Users.Constants.LostUser.ID) throw GetAuthError();
 
                 if (CoreContext.UserManager.IsUserInGroup(u.ID, UserConst.GroupAdmin.ID)) roles.Add(Role.Administrators);
                 roles.Add(CoreContext.UserManager.IsUserInGroup(u.ID, UserConst.GroupVisitor.ID) ? Role.Visitors : Role.Users);

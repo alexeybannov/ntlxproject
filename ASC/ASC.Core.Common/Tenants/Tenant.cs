@@ -15,7 +15,6 @@ namespace ASC.Core.Tenants
             TimeZone = TimeZoneInfo.Local;
             Language = CultureInfo.CurrentCulture.Name;
             TrustedDomains = new List<string>();
-            MappedDomains = new List<string>();
             TrustedDomainsEnabled = true;
             CreatedDateTime = DateTime.UtcNow;
             Status = TenantStatus.Active;
@@ -38,7 +37,9 @@ namespace ASC.Core.Tenants
 
         public string TenantAlias { get; set; }
 
-        public string TenantDomain { get; set; }
+        public string MappedDomain { get; set; }
+
+        public string TenantDomain { get; internal set; }
 
         public string Name { get; set; }
 
@@ -61,8 +62,6 @@ namespace ASC.Core.Tenants
             return new CultureInfo(Language);
         }
 
-        public string MappedDomain { get; set; }
-
         public DateTime LastModified { get; set; }
 
         public TenantStatus Status { get; internal set; }
@@ -77,17 +76,12 @@ namespace ASC.Core.Tenants
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (Tenant)) return false;
-            return Equals((Tenant) obj);
+            return Equals(obj as Tenant);
         }
 
         public bool Equals(Tenant other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return other.TenantId == TenantId;
+            return other != null && other.TenantId == TenantId;
         }
 
         public override int GetHashCode()
@@ -116,11 +110,9 @@ namespace ASC.Core.Tenants
             }
             else
             {
-                TrustedDomains.AddRange(trustedDomains.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries));
+                TrustedDomains.AddRange(trustedDomains.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
             }
         }
-
-        internal List<string> MappedDomains { get; private set; }
     }
 
     public enum TenantStatus
