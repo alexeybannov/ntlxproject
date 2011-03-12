@@ -1,5 +1,3 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,17 +6,12 @@ using System.Data.Common;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Dialects;
 
-#endregion
-
 namespace ASC.Common.Data
 {
     public static class DbRegistry
     {
         private static readonly object syncRoot = new object();
-
-        private static readonly IDictionary<string, DbProviderFactory> providers =
-            new Dictionary<string, DbProviderFactory>();
-
+        private static readonly IDictionary<string, DbProviderFactory> providers = new Dictionary<string, DbProviderFactory>();
         private static readonly IDictionary<string, string> connnectionStrings = new Dictionary<string, string>();
         private static readonly IDictionary<string, ISqlDialect> dialects = new Dictionary<string, ISqlDialect>();
 
@@ -27,8 +20,7 @@ namespace ASC.Common.Data
             dialects["MySql.Data.MySqlClient.MySqlClientFactory"] = new MySQLDialect();
         }
 
-        public static void RegisterDatabase(string databaseId, DbProviderFactory providerFactory,
-                                            string connectionString)
+        public static void RegisterDatabase(string databaseId, DbProviderFactory providerFactory, string connectionString)
         {
             if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException("databaseId");
             if (providerFactory == null) throw new ArgumentNullException("providerFactory");
@@ -73,7 +65,7 @@ namespace ASC.Common.Data
 
         public static IDbConnection CreateDbConnection(string databaseId)
         {
-            DbConnection connection = providers[databaseId].CreateConnection();
+            var connection = providers[databaseId].CreateConnection();
             if (connnectionStrings.ContainsKey(databaseId))
             {
                 connection.ConnectionString = connnectionStrings[databaseId];
@@ -93,7 +85,7 @@ namespace ASC.Common.Data
 
         public static ISqlDialect GetSqlDialect(string databaseId)
         {
-            DbProviderFactory provider = GetDbProviderFactory(databaseId);
+            var provider = GetDbProviderFactory(databaseId);
             if (provider != null && dialects.ContainsKey(provider.GetType().FullName))
             {
                 return dialects[provider.GetType().FullName];

@@ -7,7 +7,6 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Web;
 using log4net;
 
-
 namespace ASC.Common.Data
 {
     public class DbManager : IDisposable

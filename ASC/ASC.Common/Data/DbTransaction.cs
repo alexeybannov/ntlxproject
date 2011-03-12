@@ -1,39 +1,36 @@
-#region usings
-
 using System;
 using System.Data;
 
-#endregion
-
 namespace ASC.Common.Data
 {
-    public class DbTransaction : IDbTransaction
+    class DbTransaction : IDbTransaction
     {
+        private IDbTransaction transaction;
+
+
         public DbTransaction(IDbTransaction transaction)
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
-            Transaction = transaction;
+            this.transaction = transaction;
         }
 
-        internal IDbTransaction Transaction { get; private set; }
-
-        #region IDbTransaction Members
 
         public IDbConnection Connection
         {
-            get { return Transaction.Connection; }
+            get { return transaction.Connection; }
         }
 
         public IsolationLevel IsolationLevel
         {
-            get { return Transaction.IsolationLevel; }
+            get { return transaction.IsolationLevel; }
         }
+
 
         public void Commit()
         {
             try
             {
-                Transaction.Commit();
+                transaction.Commit();
             }
             finally
             {
@@ -45,7 +42,7 @@ namespace ASC.Common.Data
         {
             try
             {
-                Transaction.Rollback();
+                transaction.Rollback();
             }
             finally
             {
@@ -57,7 +54,7 @@ namespace ASC.Common.Data
         {
             try
             {
-                Transaction.Dispose();
+                transaction.Dispose();
             }
             finally
             {
@@ -65,9 +62,8 @@ namespace ASC.Common.Data
             }
         }
 
-        #endregion
-
         public event EventHandler Unavailable;
+
 
         private void OnUnavailable()
         {
@@ -75,9 +71,7 @@ namespace ASC.Common.Data
             {
                 if (Unavailable != null) Unavailable(this, EventArgs.Empty);
             }
-            catch
-            {
-            }
+            catch { }
         }
     }
 }
