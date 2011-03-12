@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Caching\AspCache.cs" />
     <Compile Include="Caching\ICache.cs" />
+    <Compile Include="Caching\TrustInterval.cs" />
     <Compile Include="Notify\INotify.cs" />
     <Compile Include="Configuration\SmtpSettings.cs" />
     <Compile Include="Context\ClientImpl\ClientAuthManager.cs" />

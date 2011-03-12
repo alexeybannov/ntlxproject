@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Caching
 {
     public class CachedTenantService : ITenantService
     {
-        private ITenantService service;
+        private readonly ITenantService service;
+        private readonly ICache cache;
+
+
+        public TimeSpan SettingsExpiration
+        {
+            get;
+            set;
+        }
 
 
         public CachedTenantService(ITenantService service)
@@ -15,6 +22,8 @@ namespace ASC.Core.Caching
             if (service == null) throw new ArgumentNullException("service");
 
             this.service = service;
+            this.cache = new AspCache();
+            this.SettingsExpiration = TimeSpan.FromMinutes(1);
         }
 
 
@@ -35,32 +44,40 @@ namespace ASC.Core.Caching
 
         public Tenant GetTenant(int id)
         {
-            throw new NotImplementedException();
+            return service.GetTenant(id);
         }
 
         public Tenant GetTenant(string domain)
         {
-            throw new NotImplementedException();
+            return service.GetTenant(domain);
         }
 
         public Tenant SaveTenant(Tenant tenant)
         {
-            throw new NotImplementedException();
+            tenant = service.SaveTenant(tenant);
+            return tenant;
         }
 
         public void RemoveTenant(int id)
         {
-            throw new NotImplementedException();
+            service.RemoveTenant(id);
         }
 
         public byte[] GetTenantSettings(int tenant, string key)
         {
-            throw new NotImplementedException();
+            var cacheKey = string.Format("settings/{0}/key", tenant, key);
+            var data = cache.Get(cacheKey) as byte[] ?? service.GetTenantSettings(tenant, key);
+            cache.Insert(cacheKey, data ?? new byte[0], SettingsExpiration);
+            return data.Length == 0 ? null : data;
         }
 
         public void SetTenantSettings(int tenant, string key, byte[] data)
         {
-            throw new NotImplementedException();
+            service.SetTenantSettings(tenant, key, data);
+            cache.Insert(string.Format("settings/{0}/key", tenant, key), data ?? new byte[0], SettingsExpiration);
         }
+
+
+
     }
 }
