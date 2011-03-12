@@ -5,7 +5,7 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Data;
 
-namespace ASC.Core
+namespace ASC.Core.Data
 {
     class DbSubscriptionService : DbBaseService, ISubscriptionService
     {

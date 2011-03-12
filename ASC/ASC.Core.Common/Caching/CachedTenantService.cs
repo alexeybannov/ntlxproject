@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Core.Tenants;
 
-namespace ASC.Core
+namespace ASC.Core.Caching
 {
     public class CachedTenantService : ITenantService
     {
         private ITenantService service;
-        private CacheHelper cache;
 
 
         public CachedTenantService(ITenantService service)
         {
+            if (service == null) throw new ArgumentNullException("service");
+
             this.service = service;
-            this.cache = new CacheHelper();
         }
 
 
@@ -25,13 +25,7 @@ namespace ASC.Core
 
         public IEnumerable<Tenant> GetTenants(DateTime from)
         {
-            lock (cache)
-            {
-                return cache.Get<Tenant>(
-                    Tenant.DEFAULT_TENANT,
-                    from,
-                    last => service.GetTenants(last).Select(t => new CacheItem<Tenant>(t, false, t.LastModified)));
-            }
+            return service.GetTenants(from);
         }
 
         public IEnumerable<Tenant> GetTenants(string login, string password)

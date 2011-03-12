@@ -4,7 +4,7 @@ using System.Linq;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
 
-namespace ASC.Core
+namespace ASC.Core.Caching
 {
     public class CachedUserService : IUserService
     {
@@ -15,7 +15,7 @@ namespace ASC.Core
         private readonly IUserService service;
         private readonly ICache cache;
         private DateTime lastDbAccess;
-        private bool cacheInvalidated;
+        private volatile bool cacheInvalidated;
 
 
         public TimeSpan CacheExpiration
@@ -33,18 +33,20 @@ namespace ASC.Core
 
         public CachedUserService(IUserService service)
         {
+            if (service == null) throw new ArgumentNullException("service");
+
             this.service = service;
             this.cache = new AspCache();
 
             CacheExpiration = TimeSpan.FromHours(1);
-            DbExpiration = TimeSpan.FromSeconds(10);
+            DbExpiration = TimeSpan.FromSeconds(15);
             lastDbAccess = DateTime.UtcNow;
         }
 
 
         public IEnumerable<User> GetUsers(int tenant, DateTime from)
         {
-            return GetUsers(tenant).Values.ToList();
+            return GetUsers(tenant).Values;
         }
 
         public User GetUser(int tenant, Guid id)
@@ -95,7 +97,7 @@ namespace ASC.Core
 
         public IEnumerable<Group> GetGroups(int tenant, DateTime from)
         {
-            return GetGroups(tenant).Values.ToList();
+            return GetGroups(tenant).Values;
         }
 
         public Group GetGroup(int tenant, Guid id)
@@ -121,13 +123,13 @@ namespace ASC.Core
 
         public IEnumerable<UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
-            GetCahngesFromDb();
+            GetChangesFromDb();
 
             var key = REFS + tenant.ToString();
             var refs = cache.Get(key) as IEnumerable<UserGroupRef>;
             if (refs == null)
             {
-                refs = service.GetUserGroupRefs(tenant, default(DateTime));
+                refs = service.GetUserGroupRefs(tenant, default(DateTime)).ToList();
                 cache.Insert(key, refs, CacheExpiration);
             }
             return refs;
@@ -149,7 +151,7 @@ namespace ASC.Core
 
         private IDictionary<Guid, User> GetUsers(int tenant)
         {
-            GetCahngesFromDb();
+            GetChangesFromDb();
 
             var key = USERS + tenant.ToString();
             var users = cache.Get(key) as IDictionary<Guid, User>;
@@ -163,7 +165,7 @@ namespace ASC.Core
 
         private IDictionary<Guid, Group> GetGroups(int tenant)
         {
-            GetCahngesFromDb();
+            GetChangesFromDb();
 
             var key = GROUPS + tenant.ToString();
             var groups = cache.Get(key) as IDictionary<Guid, Group>;
@@ -175,20 +177,52 @@ namespace ASC.Core
             return groups;
         }
 
-        private void GetCahngesFromDb()
+        private void GetChangesFromDb()
         {
-            if (lastDbAccess == default(DateTime)) return;
-
-            var utcnow = DateTime.UtcNow;
-            if (cacheInvalidated || (lastDbAccess - utcnow).Duration() <= DbExpiration)
+            if (cacheInvalidated || (lastDbAccess - DateTime.UtcNow).Duration() <= DbExpiration)
             {
                 lock (cache)
                 {
-                    if (cacheInvalidated || (lastDbAccess - utcnow).Duration() <= DbExpiration)
+                    if (cacheInvalidated || (lastDbAccess - DateTime.UtcNow).Duration() <= DbExpiration)
                     {
-                        var users = service.GetUsers(Tenant.DEFAULT_TENANT, lastDbAccess);
-                        var groups = service.GetGroups(Tenant.DEFAULT_TENANT, lastDbAccess);
-                        var refs = service.GetUserGroupRefs(Tenant.DEFAULT_TENANT, lastDbAccess);
+                        foreach (var tenantGroup in service.GetUsers(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(u => u.Tenant))
+                        {
+                            var users = cache.Get(USERS + tenantGroup.Key) as IDictionary<Guid, User>;
+                            if (users != null)
+                            {
+                                foreach (var u in tenantGroup)
+                                {
+                                    if (u.Removed) users.Remove(u.Id);
+                                    else users[u.Id] = u;
+                                }
+                            }
+                        }
+
+                        foreach (var tenantGroup in service.GetGroups(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(g => g.Tenant))
+                        {
+                            var groups = cache.Get(GROUPS + tenantGroup.Key) as IDictionary<Guid, Group>;
+                            if (groups != null)
+                            {
+                                foreach (var g in tenantGroup)
+                                {
+                                    if (g.Removed) groups.Remove(g.Id);
+                                    else groups[g.Id] = g;
+                                }
+                            }
+                        }
+
+                        foreach (var tenantGroup in service.GetUserGroupRefs(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(r => r.Tenant))
+                        {
+                            var refs = cache.Get(REFS + tenantGroup.Key) as List<UserGroupRef>;
+                            if (refs != null)
+                            {
+                                foreach (var r in tenantGroup)
+                                {
+                                    refs.Remove(r);
+                                    if (!r.Removed) refs.Add(r);
+                                }
+                            }
+                        }
 
                         cacheInvalidated = false;
                         lastDbAccess = DateTime.UtcNow;

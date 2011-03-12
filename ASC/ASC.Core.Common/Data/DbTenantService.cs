@@ -9,7 +9,7 @@ using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
-namespace ASC.Core
+namespace ASC.Core.Data
 {
     public class DbTenantService : DbBaseService, ITenantService
     {

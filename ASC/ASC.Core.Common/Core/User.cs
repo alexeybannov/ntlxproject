@@ -102,7 +102,13 @@ namespace ASC.Core
             set;
         }
 
-        public DateTime ModifiedOn
+        public DateTime LastModified
+        {
+            get;
+            set;
+        }
+
+        public int Tenant
         {
             get;
             set;

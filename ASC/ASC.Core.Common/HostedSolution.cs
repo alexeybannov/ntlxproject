@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Security;
 using ASC.Core.Common.Security.Authentication;
+using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;

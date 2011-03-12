@@ -95,11 +95,18 @@ namespace ASC.Core.Data
 
         public void ExecAction(Action<IDbExecuter> action)
         {
-            using (var db = new DbManager(dbid))
-            using (var tx = db.BeginTransaction())
+            if (innerCall)
             {
-                action(new DbExecuter(db));
-                tx.Commit();
+                action(this);
+            }
+            else
+            {
+                using (var db = new DbManager(dbid))
+                using (var tx = db.BeginTransaction())
+                {
+                    action(new DbExecuter(db));
+                    tx.Commit();
+                }
             }
         }
     }

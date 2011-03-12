@@ -7,10 +7,11 @@ namespace ASC.Core.Users
 {
     public class UserFormatter : IComparer<UserInfo>
     {
-        private readonly DisplayUserNameFormat format = DisplayUserNameFormat.Default;
+        private readonly DisplayUserNameFormat format;
 
 
         public UserFormatter()
+            : this(DisplayUserNameFormat.Default)
         {
         }
 
@@ -22,9 +23,8 @@ namespace ASC.Core.Users
 
         public static string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
         {
-            if (userInfo == null)
-                throw new ArgumentNullException("userInfo");
-            return String.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
+            if (userInfo == null) throw new ArgumentNullException("userInfo");
+            return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
         }
 
         public static string GetUserName(UserInfo userInfo)
@@ -47,126 +47,28 @@ namespace ASC.Core.Users
             if (x == null && y == null) return 0;
             if (x == null && y != null) return -1;
             if (x != null && y == null) return +1;
-            int result = 0;
-            if (format == DisplayUserNameFormat.Default)
-                format = GetUserDisplayDefaultOrder();
+
+            var result = 0;
+            if (format == DisplayUserNameFormat.Default) format = GetUserDisplayDefaultOrder();
             if (format == DisplayUserNameFormat.FirstLast)
             {
                 result = String.Compare(x.FirstName, y.FirstName, true);
-                if (result == 0)
-                    result = String.Compare(x.LastName, y.LastName, true);
+                if (result == 0) result = String.Compare(x.LastName, y.LastName, true);
             }
             else
             {
                 result = String.Compare(x.LastName, y.LastName, true);
-                if (result == 0)
-                    result = String.Compare(x.FirstName, y.FirstName, true);
+                if (result == 0) result = String.Compare(x.FirstName, y.FirstName, true);
             }
             return result;
         }
 
-        private static readonly Dictionary<string, Dictionary<DisplayUserNameFormat, string>> DisplayFormats = new Dictionary
-            <string, Dictionary<DisplayUserNameFormat, string>>
-                                                                                                                   {
-                                                                                                                       {
-                                                                                                                           "ru"
-                                                                                                                           ,
-                                                                                                                           new Dictionary
-                                                                                                                           <
-                                                                                                                           DisplayUserNameFormat
-                                                                                                                           ,
-                                                                                                                           string
-                                                                                                                           >
-                                                                                                                               {
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       Default
-                                                                                                                                       ,
-                                                                                                                                       "{1} {0}"
-                                                                                                                                       },
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       FirstLast
-                                                                                                                                       ,
-                                                                                                                                       "{0} {1}"
-                                                                                                                                       },
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       LastFirst
-                                                                                                                                       ,
-                                                                                                                                       "{1} {0}"
-                                                                                                                                       }
-                                                                                                                               }
-                                                                                                                           },
-                                                                                                                       {
-                                                                                                                           "en"
-                                                                                                                           ,
-                                                                                                                           new Dictionary
-                                                                                                                           <
-                                                                                                                           DisplayUserNameFormat
-                                                                                                                           ,
-                                                                                                                           string
-                                                                                                                           >
-                                                                                                                               {
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       Default
-                                                                                                                                       ,
-                                                                                                                                       "{0} {1}"
-                                                                                                                                       },
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       FirstLast
-                                                                                                                                       ,
-                                                                                                                                       "{0} {1}"
-                                                                                                                                       },
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       LastFirst
-                                                                                                                                       ,
-                                                                                                                                       "{1}, {0}"
-                                                                                                                                       }
-                                                                                                                               }
-                                                                                                                           },
-                                                                                                                       {
-                                                                                                                           "default"
-                                                                                                                           ,
-                                                                                                                           new Dictionary
-                                                                                                                           <
-                                                                                                                           DisplayUserNameFormat
-                                                                                                                           ,
-                                                                                                                           string
-                                                                                                                           >
-                                                                                                                               {
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       Default
-                                                                                                                                       ,
-                                                                                                                                       "{0} {1}"
-                                                                                                                                       },
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       FirstLast
-                                                                                                                                       ,
-                                                                                                                                       "{0} {1}"
-                                                                                                                                       },
-                                                                                                                                   {
-                                                                                                                                       DisplayUserNameFormat
-                                                                                                                                       .
-                                                                                                                                       LastFirst
-                                                                                                                                       ,
-                                                                                                                                       "{1}, {0}"
-                                                                                                                                       }
-                                                                                                                               }
-                                                                                                                           }
+        private static readonly Dictionary<string, Dictionary<DisplayUserNameFormat, string>> DisplayFormats = new Dictionary<string, Dictionary<DisplayUserNameFormat, string>>
+        {
+            { "ru", new Dictionary<DisplayUserNameFormat, string>{ { DisplayUserNameFormat.Default, "{1} {0}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1} {0}" } } },
+            { "en", new Dictionary<DisplayUserNameFormat, string>{ { DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } } },
+            { "default", new Dictionary<DisplayUserNameFormat, string>{ {DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } }
+        }
                                                                                                                    };
 
         private static string GetUserDisplayFormat()
@@ -182,36 +84,31 @@ namespace ASC.Core.Users
             if (!_forceFormatChecked)
             {
                 _forceFormat = ConfigurationManager.AppSettings["asc.core.users.user-display-format"];
-                if (String.IsNullOrEmpty(_forceFormat))
-                    _forceFormat = null;
+                if (String.IsNullOrEmpty(_forceFormat)) _forceFormat = null;
                 _forceFormatChecked = true;
             }
             if (_forceFormat != null) return _forceFormat;
-            string culture = Thread.CurrentThread.CurrentCulture.Name;
+            var culture = Thread.CurrentThread.CurrentCulture.Name;
             Dictionary<DisplayUserNameFormat, string> formats = null;
             if (!DisplayFormats.TryGetValue(culture, out formats))
             {
-                string twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-                if (!DisplayFormats.TryGetValue(twoletter, out formats))
-                    formats = DisplayFormats["default"];
+                var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+                if (!DisplayFormats.TryGetValue(twoletter, out formats)) formats = DisplayFormats["default"];
             }
             return formats[format];
         }
 
         public static DisplayUserNameFormat GetUserDisplayDefaultOrder()
         {
-            string culture = Thread.CurrentThread.CurrentCulture.Name;
+            var culture = Thread.CurrentThread.CurrentCulture.Name;
             Dictionary<DisplayUserNameFormat, string> formats = null;
             if (!DisplayFormats.TryGetValue(culture, out formats))
             {
                 string twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-                if (!DisplayFormats.TryGetValue(twoletter, out formats))
-                    formats = DisplayFormats["default"];
+                if (!DisplayFormats.TryGetValue(twoletter, out formats)) formats = DisplayFormats["default"];
             }
-            string format = formats[DisplayUserNameFormat.Default];
-            return format.IndexOf("{0}") < format.IndexOf("{1}")
-                       ? DisplayUserNameFormat.FirstLast
-                       : DisplayUserNameFormat.LastFirst;
+            var format = formats[DisplayUserNameFormat.Default];
+            return format.IndexOf("{0}") < format.IndexOf("{1}") ? DisplayUserNameFormat.FirstLast : DisplayUserNameFormat.LastFirst;
         }
     }
 }

@@ -8,7 +8,7 @@ using ASC.Common.Security.Authorizing;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
-namespace ASC.Core
+namespace ASC.Core.Data
 {
     public class DbAzService : DbBaseService, IDbAzService
     {

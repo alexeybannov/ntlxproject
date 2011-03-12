@@ -1,5 +1,7 @@
 using System.Configuration;
+using ASC.Core.Caching;
 using ASC.Core.Configuration;
+using ASC.Core.Data;
 
 namespace ASC.Core
 {
@@ -7,15 +9,17 @@ namespace ASC.Core
     {
         static CoreContext()
         {
-            var tenantService = new DbTenantService(ConfigurationManager.ConnectionStrings["core_nc"]);
-            var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings["core_nc"]);
-            var userService = new DbUserService(ConfigurationManager.ConnectionStrings["core_nc"]);
-            var azService = new DbAzService(ConfigurationManager.ConnectionStrings["core_nc"]);
-            var subService = new DbSubscriptionService(ConfigurationManager.ConnectionStrings["core_nc"]);
+            var cs = ConfigurationManager.ConnectionStrings["core_nc"];
+            var tenantService = new DbTenantService(cs);
+            var quotaService = new DbQuotaService(cs);
+            var userService = new CachedUserService(new DbUserService(cs));
+            var azService = new DbAzService(cs);
+            var subService = new DbSubscriptionService(cs);
 
             Configuration = new ClientConfiguration(tenantService);
             TenantManager = new ClientTenantManager(tenantService, quotaService);
             UserManager = new ClientUserManager(userService);
+            GroupManager = new ClientUserManager(userService);
             Authentication = new ClientAuthManager(userService);
             AuthorizationManager = new ClientAzManager(azService);
             SubscriptionManager = new ClientSubscriptionManager(subService);
@@ -42,7 +46,8 @@ namespace ASC.Core
 
         public static IGroupManagerClient GroupManager
         {
-            get { return (IGroupManagerClient)UserManager; }
+            get;
+            private set;
         }
 
         public static IAuthenticationClient Authentication

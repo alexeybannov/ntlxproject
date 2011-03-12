@@ -9,7 +9,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
-namespace ASC.Core
+namespace ASC.Core.Data
 {
     public class DbUserService : DbBaseService, IUserService
     {
@@ -52,8 +52,10 @@ namespace ASC.Core
         public User SaveUser(int tenant, User user)
         {
             if (user == null) throw new ArgumentNullException("user");
+            
             if (user.Id == default(Guid)) user.Id = Guid.NewGuid();
-            user.ModifiedOn = DateTime.UtcNow;
+            user.LastModified = DateTime.UtcNow;
+            user.Tenant = tenant;
 
             var i = Insert("core_user", tenant)
                 .InColumnValue("id", user.Id.ToString())
@@ -71,7 +73,7 @@ namespace ASC.Core
                 .InColumnValue("email", user.Email)
                 .InColumnValue("location", user.Location)
                 .InColumnValue("notes", user.Notes)
-                .InColumnValue("last_modified", user.ModifiedOn);
+                .InColumnValue("last_modified", user.LastModified);
             ExecNonQuery(i);
             return user;
         }
@@ -152,8 +154,10 @@ namespace ASC.Core
         public Group SaveGroup(int tenant, Group group)
         {
             if (group == null) throw new ArgumentNullException("user");
+         
             if (group.Id == default(Guid)) group.Id = Guid.NewGuid();
-            group.ModifiedOn = DateTime.UtcNow;
+            group.LastModified = DateTime.UtcNow;
+            group.Tenant = tenant;
 
             var i = Insert("core_group", tenant)
                 .InColumnValue("id", group.Id.ToString())
@@ -161,7 +165,7 @@ namespace ASC.Core
                 .InColumnValue("parentid", group.ParentId.ToString())
                 .InColumnValue("categoryid", group.CategoryId.ToString())
                 .InColumnValue("removed", group.Removed)
-                .InColumnValue("last_modified", group.ModifiedOn);
+                .InColumnValue("last_modified", group.LastModified);
             ExecNonQuery(i);
             return group;
         }
@@ -205,14 +209,16 @@ namespace ASC.Core
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
         {
             if (r == null) throw new ArgumentNullException("userGroupRef");
-            r.ModifiedOn = DateTime.UtcNow;
+            
+            r.LastModified = DateTime.UtcNow;
+            r.Tenant = tenant;
 
             var i = Insert("core_usergroup", tenant)
                 .InColumnValue("userid", r.UserId.ToString())
                 .InColumnValue("groupid", r.GroupId.ToString())
                 .InColumnValue("ref_type", (int)r.RefType)
                 .InColumnValue("removed", r.Removed)
-                .InColumnValue("last_modified", r.ModifiedOn);
+                .InColumnValue("last_modified", r.LastModified);
 
             ExecNonQuery(i);
 
@@ -239,12 +245,13 @@ namespace ASC.Core
             return new SqlQuery("core_user u")
                 .Select("id", "username", "firstname", "lastname", "sex", "bithdate")
                 .Select("status", "title", "department", "workfromdate", "terminateddate")
-                .Select("contacts", "email", "location", "notes", "removed", "last_modified");
+                .Select("contacts", "email", "location", "notes", "removed", "last_modified", "tenant");
         }
 
         private SqlQuery GetUserQuery(int tenant, DateTime from)
         {
-            var q = GetUserQuery().Where("tenant", tenant);
+            var q = GetUserQuery();
+            if (tenant != Tenant.DEFAULT_TENANT) q.Where("tenant", tenant);
             if (from != default(DateTime)) q.Where(Exp.Ge("last_modified", from));
             return q;
         }
@@ -269,14 +276,16 @@ namespace ASC.Core
                 Location = (string)r[13],
                 Notes = (string)r[14],
                 Removed = Convert.ToBoolean(r[15]),
-                ModifiedOn = Convert.ToDateTime(r[16]),
+                LastModified = Convert.ToDateTime(r[16]),
+                Tenant = Convert.ToInt32(r[17]),
             };
         }
 
 
         private SqlQuery GetGroupQuery(int tenant, DateTime from)
         {
-            var q = Query("core_group", tenant).Select("id", "name", "parentid", "categoryid", "removed", "last_modified");
+            var q = new SqlQuery("core_group").Select("id", "name", "parentid", "categoryid", "removed", "last_modified", "tenant");
+            if (tenant != Tenant.DEFAULT_TENANT) q.Where("tenant", tenant);
             if (from != default(DateTime)) q.Where(Exp.Ge("last_modified", from));
             return q;
         }
@@ -290,7 +299,8 @@ namespace ASC.Core
                 ParentId = r[2] != null ? new Guid((string)r[2]) : Guid.Empty,
                 CategoryId = r[3] != null ? new Guid((string)r[3]) : Guid.Empty,
                 Removed = Convert.ToBoolean(r[4]),
-                ModifiedOn = Convert.ToDateTime(r[5]),
+                LastModified = Convert.ToDateTime(r[5]),
+                Tenant = Convert.ToInt32(r[6]),
             };
         }
 
@@ -318,7 +328,8 @@ namespace ASC.Core
 
         private SqlQuery GetUserGroupRefQuery(int tenant, DateTime from)
         {
-            var q = Query("core_usergroup", tenant).Select("userid", "groupid", "ref_type", "removed", "last_modified");
+            var q = new SqlQuery("core_usergroup").Select("userid", "groupid", "ref_type", "removed", "last_modified");
+            if (tenant != Tenant.DEFAULT_TENANT) q.Where("tenant", tenant);
             if (from != default(DateTime)) q.Where(Exp.Ge("last_modified", from));
             return q;
         }
@@ -328,7 +339,8 @@ namespace ASC.Core
             return new UserGroupRef(new Guid((string)r[0]), new Guid((string)r[1]), (UserGroupRefType)Convert.ToInt32(r[2]))
             {
                 Removed = Convert.ToBoolean(r[3]),
-                ModifiedOn = Convert.ToDateTime(r[4]),
+                LastModified = Convert.ToDateTime(r[4]),
+                Tenant = Convert.ToInt32(r[5]),
             };
         }
     }
