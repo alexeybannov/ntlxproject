@@ -15,7 +15,7 @@ namespace ASC.Core.Caching
         private readonly IUserService service;
         private readonly ICache cache;
         private DateTime lastDbAccess;
-        private volatile bool cacheInvalidated;
+        private volatile bool cacheValid;
 
 
         public TimeSpan CacheExpiration
@@ -41,6 +41,7 @@ namespace ASC.Core.Caching
             CacheExpiration = TimeSpan.FromHours(1);
             DbExpiration = TimeSpan.FromSeconds(15);
             lastDbAccess = DateTime.UtcNow;
+            cacheValid = true;
         }
 
 
@@ -179,61 +180,59 @@ namespace ASC.Core.Caching
 
         private void GetChangesFromDb()
         {
-            if (cacheInvalidated || (lastDbAccess - DateTime.UtcNow).Duration() <= DbExpiration)
+            if (cacheValid && (lastDbAccess - DateTime.UtcNow).Duration() <= DbExpiration) return;
+
+            lock (cache)
             {
-                lock (cache)
+                if (cacheValid && (lastDbAccess - DateTime.UtcNow).Duration() <= DbExpiration) return;
+
+                foreach (var tenantGroup in service.GetUsers(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(u => u.Tenant))
                 {
-                    if (cacheInvalidated || (lastDbAccess - DateTime.UtcNow).Duration() <= DbExpiration)
+                    var users = cache.Get(USERS + tenantGroup.Key) as IDictionary<Guid, User>;
+                    if (users != null)
                     {
-                        foreach (var tenantGroup in service.GetUsers(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(u => u.Tenant))
+                        foreach (var u in tenantGroup)
                         {
-                            var users = cache.Get(USERS + tenantGroup.Key) as IDictionary<Guid, User>;
-                            if (users != null)
-                            {
-                                foreach (var u in tenantGroup)
-                                {
-                                    if (u.Removed) users.Remove(u.Id);
-                                    else users[u.Id] = u;
-                                }
-                            }
+                            if (u.Removed) users.Remove(u.Id);
+                            else users[u.Id] = u;
                         }
-
-                        foreach (var tenantGroup in service.GetGroups(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(g => g.Tenant))
-                        {
-                            var groups = cache.Get(GROUPS + tenantGroup.Key) as IDictionary<Guid, Group>;
-                            if (groups != null)
-                            {
-                                foreach (var g in tenantGroup)
-                                {
-                                    if (g.Removed) groups.Remove(g.Id);
-                                    else groups[g.Id] = g;
-                                }
-                            }
-                        }
-
-                        foreach (var tenantGroup in service.GetUserGroupRefs(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(r => r.Tenant))
-                        {
-                            var refs = cache.Get(REFS + tenantGroup.Key) as List<UserGroupRef>;
-                            if (refs != null)
-                            {
-                                foreach (var r in tenantGroup)
-                                {
-                                    refs.Remove(r);
-                                    if (!r.Removed) refs.Add(r);
-                                }
-                            }
-                        }
-
-                        cacheInvalidated = false;
-                        lastDbAccess = DateTime.UtcNow;
                     }
                 }
+
+                foreach (var tenantGroup in service.GetGroups(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(g => g.Tenant))
+                {
+                    var groups = cache.Get(GROUPS + tenantGroup.Key) as IDictionary<Guid, Group>;
+                    if (groups != null)
+                    {
+                        foreach (var g in tenantGroup)
+                        {
+                            if (g.Removed) groups.Remove(g.Id);
+                            else groups[g.Id] = g;
+                        }
+                    }
+                }
+
+                foreach (var tenantGroup in service.GetUserGroupRefs(Tenant.DEFAULT_TENANT, lastDbAccess).GroupBy(r => r.Tenant))
+                {
+                    var refs = cache.Get(REFS + tenantGroup.Key) as List<UserGroupRef>;
+                    if (refs != null)
+                    {
+                        foreach (var r in tenantGroup)
+                        {
+                            refs.Remove(r);
+                            if (!r.Removed) refs.Add(r);
+                        }
+                    }
+                }
+
+                cacheValid = true;
+                lastDbAccess = DateTime.UtcNow;
             }
         }
 
         private void InvalidateCache()
         {
-            cacheInvalidated = true;
+            cacheValid = false;
         }
     }
 }

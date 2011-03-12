@@ -10,10 +10,10 @@ namespace ASC.Core
         static CoreContext()
         {
             var cs = ConfigurationManager.ConnectionStrings["core_nc"];
-            var tenantService = new DbTenantService(cs);
-            var quotaService = new DbQuotaService(cs);
+            var tenantService = new CachedTenantService(new DbTenantService(cs));
             var userService = new CachedUserService(new DbUserService(cs));
             var azService = new DbAzService(cs);
+            var quotaService = new DbQuotaService(cs);
             var subService = new DbSubscriptionService(cs);
 
             Configuration = new ClientConfiguration(tenantService);

@@ -235,7 +235,7 @@ namespace ASC.Core.Data
             var where = Exp.Eq("userid", userId.ToString()) & Exp.Eq("groupid", groupId.ToString()) & Exp.Eq("ref_type", (int)refType);
             var i = immediate ?
                 (ISqlInstruction)Delete("core_usergroup", tenant).Where(where) :
-                (ISqlInstruction)Update("core_usergroup", tenant).Set("removed", true).Set("last_modified", DateTime.UtcNow).Where(where);
+                (ISqlInstruction)Update("core_usergroup", tenant).Where(where).Set("removed", true).Set("last_modified", DateTime.UtcNow);
             ExecNonQuery(i);
         }
 
