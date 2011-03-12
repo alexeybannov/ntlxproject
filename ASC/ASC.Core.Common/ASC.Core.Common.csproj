@@ -72,6 +72,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\AspCache.cs" />
+    <Compile Include="Caching\ICache.cs" />
     <Compile Include="Configuration\INotify.cs" />
     <Compile Include="Configuration\SmtpSettings.cs" />
     <Compile Include="Context\ClientImpl\ClientAuthManager.cs" />
