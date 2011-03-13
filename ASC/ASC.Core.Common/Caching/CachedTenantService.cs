@@ -6,8 +6,13 @@ namespace ASC.Core.Caching
 {
     public class CachedTenantService : ITenantService
     {
+        private const string KEY_BY_ID = "tenants";
+        private const string KEY_BY_DOMAIN = "tenants2";
+
+        private readonly object syncRoot;
         private readonly ITenantService service;
         private readonly ICache cache;
+        private readonly TrustInterval interval;
 
 
         public TimeSpan SettingsExpiration
@@ -21,8 +26,10 @@ namespace ASC.Core.Caching
         {
             if (service == null) throw new ArgumentNullException("service");
 
+            this.syncRoot = new object();
             this.service = service;
             this.cache = new AspCache();
+            this.interval = new TrustInterval();
             this.SettingsExpiration = TimeSpan.FromMinutes(1);
         }
 
@@ -32,18 +39,38 @@ namespace ASC.Core.Caching
             service.ValidateDomain(domain);
         }
 
-        public IEnumerable<Tenant> GetTenants(DateTime from)
-        {
-            return service.GetTenants(from);
-        }
-
         public IEnumerable<Tenant> GetTenants(string login, string password)
         {
             return service.GetTenants(login, password);
         }
 
+        public IEnumerable<Tenant> GetTenants(DateTime from)
+        {
+            lock (syncRoot)
+            {
+                var tenants = cache.Get(KEY_BY_ID) as IDictionary<int, Tenant>;
+                if (tenants == null)
+                {
+                    InvalidateCache();
+                    GetChangesFromDb();
+                    tenants = cache.Get(KEY_BY_ID) as IDictionary<int, Tenant>;
+                }
+                return tenants.Values;
+            }
+        }
+
+        private void GetChangesFromDb()
+        {
+            throw new NotImplementedException();
+        }
+
         public Tenant GetTenant(int id)
         {
+            var tenants = cache.Get(KEY_BY_ID) as IDictionary<int, Tenant>;
+            if (tenants == null)
+            {
+                InvalidateCache();
+            }
             return service.GetTenant(id);
         }
 
@@ -55,12 +82,50 @@ namespace ASC.Core.Caching
         public Tenant SaveTenant(Tenant tenant)
         {
             tenant = service.SaveTenant(tenant);
+            lock (cache)
+            {
+                var tenants = cache.Get(KEY_BY_ID) as IDictionary<int, Tenant>;
+                if (tenants != null)
+                {
+                    tenants[tenant.TenantId] = tenant;
+                }
+
+                var tenants2 = cache.Get(KEY_BY_DOMAIN) as IDictionary<string, Tenant>;
+                if (tenants2 != null)
+                {
+                    //remove first if alias or mappeddomain has been changes
+                    tenants2.Remove(tenant.TenantAlias);
+                    if (!string.IsNullOrEmpty(tenant.MappedDomain)) tenants2.Remove(tenant.MappedDomain);
+
+                    tenants2[tenant.TenantAlias] = tenant;
+                    if (!string.IsNullOrEmpty(tenant.MappedDomain)) tenants2[tenant.MappedDomain] = tenant;
+                }
+            }
             return tenant;
         }
 
         public void RemoveTenant(int id)
         {
             service.RemoveTenant(id);
+            lock (cache)
+            {
+                var tenants = cache.Get(KEY_BY_ID) as IDictionary<int, Tenant>;
+                if (tenants != null)
+                {
+                    Tenant t;
+                    tenants.TryGetValue(id, out t);
+                    if (t != null)
+                    {
+                        tenants.Remove(id);
+                        var tenants2 = cache.Get(KEY_BY_DOMAIN) as IDictionary<string, Tenant>;
+                        if (tenants2 != null)
+                        {
+                            tenants2.Remove(t.TenantAlias);
+                            if (!string.IsNullOrEmpty(t.MappedDomain)) tenants2.Remove(t.MappedDomain);
+                        }
+                    }
+                }
+            }
         }
 
         public byte[] GetTenantSettings(int tenant, string key)
@@ -78,6 +143,9 @@ namespace ASC.Core.Caching
         }
 
 
-
+        private void InvalidateCache()
+        {
+            interval.Stop();
+        }
     }
 }

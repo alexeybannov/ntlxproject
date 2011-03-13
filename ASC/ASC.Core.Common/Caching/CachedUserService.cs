@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Core.Caching;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Caching
@@ -14,7 +13,8 @@ namespace ASC.Core.Caching
 
         private readonly IUserService service;
         private readonly ICache cache;
-        private TrustInterval trustInterval;
+        private readonly TrustInterval trustInterval;
+        private volatile bool inGetChanges;
 
 
         public TimeSpan CacheExpiration
@@ -36,6 +36,7 @@ namespace ASC.Core.Caching
 
             this.service = service;
             this.cache = new AspCache();
+            this.trustInterval = new TrustInterval();
 
             CacheExpiration = TimeSpan.FromHours(1);
             DbExpiration = TimeSpan.FromSeconds(15);
@@ -44,7 +45,8 @@ namespace ASC.Core.Caching
 
         public IEnumerable<User> GetUsers(int tenant, DateTime from)
         {
-            return GetUsers(tenant).Values;
+            var users = GetUsers(tenant).Values;
+            return from == default(DateTime) ? users : users.Where(u => u.LastModified >= from);
         }
 
         public User GetUser(int tenant, Guid id)
@@ -95,7 +97,8 @@ namespace ASC.Core.Caching
 
         public IEnumerable<Group> GetGroups(int tenant, DateTime from)
         {
-            return GetGroups(tenant).Values;
+            var groups = GetGroups(tenant).Values;
+            return from == default(DateTime) ? groups : groups.Where(g => g.LastModified >= from);
         }
 
         public Group GetGroup(int tenant, Guid id)
@@ -130,7 +133,7 @@ namespace ASC.Core.Caching
                 refs = service.GetUserGroupRefs(tenant, default(DateTime)).ToList();
                 cache.Insert(key, refs, CacheExpiration);
             }
-            return refs;
+            return from == default(DateTime) ? refs : refs.Where(r => r.LastModified >= from);
         }
 
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
@@ -177,16 +180,12 @@ namespace ASC.Core.Caching
 
         private void GetChangesFromDb()
         {
-            if (trustInterval == null)
+            try
             {
-                trustInterval = TrustInterval.StartNew(DbExpiration);
-                return;
-            }
-            
-            if (!trustInterval.Expired) return;
+                if (inGetChanges) return;
+                inGetChanges = true;
 
-            lock (cache)
-            {
+                if (!trustInterval.Started) trustInterval.Start(DbExpiration);
                 if (!trustInterval.Expired) return;
 
                 //merge changes
@@ -230,6 +229,10 @@ namespace ASC.Core.Caching
                 }
 
                 trustInterval.Start(DbExpiration);
+            }
+            finally
+            {
+                inGetChanges = false;
             }
         }
 

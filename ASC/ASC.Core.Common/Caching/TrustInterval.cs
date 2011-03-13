@@ -10,7 +10,12 @@ namespace ASC.Core.Caching
         public DateTime StartTime
         {
             get;
-            set;
+            private set;
+        }
+
+        public bool Started
+        {
+            get { return interval == default(TimeSpan); }
         }
 
         public bool Expired
@@ -18,13 +23,6 @@ namespace ASC.Core.Caching
             get { return interval == default(TimeSpan) || interval > (DateTime.UtcNow - StartTime).Duration(); }
         }
 
-
-        public static TrustInterval StartNew(TimeSpan interval)
-        {
-            var trustInterval = new TrustInterval();
-            trustInterval.Start(interval);
-            return trustInterval;
-        }
 
         public void Start(TimeSpan interval)
         {
