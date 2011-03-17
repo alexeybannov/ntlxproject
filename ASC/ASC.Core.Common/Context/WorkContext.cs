@@ -16,6 +16,34 @@ namespace ASC.Core
         private static readonly Dictionary<string, object> properties = new Dictionary<string, object>(10);
         private static readonly ILog log = LogManager.GetLogger(typeof(WorkContext));
 
+        private static bool notifyStarted;
+        private static NotifyContext notifyContext;
+        private static readonly NotifySenderDescription[] availableServerNotifySenders = new[]
+        {
+            new NotifySenderDescription(Constants.NotifyEMailSenderSysName, "by e-mail"),
+            new NotifySenderDescription(Constants.NotifyMessengerSenderSysName,"by messenger")
+        };
+
+
+        public static NotifyContext NotifyContext
+        {
+            get
+            {
+                NotifyStartUp();
+                return notifyContext;
+            }
+        }
+
+        public static NotifySenderDescription[] AvailableNotifySenders
+        {
+            get { return new List<NotifySenderDescription>(availableServerNotifySenders).ToArray(); }
+        }
+
+        public static NotifySenderDescription[] DefaultClientSenders
+        {
+            get { return new[] { new NotifySenderDescription(Constants.NotifyEMailSenderSysName, "by e-mail"), }; }
+        }
+
 
         public static object GetProperty(string propName)
         {
@@ -35,40 +63,7 @@ namespace ASC.Core
             }
         }
 
-        private static NotifyContext notifyContext;
 
-        public static NotifyContext NotifyContext
-        {
-            get
-            {
-                NotifyStartUp();
-                return notifyContext;
-            }
-        }
-
-        private static readonly NotifySenderDescription[] availableServerNotifySenders = new[]
-        {
-            new NotifySenderDescription(Constants.NotifyEMailSenderSysName, "by e-mail"),
-            new NotifySenderDescription(Constants.NotifyMessengerSenderSysName,"by messenger")
-        };
-
-        public static NotifySenderDescription[] AvailableNotifySenders
-        {
-            get
-            {
-                return new List<NotifySenderDescription>(availableServerNotifySenders).ToArray();
-            }
-        }
-
-        public static NotifySenderDescription[] DefaultClientSenders
-        {
-            get
-            {
-                return new[] { new NotifySenderDescription(Constants.NotifyEMailSenderSysName, "by e-mail"), };
-            }
-        }
-
-        private static bool notifyStarted;
 
         private static void NotifyStartUp()
         {
@@ -76,10 +71,11 @@ namespace ASC.Core
             lock (syncRoot)
             {
                 if (notifyStarted) return;
+
                 var notifyProperties = new Hashtable();
-                notifyProperties.Add(NotifyContext.NotifyDispatcherInstanceKey, CoreContext.Notify);
+                notifyProperties[NotifyContext.NotifyDispatcherInstanceKey] = CoreContext.Notify;
                 notifyContext = new NotifyContext(notifyProperties);
-                foreach (NotifySenderDescription sender in availableServerNotifySenders)
+                foreach (var sender in availableServerNotifySenders)
                 {
                     notifyContext.NotifyService.RegisterClientSender(sender.ID);
                 }
