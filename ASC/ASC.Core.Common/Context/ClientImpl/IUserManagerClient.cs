@@ -1,15 +1,11 @@
-#region usings
-
 using System;
 using ASC.Core.Users;
-
-#endregion
 
 namespace ASC.Core
 {
     public interface IUserManagerClient
     {
-        #region users
+        #region Users
 
         UserInfo[] GetUsers();
 
@@ -41,9 +37,6 @@ namespace ASC.Core
 
         UserInfo[] Search(string text, EmployeeStatus status, Guid groupId);
 
-        #endregion
-
-        #region groups and users
 
         GroupInfo[] GetUserGroups(Guid userID);
 
@@ -51,9 +44,9 @@ namespace ASC.Core
 
         GroupInfo[] GetUserGroups(Guid userID, Guid categoryID);
 
-        bool IsUserInGroup(Guid userID, Guid groupID);
-
         UserInfo[] GetUsersByGroup(Guid groupID);
+
+        bool IsUserInGroup(Guid userID, Guid groupID);
 
         void AddUserIntoGroup(Guid userID, Guid groupID);
 
@@ -61,7 +54,8 @@ namespace ASC.Core
 
         #endregion
 
-        #region Company Info
+
+        #region Company
 
         UserInfo GetCompanyCEO();
 

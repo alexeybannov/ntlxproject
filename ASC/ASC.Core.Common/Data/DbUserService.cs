@@ -23,13 +23,13 @@ namespace ASC.Core.Data
         public IEnumerable<User> GetUsers(int tenant, DateTime from)
         {
             var q = GetUserQuery(tenant, from);
-            return ExecList(q).ConvertAll(r => ToUser(r));
+            return ExecList(q).Select(r => ToUser(r));
         }
 
         public User GetUser(int tenant, Guid id)
         {
             var q = GetUserQuery(tenant, default(DateTime)).Where("id", id);
-            return ExecList(q).ConvertAll(r => ToUser(r)).SingleOrDefault();
+            return ExecList(q).Select(r => ToUser(r)).SingleOrDefault();
         }
 
         public User GetUser(int tenant, string login, string password)

@@ -52,18 +52,21 @@ namespace ASC.Core
 
         public bool IsUserNameExists(string username)
         {
-            return GetUserNames(EmployeeStatus.All).Contains(username, StringComparer.CurrentCultureIgnoreCase);
+            return GetUserNames(EmployeeStatus.All)
+                .Contains(username, StringComparer.CurrentCultureIgnoreCase);
         }
 
         public UserInfo GetUsers(Guid id)
         {
             if (systemUsers.ContainsKey(id)) return systemUsers[id];
-            return ToUserInfo(userService.GetUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, id)) ?? Constants.LostUser;
+            var u = userService.GetUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
+            return ToUserInfo(u) ?? Constants.LostUser;
         }
 
         public UserInfo GetUsers(int tenant, string login, string password)
         {
-            return ToUserInfo(userService.GetUser(tenant, login, password)) ?? Constants.LostUser;
+            var u = userService.GetUser(tenant, login, password);
+            return ToUserInfo(u) ?? Constants.LostUser;
         }
 
         public bool UserExists(Guid id)
@@ -158,18 +161,17 @@ namespace ASC.Core
         {
             var result = new List<GroupInfo>();
             var distinctUserGroups = new List<GroupInfo>();
+            
             foreach (var g in GetGroups())
             {
                 if (IsUserInGroup(userID, g.ID)) distinctUserGroups.Add(g);
             }
-            foreach (var g in Constants.BuildinGroups)
-            {
-                if (IsUserInGroup(userID, g.ID)) distinctUserGroups.Add(g);
-            }
+            
             if (IncludeType.Distinct == (includeType & IncludeType.Distinct))
             {
                 result.AddRange(distinctUserGroups);
             }
+            
             if (IncludeType.InParent == (includeType & IncludeType.InParent))
             {
                 foreach (var group in distinctUserGroups)
@@ -182,10 +184,12 @@ namespace ASC.Core
                     }
                 }
             }
+            
             if (IncludeType.InChild == (includeType & IncludeType.InChild))
             {
                 distinctUserGroups.ForEach(g => RecursiveAddChildGroups(g, distinctUserGroups));
             }
+            
             return result.ToArray();
         }
 

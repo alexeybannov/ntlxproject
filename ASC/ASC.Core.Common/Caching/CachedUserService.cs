@@ -13,7 +13,7 @@ namespace ASC.Core.Caching
 
         private readonly IUserService service;
         private readonly ICache cache;
-        private readonly TrustInterval trustInterval;
+        private TrustInterval trustInterval;
         private volatile bool inGetChanges;
 
 
@@ -36,7 +36,6 @@ namespace ASC.Core.Caching
 
             this.service = service;
             this.cache = new AspCache();
-            this.trustInterval = new TrustInterval();
 
             CacheExpiration = TimeSpan.FromHours(1);
             DbExpiration = TimeSpan.FromSeconds(15);
@@ -182,13 +181,22 @@ namespace ASC.Core.Caching
         {
             try
             {
-                if (inGetChanges) return;
-                inGetChanges = true;
+                //thread safe with minimum locks
+                if (inGetChanges || (trustInterval != null && !trustInterval.Expired)) return;
+                lock (cache)
+                {
+                    if (inGetChanges) return;
+                    inGetChanges = true;
+                }
 
-                if (!trustInterval.Started) trustInterval.Start(DbExpiration);
+                if (trustInterval == null)
+                {
+                    trustInterval = new TrustInterval();
+                    trustInterval.Start(DbExpiration);
+                }
                 if (!trustInterval.Expired) return;
 
-                //merge changes
+                //get and merge changes in cached tenants
                 foreach (var tenantGroup in service.GetUsers(Tenant.DEFAULT_TENANT, trustInterval.StartTime).GroupBy(u => u.Tenant))
                 {
                     var users = cache.Get(USERS + tenantGroup.Key) as IDictionary<Guid, User>;

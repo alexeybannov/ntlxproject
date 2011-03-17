@@ -69,7 +69,7 @@ namespace ASC.Core.Data
             return new SqlDelete(table).Where(GetTenantColumnName(table), tenant);
         }
 
-        protected string GetTenantColumnName(string table)
+        private string GetTenantColumnName(string table)
         {
             var pos = table.LastIndexOf(' ');
             return (0 < pos ? table.Substring(pos).Trim() + '.' : string.Empty) + TenantColumn;
