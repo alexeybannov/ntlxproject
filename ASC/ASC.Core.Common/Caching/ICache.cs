@@ -8,6 +8,8 @@ namespace ASC.Core.Caching
 
         void Insert(string key, object value, TimeSpan sligingExpiration);
 
+        void Insert(string key, object value, DateTime absolutExpiration);
+
         object Remove(string key);
     }
 }

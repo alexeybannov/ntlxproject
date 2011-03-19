@@ -45,7 +45,10 @@ namespace ASC.Core.Caching
         public IEnumerable<User> GetUsers(int tenant, DateTime from)
         {
             var users = GetUsers(tenant).Values;
-            return from == default(DateTime) ? users : users.Where(u => u.LastModified >= from);
+            lock (users)
+            {
+                return (from == default(DateTime) ? users : users.Where(u => u.LastModified >= from)).ToList();
+            }
         }
 
         public User GetUser(int tenant, Guid id)
@@ -97,7 +100,10 @@ namespace ASC.Core.Caching
         public IEnumerable<Group> GetGroups(int tenant, DateTime from)
         {
             var groups = GetGroups(tenant).Values;
-            return from == default(DateTime) ? groups : groups.Where(g => g.LastModified >= from);
+            lock (groups)
+            {
+                return (from == default(DateTime) ? groups : groups.Where(g => g.LastModified >= from)).ToList();
+            }
         }
 
         public Group GetGroup(int tenant, Guid id)
@@ -132,7 +138,10 @@ namespace ASC.Core.Caching
                 refs = service.GetUserGroupRefs(tenant, default(DateTime)).ToList();
                 cache.Insert(key, refs, CacheExpiration);
             }
-            return from == default(DateTime) ? refs : refs.Where(r => r.LastModified >= from);
+            lock (refs)
+            {
+                return (from == default(DateTime) ? refs : refs.Where(r => r.LastModified >= from)).ToList();
+            }
         }
 
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
@@ -202,10 +211,13 @@ namespace ASC.Core.Caching
                     var users = cache.Get(USERS + tenantGroup.Key) as IDictionary<Guid, User>;
                     if (users != null)
                     {
-                        foreach (var u in tenantGroup)
+                        lock (users)
                         {
-                            if (u.Removed) users.Remove(u.Id);
-                            else users[u.Id] = u;
+                            foreach (var u in tenantGroup)
+                            {
+                                if (u.Removed) users.Remove(u.Id);
+                                else users[u.Id] = u;
+                            }
                         }
                     }
                 }
@@ -215,10 +227,13 @@ namespace ASC.Core.Caching
                     var groups = cache.Get(GROUPS + tenantGroup.Key) as IDictionary<Guid, Group>;
                     if (groups != null)
                     {
-                        foreach (var g in tenantGroup)
+                        lock (groups)
                         {
-                            if (g.Removed) groups.Remove(g.Id);
-                            else groups[g.Id] = g;
+                            foreach (var g in tenantGroup)
+                            {
+                                if (g.Removed) groups.Remove(g.Id);
+                                else groups[g.Id] = g;
+                            }
                         }
                     }
                 }
@@ -228,10 +243,13 @@ namespace ASC.Core.Caching
                     var refs = cache.Get(REFS + tenantGroup.Key) as List<UserGroupRef>;
                     if (refs != null)
                     {
-                        foreach (var r in tenantGroup)
+                        lock (refs)
                         {
-                            refs.Remove(r);
-                            if (!r.Removed) refs.Add(r);
+                            foreach (var r in tenantGroup)
+                            {
+                                refs.Remove(r);
+                                if (!r.Removed) refs.Add(r);
+                            }
                         }
                     }
                 }

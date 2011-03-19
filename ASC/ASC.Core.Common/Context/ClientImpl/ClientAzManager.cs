@@ -8,10 +8,10 @@ namespace ASC.Core
 {
     class ClientAzManager : IAuthManagerClient
     {
-        private readonly IDbAzService service;
+        private readonly IAzService service;
 
 
-        public ClientAzManager(IDbAzService service)
+        public ClientAzManager(IAzService service)
         {
             this.service = service;
         }

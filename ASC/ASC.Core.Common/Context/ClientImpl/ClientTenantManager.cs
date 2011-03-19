@@ -43,6 +43,8 @@ namespace ASC.Core
 
         public Tenant GetTenant(string domain)
         {
+            if (string.IsNullOrEmpty(domain)) return null;
+
             Tenant t = null;
             if (thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
             {

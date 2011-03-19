@@ -16,6 +16,11 @@ namespace ASC.Core.Caching
             HttpRuntime.Cache.Insert(key, value, null, Cache.NoAbsoluteExpiration, sligingExpiration);
         }
 
+        public void Insert(string key, object value, DateTime absolutExpiration)
+        {
+            HttpRuntime.Cache.Insert(key, value, null, absolutExpiration, Cache.NoSlidingExpiration);
+        }
+
         public object Remove(string key)
         {
             return HttpRuntime.Cache.Remove(key);

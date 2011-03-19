@@ -76,12 +76,23 @@ namespace ASC.Core.Data
                 t.LastModified = DateTime.UtcNow;
 
                 ValidateDomain(db, t.TenantAlias, t.TenantId);
-                if (!string.IsNullOrEmpty(t.MappedDomain)) ValidateDomain(db, t.MappedDomain, t.TenantId);
+                if (!string.IsNullOrEmpty(t.MappedDomain))
+                {
+                    var baseUrl = ConfigurationManager.AppSettings["asc.core.tenants.base-domain"];
+                    if (baseUrl != null && t.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        ValidateDomain(db, t.MappedDomain.Substring(0, t.MappedDomain.Length - baseUrl.Length - 1), t.TenantId);
+                    }
+                    else
+                    {
+                        ValidateDomain(db, t.MappedDomain, t.TenantId);
+                    }
+                }
 
                 var i = new SqlInsert("tenants_tenants")
                     .InColumnValue("id", t.TenantId)
-                    .InColumnValue("alias", t.TenantAlias)
-                    .InColumnValue("mappeddomain", t.MappedDomain)
+                    .InColumnValue("alias", t.TenantAlias.ToLowerInvariant())
+                    .InColumnValue("mappeddomain", !string.IsNullOrEmpty(t.MappedDomain) ? t.MappedDomain.ToLowerInvariant() : null)
                     .InColumnValue("name", t.Name ?? t.TenantAlias)
                     .InColumnValue("language", t.Language)
                     .InColumnValue("timezone", t.TimeZone.Id)

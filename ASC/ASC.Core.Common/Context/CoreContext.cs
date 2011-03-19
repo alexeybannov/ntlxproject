@@ -12,7 +12,7 @@ namespace ASC.Core
             var cs = ConfigurationManager.ConnectionStrings["core_nc"];
             var tenantService = new CachedTenantService(new DbTenantService(cs));
             var userService = new CachedUserService(new DbUserService(cs));
-            var azService = new DbAzService(cs);
+            var azService = new CachedAzService(new DbAzService(cs));
             var quotaService = new DbQuotaService(cs);
             var subService = new DbSubscriptionService(cs);
 
