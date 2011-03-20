@@ -13,7 +13,7 @@ namespace ASC.Core
             var tenantService = new CachedTenantService(new DbTenantService(cs));
             var userService = new CachedUserService(new DbUserService(cs));
             var azService = new CachedAzService(new DbAzService(cs));
-            var quotaService = new DbQuotaService(cs);
+            var quotaService = new CachedQuotaService(new DbQuotaService(cs));
             var subService = new DbSubscriptionService(cs);
 
             Configuration = new ClientConfiguration(tenantService);

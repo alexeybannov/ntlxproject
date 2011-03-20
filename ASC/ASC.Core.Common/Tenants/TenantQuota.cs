@@ -15,13 +15,43 @@ namespace ASC.Core.Tenants
     {
         private IDictionary<string, string> props = new Dictionary<string, string>();
 
+
+        public int Tenant
+        {
+            get;
+            set;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        public string Xml
+        {
+            get;
+            set;
+        }
+
+
         public TenantQuota()
         {
         }
 
-        public TenantQuota(string quotasString)
+        public TenantQuota(string xml)
         {
-            QuotasString = quotasString;
+            Xml = xml;
+
+            if (!string.IsNullOrEmpty(xml))
+            {
+                var serializer = new XmlSerializer(GetType());
+                using (var reader = new StringReader(xml))
+                {
+                    var quota = (TenantQuota)serializer.Deserialize(reader);
+                    props = quota.props;
+                }
+            }
         }
 
         public long GetQuotaInt64(string name)
@@ -47,8 +77,9 @@ namespace ASC.Core.Tenants
 
         public override string ToString()
         {
-            return QuotasString;
+            return Xml;
         }
+
 
         #region IXmlSerializable Members
 
@@ -75,27 +106,5 @@ namespace ASC.Core.Tenants
         }
 
         #endregion
-
-        internal string QuotasString
-        {
-            get
-            {
-                var serializer = new XmlSerializer(typeof (TenantQuota));
-                using (var writer = new StringWriter())
-                {
-                    serializer.Serialize(writer, this, new XmlSerializerNamespaces(new[] {XmlQualifiedName.Empty}));
-                    return writer.ToString();
-                }
-            }
-            set
-            {
-                var serializer = new XmlSerializer(typeof (TenantQuota));
-                using (var reader = new StringReader(value))
-                {
-                    var quota = (TenantQuota) serializer.Deserialize(reader);
-                    props = quota.props;
-                }
-            }
-        }
     }
 }

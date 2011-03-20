@@ -148,9 +148,10 @@ namespace ASC.Core.Caching
             {
                 fromdb = true;
                 if (store == null) cache.Insert(KEY, store = new TenantStore(), CacheExpiration);
+                var date = interval.StartTime;
                 interval.Start(DbExpiration);
 
-                var tenants = service.GetTenants(interval.StartTime);
+                var tenants = service.GetTenants(date);
                 foreach (var t in tenants)
                 {
                     store.Insert(t);

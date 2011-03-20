@@ -10,6 +10,7 @@ namespace ASC.Core.Caching
         private const string KEY = "acl";
         private readonly IAzService service;
         private readonly ICache cache;
+        private readonly object syncRoot;
 
 
         public TimeSpan CacheExpiration
@@ -25,6 +26,7 @@ namespace ASC.Core.Caching
 
             this.service = service;
             this.cache = new AspCache();
+            this.syncRoot = new object();
 
             CacheExpiration = TimeSpan.FromMinutes(5);
         }

@@ -20,5 +20,9 @@ namespace ASC.Core.Tenants
         public long Counter { get; set; }
 
         public string Tag { get; set; }
+
+        public int Tenant { get; set; }
+
+        public string Name { get; set; }
     }
 }

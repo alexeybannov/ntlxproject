@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Web;
 using ASC.Core.Tenants;
-using System.Net;
-using System.Configuration;
 
 
 namespace ASC.Core
@@ -134,9 +134,9 @@ namespace ASC.Core
             return quotaService.GetTenantQuota(tenant, name);
         }
 
-        public void SetTenantQuota(int tenant, string name, TenantQuota quota)
+        public void SetTenantQuota(TenantQuota quota)
         {
-            quotaService.SetTenantQuota(tenant, name, quota);
+            quotaService.SetTenantQuota(quota);
         }
 
         public void SetTenantQuotaRow(int tenant, string name, TenantQuotaRow row, bool exchange)
