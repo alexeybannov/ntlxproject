@@ -2,6 +2,7 @@ using System.Configuration;
 using ASC.Core.Caching;
 using ASC.Core.Configuration;
 using ASC.Core.Data;
+using ASC.Core.Notify;
 
 namespace ASC.Core
 {
@@ -23,6 +24,7 @@ namespace ASC.Core
             Authentication = new ClientAuthManager(userService);
             AuthorizationManager = new ClientAzManager(azService);
             SubscriptionManager = new ClientSubscriptionManager(subService);
+            Notify = new NotifyImpl();
         }
 
 
@@ -62,9 +64,11 @@ namespace ASC.Core
             private set;
         }
 
-        public static INotify Notify
+
+        internal static INotify Notify
         {
-            get { return null; }
+            get;
+            private set;
         }
 
         internal static ClientSubscriptionManager SubscriptionManager
