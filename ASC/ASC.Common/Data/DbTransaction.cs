@@ -1,36 +1,39 @@
+#region usings
+
 using System;
 using System.Data;
 
+#endregion
+
 namespace ASC.Common.Data
 {
-    class DbTransaction : IDbTransaction
+    public class DbTransaction : IDbTransaction
     {
-        private IDbTransaction transaction;
-
-
         public DbTransaction(IDbTransaction transaction)
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
-            this.transaction = transaction;
+            Transaction = transaction;
         }
 
+        internal IDbTransaction Transaction { get; private set; }
+
+        #region IDbTransaction Members
 
         public IDbConnection Connection
         {
-            get { return transaction.Connection; }
+            get { return Transaction.Connection; }
         }
 
         public IsolationLevel IsolationLevel
         {
-            get { return transaction.IsolationLevel; }
+            get { return Transaction.IsolationLevel; }
         }
-
 
         public void Commit()
         {
             try
             {
-                transaction.Commit();
+                Transaction.Commit();
             }
             finally
             {
@@ -42,7 +45,7 @@ namespace ASC.Common.Data
         {
             try
             {
-                transaction.Rollback();
+                Transaction.Rollback();
             }
             finally
             {
@@ -54,7 +57,7 @@ namespace ASC.Common.Data
         {
             try
             {
-                transaction.Dispose();
+                Transaction.Dispose();
             }
             finally
             {
@@ -62,8 +65,9 @@ namespace ASC.Common.Data
             }
         }
 
-        public event EventHandler Unavailable;
+        #endregion
 
+        public event EventHandler Unavailable;
 
         private void OnUnavailable()
         {
@@ -71,7 +75,9 @@ namespace ASC.Common.Data
             {
                 if (Unavailable != null) Unavailable(this, EventArgs.Empty);
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
 }

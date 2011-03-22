@@ -6,6 +6,8 @@ using ASC.Common.Data.AdoProxy;
 using ASC.Common.Data.Sql;
 using ASC.Common.Web;
 using log4net;
+using log4net.Core;
+
 
 namespace ASC.Common.Data
 {
@@ -264,9 +266,17 @@ namespace ASC.Common.Data
 
         private void AdoProxyExecutedEventHandler(object sender, ExecutedEventArgs a)
         {
-            //remove linebrakes and tabs for log analyzing
-            var desc = a.Description.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ");
-            logger.DebugFormat("({0:####} ms) {1}.{2}", (int)Math.Ceiling(a.Duration.TotalMilliseconds), a.Executed, desc);
+            ThreadContext.Properties["duration"] = a.Duration.TotalMilliseconds;
+            ThreadContext.Properties["sql"] = RemoveWhiteSpaces(a.Sql);
+            ThreadContext.Properties["sqlParams"] = RemoveWhiteSpaces(a.SqlParameters);
+            logger.Debug(a.SqlMethod);
+        }
+
+        private string RemoveWhiteSpaces(string str)
+        {
+            return !string.IsNullOrEmpty(str) ?
+                str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
+                string.Empty;
         }
     }
 }

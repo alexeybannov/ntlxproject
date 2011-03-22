@@ -359,6 +359,7 @@
     <Compile Include="Threading\TaskQueue.cs" />
     <Compile Include="Utils\ArrayUtil.cs" />
     <Compile Include="Collections\CachedDictionary.cs" />
+    <Compile Include="Utils\Extentions\DateTimeExtensions.cs" />
     <Compile Include="Utils\Extentions\DictionaryStringStringExtention.cs" />
     <Compile Include="Utils\Extentions\ObjectExtentions.cs" />
     <Compile Include="Utils\Extentions\Stream.cs" />

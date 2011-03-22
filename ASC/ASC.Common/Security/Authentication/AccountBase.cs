@@ -21,7 +21,6 @@ namespace ASC.Common.Security.Authentication
 
         public string Name { get; private set; }
 
-        public SecurityLevel SecurityLevel { get; internal set; }
 
         public object Clone()
         {
