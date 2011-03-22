@@ -82,6 +82,11 @@ namespace ASC.Core.Notify
             Name = name;
         }
 
+        public NotifySource(Guid id)
+        {
+            ID = id.ToString();
+        }
+
         public IActionPatternProvider GetActionPatternProvider()
         {
             lock (actionPatterns)

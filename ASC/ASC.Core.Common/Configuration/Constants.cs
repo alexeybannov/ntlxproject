@@ -8,36 +8,6 @@ namespace ASC.Core.Configuration
 {
     public sealed class Constants
     {
-        #region authorization rules module configuration
-
-        public static readonly Action Action_AuthByLoginPwd = new Action(
-            new Guid("{9D75A568-52AA-49d8-AD43-473756CD8903}"),
-            "Login/Password authentication");
-
-        public static readonly Action Action_AuthSettings = new Action(
-            new Guid("{1FBB76D4-BA0F-4bed-85A1-5B77C5500E57}"),
-            "Authentication settings");
-
-        public static readonly Action Action_Configure = new Action(
-            new Guid("{9DCA1F0B-3A61-4cae-9234-FBDD06B8B042}"),
-            "System configure");
-
-        public static readonly AuthCategory AuthCategory_Authentication = new AuthCategory(
-            new Guid("{B3B961FB-6B00-4ebf-9B9B-DE8182B4B014}"),
-            "Authentication",
-            "Authentication",
-            "Core.Authentication",
-            new[] { 
-                Action_AuthByLoginPwd, 
-                Action_AuthSettings,
-                Action_Configure});
-
-        public static readonly AuthCategory[] AuthorizingCategories = new[]
-        {
-            AuthCategory_Authentication,
-        };
-
-        #endregion
 
 
         #region Alert

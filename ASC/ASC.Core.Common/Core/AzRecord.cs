@@ -49,5 +49,14 @@ namespace ASC.Core
                 r.ObjectId == ObjectId &&
                 r.Reaction == Reaction;
         }
+
+        public override int GetHashCode()
+        {
+            return Tenant.GetHashCode() ^ 
+                SubjectId.GetHashCode() ^ 
+                ActionId.GetHashCode() ^ 
+                (ObjectId ?? string.Empty).GetHashCode() ^ 
+                Reaction.GetHashCode();
+        }
     }
 }

@@ -26,16 +26,12 @@ namespace ASC.Core
         [PrincipalPermission(SecurityAction.Demand, Authenticated = true)]
         public void SetUserPassword(Guid userID, string password)
         {
-            if (SecurityContext.CurrentAccount.ID != userID) SecurityContext.DemandPermissions(ASC.Core.Configuration.Constants.Action_AuthSettings);
-
             userService.SetUserPassword(CoreContext.TenantManager.GetCurrentTenant().TenantId, userID, password);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Authenticated = true)]
         public string GetUserPasswordHash(Guid userID)
         {
-            if (SecurityContext.CurrentAccount.ID != userID) SecurityContext.DemandPermissions(ASC.Core.Configuration.Constants.Action_AuthSettings);
-
             return userService.GetUserPassword(CoreContext.TenantManager.GetCurrentTenant().TenantId, userID);
         }
 

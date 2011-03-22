@@ -45,7 +45,6 @@ namespace ASC.Core
         public void SaveSetting(string key, string value)
         {
             if (string.IsNullOrEmpty(key)) throw new ArgumentNullException("key");
-            SecurityContext.DemandPermissions(Constants.Action_Configure);
 
             var data = value != null ? Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true) : null;
             tenantService.SetTenantSettings(Tenant.DEFAULT_TENANT, key, data);
