@@ -305,7 +305,7 @@ namespace ASC.Notify.Engine
                         response = new SendResponse(request.NotifyAction, sendertag, request.Recipient,
                                                     new NotifyException(
                                                         String.Format(
-                                                            Resource.NotifyException_Message_NoSenderChannelBySenderName,
+                                                            "Not registered sender \"{0}\".",
                                                             sendertag)));
                     }
                     responses.Add(response);
@@ -314,7 +314,7 @@ namespace ASC.Notify.Engine
             else
             {
                 response = new SendResponse(request.NotifyAction, request.Recipient,
-                                            new NotifyException(Resource.NotifyException_Message_NoSenders));
+                                            new NotifyException("Notice hasn't any senders."));
                 responses.Add(response);
             }
             return responses;
@@ -367,7 +367,7 @@ namespace ASC.Notify.Engine
                 if (pattern == null)
                     return new SendResponse(request.NotifyAction, sender, recipient,
                                             new NotifyException(
-                                                String.Format(Resource.NotifyException_Message_NullPatternForSenderName,
+                                                String.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.",
                                                               request.NotifyAction, sender)));
 
                 noticeMessage.Pattern = pattern;
@@ -479,7 +479,7 @@ namespace ASC.Notify.Engine
 
                 if (pattern == null)
                     throw new NotifyException(
-                        String.Format(Resource.NotifyException_Message_NullPatternForSenderName,
+                        String.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.",
                                       request.NotifyAction.Name, senderName));
                 request.Patterns[i] = pattern;
             }
@@ -505,7 +505,7 @@ namespace ASC.Notify.Engine
                 catch (Exception exc)
                 {
                     throw new NotifyException(
-                        String.Format(Resource.NotifyException_Message_PatternFormatterNotInstanced,
+                        String.Format("For pattern \"{0}\" formatter not instanced.",
                                       pattern), exc);
                 }
                 var tags = new ITag[0];
@@ -516,7 +516,7 @@ namespace ASC.Notify.Engine
                 catch (Exception exc)
                 {
                     throw new NotifyException(
-                        String.Format(Resource.NotifyException_Message_FormatterGetTags,
+                        String.Format("Get tags from formatter of pattern \"{0}\" failed.",
                                       pattern), exc);
                 }
 

@@ -21,7 +21,7 @@ namespace ASC.Notify.Engine
             var result = GetInternal<T>(source);
             if (result == null)
             {
-                throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced,
+                throw new NotifyException(String.Format("\"{0}\" not instanced from notify source.",
                                                         typeof (T).Name));
             }
             return result;

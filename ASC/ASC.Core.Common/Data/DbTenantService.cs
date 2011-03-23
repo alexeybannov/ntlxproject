@@ -166,7 +166,7 @@ namespace ASC.Core.Data
                     TrustedDomainsEnabled = Convert.ToBoolean(r[9]),
                     CreatedDateTime = (DateTime)r[10],
                     Status = (TenantStatus)Convert.ToInt32(r[11]),
-                    StatusChangeDate = (DateTime)r[12],
+                    StatusChangeDate = r[12] != null ? (DateTime)r[12] : default(DateTime),
                     LastModified = (DateTime)r[13],
                 };
                 tenant.SetTrustedDomains((string)r[8]);

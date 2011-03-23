@@ -68,7 +68,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\redistributable\third-party\db\sqlite\System.Data.SQLite.DLL</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -77,16 +76,8 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\ILocator.cs" />
-    <Compile Include="Collections\LocatorBase.cs" />
-    <Compile Include="Collections\LocatorRegistry.cs" />
     <Compile Include="Collections\EventQueue.cs" />
     <Compile Include="Collections\SortedQueue.cs" />
-    <Compile Include="CommonDescriptionResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CommonDescriptionResource.resx</DependentUpon>
-    </Compile>
     <Compile Include="Data\AdoProxy\DbCommandProxy.cs" />
     <Compile Include="Data\AdoProxy\DbConnectionProxy.cs" />
     <Compile Include="Data\AdoProxy\DbTransactionProxy.cs" />
@@ -205,11 +196,6 @@
     <Compile Include="Notify\Recipients\IRecipientsGroup.cs" />
     <Compile Include="Notify\Recipients\IRecipientsProvider.cs" />
     <Compile Include="Notify\Recipients\RecipientsGroup.cs" />
-    <Compile Include="Notify\Resource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
     <Compile Include="Notify\Sinks\DispatchSink.cs" />
     <Compile Include="Notify\Sinks\EventBasedSenderSink.cs" />
     <Compile Include="Notify\Sinks\INoticeFormatterSink.cs" />
@@ -224,8 +210,6 @@
     <Compile Include="Notify\Sinks\SinkSkeleton.cs" />
     <Compile Include="Notify\Sinks\Smtp\SmtpSender.cs" />
     <Compile Include="Notify\Sinks\Smtp\SmtpSenderSink.cs" />
-    <Compile Include="Runtime\Remoting\Channels\Http\HttpClientChannelEx.cs" />
-    <Compile Include="Runtime\Remoting\Channels\Http\HttpServerChannelEx.cs" />
     <Compile Include="Runtime\Serialization\BinarySerializer.cs" />
     <Compile Include="Security\Authentication\DemoAccount.cs" />
     <Compile Include="Security\Authentication\IGuestAccount.cs" />
@@ -241,57 +225,16 @@
     <Compile Include="Security\SecurityObjectId.cs" />
     <Compile Include="Security\Cryptography\HashAlg.cs" />
     <Compile Include="Security\Cryptography\Hasher.cs" />
-    <Compile Include="Services\Interfaces\IController.cs" />
-    <Compile Include="Module\Interfaces\IBaseInfo.cs" />
     <Compile Include="Module\ModuleInfoAttribute.cs" />
-    <Compile Include="Module\ModulePartNotFoundException.cs" />
-    <Compile Include="Module\Interfaces\IModuleServicesPartInfo.cs" />
-    <Compile Include="Module\Interfaces\IModule.cs" />
-    <Compile Include="Module\Interfaces\IModuleInfo.cs" />
-    <Compile Include="Module\Interfaces\IModulePart.cs" />
-    <Compile Include="Module\Interfaces\IModulePartInfo.cs" />
-    <Compile Include="Module\Interfaces\IModuleServicesPart.cs" />
-    <Compile Include="Module\ModuleBase.cs" />
+    <Compile Include="Module\IModuleInfo.cs" />
     <Compile Include="Module\ModuleInfoBase.cs" />
-    <Compile Include="Module\ModulePartBase.cs" />
     <Compile Include="Module\ModulePartInfoBase.cs" />
     <Compile Include="Module\ModulePartType.cs" />
-    <Compile Include="Module\ModuleServicesPartBase.cs" />
-    <Compile Include="Module\ModuleServicesPartInfo.cs" />
     <Compile Include="Module\ModuleType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Net\ConnectionHostEntry.cs" />
-    <Compile Include="Net\ServiceEndPoint.cs" />
-    <Compile Include="Net\TcpPortResolver.cs" />
-    <Compile Include="Net\TransportSelector.cs" />
-    <Compile Include="Net\TransportType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\GenericBinder.cs" />
-    <Compile Include="Reflection\TypeHelper.cs" />
-    <Compile Include="Reflection\TypeInstance.cs" />
-    <Compile Include="Runtime\Remoting\Channels\IChannelWithServices.cs" />
-    <Compile Include="Runtime\Remoting\Channels\ChannelDemand.cs" />
-    <Compile Include="Runtime\Remoting\Channels\ChannelSelector.cs" />
-    <Compile Include="Runtime\Remoting\Channels\Ipc\IpcClientChannelEx.cs" />
-    <Compile Include="Runtime\Remoting\Channels\Ipc\IpcServerChannelEx.cs" />
-    <Compile Include="Runtime\Remoting\Channels\RemoteChannelData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Runtime\Remoting\Channels\Tcp\TcpClientChannelEx.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Runtime\Remoting\Channels\Tcp\TcpServerChannelEx.cs" />
-    <Compile Include="Runtime\Remoting\RemotingSubsystem.cs" />
-    <Compile Include="Runtime\Remoting\Sinks\ClientSinkBase.cs" />
-    <Compile Include="Runtime\Remoting\Sinks\Providers\ClientChannelSinkProviderBase.cs" />
-    <Compile Include="Runtime\Remoting\Sinks\Providers\ServerChannelSinkProviderBase.cs" />
-    <Compile Include="Runtime\Remoting\Sinks\ReplySink.cs" />
-    <Compile Include="Runtime\Remoting\Sinks\ServerSinkBase.cs" />
-    <Compile Include="Runtime\Remoting\Sinks\SinkBase.cs" />
-    <Compile Include="Runtime\Remoting\Channels\ChannelDemandAttribute.cs" />
     <Compile Include="Security\Authentication\AccountBase.cs" />
-    <Compile Include="Security\Authentication\Attributes\AuthenticationLevelAttribute.cs" />
     <Compile Include="Security\Authentication\GuestAccount.cs" />
     <Compile Include="Security\Authentication\IAccount.cs" />
     <Compile Include="Security\Authentication\ISysAccount.cs" />
@@ -314,66 +257,20 @@
     <Compile Include="Security\IRoleProvider.cs" />
     <Compile Include="Security\ISecurityObjectId.cs" />
     <Compile Include="Security\ISecurityObjectProvider.cs" />
-    <Compile Include="Security\SecurityLevel.cs" />
-    <Compile Include="Services\Attributes\AssemblyServiceHostAttribute.cs" />
-    <Compile Include="Services\Attributes\AssemblyServicesAttribute.cs" />
-    <Compile Include="Services\Attributes\LocatorAttribute.cs" />
-    <Compile Include="Services\Attributes\ServiceAttribute.cs" />
-    <Compile Include="Services\Exceptions\InstancingTypeMismatchException.cs" />
-    <Compile Include="Services\Exceptions\ServiceHostingModelException.cs" />
-    <Compile Include="Services\Factories\IServiceFactory.cs" />
-    <Compile Include="Services\Factories\ServiceFactoryConfigurationSection.cs" />
-    <Compile Include="Services\Interfaces\IInstancedService.cs" />
-    <Compile Include="Services\ServiceHostingModel.cs" />
-    <Compile Include="Services\ServiceInstanceIDResolverHolder.cs" />
-    <Compile Include="Services\ServiceInstancingType.cs" />
-    <Compile Include="Services\Events\HostStatusChangeEventArgs.cs" />
-    <Compile Include="Services\Events\ServiceEventsEventArgs.cs" />
-    <Compile Include="Services\Events\ServiceStatusChangeEventArgs.cs" />
-    <Compile Include="Services\Exceptions\ServiceInstancingException.cs" />
-    <Compile Include="Services\Exceptions\ServiceNotFoundException.cs" />
-    <Compile Include="Services\HostLocator.cs" />
-    <Compile Include="Services\HostLocatorRegistry.cs" />
-    <Compile Include="Services\HostStatus.cs" />
-    <Compile Include="Services\Interfaces\IService.cs" />
-    <Compile Include="Services\Interfaces\IServiceActivator.cs" />
-    <Compile Include="Services\Interfaces\IServiceController.cs" />
-    <Compile Include="Services\Interfaces\IServiceHost.cs" />
-    <Compile Include="Services\Interfaces\IServiceInfo.cs" />
-    <Compile Include="Services\Interfaces\IServicePublisher.cs" />
-    <Compile Include="Services\Events\ServiceExceptionEventArgs.cs" />
-    <Compile Include="Services\Interfaces\IServicesModulePartsHost.cs" />
-    <Compile Include="Services\Locator.cs" />
-    <Compile Include="Services\ServiceControllerBase.cs" />
-    <Compile Include="Services\ServiceHostBase.cs" />
-    <Compile Include="Services\ServiceInfoBase.cs" />
-    <Compile Include="Services\ServiceLocation.cs" />
-    <Compile Include="Services\Exceptions\ServiceDefinitionException.cs" />
-    <Compile Include="Services\ServiceLocatorRegistry.cs" />
-    <Compile Include="Services\ServiceStatus.cs" />
-    <Compile Include="Services\WellKnownServiceBase.cs" />
     <Compile Include="Threading\MultiAttemptTaskQueue.cs" />
     <Compile Include="Threading\Progress\IProgressItem.cs" />
     <Compile Include="Threading\Progress\ProgressBase.cs" />
     <Compile Include="Threading\Progress\ProgressQueue.cs" />
     <Compile Include="Threading\TaskQueue.cs" />
-    <Compile Include="Utils\ArrayUtil.cs" />
     <Compile Include="Collections\CachedDictionary.cs" />
     <Compile Include="Utils\Extentions\DateTimeExtensions.cs" />
-    <Compile Include="Utils\Extentions\DictionaryStringStringExtention.cs" />
-    <Compile Include="Utils\Extentions\ObjectExtentions.cs" />
-    <Compile Include="Utils\Extentions\Stream.cs" />
     <Compile Include="Utils\DebugUtil.cs" />
-    <Compile Include="Utils\Lazy.cs" />
     <Compile Include="Utils\Processes\CmdLine.cs" />
     <Compile Include="Utils\Processes\ProcessLauncher.cs" />
     <Compile Include="Utils\VelocityFormatter.cs" />
-    <Compile Include="Utils\HostUtils.cs" />
     <Compile Include="Utils\HtmlUtil.cs" />
     <Compile Include="Utils\LogHolder.cs" />
-    <Compile Include="Utils\SysNameChecker.cs" />
     <Compile Include="Utils\Transliter.cs" />
-    <Compile Include="Utils\UriUtil.cs" />
     <Compile Include="Utils\Wildcard.cs" />
     <Compile Include="Threading\Workers\WorkerQueue.cs" />
     <Compile Include="Threading\Workers\WorkerQueueReccurence.cs" />
@@ -388,20 +285,7 @@
     <None Include="Notify\Patterns\asc.notify.pattern.xsd" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CommonDescriptionResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CommonDescriptionResource.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Notify\doc.txt" />
-    <EmbeddedResource Include="Notify\Resource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-      <CustomToolNamespace>ASC.Notify</CustomToolNamespace>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(TrunkDir)_ci\msbuild\ASC.MSBuild.AssemblyInfo.Targets" Condition="Exists('$(TrunkDir)_ci\msbuild\ASC.MSBuild.AssemblyInfo.Targets')" />

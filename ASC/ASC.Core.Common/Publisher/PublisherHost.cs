@@ -1,12 +1,7 @@
-#region usings
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using ASC.Common.Utils;
-using ASC.Reflection;
-
-#endregion
 
 namespace ASC.Core.Common.Publisher
 {
@@ -146,7 +141,7 @@ namespace ASC.Core.Common.Publisher
                 {
                     try
                     {
-                        inst = TypeInstance.Create(type, ctx) as IPublisher;
+                        inst = Activator.CreateInstance(type, ctx) as IPublisher;
                     }
                     catch (Exception exc)
                     {

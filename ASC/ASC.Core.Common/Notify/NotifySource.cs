@@ -161,19 +161,19 @@ namespace ASC.Core.Notify
                         RecipientsProvider = CreateRecipientsProvider();
                         if (RecipientsProvider == null)
                         {
-                            throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IRecipientsProvider"));
+                            throw new NotifyException(String.Format("Provider {0} not instanced.", "IRecipientsProvider"));
                         }
 
                         DependencyProvider = CreateDependencyProvider();
                         if (DependencyProvider == null)
                         {
-                            throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "IDependencyProvider"));
+                            throw new NotifyException(String.Format("Provider {0} not instanced.", "IDependencyProvider"));
                         }
 
                         SubscriprionProvider = CreateSubscriptionProvider();
                         if (SubscriprionProvider == null)
                         {
-                            throw new NotifyException(String.Format(Resource.NotifyException_Message_ProviderNotInstanced, "ISubscriprionProvider"));
+                            throw new NotifyException(String.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
                         }
 
                         initialized = true;

@@ -69,7 +69,7 @@ namespace ASC.Core.Data
                     .InColumnValue("datetime", row.DateTime)
                     .InColumnValue("counter", exchange ? counter + row.Counter : row.Counter)
                     .InColumnValue("tag", row.Tag)
-                    .InColumnValue("lastmodified", DateTime.UtcNow));
+                    .InColumnValue("last_modified", DateTime.UtcNow));
             });
         }
 
@@ -89,7 +89,7 @@ namespace ASC.Core.Data
             if (query != TenantQuotaRowQuery.All)
             {
                 if (!string.IsNullOrEmpty(query.Path)) q.Where("path", query.Path);
-                if (query.LastModified != default(DateTime)) q.Where("lastmodified", query.LastModified);
+                if (query.LastModified != default(DateTime)) q.Where("last_modified", query.LastModified);
             }
 
             return ExecList(q)

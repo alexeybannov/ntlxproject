@@ -1,9 +1,4 @@
-#region usings
-
 using System;
-using ASC.Reflection;
-
-#endregion
 
 namespace ASC.Common.Module
 {
@@ -24,13 +19,7 @@ namespace ASC.Common.Module
                 throw new ArgumentNullException("modulePartID");
             if (null == version)
                 throw new ArgumentNullException("version");
-            if (!TypeHelper.ImplementInterface(moduleType, typeof (IModule)))
-                throw new ArgumentException(
-                    String.Format(
-                        "Type \"{0}\" not implements interface IModule",
-                        moduleType
-                        )
-                    );
+            
             _ModuleType = moduleType;
             _ModulePartID = new Guid(modulePartID);
             _Version = new Version(version);

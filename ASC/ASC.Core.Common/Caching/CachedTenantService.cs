@@ -147,11 +147,12 @@ namespace ASC.Core.Caching
             if (store == null || interval.Expired || fromdb)
             {
                 fromdb = true;
-                if (store == null) cache.Insert(KEY, store = new TenantStore(), CacheExpiration);
                 var date = interval.StartTime;
                 interval.Start(DbExpiration);
 
                 var tenants = service.GetTenants(date);
+                if (store == null) cache.Insert(KEY, store = new TenantStore(), CacheExpiration);
+
                 foreach (var t in tenants)
                 {
                     store.Insert(t);
@@ -190,7 +191,7 @@ namespace ASC.Core.Caching
 
                 byId[t.TenantId] = t;
                 byDomain[t.TenantAlias] = t;
-                byDomain[t.MappedDomain] = t;
+                if (!string.IsNullOrEmpty(t.MappedDomain)) byDomain[t.MappedDomain] = t;
             }
 
             public void Remove(int id)

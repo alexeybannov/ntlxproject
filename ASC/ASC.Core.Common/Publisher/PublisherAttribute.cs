@@ -1,9 +1,4 @@
-#region usings
-
 using System;
-using ASC.Reflection;
-
-#endregion
 
 namespace ASC.Core.Common.Publisher
 {
@@ -19,7 +14,7 @@ namespace ASC.Core.Common.Publisher
 
         public IPublisher CreatePublisher()
         {
-            return (IPublisher) TypeInstance.Create(PublisherType);
+            return (IPublisher)Activator.CreateInstance(PublisherType);
         }
     }
 }

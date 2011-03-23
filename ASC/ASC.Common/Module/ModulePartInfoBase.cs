@@ -8,7 +8,7 @@ using ASC.Common.Utils;
 namespace ASC.Common.Module
 {
     [Serializable]
-    public class ModulePartInfoBase : IModulePartInfo
+    public class ModulePartInfoBase
     {
         #region fields
 
@@ -30,7 +30,6 @@ namespace ASC.Common.Module
             _ID = id;
             _Name = name;
             _Description = description;
-            SysNameChecker.Check(sysName);
             _SysName = sysName;
             _ModuleInfo = null;
             _ModulePartType = modulePartType;
@@ -78,7 +77,7 @@ namespace ASC.Common.Module
 
         public override bool Equals(object obj)
         {
-            var mpi = obj as IModulePartInfo;
+            var mpi = obj as ModulePartInfoBase;
             if (mpi == null) return false;
             return Equals(ID, mpi.ID);
         }

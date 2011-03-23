@@ -2,7 +2,6 @@ using System.Configuration;
 using ASC.Core.Caching;
 using ASC.Core.Configuration;
 using ASC.Core.Data;
-using ASC.Core.Notify;
 
 namespace ASC.Core
 {
@@ -10,7 +9,8 @@ namespace ASC.Core
     {
         static CoreContext()
         {
-            var cs = ConfigurationManager.ConnectionStrings["core_nc"];
+            var cs = ConfigurationManager.ConnectionStrings["core"];
+
             var tenantService = new CachedTenantService(new DbTenantService(cs));
             var userService = new CachedUserService(new DbUserService(cs));
             var azService = new CachedAzService(new DbAzService(cs));
@@ -24,10 +24,10 @@ namespace ASC.Core
             Authentication = new ClientAuthManager(userService);
             AuthorizationManager = new ClientAzManager(azService);
             SubscriptionManager = new ClientSubscriptionManager(subService);
-            Notify = new NotifyImpl();
         }
 
 
+        [Microsoft.Practices.Unity.Dependency]
         public static IClientConfiguration Configuration
         {
             get;
@@ -64,11 +64,9 @@ namespace ASC.Core
             private set;
         }
 
-
-        internal static INotify Notify
+        public static INotify Notify
         {
-            get;
-            private set;
+            get { return null; }
         }
 
         internal static ClientSubscriptionManager SubscriptionManager

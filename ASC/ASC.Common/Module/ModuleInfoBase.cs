@@ -25,14 +25,13 @@ namespace ASC.Common.Module
             _ID = id;
             _Name = name;
             _Description = description;
-            SysNameChecker.Check(sysName);
             _SysName = sysName;
             if (version != null)
                 _Version = (Version) version.Clone();
             else
                 _Version = new Version();
             _Type = type;
-            _ModulePartsInfo = ArrayUtil.CopyClonable(modulePartsInfo);
+            _ModulePartsInfo = modulePartsInfo;
             if (_ModulePartsInfo != null)
                 for (int i = 0; i < _ModulePartsInfo.Length; i++)
                     _ModulePartsInfo[i].ModuleInfo = this;
@@ -47,9 +46,9 @@ namespace ASC.Common.Module
             get { return _Type; }
         }
 
-        public IModulePartInfo[] ModulePartsInfo
+        public ModulePartInfoBase[] ModulePartsInfo
         {
-            get { return (IModulePartInfo[]) _ModulePartsInfo.Clone(); }
+            get { return _ModulePartsInfo; }
         }
 
         public Guid ID

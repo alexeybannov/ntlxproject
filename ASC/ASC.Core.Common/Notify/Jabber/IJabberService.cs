@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ASC.Common.Services;
 
 namespace ASC.Core.Notify.Jabber
 {

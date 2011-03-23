@@ -20,7 +20,7 @@ namespace ASC.Core.Caching
 
         public bool Expired
         {
-            get { return interval == default(TimeSpan) || interval > (DateTime.UtcNow - StartTime).Duration(); }
+            get { return interval == default(TimeSpan) || interval < (DateTime.UtcNow - StartTime).Duration(); }
         }
 
 

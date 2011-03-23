@@ -202,7 +202,7 @@ namespace ASC.Core.Data
 
         public IEnumerable<UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
-            var q = GetUserGroupRefQuery(tenant, default(DateTime));
+            var q = GetUserGroupRefQuery(tenant, from);
             return ExecList(q).ConvertAll(r => ToUserGroupRef(r));
         }
 
@@ -243,9 +243,9 @@ namespace ASC.Core.Data
         private SqlQuery GetUserQuery()
         {
             return new SqlQuery("core_user u")
-                .Select("id", "username", "firstname", "lastname", "sex", "bithdate")
-                .Select("status", "title", "department", "workfromdate", "terminateddate")
-                .Select("contacts", "email", "location", "notes", "removed", "last_modified", "tenant");
+                .Select("u.id", "u.username", "u.firstname", "u.lastname", "u.sex", "u.bithdate")
+                .Select("u.status", "u.title", "u.department", "u.workfromdate", "u.terminateddate")
+                .Select("u.contacts", "u.email", "u.location", "u.notes", "u.removed", "u.last_modified", "u.tenant");
         }
 
         private SqlQuery GetUserQuery(int tenant, DateTime from)
@@ -328,7 +328,7 @@ namespace ASC.Core.Data
 
         private SqlQuery GetUserGroupRefQuery(int tenant, DateTime from)
         {
-            var q = new SqlQuery("core_usergroup").Select("userid", "groupid", "ref_type", "removed", "last_modified");
+            var q = new SqlQuery("core_usergroup").Select("userid", "groupid", "ref_type", "removed", "last_modified", "tenant");
             if (tenant != Tenant.DEFAULT_TENANT) q.Where("tenant", tenant);
             if (from != default(DateTime)) q.Where(Exp.Ge("last_modified", from));
             return q;

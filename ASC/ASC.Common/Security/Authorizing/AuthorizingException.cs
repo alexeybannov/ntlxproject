@@ -13,7 +13,8 @@ namespace ASC.Common.Security.Authorizing
     {
         private readonly string _Message;
 
-        public AuthorizingException(string message) : base(message)
+        public AuthorizingException(string message)
+            : base(message)
         {
         }
 
@@ -26,7 +27,7 @@ namespace ASC.Common.Security.Authorizing
             string sactions = "";
             Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });
             _Message = String.Format(
-                CommonDescriptionResource.AuthorizingException_Message,
+                "\"{0}\" access denied \"{1}\"",
                 subject,
                 sactions
                 );
@@ -40,9 +41,9 @@ namespace ASC.Common.Security.Authorizing
         protected AuthorizingException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _Message = info.GetValue("_Message", typeof (string)) as string;
-            Subject = info.GetValue("Subject", typeof (ISubject)) as ISubject;
-            Actions = info.GetValue("Actions", typeof (IAction[])) as IAction[];
+            _Message = info.GetValue("_Message", typeof(string)) as string;
+            Subject = info.GetValue("Subject", typeof(ISubject)) as ISubject;
+            Actions = info.GetValue("Actions", typeof(IAction[])) as IAction[];
         }
 
         public override string Message
@@ -55,9 +56,9 @@ namespace ASC.Common.Security.Authorizing
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Subject", Subject, typeof (ISubject));
-            info.AddValue("_Message", _Message, typeof (string));
-            info.AddValue("Actions", Actions, typeof (IAction[]));
+            info.AddValue("Subject", Subject, typeof(ISubject));
+            info.AddValue("_Message", _Message, typeof(string));
+            info.AddValue("Actions", Actions, typeof(IAction[]));
             base.GetObjectData(info, context);
         }
 
@@ -75,14 +76,13 @@ namespace ASC.Common.Security.Authorizing
             {
                 string reason = "";
                 if (denySubjects[i] != null && denyActions[i] != null)
-                    reason = String.Format(CommonDescriptionResource.AuthorizingException_MessageEx_ReasonFormat_Deny,
+                    reason = String.Format("{0}:{1} access denied {2}.",
                                            actions[i].Name,
                                            (denySubjects[i] is IRole ? "role:" : "") + denySubjects[i].Name,
                                            denyActions[i].Name
                         );
                 else
-                    reason = String.Format(CommonDescriptionResource.AuthorizingException_MessageEx_ReasonFormat_Empty,
-                                           actions[i].Name);
+                    reason = String.Format("{0}: access denied.", actions[i].Name);
                 if (i != actions.Length - 1)
                     reason += ", ";
                 reasons += reason;
@@ -90,7 +90,7 @@ namespace ASC.Common.Security.Authorizing
             string sactions = "";
             Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });
             string message = String.Format(
-                CommonDescriptionResource.AuthorizingException_MessageEx,
+                "\"{0}\" access denied \"{1}\". Cause: {2}.",
                 (subject is IRole ? "role:" : "") + subject.Name,
                 sactions,
                 reasons
