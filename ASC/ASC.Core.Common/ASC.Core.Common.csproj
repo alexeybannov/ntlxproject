@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A51D0454-4AFA-46DE-89D4-B03D37E1816C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -73,6 +73,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.XML, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -85,6 +88,8 @@
     <Compile Include="Caching\CachedQuotaService.cs" />
     <Compile Include="Caching\ICache.cs" />
     <Compile Include="Caching\TrustInterval.cs" />
+    <Compile Include="Configuration\ConnectionStringNameTypeConverter.cs" />
+    <Compile Include="Context\ClientImpl\ISubscriptionManagerClient.cs" />
     <Compile Include="Notify\INotify.cs" />
     <Compile Include="Configuration\SmtpSettings.cs" />
     <Compile Include="Context\ClientImpl\ClientAuthManager.cs" />
@@ -92,8 +97,8 @@
     <Compile Include="Context\ClientImpl\ClientConfiguration.cs" />
     <Compile Include="Context\ClientImpl\ClientSubscriptionManager.cs" />
     <Compile Include="Context\ClientImpl\ClientTenantManager.cs" />
-    <Compile Include="Context\ClientImpl\IAuthenticationClient.cs" />
     <Compile Include="Context\ClientImpl\IAuthManagerClient.cs" />
+    <Compile Include="Context\ClientImpl\IAzManagerClient.cs" />
     <Compile Include="Context\ClientImpl\IConfigurationClient.cs" />
     <Compile Include="Context\ClientImpl\IGroupManagerClient.cs" />
     <Compile Include="Context\ClientImpl\ITenantManagerClient.cs" />
@@ -124,6 +129,7 @@
     <Compile Include="Context\WorkContext.cs" />
     <Compile Include="Configuration\Constants.cs" />
     <Compile Include="Notify\DirectSubscriptionProvider.cs" />
+    <Compile Include="Notify\Jabber\JabberServiceClient.cs" />
     <Compile Include="Notify\Jabber\IJabberService.cs" />
     <Compile Include="Notify\Jabber\JabberSenderSink.cs" />
     <Compile Include="Notify\NotifyImpl.cs" />
@@ -146,6 +152,7 @@
     <Compile Include="Publisher\PublisherHost.cs" />
     <Compile Include="Publisher\RequestContext.cs" />
     <Compile Include="Publisher\Zone.cs" />
+    <Compile Include="Security\Authentication\Credential.cs" />
     <Compile Include="Security\Crypto.cs" />
     <Compile Include="Tenants\TenantExceptions.cs" />
     <Compile Include="Tenants\TenantQuotaRowQuery.cs" />
@@ -194,7 +201,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj">
+    <ProjectReference Include="..\..\common\common\ASC.Common\ASC.Common.csproj">
       <Project>{76DE7717-3D4B-4A5B-B740-15B8913DF0CB}</Project>
       <Name>ASC.Common</Name>
     </ProjectReference>

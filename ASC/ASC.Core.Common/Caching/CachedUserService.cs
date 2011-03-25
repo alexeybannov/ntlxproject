@@ -264,7 +264,7 @@ namespace ASC.Core.Caching
 
         private void InvalidateCache()
         {
-            trustInterval.Stop();
+            trustInterval.Expire();
         }
     }
 }

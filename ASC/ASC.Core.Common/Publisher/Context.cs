@@ -9,9 +9,9 @@ namespace ASC.Core.Common.Publisher
     public class Context
     {
         internal Func<IUserManagerClient> GetUserManagerClient { get; set; }
-        internal Func<IClientConfiguration> GetConfigurationClient { get; set; }
+        internal Func<IConfigurationClient> GetConfigurationClient { get; set; }
         private IUserManagerClient _instanceUM;
-        private IClientConfiguration _instanceC;
+        private IConfigurationClient _instanceC;
 
         public IUserManagerClient UserManager
         {
@@ -26,7 +26,7 @@ namespace ASC.Core.Common.Publisher
             set { _instanceUM = value; }
         }
 
-        public IClientConfiguration Configuration
+        public IConfigurationClient Configuration
         {
             get
             {

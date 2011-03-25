@@ -3,7 +3,7 @@ using ASC.Core.Configuration;
 
 namespace ASC.Core
 {
-    public interface IClientConfiguration
+    public interface IConfigurationClient
     {
         bool DemoAccountEnabled
         {

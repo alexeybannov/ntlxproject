@@ -6,7 +6,7 @@ using ASC.Core.Tenants;
 
 namespace ASC.Core
 {
-    public class ClientConfiguration : IClientConfiguration
+    public class ClientConfiguration : IConfigurationClient
     {
         private readonly ITenantService tenantService;
 
@@ -36,9 +36,9 @@ namespace ASC.Core
         }
 
 
-        public ClientConfiguration(ITenantService tenantService)
+        public ClientConfiguration(ITenantService service)
         {
-            this.tenantService = tenantService;
+            this.tenantService = service;
         }
 
 

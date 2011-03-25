@@ -91,7 +91,7 @@ namespace ASC.Core.Security.Authentication
 
             if (account is IUserAccount)
             {
-                var credential = ((UserAccount)account).Credential;
+                var credential = ((UserAccount)account).GetCredential();
                 if (credential == null) throw GetAuthError();
 
                 var u = CoreContext.UserManager.GetUsers(credential.Tenant, credential.Login, credential.PasswordHash);

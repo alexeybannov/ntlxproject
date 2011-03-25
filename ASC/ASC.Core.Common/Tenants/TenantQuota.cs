@@ -13,7 +13,7 @@ namespace ASC.Core.Tenants
     [XmlRoot(ElementName = "quotas")]
     public class TenantQuota : IXmlSerializable
     {
-        private IDictionary<string, string> props = new Dictionary<string, string>();
+        private readonly IDictionary<string, string> props = new Dictionary<string, string>();
 
 
         public int Tenant

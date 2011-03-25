@@ -1,5 +1,3 @@
-#region usings
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,8 +8,6 @@ using ASC.Notify.Messages;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-
-#endregion
 
 namespace ASC.Core.Notify
 {

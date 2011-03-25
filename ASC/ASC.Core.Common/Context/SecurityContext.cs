@@ -58,7 +58,7 @@ namespace ASC.Core
 
         public static bool DemoMode
         {
-            get { return IsAuthenticated && (CurrentAccount.ID == Constants.Demo.ID); }
+            get { return IsAuthenticated && CurrentAccount.ID == Constants.Demo.ID; }
         }
 
         public static IAccount CurrentAccount

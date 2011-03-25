@@ -70,7 +70,7 @@ namespace ASC.Core.Caching
         public void SetTenantQuotaRow(int tenant, string name, TenantQuotaRow row, bool exchange)
         {
             service.SetTenantQuotaRow(tenant, name, row, exchange);
-            interval.Stop();
+            interval.Expire();
         }
 
         public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenant, string name, TenantQuotaRowQuery query)

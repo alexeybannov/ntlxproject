@@ -10,17 +10,24 @@ namespace ASC.Common.Data.AdoProxy
 
         public void FireExecuteEvent(IDbCommand cmd, string method, TimeSpan duration)
         {
-            if (ExecutedEvent != null) ExecutedEvent(this, new ExecutedEventArgs(string.Format("Command.{0}", method), duration, cmd));
+            OnExecutedEvent(new ExecutedEventArgs("Command." + method, duration, cmd));
         }
 
         public void FireExecuteEvent(IDbConnection conn, string method, TimeSpan duration)
         {
-            if (ExecutedEvent != null) ExecutedEvent(this, new ExecutedEventArgs(string.Format("Connection.{0}", method), duration));
+            OnExecutedEvent(new ExecutedEventArgs("Connection." + method, duration));
         }
 
         public void FireExecuteEvent(IDbTransaction tx, string method, TimeSpan duration)
         {
-            if (ExecutedEvent != null) ExecutedEvent(this, new ExecutedEventArgs(string.Format("Transaction.{0}", method), duration));
+            OnExecutedEvent(new ExecutedEventArgs("Transaction." + method, duration));
+        }
+
+
+        private void OnExecutedEvent(ExecutedEventArgs a)
+        {
+            var ev = ExecutedEvent;
+            if (ev != null) ev(this, a);
         }
     }
 }

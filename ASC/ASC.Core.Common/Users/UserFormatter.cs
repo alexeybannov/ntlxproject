@@ -8,6 +8,8 @@ namespace ASC.Core.Users
     public class UserFormatter : IComparer<UserInfo>
     {
         private readonly DisplayUserNameFormat format;
+        private static bool forceFormatChecked;
+        private static string forceFormat;
 
 
         public UserFormatter()
@@ -67,27 +69,24 @@ namespace ASC.Core.Users
         {
             { "ru", new Dictionary<DisplayUserNameFormat, string>{ { DisplayUserNameFormat.Default, "{1} {0}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1} {0}" } } },
             { "en", new Dictionary<DisplayUserNameFormat, string>{ { DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } } },
-            { "default", new Dictionary<DisplayUserNameFormat, string>{ {DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } }
-        }
-                                                                                                                   };
+            { "default", new Dictionary<DisplayUserNameFormat, string>{ {DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } } },
+        };
 
         private static string GetUserDisplayFormat()
         {
             return GetUserDisplayFormat(DisplayUserNameFormat.Default);
         }
 
-        private static bool _forceFormatChecked;
-        private static string _forceFormat;
 
         private static string GetUserDisplayFormat(DisplayUserNameFormat format)
         {
-            if (!_forceFormatChecked)
+            if (!forceFormatChecked)
             {
-                _forceFormat = ConfigurationManager.AppSettings["asc.core.users.user-display-format"];
-                if (String.IsNullOrEmpty(_forceFormat)) _forceFormat = null;
-                _forceFormatChecked = true;
+                forceFormat = ConfigurationManager.AppSettings["asc.core.users.user-display-format"];
+                if (String.IsNullOrEmpty(forceFormat)) forceFormat = null;
+                forceFormatChecked = true;
             }
-            if (_forceFormat != null) return _forceFormat;
+            if (forceFormat != null) return forceFormat;
             var culture = Thread.CurrentThread.CurrentCulture.Name;
             Dictionary<DisplayUserNameFormat, string> formats = null;
             if (!DisplayFormats.TryGetValue(culture, out formats))

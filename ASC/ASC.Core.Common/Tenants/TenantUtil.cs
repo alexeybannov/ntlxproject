@@ -4,8 +4,6 @@ namespace ASC.Core.Tenants
 {
     public class TenantUtil
     {
-        #region DateTime
-
         public static DateTime DateTimeFromUtc(DateTime dbDateTime)
         {
             return DateTimeFromUtc(CoreContext.TenantManager.GetCurrentTenant(), dbDateTime);
@@ -53,7 +51,5 @@ namespace ASC.Core.Tenants
         {
             return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
         }
-
-        #endregion
     }
 }

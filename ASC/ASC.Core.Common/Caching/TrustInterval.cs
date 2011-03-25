@@ -13,11 +13,6 @@ namespace ASC.Core.Caching
             private set;
         }
 
-        public bool Started
-        {
-            get { return interval == default(TimeSpan); }
-        }
-
         public bool Expired
         {
             get { return interval == default(TimeSpan) || interval < (DateTime.UtcNow - StartTime).Duration(); }
@@ -30,7 +25,7 @@ namespace ASC.Core.Caching
             StartTime = DateTime.UtcNow;
         }
 
-        public void Stop()
+        public void Expire()
         {
             interval = default(TimeSpan);
         }

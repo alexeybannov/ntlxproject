@@ -6,7 +6,7 @@ using ASC.Common.Security.Authorizing;
 
 namespace ASC.Core
 {
-    class ClientAzManager : IAuthManagerClient
+    class ClientAzManager : IAzManagerClient
     {
         private readonly IAzService service;
 

@@ -210,7 +210,6 @@
     <Compile Include="Notify\Sinks\SinkSkeleton.cs" />
     <Compile Include="Notify\Sinks\Smtp\SmtpSender.cs" />
     <Compile Include="Notify\Sinks\Smtp\SmtpSenderSink.cs" />
-    <Compile Include="Runtime\Serialization\BinarySerializer.cs" />
     <Compile Include="Security\Authentication\DemoAccount.cs" />
     <Compile Include="Security\Authentication\IGuestAccount.cs" />
     <Compile Include="Security\Authentication\SysAccount.cs" />
@@ -239,7 +238,6 @@
     <Compile Include="Security\Authentication\IAccount.cs" />
     <Compile Include="Security\Authentication\ISysAccount.cs" />
     <Compile Include="Security\Authentication\IUserAccount.cs" />
-    <Compile Include="Security\Authentication\Credential.cs" />
     <Compile Include="Security\Authorizing\AuthorizingException.cs" />
     <Compile Include="Security\Authorizing\Constants.cs" />
     <Compile Include="Security\Authorizing\Domain\Ace.cs" />

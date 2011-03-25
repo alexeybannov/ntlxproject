@@ -47,6 +47,20 @@ namespace ASC.Core.Users
             GroupAdmin
         };
 
+
+        public static readonly UserInfo LostUser = new UserInfo
+        {
+            ID = new Guid("{4A515A15-D4D6-4b8e-828E-E0586F18F3A3}"),
+            FirstName = "Unknown",
+            LastName = "Unknown"
+        };
+
+        public static readonly GroupInfo LostGroupInfo = new GroupInfo
+        {
+            ID = new Guid("{74B9CBD1-2412-4e79-9F36-7163583E9D3A}"),
+            Name = "Unknown"
+        };
+                
         #endregion
 
 
@@ -85,24 +99,6 @@ namespace ASC.Core.Users
         public static readonly AuthCategory[] AuthorizingCategories = new[]
         {
             AuthCategory_GroupUsers,
-        };
-
-        #endregion
-
-
-        #region "lost groups and users"
-
-        public static readonly UserInfo LostUser = new UserInfo
-        {
-            ID = new Guid("{4A515A15-D4D6-4b8e-828E-E0586F18F3A3}"),
-            FirstName = "Unknown",
-            LastName = "Unknown"
-        };
-
-        public static readonly GroupInfo LostGroupInfo = new GroupInfo
-        {
-            ID = new Guid("{74B9CBD1-2412-4e79-9F36-7163583E9D3A}"),
-            Name = "Unknown"
         };
 
         #endregion

@@ -13,9 +13,9 @@ namespace ASC.Core
         private readonly IDictionary<Guid, UserInfo> systemUsers;
 
 
-        public ClientUserManager(IUserService userService)
+        public ClientUserManager(IUserService service)
         {
-            this.userService = userService;
+            this.userService = service;
 
             systemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { ID = a.ID, LastName = a.Name });
             systemUsers[Constants.LostUser.ID] = Constants.LostUser;
@@ -201,7 +201,7 @@ namespace ASC.Core
             if (groupId == Constants.GroupUser.ID || groupId == Constants.GroupVisitor.ID)
             {
                 var visitor = refs.Any(r => r.RefType == UserGroupRefType.Contains && r.UserId == userId && r.GroupId == Constants.GroupVisitor.ID);
-                if (groupId == Constants.GroupUser.ID) return visitor;
+                if (groupId == Constants.GroupVisitor.ID) return visitor;
                 return !visitor;
             }
             return refs.Any(r => r.RefType == UserGroupRefType.Contains && r.UserId == userId && r.GroupId == groupId);

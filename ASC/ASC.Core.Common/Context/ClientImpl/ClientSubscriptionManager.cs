@@ -2,15 +2,15 @@ using System;
 
 namespace ASC.Core
 {
-    class ClientSubscriptionManager
+    class ClientSubscriptionManager : ISubscriptionManagerClient
     {
         private readonly ISubscriptionService service;
 
 
-        public ClientSubscriptionManager(ISubscriptionService subscriptionManager)
+        public ClientSubscriptionManager(ISubscriptionService service)
         {
-            if (subscriptionManager == null) throw new ArgumentNullException("subscriptionManager");
-            this.service = subscriptionManager;
+            if (service == null) throw new ArgumentNullException("subscriptionManager");
+            this.service = service;
         }
 
         public void Subscribe(string sourceID, string actionID, string objectID, string recipientID)

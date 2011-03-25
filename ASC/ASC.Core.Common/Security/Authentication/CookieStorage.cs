@@ -1,6 +1,6 @@
 using System;
 using System.Web;
-using ASC.Common.Security.Authentication;
+using ASC.Core.Security.Authentication;
 using ASC.Security.Cryptography;
 
 namespace ASC.Core.Common.Security.Authentication

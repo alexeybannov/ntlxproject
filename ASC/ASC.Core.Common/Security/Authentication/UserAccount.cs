@@ -5,20 +5,37 @@ using ASC.Core.Users;
 namespace ASC.Core.Security.Authentication
 {
     [Serializable]
-    public class UserAccount : AccountBase, IUserAccount
+    public class UserAccount : IUserAccount
     {
-        internal Credential Credential { get; private set; }
+        private Credential credential;
+
+
+        public Guid ID { get; private set; }
+
+        public string Name { get; private set; }
+
+
+        public string AuthenticationType
+        {
+            get { return "ASC"; }
+        }
+
+        public virtual bool IsAuthenticated
+        {
+            get { return true; }
+        }
+
 
         internal UserAccount(Credential credential)
-            : base(Guid.Empty, string.Empty)
         {
             if (credential == null) throw new ArgumentNullException("credential");
-            Credential = credential;
+            this.credential = credential;
         }
 
         internal UserAccount(UserInfo info, int tenant)
-            : base(info.ID, UserFormatter.GetUserName(info))
         {
+            ID = info.ID;
+            Name = UserFormatter.GetUserName(info);
             FirstName = info.FirstName;
             LastName = info.LastName;
             Title = info.Title;
@@ -38,5 +55,32 @@ namespace ASC.Core.Security.Authentication
         public int Tenant { get; private set; }
 
         public string Email { get; private set; }
+
+
+        internal Credential GetCredential()
+        {
+            return credential;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var a = obj as IAccount;
+            return a != null && ID.Equals(a.ID);
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

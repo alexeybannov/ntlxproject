@@ -26,12 +26,12 @@ namespace ASC.Core.Configuration
             var settings = obj as SmtpSettings;
             if (settings == null) return false;
             return
-                string.Equals(Host, settings.Host) &&
-                string.Equals(SenderAddress, settings.SenderAddress) &&
-                string.Equals(SenderDisplayName, settings.SenderDisplayName) &&
-                string.Equals(CredentialsDomain, settings.CredentialsDomain) &&
-                string.Equals(CredentialsUserName, settings.CredentialsUserName) &&
-                string.Equals(CredentialsUserPassword, settings.CredentialsUserPassword) &&
+                Host == settings.Host &&
+                SenderAddress == settings.SenderAddress &&
+                SenderDisplayName == settings.SenderDisplayName &&
+                CredentialsDomain == settings.CredentialsDomain &&
+                CredentialsUserName == settings.CredentialsUserName &&
+                CredentialsUserPassword == settings.CredentialsUserPassword &&
                 EnableSSL == settings.EnableSSL &&
                 Port == settings.Port;
         }

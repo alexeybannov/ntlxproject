@@ -1,28 +1,16 @@
 using System;
-using System.Collections.Generic;
-using ASC.Common.Security;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Users;
+using ASC.Common.Security.Authentication;
 
 namespace ASC.Core
 {
     public interface IAuthManagerClient
     {
-        AzRecord[] GetAces(Guid subjectID, Guid actionID);
+        IUserAccount[] GetUserAccounts();
 
-        AzRecord[] GetAces(Guid subjectID, Guid actionID, ISecurityObjectId objectId);
+        IAccount GetAccountByID(Guid id);
 
-        AzRecord[] GetAllObjectAces(IEnumerable<IAction> actions, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider);
+        string GetUserPasswordHash(Guid userID);
 
-        void AddAce(AzRecord azRecord);
-
-        void RemoveAce(AzRecord azRecord);
-
-
-        AzObjectInfo GetAzObjectInfo(ISecurityObjectId objectId);
-
-        void SaveAzObjectInfo(AzObjectInfo azObjectInfo);
-
-        void RemoveAzObjectInfo(AzObjectInfo azObjectInfo);
+        void SetUserPassword(Guid userID, string password);
     }
 }

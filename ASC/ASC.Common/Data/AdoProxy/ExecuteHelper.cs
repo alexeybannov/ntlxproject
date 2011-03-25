@@ -5,31 +5,27 @@ namespace ASC.Common.Data.AdoProxy
 {
     class ExecuteHelper : IDisposable
     {
-        private Stopwatch stopwatch;
+        private readonly Stopwatch stopwatch;
+        private readonly Action<TimeSpan> onStop;
 
 
         private ExecuteHelper(Action<TimeSpan> onStop)
         {
             if (onStop == null) throw new ArgumentNullException("onStop");
 
-            StopEvent += onStop;
+            this.onStop = onStop;
             stopwatch = Stopwatch.StartNew();
         }
 
 
-        public event Action<TimeSpan> StopEvent;
-
         public void Dispose()
         {
             stopwatch.Stop();
-            foreach (var method in StopEvent.GetInvocationList())
+            try
             {
-                try
-                {
-                    method.DynamicInvoke(stopwatch.Elapsed);
-                }
-                catch { }
+                onStop(stopwatch.Elapsed);
             }
+            catch { }
         }
 
 
