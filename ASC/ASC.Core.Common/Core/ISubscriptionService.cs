@@ -1,24 +1,21 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace ASC.Core
 {
     public interface ISubscriptionService
     {
-        string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId);
+        IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId);
 
-        string[] GetRecipients(int tenant, string sourceId, string actionId, string objectId);
+        IEnumerable<SubscriptionRecord> GetSubscriptionsByRecipient(int tenant, string sourceId, string actionId, string recipientId);
 
-        
-        string[] GetSubscriptionMethod(int tenant, string sourceId, string actionId, string recipientId);
+        IEnumerable<SubscriptionRecord> GetSubscriptionsByObject(int tenant, string sourceId, string actionId, string objectId);
 
-        void SetSubscriptionMethod(int tenant, string sourceId, string actionId, string recipientId, string[] senderNames);
+        SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId);
 
-        
-        bool IsUnsubscribe(int tenant, string sourceId, string recipientId, string actionId, string objectId);
-                
-        void Subscribe(int tenant, string sourceId, string actionId, string objectId, string recipientId, bool subscribe);
+        void SetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId, bool subcribe);
 
-        void UnsubscribeAll(int tenant, string sourceId, string actionId);
+        void RemoveSubscriptions(int tenant, string sourceId, string actionId);
 
-        void UnsubscribeAll(int tenant, string sourceId, string actionId, string objectId);
+        void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId);
     }
 }

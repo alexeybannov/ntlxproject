@@ -102,7 +102,7 @@ namespace ASC.Core.Data
             ExecNonQuery(i);
         }
 
-        public void UnsubscribeAll(int tenant, string sourceId, string actionId)
+        public void Unsubscribe(int tenant, string sourceId, string actionId)
         {
             if (sourceId == null) throw new ArgumentNullException("sourceId");
             if (actionId == null) throw new ArgumentNullException("actionId");
@@ -111,7 +111,7 @@ namespace ASC.Core.Data
             ExecNonQuery(d);
         }
 
-        public void UnsubscribeAll(int tenant, string sourceId, string actionId, string objectId)
+        public void Unsubscribe(int tenant, string sourceId, string actionId, string objectId)
         {
             if (sourceId == null) throw new ArgumentNullException("sourceId");
             if (actionId == null) throw new ArgumentNullException("actionId");
@@ -125,5 +125,44 @@ namespace ASC.Core.Data
         {
             return string.Empty.Equals((string)r[0]) ? null : (string)r[0];
         }
+
+        #region ISubscriptionService Members
+
+        public System.Collections.Generic.IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public System.Collections.Generic.IEnumerable<SubscriptionRecord> GetSubscriptionsByRecipient(int tenant, string sourceId, string actionId, string recipientId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public System.Collections.Generic.IEnumerable<SubscriptionRecord> GetSubscriptionsByObject(int tenant, string sourceId, string actionId, string objectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId, bool subcribe)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

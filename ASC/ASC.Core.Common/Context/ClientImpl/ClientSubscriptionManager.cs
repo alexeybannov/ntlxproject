@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace ASC.Core
 {
@@ -15,42 +16,49 @@ namespace ASC.Core
 
         public void Subscribe(string sourceID, string actionID, string objectID, string recipientID)
         {
-            service.Subscribe(GetTenant(), sourceID, actionID, objectID, recipientID, true);
+            service.SetSubscription(GetTenant(), sourceID, actionID, objectID, recipientID, true);
         }
 
         public void Unsubscribe(string sourceID, string actionID, string objectID, string recipientID)
         {
-            service.Subscribe(GetTenant(), sourceID, actionID, objectID, recipientID, false);
+            service.SetSubscription(GetTenant(), sourceID, actionID, objectID, recipientID, false);
         }
 
         public void UnsubscribeAll(string sourceID, string actionID, string objectID)
         {
-            service.UnsubscribeAll(GetTenant(), sourceID, actionID, objectID);
+            service.RemoveSubscriptions(GetTenant(), sourceID, actionID, objectID);
         }
 
         public void UnsubscribeAll(string sourceID, string actionID)
         {
-            service.UnsubscribeAll(GetTenant(), sourceID, actionID);
+            service.RemoveSubscriptions(GetTenant(), sourceID, actionID);
         }
 
         public string[] GetSubscriptionMethod(string sourceID, string actionID, string recipientID)
         {
-            return service.GetSubscriptionMethod(GetTenant(), sourceID, actionID, recipientID);
+            var s = service.GetSubscriptionsByRecipient(GetTenant(), sourceID, actionID, recipientID).FirstOrDefault();
+            if (s == null) s = service.GetSubscriptionsByRecipient(GetTenant(), sourceID, actionID, Guid.Empty.ToString()).FirstOrDefault();
+            return s == null ? new string[0] : s.Methods;
         }
 
         public string[] GetRecipients(string sourceID, string actionID, string objectID)
         {
-            return service.GetRecipients(GetTenant(), sourceID, actionID, objectID);
+            return service.GetSubscriptionsByObject(GetTenant(), sourceID, actionID, objectID)
+                .Select(s => s.RecipientId)
+                .ToArray();
         }
 
         public string[] GetSubscriptions(string sourceID, string actionID, string recipientID)
         {
-            return service.GetSubscriptions(GetTenant(), sourceID, actionID, recipientID);
+            return service.GetSubscriptionsByRecipient(GetTenant(), sourceID, actionID, recipientID)
+                .Select(s => s.ObjectId)
+                .ToArray();
         }
 
         public bool IsUnsubscribe(string sourceID, string recipientID, string actionID, string objectID)
         {
-            return service.IsUnsubscribe(GetTenant(), sourceID, recipientID, actionID, objectID);
+            var s = service.GetSubscription(GetTenant(), sourceID, actionID, recipientID, objectID);
+            return s != null && s.Subscribed;
         }
 
         public void UpdateSubscriptionMethod(string sourceID, string actionID, string recipientID, string[] senderNames)
