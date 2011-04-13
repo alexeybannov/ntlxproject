@@ -3,7 +3,7 @@
 namespace ASC.Core
 {
     [Serializable]
-    public class SubscriptionRecord
+    public class SubscriptionMethod
     {
         public int Tenant
         {
@@ -29,13 +29,7 @@ namespace ASC.Core
             set;
         }
 
-        public string ObjectId
-        {
-            get;
-            set;
-        }
-
-        public bool Subscribed
+        public string[] Methods
         {
             get;
             set;

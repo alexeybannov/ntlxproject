@@ -90,6 +90,7 @@
     <Compile Include="Caching\TrustInterval.cs" />
     <Compile Include="Configuration\ConnectionStringNameTypeConverter.cs" />
     <Compile Include="Context\ClientImpl\ISubscriptionManagerClient.cs" />
+    <Compile Include="Core\SubscriptionMethod.cs" />
     <Compile Include="Core\SubscriptionRecord.cs" />
     <Compile Include="Notify\INotify.cs" />
     <Compile Include="Configuration\SmtpSettings.cs" />
