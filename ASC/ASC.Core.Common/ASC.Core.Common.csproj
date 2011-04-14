@@ -86,6 +86,7 @@
     <Compile Include="Caching\AspCache.cs" />
     <Compile Include="Caching\CachedAzService.cs" />
     <Compile Include="Caching\CachedQuotaService.cs" />
+    <Compile Include="Caching\CachedSubscriptionService.cs" />
     <Compile Include="Caching\ICache.cs" />
     <Compile Include="Caching\TrustInterval.cs" />
     <Compile Include="Configuration\ConnectionStringNameTypeConverter.cs" />

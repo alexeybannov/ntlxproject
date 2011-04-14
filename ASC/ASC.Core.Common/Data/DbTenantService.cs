@@ -15,7 +15,7 @@ namespace ASC.Core.Data
     {
         private readonly List<string> forbiddenDomains;
 
-        private readonly Regex validDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private readonly Regex validDomain = new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
 
         public DbTenantService(ConnectionStringSettings connectionString)
