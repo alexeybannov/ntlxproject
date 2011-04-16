@@ -12,9 +12,9 @@ namespace TotalCommander.Plugin.Wfx
     /// </remarks>
     public class Request
     {
-        private int pluginNumber;
-        private string pluginName;
-        private Request.Callback request;
+        private readonly int pluginNumber;
+        private readonly string pluginName;
+        private readonly Request.Callback request;
 
         internal Request(int pluginNumber, string pluginName, Request.Callback request)
         {

@@ -27,9 +27,9 @@ namespace TotalCommander.Plugin.Wfx
     /// </remarks>
 	public class Progress
 	{
-		private int pluginNumber;
+        private readonly int pluginNumber;
 
-		private Progress.Callback progress;
+        private readonly Progress.Callback progress;
 
 		internal Progress(int pluginNumber, Progress.Callback progress)
 		{

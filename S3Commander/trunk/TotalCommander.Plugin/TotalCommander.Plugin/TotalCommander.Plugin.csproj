@@ -72,9 +72,5 @@
     <Compile Include="TotalCommanderPluginAttribute.cs" />
     <Compile Include="Utils\LongUtil.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="TotalCommander.Plugin.targets">
-    </None>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

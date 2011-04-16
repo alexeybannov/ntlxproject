@@ -8,9 +8,9 @@ namespace TotalCommander.Plugin.Wfx
     /// </summary>
     public class Password
     {
-        private Password.Callback callback;
-        private int pluginNumber;
-        private int cryptoNumber;
+        private readonly Password.Callback callback;
+        private readonly int pluginNumber;
+        private readonly int cryptoNumber;
 
         /// <summary>
         /// It is set when the user has defined a master password.

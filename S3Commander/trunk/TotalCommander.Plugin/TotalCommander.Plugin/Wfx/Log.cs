@@ -27,9 +27,9 @@ namespace TotalCommander.Plugin.Wfx
     /// </remarks>
 	public class Log
 	{
-		private int pluginNumber;
+        private readonly int pluginNumber;
 
-		private Log.Callback log;
+        private readonly Log.Callback log;
 
 		internal Log(int pluginNumber, Log.Callback log)
 		{
