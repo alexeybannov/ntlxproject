@@ -1,4 +1,7 @@
-﻿using Microsoft.Build.Framework;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 namespace TotalCommander.Plugin.Tasks
@@ -30,10 +33,7 @@ namespace TotalCommander.Plugin.Tasks
             get;
             set;
         }
-        
-        /// <summary>
-        /// Disable inheriting from System.Object by default.
-        /// </summary>
+
         public bool NoAutoInherit
         {
             get;
@@ -146,6 +146,11 @@ namespace TotalCommander.Plugin.Tasks
             return ToolLocationHelper.GetPathToDotNetFrameworkFile(ToolName, TargetDotNetFrameworkVersion.VersionLatest);
         }
 
+        protected override string GetWorkingDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
         protected override string GenerateCommandLineCommands()
         {
             var builder = new CommandLineBuilder();
@@ -156,8 +161,15 @@ namespace TotalCommander.Plugin.Tasks
             builder.AppendFileNameIfNotNull(Source);
             if (Resource != null) builder.AppendSwitch("/resource=\"" + Resource + "\"");
 
-            if (Output != null) builder.AppendSwitch("/output=\"" + Output + "\"");
-            if (string.Compare(OutputType, "library", true) == 0) builder.AppendSwitch("/dll");
+            if (Output != null)
+            {
+                builder.AppendSwitch("/output=\"" + Output + "\"");
+            }
+            if (string.Compare(OutputType, "library", true) == 0 ||
+                (string.IsNullOrEmpty(OutputType) && Output != null && !".exe".Equals(Path.GetExtension(Output), StringComparison.InvariantCultureIgnoreCase)))
+            {
+                builder.AppendSwitch("/dll");
+            }
 
             if (NoAutoInherit) builder.AppendSwitch("/noautoinherit");
             if (CreatePdb) builder.AppendSwitch("/pdb");

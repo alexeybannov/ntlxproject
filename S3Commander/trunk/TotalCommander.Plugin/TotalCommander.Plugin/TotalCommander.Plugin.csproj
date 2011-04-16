@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DocumentationFile>..\Build\TotalCommander.Plugin.XML</DocumentationFile>
+    <DocumentationFile>..\Build\TotalCommander.Plugin.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -74,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TotalCommander.Plugin.targets">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

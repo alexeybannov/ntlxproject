@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -7,7 +6,7 @@ using Microsoft.Win32;
 
 namespace TotalCommander.Plugin.Tasks
 {
-    public class ILDasm : ToolTask
+    public class RC : ToolTask
     {
         [Required]
         public ITaskItem Source
@@ -16,36 +15,17 @@ namespace TotalCommander.Plugin.Tasks
             set;
         }
 
-        [Output, Required]
-        public string OutputIL
-        {
-            get;
-            set;
-        }
-
         [Output]
-        public string OutputRes
+        public string Output
         {
             get;
             private set;
         }
 
-        public string Encoding
-        {
-            get;
-            set;
-        }
-
-        public string Item
-        {
-            get;
-            set;
-        }
-
 
         protected override string ToolName
         {
-            get { return "ildasm.exe"; }
+            get { return "rc.exe"; }
         }
 
         protected override string GenerateFullPathToTool()
@@ -72,26 +52,12 @@ namespace TotalCommander.Plugin.Tasks
         protected override string GenerateCommandLineCommands()
         {
             var builder = new CommandLineBuilder();
-
+            builder.AppendSwitch("/r");
             builder.AppendFileNameIfNotNull(Source);
-            if (Source != null)
-            {
-                OutputRes = Path.ChangeExtension(OutputIL, ".res");
-            }
 
-            builder.AppendSwitch("/nobar");
-            builder.AppendSwitchIfNotNull("/output=", OutputIL);
-            if (Encoding == null || Encoding.StartsWith("uni", StringComparison.InvariantCultureIgnoreCase))
-            {
-                builder.AppendSwitch("/unicode");
-            }
-            if (Encoding != null && Encoding.StartsWith("utf", StringComparison.InvariantCultureIgnoreCase))
-            {
-                builder.AppendSwitch("/utf8");
-            }
-            builder.AppendSwitchIfNotNull("/item:", Item);
+            Output = Path.ChangeExtension(Source.ItemSpec, ".res");
 
-            Log.LogMessage(MessageImportance.High, "Disassembling {0}...", Source);
+            Log.LogMessage(MessageImportance.High, "Generate res file from {0}...", Source);
             return builder.ToString();
         }
     }

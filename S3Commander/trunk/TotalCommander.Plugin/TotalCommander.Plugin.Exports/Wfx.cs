@@ -36,7 +36,7 @@ namespace TotalCommander.Plugin.Exports
 
         [DllExport]
         public static Int32 FsInit(
-            int pluginNumber,
+            Int32 pluginNumber,
             [MarshalAs(UnmanagedType.FunctionPtr)] ProgressProc pProgressProc,
             [MarshalAs(UnmanagedType.FunctionPtr)] LogProc pLogProc,
             [MarshalAs(UnmanagedType.FunctionPtr)] RequestProc pRequestProc)
@@ -77,7 +77,7 @@ namespace TotalCommander.Plugin.Exports
         #region File/Dir Operations
 
         [DllExport]
-        public static int FsExecuteFile(
+        public static Int32 FsExecuteFile(
             IntPtr mainWin,
             IntPtr remoteName,
             [MarshalAs(UnmanagedType.LPStr)] string verb)
@@ -89,8 +89,8 @@ namespace TotalCommander.Plugin.Exports
         public static int FsRenMovFile(
             [MarshalAs(UnmanagedType.LPStr)] string oldName,
             [MarshalAs(UnmanagedType.LPStr)] string newName,
-            bool move,
-            bool overWrite,
+            [MarshalAs(UnmanagedType.Bool)] bool move,
+            [MarshalAs(UnmanagedType.Bool)] bool overWrite,
             IntPtr ri)
         {
             return WfxDispatcher.FsRenMovFile(oldName, newName, move, overWrite, ri);
@@ -115,20 +115,20 @@ namespace TotalCommander.Plugin.Exports
         }
 
         [DllExport]
-        public static int FsGetFile(
+        public static Int32 FsGetFile(
             [MarshalAs(UnmanagedType.LPStr)] string remoteName,
             IntPtr localName,
-            int copyFlags,
+            Int32 copyFlags,
             IntPtr ri)
         {
             return WfxDispatcher.FsGetFile(remoteName, localName, copyFlags, ri);
         }
 
         [DllExport]
-        public static int FsPutFile(
+        public static Int32 FsPutFile(
             [MarshalAs(UnmanagedType.LPStr)] string localName,
             IntPtr remoteName,
-            int copyFlags)
+            Int32 copyFlags)
         {
             return WfxDispatcher.FsPutFile(localName, remoteName, copyFlags);
         }
@@ -138,7 +138,7 @@ namespace TotalCommander.Plugin.Exports
         [DllExport]
         public static bool FsSetAttr(
             [MarshalAs(UnmanagedType.LPStr)] string remoteName,
-            int newAttr)
+            Int32 newAttr)
         {
             return WfxDispatcher.FsSetAttr(remoteName, newAttr);
         }
@@ -162,14 +162,14 @@ namespace TotalCommander.Plugin.Exports
         [DllExport]
         public static void FsStatusInfo(
             [MarshalAs(UnmanagedType.LPStr)] string remoteDir,
-            int infoStartEnd,
-            int infoOperation)
+            Int32 infoStartEnd,
+            Int32 infoOperation)
         {
             WfxDispatcher.FsStatusInfo(remoteDir, infoStartEnd, infoOperation);
         }
 
         [DllExport]
-        public static int FsExtractCustomIcon(
+        public static Int32 FsExtractCustomIcon(
             IntPtr remoteName,
             int extractFlags,
             ref IntPtr theIcon)
@@ -178,10 +178,10 @@ namespace TotalCommander.Plugin.Exports
         }
 
         [DllExport]
-        public static int FsGetPreviewBitmap(
+        public static Int32 FsGetPreviewBitmap(
             IntPtr remoteName,
-            int width,
-            int height,
+            Int32 width,
+            Int32 height,
             ref IntPtr returnedBitmap)
         {
             return WfxDispatcher.FsGetPreviewBitmap(remoteName, width, height, ref returnedBitmap);
@@ -190,8 +190,8 @@ namespace TotalCommander.Plugin.Exports
         [DllExport]
         public static void FsSetCryptCallback(
             [MarshalAs(UnmanagedType.FunctionPtr)] CryptProc pCryptProc,
-            int cryptoNumber,
-            int flags)
+            Int32 cryptoNumber,
+            Int32 flags)
         {
             cryptProc = pCryptProc;
             WfxDispatcher.FsSetCryptCallback(Crypt, cryptoNumber, flags);
@@ -204,13 +204,13 @@ namespace TotalCommander.Plugin.Exports
         }
 
         [DllExport]
-        public static bool FsGetLocalName(IntPtr remoteName, int maxlen)
+        public static bool FsGetLocalName(IntPtr remoteName, Int32 maxlen)
         {
             return WfxDispatcher.FsGetLocalName(remoteName, maxlen);
         }
 
         [DllExport]
-        public static int FsGetBackgroundFlags()
+        public static Int32 FsGetBackgroundFlags()
         {
             return WfxDispatcher.FsGetBackgroundFlags();
         }
@@ -254,37 +254,37 @@ namespace TotalCommander.Plugin.Exports
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
         public delegate void LogProc(
-            int pluginNumber,
-            int messageType,
+            Int32 pluginNumber,
+            Int32 messageType,
             [MarshalAs(UnmanagedType.LPStr)] string logString
         );
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
         public delegate int ProgressProc(
-            int pluginNumber,
+            Int32 pluginNumber,
             [MarshalAs(UnmanagedType.LPStr)] string sourceName,
             [MarshalAs(UnmanagedType.LPStr)] string targetName,
-            int percentDone
+            Int32 percentDone
         );
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
         public delegate bool RequestProc(
-            int pluginNumber,
-            int requestType,
+            Int32 pluginNumber,
+            Int32 requestType,
             [MarshalAs(UnmanagedType.LPStr)] string customTitle,
             [MarshalAs(UnmanagedType.LPStr)] string customText,
             [MarshalAs(UnmanagedType.LPStr)] StringBuilder defaultText,
-            int maxLen
+            Int32 maxLen
         );
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-        public delegate int CryptProc(
-            int pluginNumber,
-            int cryptoNumber,
-            int mode,
+        public delegate Int32 CryptProc(
+            Int32 pluginNumber,
+            Int32 cryptoNumber,
+            Int32 mode,
             [MarshalAs(UnmanagedType.LPStr)] string connectionName,
             [MarshalAs(UnmanagedType.LPStr)] StringBuilder password,
-            int maxLen
+            Int32 maxLen
         );
 
         #endregion
