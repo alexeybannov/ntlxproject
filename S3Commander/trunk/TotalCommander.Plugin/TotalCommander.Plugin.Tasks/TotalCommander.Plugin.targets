@@ -14,8 +14,8 @@
     <DllExport Source="$(OutputIL)" />
 
     <Copy SourceFiles="$(ApplicationIcon)" DestinationFolder="$(TargetDir)" Condition=" '$(ApplicationIcon)' != '' "/>
-    <WriteLinesToFile File="$(TargetDir)$(TargetName).rc" Lines="1 ICON $(ApplicationIcon)" Overwrite="true"/>
-    <RC Source="$(TargetDir)$(TargetName).rc">
+    <WriteLinesToFile File="$(TargetDir)$(TargetName).rc" Lines="1 ICON $(ApplicationIcon)" Overwrite="true" Condition=" '$(ApplicationIcon)' != '' "/>
+    <RC Source="$(TargetDir)$(TargetName).rc" Condition=" '$(ApplicationIcon)' != '' ">
       <Output TaskParameter="Output" PropertyName="OutputRes"/>
     </RC>
 
