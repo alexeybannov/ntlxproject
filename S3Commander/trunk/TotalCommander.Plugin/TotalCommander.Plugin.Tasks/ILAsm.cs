@@ -178,8 +178,18 @@ namespace TotalCommander.Plugin.Tasks
             if (NoCorStub) builder.AppendSwitch("/nocorstub");
             if (StripReloc) builder.AppendSwitch("/stripreloc");
 
-            if (Debug == string.Empty) builder.AppendSwitch("/debug");
-            else if (Debug != null) builder.AppendSwitch("/debug=" + Debug.ToLower());
+            if (!string.IsNullOrEmpty(Debug))
+            {
+                try
+                {
+                    var debug = Convert.ToBoolean(Debug);
+                    if (debug) builder.AppendSwitch("/debug");
+                }
+                catch
+                {
+                    builder.AppendSwitch("/debug=" + Debug.ToLower());
+                }
+            }
             if (Key != null) builder.AppendSwitch("/key=" + Key);
             if (Include != null) builder.AppendSwitch("/include=" + Include);
             if (MDV != null) builder.AppendSwitch("/mdv=" + MDV);

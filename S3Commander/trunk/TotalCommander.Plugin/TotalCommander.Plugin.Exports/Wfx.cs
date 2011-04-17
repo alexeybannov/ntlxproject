@@ -22,17 +22,11 @@ namespace TotalCommander.Plugin.Exports
         }
 
 
-        #region Plugin Installation Name
-
         [DllExport]
         public static void FsGetDefRootName(IntPtr defRootName, Int32 maxLen)
         {
             Win32.WriteStringAnsi(defRootName, WfxDispatcher.FsGetDefRootName(), maxLen);
         }
-
-        #endregion
-
-        #region Mandatory (must be implemented)
 
         [DllExport]
         public static Int32 FsInit(
@@ -65,16 +59,12 @@ namespace TotalCommander.Plugin.Exports
             return WfxDispatcher.FsFindClose(handle);
         }
 
-        #endregion
-
         [DllExport]
         public static void FsSetDefaultParams(IntPtr dps)
         {
             WfxDispatcher.FsSetDefaultParams(dps);
         }
 
-
-        #region File/Dir Operations
 
         [DllExport]
         public static Int32 FsExecuteFile(
@@ -132,8 +122,6 @@ namespace TotalCommander.Plugin.Exports
         {
             return WfxDispatcher.FsPutFile(localName, remoteName, copyFlags);
         }
-
-        #endregion
 
         [DllExport]
         public static bool FsSetAttr(
