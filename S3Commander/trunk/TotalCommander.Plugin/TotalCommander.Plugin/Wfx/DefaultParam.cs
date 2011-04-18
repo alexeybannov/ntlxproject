@@ -42,7 +42,7 @@ namespace TotalCommander.Plugin.Wfx
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         struct FsDefaultParam
         {
             public int Size;

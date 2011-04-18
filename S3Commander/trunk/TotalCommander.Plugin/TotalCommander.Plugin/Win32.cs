@@ -6,7 +6,7 @@ namespace TotalCommander.Plugin
 {
     static class Win32
     {
-        public const int MAX_PATH = 260;
+        public const int MAX_PATH = 1024;
 
         public const int ERROR_NO_MORE_FILES = 18;
 
@@ -20,24 +20,24 @@ namespace TotalCommander.Plugin
         public static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         
-        public static string PtrToStringAnsi(IntPtr ptr)
+        public static string GetString(IntPtr ptr)
         {
-            return ptr != IntPtr.Zero ? Marshal.PtrToStringAnsi(ptr) : string.Empty;
+            return ptr != IntPtr.Zero ? Marshal.PtrToStringUni(ptr) : string.Empty;
         }
 
-        public static void WriteStringAnsi(IntPtr ptr, string value)
+        public static void SetString(IntPtr ptr, string str)
         {
-            WriteStringAnsi(ptr, value, MAX_PATH);
+            SetString(ptr, str, MAX_PATH, Encoding.Unicode);
         }
 
-        public static void WriteStringAnsi(IntPtr ptr, string value, int maxLen)
+        public static void SetString(IntPtr ptr, string str, int maxLen, Encoding encoding)
         {
             if (ptr == IntPtr.Zero) return;
 
             var i = 0;
-            if (!string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(str))
             {
-                var bytes = Encoding.Convert(Encoding.Unicode, Encoding.ASCII, Encoding.Unicode.GetBytes(value));
+                var bytes = encoding.GetBytes(str);
                 for (i = 0; i < Math.Min(bytes.Length, maxLen - 1); i++) Marshal.WriteByte(ptr, i, bytes[i]);
             }
             Marshal.WriteByte(ptr, i, 0);//null-terminated

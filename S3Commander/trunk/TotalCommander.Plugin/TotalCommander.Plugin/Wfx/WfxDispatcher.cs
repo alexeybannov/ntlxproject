@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 using TotalCommander.Plugin.Utils;
 
 namespace TotalCommander.Plugin.Wfx
@@ -144,11 +145,11 @@ namespace TotalCommander.Plugin.Wfx
             var result = ExecuteResult.Default;
             try
             {
-                var nameRef = Win32.PtrToStringAnsi(remoteName);
+                var nameRef = Win32.GetString(remoteName);
                 if (!string.IsNullOrEmpty(nameRef))
                 {
                     result = Plugin.FileExecute(new TotalCommanderWindow(mainWin), ref nameRef, verb);
-                    Win32.WriteStringAnsi(remoteName, nameRef);
+                    Win32.SetString(remoteName, nameRef);
                 }
             }
             catch (Exception ex)
@@ -163,9 +164,9 @@ namespace TotalCommander.Plugin.Wfx
             var result = FileOperationResult.Default;
             try
             {
-                var nameRef = Win32.PtrToStringAnsi(localName);
+                var nameRef = Win32.GetString(localName);
                 result = Plugin.FileGet(remoteName, ref nameRef, (CopyFlags)copyFlags, new RemoteInfo(ri));
-                Win32.WriteStringAnsi(localName, nameRef);
+                Win32.SetString(localName, nameRef);
             }
             catch (Exception ex)
             {
@@ -179,9 +180,9 @@ namespace TotalCommander.Plugin.Wfx
             var result = FileOperationResult.Default;
             try
             {
-                var nameRef = Win32.PtrToStringAnsi(remoteName);
+                var nameRef = Win32.GetString(remoteName);
                 result = Plugin.FilePut(localName, ref nameRef, (CopyFlags)copyFlags);
-                Win32.WriteStringAnsi(remoteName, nameRef);
+                Win32.SetString(remoteName, nameRef);
             }
             catch (Exception ex)
             {
@@ -311,10 +312,10 @@ namespace TotalCommander.Plugin.Wfx
             try
             {
                 Icon icon = null;
-                var nameRef = Win32.PtrToStringAnsi(remoteName);
+                var nameRef = Win32.GetString(remoteName);
                 result = Plugin.GetCustomIcon(ref nameRef, (CustomIconFlags)extractFlags, out icon);
                 if (icon != null) iconHandle = icon.Handle;
-                Win32.WriteStringAnsi(remoteName, nameRef);
+                Win32.SetString(remoteName, nameRef);
             }
             catch (Exception ex)
             {
@@ -329,10 +330,10 @@ namespace TotalCommander.Plugin.Wfx
             try
             {
                 Bitmap bitmap = null;
-                var nameRef = Win32.PtrToStringAnsi(remoteName);
+                var nameRef = Win32.GetString(remoteName);
                 result = Plugin.GetPreviewBitmap(ref nameRef, new Size(width, height), out bitmap);
                 if (bitmap != null) bitmapHandle = bitmap.GetHbitmap();
-                Win32.WriteStringAnsi(remoteName, nameRef);
+                Win32.SetString(remoteName, nameRef);
             }
             catch (Exception ex)
             {
@@ -372,11 +373,11 @@ namespace TotalCommander.Plugin.Wfx
             var result = false;
             try
             {
-                var remote = Win32.PtrToStringAnsi(ptr);
+                var remote = Win32.GetString(ptr);
                 var local = Plugin.GetLocalName(remote);
                 if (!string.IsNullOrEmpty(local) && local != remote)
                 {
-                    Win32.WriteStringAnsi(ptr, local, maxlen);
+                    Win32.SetString(ptr, local, maxlen, Encoding.Unicode);
                     result = true;
                 }
             }

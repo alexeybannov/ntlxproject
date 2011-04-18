@@ -196,7 +196,7 @@ namespace TotalCommander.Plugin.Wfx
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
         struct FsFindData
         {
             public int FileAttributes;
