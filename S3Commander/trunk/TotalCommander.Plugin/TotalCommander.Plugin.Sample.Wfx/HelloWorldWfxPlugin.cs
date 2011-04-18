@@ -6,7 +6,6 @@ using NI.Vfs;
 
 namespace TotalCommander.Plugin.Sample.Wfx
 {
-    [TotalCommanderPlugin]
     public class HelloWorldWfxPlugin : TotalCommanderWfxPlugin
     {
         private IFileSystem fileSystem = new LocalFileSystem("D:\\");

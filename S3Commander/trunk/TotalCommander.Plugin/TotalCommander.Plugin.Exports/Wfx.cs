@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using TotalCommander.Plugin.Wfx;
@@ -10,15 +8,15 @@ namespace TotalCommander.Plugin.Exports
 {
     static class Wfx
     {
-        private static ProgressProc progressProc;
-        private static LogProc logProc;
-        private static RequestProc requestProc;
-        private static CryptProc cryptProc;
+        private static ProgressProcW progressProc;
+        private static LogProcW logProc;
+        private static RequestProcW requestProc;
+        private static CryptProcW cryptProc;
 
 
         static Wfx()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
+            AssemblyResolver.Init();
         }
 
 
@@ -33,9 +31,9 @@ namespace TotalCommander.Plugin.Exports
         [DllExport]
         public static Int32 FsInitW(
             Int32 pluginNumber,
-            [MarshalAs(UnmanagedType.FunctionPtr)] ProgressProc pProgressProc,
-            [MarshalAs(UnmanagedType.FunctionPtr)] LogProc pLogProc,
-            [MarshalAs(UnmanagedType.FunctionPtr)] RequestProc pRequestProc)
+            [MarshalAs(UnmanagedType.FunctionPtr)] ProgressProcW pProgressProc,
+            [MarshalAs(UnmanagedType.FunctionPtr)] LogProcW pLogProc,
+            [MarshalAs(UnmanagedType.FunctionPtr)] RequestProcW pRequestProc)
         {
             progressProc = pProgressProc;
             logProc = pLogProc;
@@ -179,7 +177,7 @@ namespace TotalCommander.Plugin.Exports
 
         [DllExport]
         public static void FsSetCryptCallbackW(
-            [MarshalAs(UnmanagedType.FunctionPtr)] CryptProc pCryptProc,
+            [MarshalAs(UnmanagedType.FunctionPtr)] CryptProcW pCryptProc,
             Int32 cryptoNumber,
             Int32 flags)
         {
@@ -208,16 +206,6 @@ namespace TotalCommander.Plugin.Exports
 
         #region Private Methods
 
-        private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var assemblyFile = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                new AssemblyName(args.Name).Name + ".dll"
-            );
-            return Assembly.LoadFrom(assemblyFile);
-        }
-
-
         private static int Progress(int pluginNumber, string sourceName, string targetName, int percentDone)
         {
             return progressProc(pluginNumber, sourceName, targetName, percentDone);
@@ -244,14 +232,14 @@ namespace TotalCommander.Plugin.Exports
         #region Delegates
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode)]
-        public delegate void LogProc(
+        public delegate void LogProcW(
             Int32 pluginNumber,
             Int32 messageType,
             [MarshalAs(UnmanagedType.LPWStr)] string logString
         );
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode)]
-        public delegate int ProgressProc(
+        public delegate int ProgressProcW(
             Int32 pluginNumber,
             [MarshalAs(UnmanagedType.LPWStr)] string sourceName,
             [MarshalAs(UnmanagedType.LPWStr)] string targetName,
@@ -259,7 +247,7 @@ namespace TotalCommander.Plugin.Exports
         );
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode)]
-        public delegate bool RequestProc(
+        public delegate bool RequestProcW(
             Int32 pluginNumber,
             Int32 requestType,
             [MarshalAs(UnmanagedType.LPWStr)] string customTitle,
@@ -269,7 +257,7 @@ namespace TotalCommander.Plugin.Exports
         );
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode)]
-        public delegate Int32 CryptProc(
+        public delegate Int32 CryptProcW(
             Int32 pluginNumber,
             Int32 cryptoNumber,
             Int32 mode,

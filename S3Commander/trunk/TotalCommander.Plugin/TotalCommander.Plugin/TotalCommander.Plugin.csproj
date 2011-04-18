@@ -47,6 +47,11 @@
     <Compile Include="DllExportAttribute.cs" />
     <Compile Include="TotalCommanderWindow.cs" />
     <Compile Include="Utils\DateTimeUtil.cs" />
+    <Compile Include="Wcx\ArchiveResult.cs" />
+    <Compile Include="Wcx\WcxDispatcher.cs" />
+    <Compile Include="Wcx\ITotalCommanderWcxPlugin.cs" />
+    <Compile Include="Wcx\OpenArchiveData.cs" />
+    <Compile Include="Wcx\OpenArchiveMode.cs" />
     <Compile Include="Wfx\BackgroundFlags.cs" />
     <Compile Include="Wfx\Password.cs" />
     <Compile Include="Wfx\WfxDispatcher.cs" />
@@ -69,7 +74,6 @@
     <Compile Include="TotalCommanderPluginHolder.cs" />
     <Compile Include="Wfx\ITotalCommanderWfxPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TotalCommanderPluginAttribute.cs" />
     <Compile Include="Utils\LongUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

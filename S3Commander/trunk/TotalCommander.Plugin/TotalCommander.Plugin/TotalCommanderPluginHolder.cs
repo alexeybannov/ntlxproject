@@ -2,41 +2,50 @@
 using System.IO;
 using System.Reflection;
 using TotalCommander.Plugin.Wfx;
+using TotalCommander.Plugin.Wcx;
 
 namespace TotalCommander.Plugin
 {
     static class TotalCommanderPluginHolder
     {
-        private static ITotalCommanderWfxPlugin wfxPlugin;
+        private static ITotalCommanderWfxPlugin wfx;
 
-        private static bool wfxPluginInitialized = false;
+        private static ITotalCommanderWcxPlugin wcx;
+
+
+        static TotalCommanderPluginHolder()
+        {
+            try
+            {
+                var file = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".dll");
+                var assembly = Assembly.LoadFrom(file);
+                foreach (var type in assembly.GetExportedTypes())
+                {
+                    var interfaces = type.GetInterfaces();
+                    if (Array.Exists(interfaces, i => i == typeof(ITotalCommanderWfxPlugin)))
+                    {
+                        wfx = (ITotalCommanderWfxPlugin)Activator.CreateInstance(type);
+                        return;
+                    }
+                    if (Array.Exists(interfaces, i => i == typeof(ITotalCommanderWcxPlugin)))
+                    {
+                        wcx = (ITotalCommanderWcxPlugin)Activator.CreateInstance(type);
+                        return;
+                    }
+                }
+            }
+            catch { }
+        }
 
 
         public static ITotalCommanderWfxPlugin GetWfxPlugin()
         {
-            if (wfxPluginInitialized) return wfxPlugin;
+            return wfx;
+        }
 
-            wfxPluginInitialized = true;
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            foreach (var file in Directory.GetFiles(path, "*.dll"))
-            {
-                try
-                {
-                    if (string.Compare(Assembly.GetExecutingAssembly().Location, file, true) == 0) continue;
-                    var assembly = Assembly.LoadFrom(file);
-                    foreach (var type in assembly.GetExportedTypes())
-                    {
-                        if (!Attribute.IsDefined(type, typeof(TotalCommanderPluginAttribute))) continue;
-                        if (Array.Exists(type.GetInterfaces(), i => i == typeof(ITotalCommanderWfxPlugin)))
-                        {
-                            wfxPlugin = (ITotalCommanderWfxPlugin)Activator.CreateInstance(type);
-                            return wfxPlugin;
-                        }
-                    }
-                }
-                catch { }
-            }
-            return wfxPlugin;
+        public static ITotalCommanderWcxPlugin GetWcxPlugin()
+        {
+            return wcx;
         }
     }
 }
