@@ -19,11 +19,9 @@
       <Output TaskParameter="Output" PropertyName="OutputRes"/>
     </RC>
 
-    <Message Text="PluginType: $(PluginType)" Importance="high"/>
     <ILAsm Source="$(OutputIL)" Resource="$(OutputRes)" Output="$(TargetDir)$(TargetName).wfx"/>
 
-    <Delete Files="$(TargetDir)$(ApplicationIcon);$(TargetDir)TotalCommander.Plugin.Exports.il;$(TargetDir)TotalCommander.Plugin.Exports.res;$(TargetDir)$(TargetName).rc;$(TargetDir)$(TargetName).res"
-            ContinueOnError="true"/>
+    <Delete Files="$(TargetDir)$(ApplicationIcon);$(TargetDir)TotalCommander.Plugin.Exports.il;$(TargetDir)TotalCommander.Plugin.Exports.res;$(TargetDir)$(TargetName).rc;$(TargetDir)$(TargetName).res" ContinueOnError="true"/>
   </Target>
 
   <Target Name="GenerateTotalCommanderWcxPlugin">
@@ -39,10 +37,8 @@
       <Output TaskParameter="Output" PropertyName="OutputRes"/>
     </RC>
 
-    <Message Text="PluginType: $(PluginType)" Importance="high"/>
     <ILAsm Source="$(OutputIL)" Resource="$(OutputRes)" Output="$(TargetDir)$(TargetName).wcx"/>
 
-    <Delete Files="$(TargetDir)$(ApplicationIcon);$(TargetDir)TotalCommander.Plugin.Exports.il;$(TargetDir)TotalCommander.Plugin.Exports.res;$(TargetDir)$(TargetName).rc;$(TargetDir)$(TargetName).res"
-            ContinueOnError="true"/>
+    <Delete Files="$(TargetDir)$(ApplicationIcon);$(TargetDir)TotalCommander.Plugin.Exports.il;$(TargetDir)TotalCommander.Plugin.Exports.res;$(TargetDir)$(TargetName).rc;$(TargetDir)$(TargetName).res" ContinueOnError="true"/>
   </Target>
 </Project>
