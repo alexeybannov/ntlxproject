@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using TotalCommander.Plugin.Wfx;
 using TotalCommander.Plugin.Wcx;
+using TotalCommander.Plugin.Wfx;
 
 namespace TotalCommander.Plugin
 {
@@ -17,20 +17,25 @@ namespace TotalCommander.Plugin
         {
             try
             {
-                var file = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".dll");
-                var assembly = Assembly.LoadFrom(file);
-                foreach (var type in assembly.GetExportedTypes())
+                var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                foreach (var file in Directory.GetFiles(path, "*.dll"))
                 {
-                    var interfaces = type.GetInterfaces();
-                    if (Array.Exists(interfaces, i => i == typeof(ITotalCommanderWfxPlugin)))
+                    if (string.Compare(Assembly.GetExecutingAssembly().Location, file, true) == 0) continue;
+                
+                    var assembly = Assembly.LoadFrom(file);
+                    foreach (var type in assembly.GetExportedTypes())
                     {
-                        wfx = (ITotalCommanderWfxPlugin)Activator.CreateInstance(type);
-                        return;
-                    }
-                    if (Array.Exists(interfaces, i => i == typeof(ITotalCommanderWcxPlugin)))
-                    {
-                        wcx = (ITotalCommanderWcxPlugin)Activator.CreateInstance(type);
-                        return;
+                        var interfaces = type.GetInterfaces();
+                        if (Array.Exists(interfaces, i => i == typeof(ITotalCommanderWfxPlugin)))
+                        {
+                            wfx = (ITotalCommanderWfxPlugin)Activator.CreateInstance(type);
+                            return;
+                        }
+                        if (Array.Exists(interfaces, i => i == typeof(ITotalCommanderWcxPlugin)))
+                        {
+                            wcx = (ITotalCommanderWcxPlugin)Activator.CreateInstance(type);
+                            return;
+                        }
                     }
                 }
             }

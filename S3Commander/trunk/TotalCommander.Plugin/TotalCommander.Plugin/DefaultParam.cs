@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TotalCommander.Plugin.Wfx
+namespace TotalCommander.Plugin
 {
     /// <summary>
-    /// <see cref="DefaultParam"/> is passed to <see cref="ITotalCommanderWfxPlugin.SetDefaultParams"/>
-    /// to inform the plugin about the current plugin interface version and ini file location.
+    /// <see cref="DefaultParam"/> contains information about the current plugin interface version and ini file location.
     /// </summary>
-    /// <seealso cref="ITotalCommanderWfxPlugin.SetDefaultParams"/>
     public class DefaultParam
     {
         /// <summary>
@@ -36,14 +34,14 @@ namespace TotalCommander.Plugin.Wfx
         {
             if (ptr != IntPtr.Zero)
             {
-                var param = (FsDefaultParam)Marshal.PtrToStructure(ptr, typeof(FsDefaultParam));
+                var param = (DefaultParamStruct)Marshal.PtrToStructure(ptr, typeof(DefaultParamStruct));
                 PluginInterfaceVersion = new Version(param.VersionHigh, param.VersionLow / 10);
                 DefaultIniFileName = param.DefaultIniName;
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        struct FsDefaultParam
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        struct DefaultParamStruct
         {
             public int Size;
 
@@ -51,7 +49,7 @@ namespace TotalCommander.Plugin.Wfx
 
             public int VersionHigh;
 
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Win32.MAX_PATH)]
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public string DefaultIniName;
         };
     };

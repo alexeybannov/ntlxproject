@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 
 namespace TotalCommander.Plugin.Wcx
 {
@@ -8,37 +7,53 @@ namespace TotalCommander.Plugin.Wcx
     {
         private static ITotalCommanderWcxPlugin Plugin
         {
+            [DebuggerStepThrough]
             get { return TotalCommanderPluginHolder.GetWcxPlugin(); }
         }
 
 
         public static IntPtr OpenArchive(IntPtr archiveData)
         {
-            return Plugin.OpenArchive(new OpenArchiveData(archiveData));
+            var info = new OpenArchiveInfo(archiveData);
+            IntPtr archive;
+            info.Result = Plugin.OpenArchive(info.ArchiveName, info.Mode, out archive);
+            return archive;
         }
 
         public static int ReadHeader(IntPtr archive, IntPtr headerData)
         {
-            return 0;
+            var h = (TotalCommander.Plugin.Wcx.ArchiveHeader.ArchiveHeaderStruct)System.Runtime.InteropServices.Marshal.PtrToStructure(headerData, typeof(TotalCommander.Plugin.Wcx.ArchiveHeader.ArchiveHeaderStruct));
+
+            ArchiveHeader header;
+            var result = Plugin.ReadHeader(archive, out header);
+            if (header != null)
+            {
+                header.CopyTo(headerData);
+            }
+            else
+            {
+                result = ArchiveResult.NotSupported;
+            }
+            return (int)result;
         }
 
         public static int ProcessFile(IntPtr archive, int operation, IntPtr path, IntPtr name)
         {
-            return 0;
+            return (int)Plugin.ProcessFile(archive, (ArchiveProcess)operation, Win32.GetString(path), Win32.GetString(name));
         }
 
         public static int CloseArchive(IntPtr archive)
         {
-            return 0;
+            return (int)Plugin.CloseArchive(archive);
         }
 
-        /*public static void SetChangeVolProcW(IntPtr archive, ChangeVolProcW callback)
+        public static void SetChangeVolProcW(IntPtr archive, IntPtr callback)
         {
         }
 
-        public static void SetProcessDataProcW(IntPtr archive, ProcessDataProcW callback)
+        public static void SetProcessDataProcW(IntPtr archive, IntPtr callback)
         {
-        }*/
+        }
 
 
         public static int PackFiles(IntPtr packedFile, IntPtr subPath, IntPtr srcPath, IntPtr addList, int flags)
@@ -82,17 +97,18 @@ namespace TotalCommander.Plugin.Wcx
 
         public static void PackSetDefaultParams(IntPtr dps)
         {
+            Plugin.SetDefaultParams(new DefaultParam(dps));
         }
 
-/*
-        public static void PkSetCryptCallback(CryptProcW callback, int number, int flags)
-        {
-        }
-*/
+        /*
+                public static void PkSetCryptCallback(CryptProcW callback, int number, int flags)
+                {
+                }
+        */
 
         public static int GetBackgroundFlags()
         {
-            return 0;
+            return (int)Plugin.GetBackgroundFlags();
         }
     }
 }

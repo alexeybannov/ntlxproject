@@ -3,10 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace TotalCommander.Plugin.Wcx
 {
-    public class OpenArchiveData
+    public class OpenArchiveInfo
     {
         private readonly IntPtr ptr;
-        private OpenArchiveDataStruct data;
+        private OpenArchiveData data;
 
 
         public string ArchiveName
@@ -36,17 +36,17 @@ namespace TotalCommander.Plugin.Wcx
         }
 
 
-        internal OpenArchiveData(IntPtr ptr)
+        internal OpenArchiveInfo(IntPtr ptr)
         {
             this.ptr = ptr;
             if (ptr != IntPtr.Zero)
             {
-                data = (OpenArchiveDataStruct)Marshal.PtrToStructure(ptr, typeof(OpenArchiveDataStruct));
+                data = (OpenArchiveData)Marshal.PtrToStructure(ptr, typeof(OpenArchiveData));
             }
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        struct OpenArchiveDataStruct
+        struct OpenArchiveData
         {
             [MarshalAs(UnmanagedType.LPWStr)]
             public string ArchiveName;

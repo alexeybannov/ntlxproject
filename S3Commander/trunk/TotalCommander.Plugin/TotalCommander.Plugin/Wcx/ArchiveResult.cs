@@ -19,5 +19,6 @@ namespace TotalCommander.Plugin.Wcx
         NoFiles,
         TooManyFiles,
         NotSupported,
+        Default = NotSupported,
     }
 }
