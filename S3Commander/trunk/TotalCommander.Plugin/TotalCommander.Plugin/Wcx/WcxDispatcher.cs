@@ -7,7 +7,6 @@ namespace TotalCommander.Plugin.Wcx
     {
         private static ITotalCommanderWcxPlugin Plugin
         {
-            [DebuggerStepThrough]
             get { return TotalCommanderPluginHolder.GetWcxPlugin(); }
         }
 
