@@ -60,24 +60,15 @@ namespace TotalCommander.Plugin.Wcx
                     FileName = FileName,
                     FileAttr = (int)FileAttributes,
                     FileCRC = FileCRC,
-                    FileTime = GetFileTime(),
+                    FileTime = DateTimeUtil.ToArchiveHeaderTime(FileTime),
                     PackSizeHigh = (uint)LongUtil.High(PackedSize),
-                    PackSize = (uint)LongUtil.Low(PackedSize),
+                    PackSizeLow = (uint)LongUtil.Low(PackedSize),
                     UnpSizeHigh = (uint)LongUtil.High(UnpackedSize),
-                    UnpSize = (uint)LongUtil.Low(UnpackedSize),
+                    UnpSizeLow = (uint)LongUtil.Low(UnpackedSize),
                 };
                 Marshal.StructureToPtr(data, ptr, false);
             }
         }
-
-        private int GetFileTime()
-        {
-            var year = FileTime.Year;
-            return 1980 <= year && year <= 2100 ?
-                (year - 1980) << 25 | FileTime.Month << 21 | FileTime.Day << 16 | FileTime.Hour << 11 | FileTime.Minute << 5 | FileTime.Second / 2 :
-                0;
-        }
-
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct ArchiveHeaderStruct
@@ -90,10 +81,10 @@ namespace TotalCommander.Plugin.Wcx
 
             public int Flags;
 
-            public uint PackSize;
+            public uint PackSizeLow;
             public uint PackSizeHigh;
 
-            public uint UnpSize;
+            public uint UnpSizeLow;
             public uint UnpSizeHigh;
 
             public int HostOS;
@@ -103,7 +94,6 @@ namespace TotalCommander.Plugin.Wcx
             public int FileTime;
 
             public int UnpVer;
-
             public int Method;
 
             public int FileAttr;

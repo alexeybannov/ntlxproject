@@ -8,6 +8,10 @@ namespace TotalCommander.Plugin.Wcx
 
         BackgroundFlags GetBackgroundFlags();
 
+        PackerCapabilities GetPackerCapabilities();
+
+        bool CanYouHandleThisFile(string fileName);
+
         
         ArchiveResult OpenArchive(string archiveName, OpenArchiveMode mode, out IntPtr archive);
 

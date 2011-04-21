@@ -4,10 +4,6 @@ namespace TotalCommander.Plugin.Wcx
 {
     public class TotalCommanderWcxPlugin : ITotalCommanderWcxPlugin
     {
-        private int counter;
-        private string s;
-
-
         /// <summary>
         /// Plugin interface version.
         /// </summary>
@@ -31,49 +27,15 @@ namespace TotalCommander.Plugin.Wcx
             get { return BackgroundFlags.NotSupported; }
         }
 
-
-        BackgroundFlags ITotalCommanderWcxPlugin.GetBackgroundFlags()
+        public virtual PackerCapabilities PackerCapabilities
         {
-            return BackgroundSupport;
+            get { return PackerCapabilities.None; }
         }
 
-        ArchiveResult ITotalCommanderWcxPlugin.OpenArchive(string archiveName, OpenArchiveMode mode, out IntPtr archive)
-        {
-            archive = (IntPtr)1;
-            s = archiveName;
-            return ArchiveResult.Success;
-        }
 
-        ArchiveResult ITotalCommanderWcxPlugin.ReadHeader(IntPtr archive, out ArchiveHeader header)
+        public bool CanYouHandleThisFile(string fileName)
         {
-            header = new ArchiveHeader();
-            if (counter == 0)
-            {
-                header = new ArchiveHeader()
-                {
-                    FileName = "sss",
-                    FileAttributes = System.IO.FileAttributes.ReadOnly,
-                    FileCRC = 34,
-                    FileTime = DateTime.Now,
-                    PackedSize = 3444,
-                    UnpackedSize = 4 * (long)int.MaxValue,
-                    ArchiveName = "ddd"
-                };
-                counter++;
-                return ArchiveResult.Success;
-            }
-            return ArchiveResult.EndArchive;
-        }
-
-        ArchiveResult ITotalCommanderWcxPlugin.ProcessFile(IntPtr archive, ArchiveProcess operation, string filepath, string filename)
-        {
-            return ArchiveResult.Success;
-        }
-
-        ArchiveResult ITotalCommanderWcxPlugin.CloseArchive(IntPtr archive)
-        {
-            counter = 0;
-            return ArchiveResult.Success;
+            return false;
         }
 
 
@@ -81,6 +43,38 @@ namespace TotalCommander.Plugin.Wcx
         {
             PluginInterfaceVersion = dp.PluginInterfaceVersion;
             PluginIniFile = dp.DefaultIniFileName;
+        }
+
+        BackgroundFlags ITotalCommanderWcxPlugin.GetBackgroundFlags()
+        {
+            return BackgroundSupport;
+        }
+
+        PackerCapabilities ITotalCommanderWcxPlugin.GetPackerCapabilities()
+        {
+            return PackerCapabilities;
+        }
+                
+        ArchiveResult ITotalCommanderWcxPlugin.OpenArchive(string archiveName, OpenArchiveMode mode, out IntPtr archive)
+        {
+            archive = IntPtr.Zero;
+            return ArchiveResult.Default;
+        }
+
+        ArchiveResult ITotalCommanderWcxPlugin.ReadHeader(IntPtr archive, out ArchiveHeader header)
+        {
+            header = null;
+            return ArchiveResult.Default;
+        }
+
+        ArchiveResult ITotalCommanderWcxPlugin.ProcessFile(IntPtr archive, ArchiveProcess operation, string filepath, string filename)
+        {
+            return ArchiveResult.Default;
+        }
+
+        ArchiveResult ITotalCommanderWcxPlugin.CloseArchive(IntPtr archive)
+        {
+            return ArchiveResult.Default;
         }
     }
 }

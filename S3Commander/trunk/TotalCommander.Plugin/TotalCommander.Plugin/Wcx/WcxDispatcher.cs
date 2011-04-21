@@ -12,6 +12,38 @@ namespace TotalCommander.Plugin.Wcx
         }
 
 
+        public static void PackSetDefaultParams(IntPtr dps)
+        {
+            Plugin.SetDefaultParams(new DefaultParam(dps));
+        }
+
+        public static int GetPackerCaps()
+        {
+            return (int)Plugin.GetPackerCapabilities();
+        }
+
+        public static int GetBackgroundFlags()
+        {
+            return (int)Plugin.GetBackgroundFlags();
+        }
+
+        public static void ConfigurePacker(IntPtr window, IntPtr dllInstance)
+        {
+        }
+
+
+        public static void SetChangeVolProcW(IntPtr archive, IntPtr callback)
+        {
+        }
+
+        public static void SetProcessDataProcW(IntPtr archive, IntPtr callback)
+        {
+        }
+        public static void PkSetCryptCallback(IntPtr callback, int number, int flags)
+        {
+        }
+
+
         public static IntPtr OpenArchive(IntPtr archiveData)
         {
             var info = new OpenArchiveInfo(archiveData);
@@ -22,18 +54,9 @@ namespace TotalCommander.Plugin.Wcx
 
         public static int ReadHeader(IntPtr archive, IntPtr headerData)
         {
-            var h = (TotalCommander.Plugin.Wcx.ArchiveHeader.ArchiveHeaderStruct)System.Runtime.InteropServices.Marshal.PtrToStructure(headerData, typeof(TotalCommander.Plugin.Wcx.ArchiveHeader.ArchiveHeaderStruct));
-
             ArchiveHeader header;
             var result = Plugin.ReadHeader(archive, out header);
-            if (header != null)
-            {
-                header.CopyTo(headerData);
-            }
-            else
-            {
-                result = ArchiveResult.NotSupported;
-            }
+            if (header != null) header.CopyTo(headerData);
             return (int)result;
         }
 
@@ -47,14 +70,6 @@ namespace TotalCommander.Plugin.Wcx
             return (int)Plugin.CloseArchive(archive);
         }
 
-        public static void SetChangeVolProcW(IntPtr archive, IntPtr callback)
-        {
-        }
-
-        public static void SetProcessDataProcW(IntPtr archive, IntPtr callback)
-        {
-        }
-
 
         public static int PackFiles(IntPtr packedFile, IntPtr subPath, IntPtr srcPath, IntPtr addList, int flags)
         {
@@ -64,15 +79,6 @@ namespace TotalCommander.Plugin.Wcx
         public static int DeleteFiles(IntPtr packedFile, IntPtr deleteList)
         {
             return 0;
-        }
-
-        public static int GetPackerCaps()
-        {
-            return 0;
-        }
-
-        public static void ConfigurePacker(IntPtr window, IntPtr dllInstance)
-        {
         }
 
         public static int StartMemPack(int options, IntPtr fileName)
@@ -90,25 +96,10 @@ namespace TotalCommander.Plugin.Wcx
             return 0;
         }
 
+
         public static bool CanYouHandleThisFile(IntPtr fileName)
         {
-            return false;
-        }
-
-        public static void PackSetDefaultParams(IntPtr dps)
-        {
-            Plugin.SetDefaultParams(new DefaultParam(dps));
-        }
-
-        /*
-                public static void PkSetCryptCallback(CryptProcW callback, int number, int flags)
-                {
-                }
-        */
-
-        public static int GetBackgroundFlags()
-        {
-            return (int)Plugin.GetBackgroundFlags();
+            return Plugin.CanYouHandleThisFile(Win32.GetString(fileName));
         }
     }
 }

@@ -20,5 +20,10 @@ namespace TotalCommander.Plugin.Utils
             var longTime = LongUtil.MakeLong(fileTime.dwHighDateTime, fileTime.dwLowDateTime);
             return longTime != 0 ? DateTime.FromFileTime(longTime) : (DateTime?)null;
         }
+
+        public static int ToArchiveHeaderTime(DateTime d)
+        {
+            return (1980 <= d.Year && d.Year <= 2100) ? (d.Year - 1980) << 25 | d.Month << 21 | d.Day << 16 | d.Hour << 11 | d.Minute << 5 | d.Second / 2 : 0;
+        }
     }
 }
