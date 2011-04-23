@@ -20,9 +20,14 @@ namespace TotalCommander.Plugin.WcxSample
             files = Directory.GetFiles("d:\\", "*.*").ToList().GetEnumerator();
         }
 
-        public void UnpackFile(ArchiveHeader header, string filepath, ArchiveProcess operation)
+        public void ExtractCurrentTo(string destfile)
         {
-            
+
+        }
+
+        public void TestCurrent(string destfile)
+        {
+
         }
 
         public ArchiveHeader Current
@@ -61,5 +66,20 @@ namespace TotalCommander.Plugin.WcxSample
         {
             files.Reset();
         }
+
+        #region IArchiveUnpacker Members
+
+
+        public void SetChangeVolume(ChangeVolume changeVolume)
+        {
+            
+        }
+
+        public void SetProgress(Progress progress)
+        {
+            
+        }
+
+        #endregion
     }
 }

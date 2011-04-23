@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Collections.Generic;
 
 namespace TotalCommander.Plugin
 {
@@ -19,10 +20,27 @@ namespace TotalCommander.Plugin
         [DllImport("user32")]
         public static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-        
+
         public static string GetString(IntPtr ptr)
         {
             return ptr != IntPtr.Zero ? Marshal.PtrToStringUni(ptr) : string.Empty;
+        }
+
+        public static string[] GetStringArray(IntPtr ptr)
+        {
+            var result = new List<string>();
+            if (ptr != IntPtr.Zero)
+            {
+                while (true)
+                {
+                    var str = Marshal.PtrToStringUni(ptr);
+                    if (string.IsNullOrEmpty(str)) break;
+
+                    result.Add(str);
+                    ptr = new IntPtr(ptr.ToInt32() + 2 * (str.Length + 1));
+                }
+            }
+            return result.ToArray();
         }
 
         public static void SetString(IntPtr ptr, string str)

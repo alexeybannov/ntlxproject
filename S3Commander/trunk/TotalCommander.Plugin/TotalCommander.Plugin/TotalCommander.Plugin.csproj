@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5A4C0890-6532-4B1D-9A32-977ECB568A5E}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -50,8 +50,13 @@
     <Compile Include="Wcx\ArchiveResult.cs" />
     <Compile Include="Wcx\ArchiveHeader.cs" />
     <Compile Include="Wcx\ArchiveProcess.cs" />
+    <Compile Include="Wcx\ChangeVolume.cs" />
+    <Compile Include="Wcx\IArchivePacker.cs" />
+    <Compile Include="Wcx\PackMode.cs" />
+    <Compile Include="Wcx\Progress.cs" />
     <Compile Include="Wcx\IArchiveUnpacker.cs" />
     <Compile Include="Wcx\PackerCapabilities.cs" />
+    <Compile Include="Wcx\Password.cs" />
     <Compile Include="Wcx\TotalCommanderWcxPlugin.cs" />
     <Compile Include="Wcx\BackgroundFlags.cs" />
     <Compile Include="Wcx\WcxDispatcher.cs" />

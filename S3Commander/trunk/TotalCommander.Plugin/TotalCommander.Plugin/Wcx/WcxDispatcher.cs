@@ -28,56 +28,94 @@ namespace TotalCommander.Plugin.Wcx
 
         public static void ConfigurePacker(IntPtr window, IntPtr dllInstance)
         {
+            Plugin.ConfigurePacker(window, dllInstance);
         }
 
 
-        public static void SetChangeVolProcW(IntPtr archive, IntPtr callback)
+        public static void SetChangeVolProcW(IntPtr archive, ChangeVolume.Callback callback)
         {
+            Plugin.SetChangeVolume(archive, new ChangeVolume(callback));
         }
 
-        public static void SetProcessDataProcW(IntPtr archive, IntPtr callback)
+        public static void SetProcessDataProcW(IntPtr archive, Progress.Callback callback)
         {
+            Plugin.SetProgress(archive, new Progress(callback));
         }
-        public static void PkSetCryptCallback(IntPtr callback, int number, int flags)
+
+        public static void SetCryptCallbackW(Password.Callback callback, int number, int flags)
         {
+            Plugin.SetPassword(new Password(callback, number, flags));
         }
 
 
         public static IntPtr OpenArchive(IntPtr archiveData)
         {
             var info = new OpenArchiveInfo(archiveData);
-            IntPtr archive;
-            info.Result = Plugin.OpenArchive(info.ArchiveName, info.Mode, out archive);
+            var archive = IntPtr.Zero;
+            try
+            {
+                info.Result = Plugin.OpenArchive(info.ArchiveName, info.Mode, out archive);
+            }
+            catch (WcxException error)
+            {
+                info.Result = error.ArchiveResult;
+            }
             return archive;
         }
 
         public static int ReadHeader(IntPtr archive, IntPtr headerData)
         {
-            ArchiveHeader header;
-            var result = Plugin.ReadHeader(archive, out header);
-            if (header != null) header.CopyTo(headerData);
+            var result = ArchiveResult.Default;
+            try
+            {
+                ArchiveHeader header;
+                result = Plugin.ReadHeader(archive, out header);
+                if (header != null) header.CopyTo(headerData);
+            }
+            catch (WcxException error)
+            {
+                result = error.ArchiveResult;
+            }
             return (int)result;
         }
 
         public static int ProcessFile(IntPtr archive, int operation, IntPtr path, IntPtr name)
         {
-            return (int)Plugin.ProcessFile(archive, (ArchiveProcess)operation, Win32.GetString(path), Win32.GetString(name));
+            var result = ArchiveResult.Default;
+            try
+            {
+                result = Plugin.ProcessFile(archive, (ArchiveProcess)operation, Win32.GetString(path), Win32.GetString(name));
+            }
+            catch (WcxException error)
+            {
+                result = error.ArchiveResult;
+            }
+            return (int)result;
         }
 
         public static int CloseArchive(IntPtr archive)
         {
-            return (int)Plugin.CloseArchive(archive);
+            var result = ArchiveResult.Default;
+            try
+            {
+                result = Plugin.CloseArchive(archive);
+            }
+            catch (WcxException error)
+            {
+                result = error.ArchiveResult;
+            }
+            return (int)result;
         }
 
 
-        public static int PackFiles(IntPtr packedFile, IntPtr subPath, IntPtr srcPath, IntPtr addList, int flags)
+        public static int PackFiles(string packedFile, string subPath, string srcPath, IntPtr addList, int flags)
         {
-            return 0;
+            return (int)Plugin.PackFiles(packedFile, subPath, srcPath, Win32.GetStringArray(addList), (PackMode)flags);
         }
 
-        public static int DeleteFiles(IntPtr packedFile, IntPtr deleteList)
+        public static int DeleteFiles(string packedFile, IntPtr deleteList)
         {
-            return 0;
+            return (int)Plugin.DeleteFiles(packedFile, Win32.GetStringArray(deleteList));
         }
 
         public static int StartMemPack(int options, IntPtr fileName)

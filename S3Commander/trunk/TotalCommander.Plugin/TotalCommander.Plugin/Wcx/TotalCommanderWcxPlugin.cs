@@ -7,6 +7,7 @@ namespace TotalCommander.Plugin.Wcx
     public abstract class TotalCommanderWcxPlugin : ITotalCommanderWcxPlugin
     {
         private readonly IDictionary<IntPtr, IArchiveUnpacker> unpackers = new Dictionary<IntPtr, IArchiveUnpacker>();
+        private object packerConfiguration;
 
 
         /// <summary>
@@ -37,6 +38,12 @@ namespace TotalCommander.Plugin.Wcx
             get { return PackerCapabilities.None; }
         }
 
+        public virtual Password Password
+        {
+            get;
+            set;
+        }
+
 
         public virtual bool CanYouHandleThisFile(string fileName)
         {
@@ -44,7 +51,17 @@ namespace TotalCommander.Plugin.Wcx
         }
 
 
-        public abstract IArchiveUnpacker Unpack(string archiveName, OpenArchiveMode mode);
+        public abstract IArchiveUnpacker GetUnpacker(string archiveName, OpenArchiveMode mode);
+
+        public virtual IArchivePacker GetPacker(string archiveName, object configuration)
+        {
+            return null;
+        }
+
+        public virtual object ConfigurePacker(TotalCommanderWindow window)
+        {
+            return null;
+        }
 
 
         void ITotalCommanderWcxPlugin.SetDefaultParams(DefaultParam dp)
@@ -63,84 +80,148 @@ namespace TotalCommander.Plugin.Wcx
             return PackerCapabilities;
         }
 
+
+        void ITotalCommanderWcxPlugin.SetPassword(Password password)
+        {
+            Password = password;
+        }
+
+
         ArchiveResult ITotalCommanderWcxPlugin.OpenArchive(string archiveName, OpenArchiveMode mode, out IntPtr archive)
         {
             archive = IntPtr.Zero;
-            try
+            var result = ArchiveResult.Default;
+            var unpacker = GetUnpacker(archiveName, mode);
+            if (unpacker != null)
             {
-                var unpacker = Unpack(archiveName, mode);
-                if (unpacker == null) return ArchiveResult.Default;
-
                 lock (unpackers)
                 {
-                    unpackers[archive = (IntPtr)(unpackers.Count + 1)] = unpacker;
-                    unpacker.Reset();
+                    unpackers[archive = new IntPtr(unpackers.Count + 1)] = unpacker;
                 }
-                return ArchiveResult.Success;
+                unpacker.Reset();
+                result = ArchiveResult.Success;
             }
-            catch (WcxException error)
+            return result;
+        }
+
+        void ITotalCommanderWcxPlugin.SetChangeVolume(IntPtr archive, ChangeVolume changeVolume)
+        {
+            IArchiveUnpacker unpacker;
+            lock (unpackers)
             {
-                return error.ArchiveResult;
+                unpackers.TryGetValue(archive, out unpacker);
+            }
+            if (unpacker != null)
+            {
+            }
+        }
+
+        void ITotalCommanderWcxPlugin.SetProgress(IntPtr archive, Progress progress)
+        {
+            IArchiveUnpacker unpacker;
+            lock (unpackers)
+            {
+                unpackers.TryGetValue(archive, out unpacker);
+            }
+            if (unpacker != null)
+            {
             }
         }
 
         ArchiveResult ITotalCommanderWcxPlugin.ReadHeader(IntPtr archive, out ArchiveHeader header)
         {
             header = null;
-            try
+            var result = ArchiveResult.Default;
+            IArchiveUnpacker unpacker;
+            lock (unpackers)
             {
-                lock (unpackers)
+                unpackers.TryGetValue(archive, out unpacker);
+            }
+            if (unpacker != null)
+            {
+                if (unpacker.MoveNext())
                 {
-                    IArchiveUnpacker unpacker;
-                    if (unpackers.TryGetValue(archive, out unpacker))
-                    {
-                        if (unpacker.MoveNext())
-                        {
-                            header = unpacker.Current;
-                            return ArchiveResult.Success;
-                        }
-                        else
-                        {
-                            return ArchiveResult.EndArchive;
-                        }
-                    }
+                    header = unpacker.Current;
+                    result = ArchiveResult.Success;
                 }
-                return ArchiveResult.Default;
+                else
+                {
+                    result = ArchiveResult.EndArchive;
+                }
             }
-            catch (WcxException error)
-            {
-                return error.ArchiveResult;
-            }
+            return result;
         }
 
         ArchiveResult ITotalCommanderWcxPlugin.ProcessFile(IntPtr archive, ArchiveProcess operation, string filepath, string filename)
         {
+            if (operation == ArchiveProcess.Skip) return ArchiveResult.Success;
+
+            var result = ArchiveResult.Default;
+            IArchiveUnpacker unpacker;
             lock (unpackers)
             {
-                IArchiveUnpacker unpacker;
-                if (unpackers.TryGetValue(archive, out unpacker))
-                {
-                    var path = !string.IsNullOrEmpty(filename) ? Path.Combine(filepath, filename) : filename;
-                    unpacker.UnpackFile(unpacker.Current, path, operation);
-                    return ArchiveResult.Success;
-                }
+                unpackers.TryGetValue(archive, out unpacker);
             }
-            return ArchiveResult.Default;
+            if (unpacker != null)
+            {
+                var destfile = !string.IsNullOrEmpty(filename) ? Path.Combine(filepath, filename) : filename;
+                if (operation == ArchiveProcess.Extract)
+                {
+                    unpacker.ExtractCurrentTo(destfile);
+                }
+                else if (operation == ArchiveProcess.Test)
+                {
+                    unpacker.TestCurrent(destfile);
+                }
+                result = ArchiveResult.Success;
+            }
+            return result;
         }
 
         ArchiveResult ITotalCommanderWcxPlugin.CloseArchive(IntPtr archive)
         {
+            var result = ArchiveResult.Default;
+            IArchiveUnpacker unpacker;
             lock (unpackers)
             {
-                IArchiveUnpacker unpacker;
-                if (unpackers.TryGetValue(archive, out unpacker))
-                {
-                    unpackers.Remove(archive);
-                    unpacker.Dispose();
-                    return ArchiveResult.Success;
-                }
+                if (unpackers.TryGetValue(archive, out unpacker)) unpackers.Remove(archive);
             }
-            return ArchiveResult.Default;
+            if (unpacker != null)
+            {
+                unpacker.Dispose();
+                result = ArchiveResult.Success;
+            }
+            return result;
+        }
+
+
+        void ITotalCommanderWcxPlugin.ConfigurePacker(IntPtr window, IntPtr dllInstance)
+        {
+            packerConfiguration = ConfigurePacker(new TotalCommanderWindow(window));
+        }
+
+        ArchiveResult ITotalCommanderWcxPlugin.PackFiles(string archiveName, string subPath, string sourcePath, string[] addList, PackMode mode)
+        {
+            var result = ArchiveResult.Default;
+            var packer = GetPacker(archiveName, packerConfiguration);
+            if (packer != null)
+            {
+                packer.PackFiles(subPath, sourcePath, addList, mode);
+                result = ArchiveResult.Success;
+            }
+            return result;
+        }
+
+        ArchiveResult ITotalCommanderWcxPlugin.DeleteFiles(string archiveName, string[] deleteList)
+        {
+            var result = ArchiveResult.Default;
+            var packer = GetPacker(archiveName, packerConfiguration);
+            if (packer != null)
+            {
+                packer.DeleteFiles(deleteList);
+                result = ArchiveResult.Success;
+            }
+            return result;
         }
     }
 }

@@ -75,6 +75,7 @@ namespace TotalCommander.Plugin.Exports
         public static void SetChangeVolProcW(IntPtr archive, [MarshalAs(UnmanagedType.FunctionPtr)] ChangeVolProcW callback)
         {
             changeVolProc = callback;
+            WcxDispatcher.SetChangeVolProcW(archive, ChangeVolume);
         }
 
         [DllExport]
@@ -86,6 +87,7 @@ namespace TotalCommander.Plugin.Exports
         public static void SetProcessDataProcW(IntPtr archive, [MarshalAs(UnmanagedType.FunctionPtr)] ProcessDataProcW callback)
         {
             processDataProc = callback;
+            WcxDispatcher.SetProcessDataProcW(archive, ProgressData);
         }
 
 
@@ -96,7 +98,12 @@ namespace TotalCommander.Plugin.Exports
         }
 
         [DllExport]
-        public static int PackFilesW(IntPtr packedFile, IntPtr subPath, IntPtr srcPath, IntPtr addList, int flags)
+        public static int PackFilesW(
+            [MarshalAs(UnmanagedType.LPWStr)] string packedFile,
+            [MarshalAs(UnmanagedType.LPWStr)] string subPath,
+            [MarshalAs(UnmanagedType.LPWStr)] string srcPath,
+            IntPtr addList,
+            Int32 flags)
         {
             return WcxDispatcher.PackFiles(packedFile, subPath, srcPath, addList, flags);
         }
@@ -108,7 +115,9 @@ namespace TotalCommander.Plugin.Exports
         }
 
         [DllExport]
-        public static int DeleteFilesW(IntPtr packedFile, IntPtr deleteList)
+        public static int DeleteFilesW(
+            [MarshalAs(UnmanagedType.LPWStr)] string packedFile,
+            IntPtr deleteList)
         {
             return WcxDispatcher.DeleteFiles(packedFile, deleteList);
         }
@@ -171,6 +180,7 @@ namespace TotalCommander.Plugin.Exports
         public static void PkSetCryptCallback(CryptProcW callback, int number, int flags)
         {
             cryptProc = callback;
+            WcxDispatcher.SetCryptCallbackW(Crypt, number, flags);
         }
 
         [DllExport]
@@ -200,5 +210,21 @@ namespace TotalCommander.Plugin.Exports
             [MarshalAs(UnmanagedType.LPWStr)] StringBuilder password,
             Int32 maxLen
         );
+
+
+        private static int ChangeVolume(StringBuilder arcName, int mode)
+        {
+            return changeVolProc(arcName, mode);
+        }
+
+        private static int ProgressData(string filename, int size)
+        {
+            return processDataProc(filename, size);
+        }
+
+        private static int Crypt(int cryptoNumber, int mode, string connectionName, StringBuilder password, int maxLen)
+        {
+            return cryptProc(cryptoNumber, mode, connectionName, password, maxLen);
+        }
     }
 }
