@@ -1,1 +1,0 @@
-using System;namespace ASC.Common.Security.Authorizing {							[Serializable]	public class Permissions {								public IAction Action { get; internal set; }									public Acl[] Entries { get; internal set; }	}}

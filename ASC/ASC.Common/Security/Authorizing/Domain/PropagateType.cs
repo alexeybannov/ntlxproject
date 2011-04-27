@@ -1,1 +1,0 @@
-using System;namespace ASC.Common.Security.Authorizing {					[Serializable]	public enum PropagateType : byte {										This,										Inherit	}}

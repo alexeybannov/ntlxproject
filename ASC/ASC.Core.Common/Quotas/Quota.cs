@@ -1,1 +1,0 @@
-using System;using System.Collections.Generic;using System.Linq;using System.Text;namespace ASC.Core.Common.Quotas{	public class Quota	{		public T GetQuota<T>(string name)		{			return default(T);		}			}}

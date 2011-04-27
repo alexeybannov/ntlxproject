@@ -1,1 +1,0 @@
-using System;using System.Collections.Generic;using System.Text;namespace ASC.Common.Services{                public static class AssemblyServicesRegistratorBase    {                                public static void Register()        {                    }    }}

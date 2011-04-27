@@ -1,1 +1,0 @@
-using System;using System.Collections.Generic;using System.Text;namespace ASC.Common.Security.Authorizing{    /*            [Serializable]    public abstract class AuthObjectInstance<T>        : AuthObjectType,        IAuthObjectInstance<T>    {                                public Guid InstanceID { get; internal set; }    }*/}

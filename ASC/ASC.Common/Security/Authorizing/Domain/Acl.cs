@@ -1,1 +1,0 @@
-using System;namespace ASC.Common.Security.Authorizing {					[Serializable]	public class Acl {									public ISubject Subject { get; internal set; }										public Ace[] Entries { get; internal set; }	}}
